@@ -1,0 +1,59 @@
+@use 'sass:map';
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(tag) {
+  display: inline-flex;
+  align-items: center;
+  height: var(--size);
+  font-size: var(--font-size);
+  white-space: nowrap;
+  vertical-align: top;
+  border-radius: var(--#{variables.$prefix}border-radius);
+
+  @each $theme, $rgb in variables.$themes {
+    @include mixins.theme(#{$theme}) {
+      --color: var(--#{variables.$prefix}tag-color, var(--#{variables.$prefix}color-#{$theme}));
+      --background-color: var(--#{variables.$prefix}tag-background-color, var(--#{variables.$prefix}background-color-#{$theme}));
+    }
+  }
+
+  @include mixins.m(primary) {
+    padding: 0 var(--padding-size);
+    color: var(--color, var(--#{variables.$prefix}tag-color, var(--#{variables.$prefix}color-text)));
+    background-color: var(
+      --background-color,
+      var(--#{variables.$prefix}tag-background-color, var(--#{variables.$prefix}background-color-primary-gray))
+    );
+  }
+
+  @include mixins.m(fill) {
+    padding: 0 var(--padding-size);
+    color: map.get(variables.$colors, 'white');
+    background-color: var(--color, var(--#{variables.$prefix}tag-color, var(--#{variables.$prefix}background-color-img)));
+  }
+
+  @include mixins.m(outline) {
+    padding: 0 calc(var(--padding-size) - 1px);
+    color: var(--color, var(--#{variables.$prefix}tag-color, var(--#{variables.$prefix}color-text)));
+    border: 1px solid var(--color, var(--#{variables.$prefix}tag-color, var(--#{variables.$prefix}color-border)));
+  }
+
+  @include mixins.m(small) {
+    --size: var(--#{variables.$prefix}tag-size, calc(var(--#{variables.$prefix}size-small) - 8px));
+    --padding-size: var(--#{variables.$prefix}tag-padding-size, 6px);
+    --font-size: var(--#{variables.$prefix}tag-font-size, calc(var(--#{variables.$prefix}font-size-small) - 2px));
+  }
+
+  @include mixins.m(medium) {
+    --size: var(--#{variables.$prefix}tag-size, calc(var(--#{variables.$prefix}size-medium) - 8px));
+    --padding-size: var(--#{variables.$prefix}tag-padding-size, 8px);
+    --font-size: var(--#{variables.$prefix}tag-font-size, calc(var(--#{variables.$prefix}font-size-medium) - 2px));
+  }
+
+  @include mixins.m(large) {
+    --size: var(--#{variables.$prefix}tag-size, calc(var(--#{variables.$prefix}size-large) - 8px));
+    --padding-size: var(--#{variables.$prefix}tag-padding-size, 10px);
+    --font-size: var(--#{variables.$prefix}tag-font-size, calc(var(--#{variables.$prefix}font-size-large) - 2px));
+  }
+}

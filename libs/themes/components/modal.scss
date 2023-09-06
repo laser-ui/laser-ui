@@ -1,0 +1,139 @@
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(modal) {
+  $selector: &;
+
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  outline: none;
+
+  @include mixins.m(center) {
+    display: flex;
+
+    @include mixins.e(content) {
+      max-height: calc(100% - 40px);
+      margin: auto;
+    }
+  }
+
+  @include mixins.m(alert) {
+    @include mixins.e(footer) {
+      padding: 0 16px 12px;
+      border-top: none;
+    }
+  }
+
+  @include mixins.e(content) {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: calc(100% - 32px);
+    margin: 0 auto;
+    background-color: var(--#{variables.$prefix}background-color);
+    border-radius: var(--#{variables.$prefix}border-radius);
+    box-shadow: 0 8px 40px 0 var(--#{variables.$prefix}box-shadow-color);
+  }
+
+  @include mixins.e(body) {
+    position: relative;
+    padding: 20px;
+    overflow: hidden auto;
+  }
+
+  @include mixins.e(header) {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--#{variables.$prefix}color-divider);
+  }
+
+  @include mixins.e(header-title) {
+    @include mixins.utils-ellipsis;
+
+    flex: 1 0 0;
+    font-size: var(--#{variables.$prefix}font-size-header);
+    font-weight: var(--#{variables.$prefix}font-weight-bold);
+  }
+
+  @include mixins.e(header-actions) {
+    @include mixins.polyfill-column-gap(8px);
+
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+  }
+
+  @include mixins.e(footer) {
+    @include mixins.polyfill-column-gap(8px);
+
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    padding: 12px 16px;
+    border-top: 1px solid var(--#{variables.$prefix}color-divider);
+
+    @include mixins.m(left) {
+      justify-content: flex-start;
+    }
+
+    @include mixins.m(right) {
+      justify-content: flex-end;
+    }
+
+    @include mixins.m(center) {
+      justify-content: center;
+    }
+  }
+
+  @include mixins.e(alert) {
+    display: flex;
+
+    @include mixins.m(success) {
+      --color: var(--#{variables.$prefix}modal-alert-color, var(--#{variables.$prefix}color-success));
+    }
+
+    @include mixins.m(warning) {
+      --color: var(--#{variables.$prefix}modal-alert-color, var(--#{variables.$prefix}color-warning));
+    }
+
+    @include mixins.m(error) {
+      --color: var(--#{variables.$prefix}modal-alert-color, var(--#{variables.$prefix}color-danger));
+    }
+
+    @include mixins.m(info) {
+      --color: var(--#{variables.$prefix}modal-alert-color, var(--#{variables.$prefix}color-primary));
+    }
+  }
+
+  @include mixins.e(alert-icon) {
+    margin-right: 10px;
+    font-size: calc(var(--#{variables.$prefix}font-size-title) * 1.5);
+    color: var(--color);
+  }
+
+  @include mixins.e(alert-content) {
+    flex: 1 0 0;
+  }
+
+  @include mixins.e(alert-title) {
+    font-size: var(--#{variables.$prefix}font-size-title);
+    font-weight: var(--#{variables.$prefix}font-weight-bold);
+
+    & + #{ $selector}__alert-message {
+      margin-top: 6px;
+    }
+  }
+
+  @include mixins.e(alert-message) {
+    color: var(--#{variables.$prefix}color-text-sub);
+  }
+}

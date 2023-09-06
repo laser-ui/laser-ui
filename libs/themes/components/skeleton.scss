@@ -1,0 +1,44 @@
+@use '../variables';
+@use '../mixins';
+
+@keyframes #{variables.$prefix}skeleton-wave {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@include mixins.b(skeleton) {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--#{variables.$prefix}background-color-primary-gray);
+
+  &::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    content: '';
+    background: linear-gradient(100deg, transparent 20%, var(--#{variables.$prefix}skeleton-background-color-wave) 50%, transparent 70%);
+    transform: translateX(-100%);
+    animation: #{variables.$prefix}skeleton-wave 2s linear infinite;
+  }
+
+  @include mixins.m(text) {
+    width: 100%;
+    border-radius: var(--#{variables.$prefix}border-radius);
+
+    &::before {
+      content: '\00a0';
+    }
+  }
+
+  @include mixins.m(circular) {
+    border-radius: 50%;
+  }
+
+  @include mixins.m(rect) {
+    border-radius: var(--#{variables.$prefix}border-radius);
+  }
+}

@@ -1,0 +1,367 @@
+@use 'sass:map';
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(upload) {
+  display: none;
+}
+
+@include mixins.b(upload-button) {
+  $selector: &;
+
+  --color: var(--#{variables.$prefix}upload-button-color);
+
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 104px;
+  height: 104px;
+  padding: 8px;
+  vertical-align: top;
+  cursor: pointer;
+  background-color: var(--#{variables.$prefix}background-color-light-gray);
+  border: 1px solid var(--color, var(--#{variables.$prefix}color-border));
+  border-style: dashed;
+  outline: none;
+  transition: border-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+  &:hover {
+    @include mixins.e(actions) {
+      opacity: 1;
+    }
+  }
+
+  &:not(#{$selector}--error):hover,
+  &:not(#{$selector}--error):focus {
+    border-color: var(--#{variables.$prefix}color-primary);
+  }
+
+  @include mixins.when(disabled) {
+    pointer-events: none;
+  }
+
+  @include mixins.m(load) {
+    background-color: transparent;
+  }
+
+  @include mixins.m(error) {
+    --color: var(--#{variables.$prefix}upload-button-color, var(--#{variables.$prefix}color-danger));
+  }
+
+  @include mixins.e(thumbnail) {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  @include mixins.e(name) {
+    @include mixins.utils-ellipsis;
+
+    max-width: 100%;
+    margin-top: 8px;
+    color: var(--color);
+  }
+
+  @include mixins.e(actions) {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    bottom: 8px;
+    left: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--#{variables.$prefix}background-color-mask);
+    opacity: 0;
+    transition: opacity var(--#{variables.$prefix}animation-duration-base) linear;
+  }
+
+  @include mixins.e(icon) {
+    /* stylelint-disable-next-line declaration-property-value-allowed-list */
+    font-size: 20px;
+  }
+
+  @include mixins.e(text) {
+    margin-top: 8px;
+    /* stylelint-disable-next-line declaration-property-value-allowed-list */
+    font-size: 14px;
+  }
+}
+
+@include mixins.b(upload-action) {
+  $selector: &;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: var(--#{variables.$prefix}color-text);
+  vertical-align: top;
+  appearance: none;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  transition: color var(--#{variables.$prefix}animation-duration-base) linear;
+
+  &:not(#{$selector}--light):hover,
+  &:not(#{$selector}--light):focus {
+    color: var(--#{variables.$prefix}color-primary);
+  }
+
+  @include mixins.when(disabled) {
+    pointer-events: none;
+    filter: opacity(50%);
+  }
+
+  @include mixins.m(light) {
+    color: map.get(variables.$colors, 'white');
+    transition: background-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:hover,
+    &:focus {
+      background-color: var(--#{variables.$prefix}background-color-light-hover);
+    }
+  }
+
+  @include mixins.m(preview) {
+    text-decoration: none;
+  }
+}
+
+@include mixins.b(upload-list) {
+  --color: var(--#{variables.$prefix}upload-list-color);
+
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  @include mixins.e(item) {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 24px;
+    transition: background-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    & + & {
+      margin-top: 8px;
+    }
+
+    &:hover {
+      background-color: var(--#{variables.$prefix}background-color-hover);
+
+      @include mixins.e(actions) {
+        opacity: 1;
+      }
+    }
+
+    @include mixins.m(error) {
+      --color: var(--#{variables.$prefix}upload-list-color, var(--#{variables.$prefix}color-danger));
+    }
+
+    @include mixins.e(icon) {
+      width: calc(1em + 8px);
+      color: var(--color, var(--#{variables.$prefix}color-text-sub));
+    }
+
+    @include mixins.e(link) {
+      @include mixins.utils-ellipsis;
+
+      display: inline-block;
+      flex: 1 0 0;
+      color: var(--color, var(--#{variables.$prefix}color-text));
+      text-decoration: none;
+
+      @include mixins.when(active) {
+        color: var(--#{variables.$prefix}color-primary);
+      }
+    }
+
+    @include mixins.e(actions) {
+      margin-left: auto;
+      opacity: 0;
+      transition: opacity var(--#{variables.$prefix}animation-duration-base) linear;
+    }
+
+    @include mixins.e(progress-wrapper) {
+      position: absolute;
+      bottom: -4px;
+      left: 24px;
+      width: calc(100% - 24px);
+      height: 2px;
+    }
+  }
+}
+
+@include mixins.b(upload-picture) {
+  --color: var(--#{variables.$prefix}upload-picture-color);
+  --gutter-x: var(--#{variables.$prefix}upload-picture-gutter-x, 8px);
+  --gutter-y: var(--#{variables.$prefix}upload-picture-gutter-y, 8px);
+
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  @include mixins.e(row) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: calc(-1 * var(--gutter-y)) calc(-0.5 * var(--gutter-x)) 0 calc(-0.5 * var(--gutter-x));
+
+    & > * {
+      padding-right: calc(var(--gutter-x) * 0.5);
+      padding-left: calc(var(--gutter-x) * 0.5);
+      margin-top: var(--gutter-y);
+    }
+  }
+
+  @include mixins.e(item) {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 104px;
+    height: 104px;
+    padding: 8px;
+    vertical-align: top;
+    background-color: var(--#{variables.$prefix}background-color-light-gray);
+    border: 1px solid var(--#{variables.$prefix}color-border);
+
+    &:hover {
+      @include mixins.e(actions) {
+        opacity: 1;
+      }
+    }
+
+    @include mixins.when(disabled) {
+      pointer-events: none;
+    }
+
+    @include mixins.m(load) {
+      background-color: transparent;
+    }
+
+    @include mixins.m(error) {
+      --color: var(--#{variables.$prefix}upload-picture-color, var(--#{variables.$prefix}color-danger));
+    }
+  }
+
+  @include mixins.e(thumbnail) {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  @include mixins.e(name) {
+    @include mixins.utils-ellipsis;
+
+    max-width: 100%;
+    margin-top: 8px;
+    color: var(--color);
+  }
+
+  @include mixins.e(actions) {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    bottom: 8px;
+    left: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--#{variables.$prefix}background-color-mask);
+    opacity: 0;
+    transition: opacity var(--#{variables.$prefix}animation-duration-base) linear;
+  }
+
+  @include mixins.e(progress-text) {
+    margin-bottom: 8px;
+    /* stylelint-disable-next-line declaration-property-value-allowed-list */
+    font-size: 14px;
+  }
+}
+
+@include mixins.b(upload-picture-list) {
+  --color: var(--#{variables.$prefix}upload-picture-list-color);
+
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  @include mixins.e(item) {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 66px;
+    padding: 8px;
+    border: 1px solid var(--#{variables.$prefix}color-border);
+    transition: background-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    & + & {
+      margin-top: 8px;
+    }
+
+    &:hover {
+      background-color: var(--#{variables.$prefix}background-color-hover);
+
+      @include mixins.e(actions) {
+        opacity: 1;
+      }
+    }
+
+    @include mixins.m(error) {
+      --color: var(--#{variables.$prefix}upload-picture-list-color, var(--#{variables.$prefix}color-danger));
+    }
+
+    @include mixins.e(thumbnail) {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      margin-right: 8px;
+      color: var(--color, var(--#{variables.$prefix}color-text-sub));
+    }
+
+    @include mixins.e(thumbnail-img) {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    @include mixins.e(link) {
+      @include mixins.utils-ellipsis;
+
+      display: inline-block;
+      flex: 1 0 0;
+      line-height: 48px;
+      color: var(--color, var(--#{variables.$prefix}color-text));
+      text-decoration: none;
+
+      @include mixins.when(active) {
+        color: var(--#{variables.$prefix}color-primary);
+      }
+    }
+
+    @include mixins.e(actions) {
+      margin-left: auto;
+      opacity: 0;
+      transition: opacity var(--#{variables.$prefix}animation-duration-base) linear;
+    }
+
+    @include mixins.e(progress-wrapper) {
+      position: absolute;
+      bottom: 16px;
+      left: 64px;
+      width: calc(100% - 74px);
+      height: 2px;
+    }
+  }
+}

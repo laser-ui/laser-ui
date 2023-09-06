@@ -1,0 +1,15 @@
+export const CLASSES = {
+  progress: '^progress',
+  'progress--line': '^progress--line',
+  'progress--circle': '^progress--circle',
+  'progress--dashboard': '^progress--dashboard',
+  'progress--success': '^progress--success',
+  'progress--warning': '^progress--warning',
+  'progress--error': '^progress--error',
+  'progress--process': '^progress--process',
+  'progress__line-track': '^progress__line-track',
+  'progress__line-bar': '^progress__line-bar',
+  'progress__line-wave': '^progress__line-wave',
+  progress__svg: '^progress__svg',
+  progress__label: '^progress__label',
+};

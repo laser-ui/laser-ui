@@ -1,0 +1,118 @@
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(tooltip) {
+  position: fixed;
+  padding: 4px 12px;
+  /* stylelint-disable-next-line declaration-property-value-allowed-list */
+  color: #eef0f3;
+  white-space: pre;
+  background-color: var(--#{variables.$prefix}tooltip-background-color);
+  /* stylelint-disable-next-line declaration-property-value-allowed-list */
+  border-radius: 4px;
+  outline: none;
+
+  @include mixins.m(top) {
+    @include mixins.e(arrow) {
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%, 50%) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(top-left) {
+    @include mixins.e(arrow) {
+      bottom: 0;
+      left: 20px;
+      transform: translate(0, 50%) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(top-right) {
+    @include mixins.e(arrow) {
+      right: 20px;
+      bottom: 0;
+      transform: translate(0, 50%) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(right) {
+    @include mixins.e(arrow) {
+      top: 50%;
+      left: 0;
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(right-top) {
+    @include mixins.e(arrow) {
+      top: 12px;
+      left: 0;
+      transform: translate(-50%, 0) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(right-bottom) {
+    @include mixins.e(arrow) {
+      bottom: 12px;
+      left: 0;
+      transform: translate(-50%, 0) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(bottom) {
+    @include mixins.e(arrow) {
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(bottom-left) {
+    @include mixins.e(arrow) {
+      top: 0;
+      left: 20px;
+      transform: translate(0, -50%) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(bottom-right) {
+    @include mixins.e(arrow) {
+      top: 0;
+      right: 20px;
+      transform: translate(0, -50%) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(left) {
+    @include mixins.e(arrow) {
+      top: 50%;
+      right: 0;
+      transform: translate(50%, -50%) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(left-top) {
+    @include mixins.e(arrow) {
+      top: 12px;
+      right: 0;
+      transform: translate(50%, 0) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(left-bottom) {
+    @include mixins.e(arrow) {
+      right: 0;
+      bottom: 12px;
+      transform: translate(50%, 0) rotate(45deg);
+    }
+  }
+
+  @include mixins.e(arrow) {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    pointer-events: none;
+    background-color: inherit;
+  }
+}

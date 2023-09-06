@@ -1,0 +1,17 @@
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(icon) {
+  display: inline;
+  vertical-align: top;
+
+  @each $theme, $rgb in variables.$themes {
+    @include mixins.theme(#{$theme}) {
+      color: var(--#{variables.$prefix}color-#{$theme});
+    }
+  }
+
+  svg {
+    display: block;
+  }
+}

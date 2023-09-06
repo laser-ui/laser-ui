@@ -1,0 +1,71 @@
+@use '../../variables';
+@use 'config';
+@use 'function';
+
+$block-prefix: variables.$namespace !default;
+
+@mixin b($block) {
+  $B: $block-prefix + '-' + $block !global;
+
+  .#{$B} {
+    @content;
+  }
+}
+
+@mixin e($element) {
+  $E: $element !global;
+  $selector: &;
+  $currentSelector: '';
+  @each $unit in $element {
+    $currentSelector: #{$currentSelector + '.' + $B + config.$element-separator + $unit + ','};
+  }
+
+  @if function.hitAllSpecialNestRule($selector) {
+    @at-root {
+      #{$selector} {
+        #{$currentSelector} {
+          @content;
+        }
+      }
+    }
+  } @else {
+    @at-root {
+      #{$currentSelector} {
+        @content;
+      }
+    }
+  }
+}
+
+@mixin m($modifier) {
+  $selector: &;
+  $currentSelector: '';
+  @each $unit in $modifier {
+    $currentSelector: #{$currentSelector + & + config.$modifier-separator + $unit + ','};
+  }
+
+  @at-root {
+    #{$currentSelector} {
+      @content;
+    }
+  }
+}
+
+// Signify that a class is responsible for adding a Theme to a view.
+@mixin theme($theme) {
+  @at-root {
+    &.#{config.$theme-prefix + $theme} {
+      @content;
+    }
+  }
+}
+
+// Signify that the piece of UI in question is currently
+// styled a certain way because of a state or condition.
+@mixin when($state) {
+  @at-root {
+    &.#{config.$state-prefix + $state} {
+      @content;
+    }
+  }
+}

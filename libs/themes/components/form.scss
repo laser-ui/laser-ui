@@ -1,0 +1,137 @@
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(form) {
+  --gutter-x: var(--#{variables.$prefix}form-gutter-x, 8px);
+  --gutter-y: var(--#{variables.$prefix}form-gutter-y, 0px);
+
+  @include mixins.m(small) {
+    --size: var(--#{variables.$prefix}input-size, var(--#{variables.$prefix}size-small));
+    --font-size: var(--#{variables.$prefix}input-font-size, var(--#{variables.$prefix}font-size-small));
+  }
+
+  @include mixins.m(medium) {
+    --size: var(--#{variables.$prefix}input-size, var(--#{variables.$prefix}size-medium));
+    --font-size: var(--#{variables.$prefix}input-font-size, var(--#{variables.$prefix}font-size-medium));
+  }
+
+  @include mixins.m(large) {
+    --size: var(--#{variables.$prefix}input-size, var(--#{variables.$prefix}size-large));
+    --font-size: var(--#{variables.$prefix}input-font-size, var(--#{variables.$prefix}font-size-large));
+  }
+
+  @include mixins.e(row) {
+    display: flex;
+    flex-wrap: wrap;
+    margin: calc(-1 * var(--gutter-y)) calc(-0.5 * var(--gutter-x)) 0 calc(-0.5 * var(--gutter-x));
+
+    & > * {
+      padding-right: calc(var(--gutter-x) * 0.5);
+      padding-left: calc(var(--gutter-x) * 0.5);
+      margin-top: var(--gutter-y);
+    }
+  }
+
+  @include mixins.e(item) {
+    position: relative;
+    width: 100%;
+  }
+
+  @include mixins.e(item-container) {
+    position: relative;
+    width: 100%;
+  }
+
+  @include mixins.e(item-label-wrapper) {
+    position: relative;
+    display: inline-block;
+    min-height: var(--size);
+    vertical-align: top;
+  }
+
+  @include mixins.e(item-label) {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: var(--size);
+    padding-right: 8px;
+    font-size: var(--font-size);
+    overflow-wrap: break-word;
+
+    @include mixins.m(auto) {
+      position: absolute;
+      top: 0;
+      right: 0;
+      flex-wrap: nowrap;
+    }
+
+    @include mixins.m(required) {
+      &::before {
+        display: inline-block;
+        margin-right: 4px;
+        color: var(--#{variables.$prefix}color-danger);
+        content: '*';
+      }
+    }
+
+    @include mixins.m(colon) {
+      &::after {
+        margin-left: 2px;
+        content: ':';
+      }
+    }
+  }
+
+  @include mixins.e(item-label-extra) {
+    @include mixins.polyfill-column-gap(4px);
+
+    display: inline-flex;
+    align-items: center;
+    margin-left: 4px;
+    color: var(--#{variables.$prefix}color-text-sub);
+  }
+
+  @include mixins.e(item-content) {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  @include mixins.e(item-control) {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    min-height: var(--size);
+  }
+
+  @include mixins.e(item-feedback-icon) {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 2em;
+    height: var(--size);
+  }
+
+  @include mixins.e(error-container) {
+    width: 100%;
+    min-height: calc(1.5em + 5px);
+    padding: 2px 0;
+    font-size: calc(var(--font-size) - 2px);
+    line-height: 1.5;
+  }
+
+  @include mixins.e(error) {
+    @include mixins.utils-ellipsis;
+
+    @include mixins.m(error) {
+      color: var(--#{variables.$prefix}color-danger);
+    }
+
+    @include mixins.m(warning) {
+      color: var(--#{variables.$prefix}color-warning);
+    }
+  }
+}

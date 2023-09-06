@@ -1,0 +1,25 @@
+/* stylelint-disable media-query-no-invalid */
+@use '../../variables';
+@use 'function';
+
+@mixin media-breakpoint-up($name, $breakpoints: variables.$grid-breakpoints) {
+  $min: function.breakpoint-min($name, $breakpoints);
+  @if $min {
+    @media (min-width: $min) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+@mixin media-breakpoint-down($name, $breakpoints: variables.$grid-breakpoints) {
+  $max: function.breakpoint-max($name, $breakpoints);
+  @if $max {
+    @media (max-width: $max) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}

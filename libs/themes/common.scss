@@ -1,0 +1,9 @@
+@use 'variables';
+@use 'mixins';
+
+@include mixins.b(focus-outline) {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 1px dashed var(--#{variables.$prefix}color-light-primary);
+}

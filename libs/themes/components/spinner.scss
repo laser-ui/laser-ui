@@ -1,0 +1,43 @@
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(spinner) {
+  $selector: &;
+
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: var(--#{variables.$prefix}zindex-absolute);
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  color: var(--#{variables.$prefix}color-primary);
+  background-color: rgb(var(--#{variables.$prefix}background-color-rgb) / 80%);
+
+  @include mixins.m(alone) {
+    position: relative;
+    top: unset;
+    right: unset;
+    bottom: unset;
+    left: unset;
+    display: inline-flex;
+    vertical-align: top;
+    background-color: transparent;
+  }
+
+  @include mixins.e(container) {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @include mixins.e(icon) {
+    & + #{$selector}__text {
+      margin-top: 8px;
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "name": "plugins",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/plugins/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/plugins",
+        "main": "libs/plugins/src/index.ts",
+        "tsConfig": "libs/plugins/tsconfig.lib.json",
+        "assets": [
+          "libs/plugins/*.md",
+          {
+            "input": "./libs/plugins/src",
+            "glob": "**/!(*.ts)",
+            "output": "./src"
+          },
+          {
+            "input": "./libs/plugins/src",
+            "glob": "**/*.d.ts",
+            "output": "./src"
+          },
+          {
+            "input": "./libs/plugins",
+            "glob": "generators.json",
+            "output": "."
+          },
+          {
+            "input": "./libs/plugins",
+            "glob": "executors.json",
+            "output": "."
+          }
+        ],
+        "updateBuildableProjectDepsInPackageJson": true
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/plugins/**/*.ts", "libs/plugins/package.json", "libs/plugins/executors.json"]
+      }
+    }
+  },
+  "tags": []
+}

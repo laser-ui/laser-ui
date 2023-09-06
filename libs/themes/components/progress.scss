@@ -1,0 +1,125 @@
+@use 'sass:map';
+@use '../variables';
+@use '../mixins';
+
+@keyframes #{variables.$prefix}progress-line-wave {
+  0% {
+    opacity: 0.1;
+    transform: translateX(-100%) scaleX(0);
+  }
+
+  20% {
+    opacity: 0.5;
+    transform: translateX(-100%) scaleX(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(0) scaleX(1);
+  }
+}
+
+@include mixins.b(progress) {
+  --background-color: var(--#{variables.$prefix}progress-background-color, var(--#{variables.$prefix}background-color-indicator));
+
+  position: relative;
+  color: var(--color);
+
+  @include mixins.m(line) {
+    display: flex;
+    align-items: center;
+
+    @include mixins.e(label) {
+      flex-shrink: 0;
+      min-width: 2em;
+      margin-left: 8px;
+      /* stylelint-disable-next-line declaration-property-value-allowed-list */
+      font-size: 14px;
+    }
+  }
+
+  @include mixins.m(circle) {
+    display: inline-block;
+    vertical-align: top;
+
+    @include mixins.e(label) {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  @include mixins.m(dashboard) {
+    display: inline-block;
+    vertical-align: top;
+
+    @include mixins.e(label) {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  @include mixins.m(success) {
+    --color: var(--#{variables.$prefix}progress-color, var(--#{variables.$prefix}color-success));
+  }
+
+  @include mixins.m(warning) {
+    --color: var(--#{variables.$prefix}progress-color, var(--#{variables.$prefix}color-warning));
+  }
+
+  @include mixins.m(error) {
+    --color: var(--#{variables.$prefix}progress-color, var(--#{variables.$prefix}color-danger));
+  }
+
+  @include mixins.m(process) {
+    --color: var(--#{variables.$prefix}progress-color, var(--#{variables.$prefix}color-primary));
+
+    @include mixins.e(label) {
+      color: var(--#{variables.$prefix}color-text);
+    }
+  }
+
+  @include mixins.e(line-track) {
+    position: relative;
+    flex: 1 0 0;
+    background-color: var(--background-color);
+  }
+
+  @include mixins.e(line-bar) {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    background-color: var(--color);
+    border-radius: inherit;
+    transition:
+      opacity var(--#{variables.$prefix}animation-duration-slow) ease,
+      background-color var(--#{variables.$prefix}animation-duration-slow) ease,
+      width var(--#{variables.$prefix}animation-duration-slow) ease;
+  }
+
+  @include mixins.e(line-wave) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: map.get(variables.$colors, 'white');
+    border-radius: inherit;
+    animation: #{variables.$prefix}progress-line-wave 2.4s cubic-bezier(0.23, 1, 0.32, 1) infinite;
+    animation-fill-mode: both;
+  }
+
+  @include mixins.e(svg) {
+    circle {
+      transition:
+        opacity var(--#{variables.$prefix}animation-duration-slow) ease,
+        stroke var(--#{variables.$prefix}animation-duration-slow) ease,
+        stroke-dasharray var(--#{variables.$prefix}animation-duration-slow) ease;
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/lerna/schemas/lerna-schema.json",
+  "useNx": true,
+  "packages": ["libs/components", "libs/hooks", "libs/utils"],
+  "version": "0.0.0",
+  "command": {
+    "version": {
+      "conventionalCommits": true,
+      "message": "chore: release %v",
+      "createRelease": "github",
+      "forcePublish": true,
+      "exact": true
+    },
+    "publish": {
+      "yes": true
+    }
+  }
+}

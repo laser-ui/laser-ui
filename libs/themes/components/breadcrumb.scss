@@ -1,0 +1,50 @@
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(breadcrumb) {
+  --gutter-x: var(--#{variables.$prefix}breadcrumb-gutter-x, 8px);
+  --gutter-y: var(--#{variables.$prefix}breadcrumb-gutter-y, 4px);
+
+  @include mixins.e(list) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0;
+    margin: calc(-1 * var(--gutter-y)) calc(-0.5 * var(--gutter-x)) 0 calc(-0.5 * var(--gutter-x));
+    list-style: none;
+
+    & > * {
+      padding-right: calc(var(--gutter-x) * 0.5);
+      padding-left: calc(var(--gutter-x) * 0.5);
+      margin-top: var(--gutter-y);
+    }
+  }
+
+  @include mixins.e(item) {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.5em;
+    color: var(--#{variables.$prefix}color-text-sub);
+    border-radius: var(--#{variables.$prefix}border-radius);
+
+    @include mixins.m(link) {
+      cursor: pointer;
+      transition:
+        color var(--#{variables.$prefix}animation-duration-base) linear,
+        background-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+      &:hover {
+        color: var(--#{variables.$prefix}text-color);
+        background-color: var(--#{variables.$prefix}background-color-hover);
+      }
+    }
+
+    @include mixins.m(last) {
+      color: var(--#{variables.$prefix}color-text);
+    }
+  }
+
+  @include mixins.e(separator) {
+    color: var(--#{variables.$prefix}color-text-sub);
+  }
+}

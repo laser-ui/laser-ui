@@ -1,0 +1,517 @@
+@use '../variables';
+@use '../mixins';
+
+@mixin tabs-horizontal($direction) {
+  $selector: '.#{variables.$prefix}tabs';
+
+  @if $direction == top {
+    flex-direction: column;
+  } @else {
+    flex-direction: column-reverse;
+  }
+
+  &#{$selector}--center {
+    @include mixins.e(tab) {
+      @include mixins.m(first) {
+        margin-left: auto;
+      }
+
+      @include mixins.m(last) {
+        margin-right: auto;
+      }
+    }
+  }
+
+  &:not(#{$selector}--slider) {
+    @include mixins.e(button) {
+      @include mixins.m(add) {
+        @if $direction == top {
+          border-bottom-color: transparent;
+        } @else {
+          border-top-color: transparent;
+        }
+      }
+    }
+  }
+
+  &:not(#{$selector}--slider):not(#{$selector}--wrap) {
+    @include mixins.e(tablist) {
+      & > * + *:not(#{$selector}__indicator) {
+        margin-left: var(--tab-gap);
+      }
+    }
+  }
+
+  @include mixins.e(tabpanel) {
+    @if $direction == top {
+      margin-top: 20px;
+    } @else {
+      margin-bottom: 20px;
+    }
+  }
+
+  @include mixins.e(tablist-wrapper) {
+    width: 100%;
+    overflow: auto hidden;
+
+    @if $direction == top {
+      padding-bottom: 2px;
+    } @else {
+      padding-top: 2px;
+    }
+  }
+
+  @include mixins.e(tablist) {
+    min-width: 100%;
+
+    &::after {
+      left: 0;
+      width: 100%;
+      height: 1px;
+
+      @if $direction == top {
+        bottom: -1px;
+      } @else {
+        top: -1px;
+      }
+    }
+  }
+
+  @include mixins.e(indicator) {
+    left: 0;
+    width: 0;
+    height: 2px;
+    transition:
+      left var(--#{variables.$prefix}animation-duration-slow) linear,
+      opacity var(--#{variables.$prefix}animation-duration-base) linear,
+      width var(--#{variables.$prefix}animation-duration-base) linear;
+
+    @if $direction == top {
+      bottom: -2px;
+    } @else {
+      top: -2px;
+    }
+  }
+
+  @include mixins.e(slider-indicator) {
+    left: 0;
+    width: 0;
+    height: 100%;
+    transition:
+      left var(--#{variables.$prefix}animation-duration-slow) linear,
+      opacity var(--#{variables.$prefix}animation-duration-base) linear,
+      width var(--#{variables.$prefix}animation-duration-base) linear;
+  }
+
+  @include mixins.e(wrap-indicator) {
+    left: 0;
+    width: 0;
+    height: calc(100% + 1px);
+    transition:
+      left var(--#{variables.$prefix}animation-duration-slow) linear,
+      opacity var(--#{variables.$prefix}animation-duration-base) linear,
+      width var(--#{variables.$prefix}animation-duration-base) linear;
+
+    @if $direction == top {
+      top: 0;
+      border-bottom: none;
+      border-radius: var(--#{variables.$prefix}border-radius) var(--#{variables.$prefix}border-radius) 0 0;
+    } @else {
+      bottom: 0;
+      border-top: none;
+      border-radius: 0 0 var(--#{variables.$prefix}border-radius) var(--#{variables.$prefix}border-radius);
+    }
+  }
+
+  @include mixins.e(button-container) {
+    right: 0;
+  }
+
+  @include mixins.e(button) {
+    width: 52px;
+    height: var(--tab-size);
+
+    @include mixins.m(more) {
+      box-shadow: -3px 0 8px -2px var(--#{variables.$prefix}box-shadow-color);
+
+      @include mixins.when(end) {
+        border-left-color: var(--#{variables.$prefix}background-color-indicator);
+      }
+    }
+  }
+}
+
+@mixin tabs-vertical($direction) {
+  $selector: '.#{variables.$prefix}tabs';
+
+  @if $direction == left {
+    flex-direction: row;
+  } @else {
+    flex-direction: row-reverse;
+  }
+
+  &#{$selector}tabs--center {
+    @include mixins.e(tab) {
+      @include mixins.m(first) {
+        margin-top: auto;
+      }
+
+      @include mixins.m(last) {
+        margin-bottom: auto;
+      }
+    }
+  }
+
+  @include mixins.e(tabpanel) {
+    flex-grow: 1;
+    overflow: hidden;
+
+    @if $direction == left {
+      margin-left: 20px;
+    } @else {
+      margin-right: 20px;
+    }
+  }
+
+  @include mixins.e(tab) {
+    padding: 0 var(--tab-padding);
+
+    @if $direction == left {
+      justify-content: flex-end;
+    } @else {
+      justify-content: flex-start;
+    }
+  }
+
+  @include mixins.e(button) {
+    @include mixins.m(add) {
+      border-right-color: transparent;
+      border-left-color: transparent;
+    }
+  }
+
+  @include mixins.e(tablist-wrapper) {
+    flex-shrink: 0;
+    overflow: hidden auto;
+
+    @if $direction == left {
+      padding-right: 2px;
+    } @else {
+      padding-left: 2px;
+    }
+  }
+
+  @include mixins.e(tablist) {
+    flex-direction: column;
+
+    &::after {
+      top: 0;
+      width: 1px;
+      height: 100%;
+
+      @if $direction == left {
+        right: -1px;
+      } @else {
+        left: -1px;
+      }
+    }
+  }
+
+  @include mixins.e(indicator) {
+    top: 0;
+    width: 2px;
+    height: var(--tab-size);
+    transition:
+      top var(--#{variables.$prefix}animation-duration-slow) linear,
+      opacity var(--#{variables.$prefix}animation-duration-base) linear;
+
+    @if $direction == left {
+      right: -2px;
+    } @else {
+      left: -2px;
+    }
+  }
+
+  @include mixins.e(slider-indicator) {
+    top: 0;
+    width: 100%;
+    height: var(--tab-size);
+    transition:
+      top var(--#{variables.$prefix}animation-duration-slow) linear,
+      opacity var(--#{variables.$prefix}animation-duration-base) linear;
+  }
+
+  @include mixins.e(wrap-indicator) {
+    top: 0;
+    width: calc(100% + 1px);
+    height: var(--tab-size);
+    transition:
+      top var(--#{variables.$prefix}animation-duration-slow) linear,
+      opacity var(--#{variables.$prefix}animation-duration-base) linear;
+
+    @if $direction == left {
+      left: 0;
+      border-right: none;
+      border-radius: 0 var(--#{variables.$prefix}border-radius) var(--#{variables.$prefix}border-radius) 0;
+    } @else {
+      right: 0;
+      border-left: none;
+      border-radius: var(--#{variables.$prefix}border-radius) 0 0 var(--#{variables.$prefix}border-radius);
+    }
+  }
+
+  @include mixins.e(button-container) {
+    bottom: 0;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  @include mixins.e(button) {
+    width: 100%;
+    height: 36px;
+
+    @include mixins.m(more) {
+      box-shadow: 0 -3px 8px -2px var(--#{variables.$prefix}box-shadow-color);
+      @include mixins.when(end) {
+        border-top-color: var(--#{variables.$prefix}background-color-indicator);
+      }
+    }
+  }
+}
+
+@include mixins.b(tabs) {
+  $selector: &;
+
+  position: relative;
+  display: flex;
+
+  @include mixins.m(slider) {
+    &#{$selector}--top,
+    &#{$selector}--bottom {
+      @include mixins.e(tab) {
+        padding: 0 var(--tab-padding);
+      }
+    }
+
+    @include mixins.e(tablist-wrapper) {
+      padding: 0;
+      border-bottom: 1px solid var(--#{variables.$prefix}color-border);
+    }
+
+    @include mixins.e(tablist) {
+      min-width: unset;
+
+      &::after {
+        content: none;
+      }
+    }
+  }
+
+  @include mixins.m(wrap) {
+    &#{$selector}--top,
+    &#{$selector}--bottom {
+      @include mixins.e(tab) {
+        padding: 0 var(--tab-padding);
+      }
+    }
+  }
+
+  @include mixins.m(top) {
+    @include tabs-horizontal(top);
+  }
+
+  @include mixins.m(bottom) {
+    @include tabs-horizontal(bottom);
+  }
+
+  @include mixins.m(left) {
+    @include tabs-vertical(left);
+  }
+
+  @include mixins.m(right) {
+    @include tabs-vertical(right);
+  }
+
+  @include mixins.m(small) {
+    &:not(#{$selector}--slider) {
+      --tab-size: var(--#{variables.$prefix}tabs-tab-size, 36px);
+    }
+
+    &#{$selector}--slider {
+      --tab-size: var(--#{variables.$prefix}tabs-tab-size, 32px);
+    }
+
+    --tab-padding: var(--#{variables.$prefix}tabs-tab-padding, 12px);
+    --tab-gap: var(--#{variables.$prefix}tabs-tab-gap, 20px);
+    --tablist-font-size: var(--#{variables.$prefix}tabs-tablist-font-size, var(--#{variables.$prefix}font-size-small));
+  }
+
+  @include mixins.m(medium) {
+    &:not(#{$selector}--slider) {
+      --tab-size: var(--#{variables.$prefix}tabs-tab-size, 44px);
+    }
+
+    &#{$selector}--slider {
+      --tab-size: var(--#{variables.$prefix}tabs-tab-size, 36px);
+    }
+
+    --tab-padding: var(--#{variables.$prefix}tabs-tab-padding, 16px);
+    --tab-gap: var(--#{variables.$prefix}tabs-tab-gap, 32px);
+    --tablist-font-size: var(--#{variables.$prefix}tabs-tablist-font-size, var(--#{variables.$prefix}font-size-medium));
+  }
+
+  @include mixins.m(large) {
+    &:not(#{$selector}--slider) {
+      --tab-size: var(--#{variables.$prefix}tabs-tab-size, 52px);
+    }
+
+    &#{$selector}--slider {
+      --tab-size: var(--#{variables.$prefix}tabs-tab-size, 44px);
+    }
+
+    --tab-padding: var(--#{variables.$prefix}tabs-tab-padding, 20px);
+    --tab-gap: var(--#{variables.$prefix}tabs-tab-gap, 36px);
+    --tablist-font-size: var(--#{variables.$prefix}tabs-tablist-font-size, var(--#{variables.$prefix}font-size-large));
+  }
+
+  @include mixins.e(tablist-wrapper) {
+    position: relative;
+  }
+
+  @include mixins.e(tablist) {
+    position: relative;
+    display: inline-flex;
+    font-size: var(--tablist-font-size);
+
+    &::after {
+      position: absolute;
+      content: '';
+      background-color: var(--#{variables.$prefix}background-color-indicator);
+    }
+  }
+
+  @include mixins.e(tab) {
+    position: relative;
+    z-index: 5;
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    height: var(--tab-size);
+    cursor: pointer;
+    transition: color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:focus,
+    &:hover {
+      color: var(--#{variables.$prefix}color-light-primary);
+    }
+
+    @include mixins.when(active) {
+      color: var(--#{variables.$prefix}color-primary);
+    }
+
+    @include mixins.when(disabled) {
+      pointer-events: none;
+      filter: opacity(50%);
+    }
+  }
+
+  @include mixins.e(button-container) {
+    position: sticky;
+    z-index: 6;
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  @include mixins.e(button) {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: var(--#{variables.$prefix}background-color);
+    transition: color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:hover,
+    &:focus {
+      color: var(--#{variables.$prefix}color-light-primary);
+    }
+
+    &:active {
+      color: var(--#{variables.$prefix}color-dark-primary);
+    }
+
+    @include mixins.when(disabled) {
+      color: var(--#{variables.$prefix}color-disabled);
+      pointer-events: none;
+    }
+
+    @include mixins.m(add) {
+      border: 1px solid var(--#{variables.$prefix}background-color-indicator);
+    }
+
+    @include mixins.m(more) {
+      border: 1px solid transparent;
+      transition:
+        color var(--#{variables.$prefix}animation-duration-base) linear,
+        box-shadow var(--#{variables.$prefix}animation-duration-base) linear;
+
+      @include mixins.when(end) {
+        box-shadow: none;
+      }
+    }
+  }
+
+  @include mixins.e(close) {
+    margin: 0 0 0 4px;
+    transition: color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:hover,
+    &:focus {
+      color: var(--#{variables.$prefix}color-light-primary);
+    }
+
+    &:active {
+      color: var(--#{variables.$prefix}color-dark-primary);
+    }
+  }
+
+  @include mixins.e(indicator) {
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+    background-color: var(--#{variables.$prefix}color-primary);
+    opacity: 0;
+  }
+
+  @include mixins.e(slider-indicator) {
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0;
+
+    &::after {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      bottom: 3px;
+      left: 3px;
+      content: '';
+      background-color: var(--#{variables.$prefix}background-color);
+      border-radius: var(--#{variables.$prefix}border-radius);
+      box-shadow: 0 2px 4px 0 var(--#{variables.$prefix}box-shadow-color);
+    }
+  }
+
+  @include mixins.e(wrap-indicator) {
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+    background-color: var(--#{variables.$prefix}background-color-light-gray);
+    border: 1px solid var(--#{variables.$prefix}background-color-indicator);
+    opacity: 0;
+  }
+
+  @include mixins.e(tabpanel) {
+    outline: none;
+  }
+}

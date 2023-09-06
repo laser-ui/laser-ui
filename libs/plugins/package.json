@@ -1,0 +1,7 @@
+{
+  "name": "@laser-ui/plugins",
+  "version": "0.0.1",
+  "private": true,
+  "type": "commonjs",
+  "executors": "./executors.json"
+}

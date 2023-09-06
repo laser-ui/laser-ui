@@ -1,0 +1,172 @@
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(input) {
+  $selector: &;
+
+  display: inline-flex;
+  align-items: center;
+  height: var(--size);
+  padding: 0 calc(var(--horizontal-space) - 1px);
+  font-size: var(--font-size);
+  color: var(--#{variables.$prefix}color-text);
+  vertical-align: top;
+  background-color: var(--#{variables.$prefix}background-color-input);
+  border: 1px solid var(--#{variables.$prefix}color-border);
+  border-radius: var(--#{variables.$prefix}border-radius);
+  transition: border-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+  &:hover,
+  &:focus-within {
+    border-color: var(--#{variables.$prefix}color-light-primary);
+  }
+
+  @each $invalid, $color in ('warning': 'warning', 'error': 'danger') {
+    &[data-l-form-invalid='#{$invalid}'] {
+      border-color: var(--#{variables.$prefix}color-#{$color}) !important;
+
+      #{$selector}__input {
+        caret-color: var(--#{variables.$prefix}color-#{$color}) !important;
+      }
+    }
+  }
+
+  @include mixins.when(disabled) {
+    color: var(--#{variables.$prefix}color-disabled);
+    pointer-events: none;
+    background-color: var(--#{variables.$prefix}background-color-disabled);
+
+    @include mixins.e(input) {
+      &::placeholder {
+        opacity: 0.5;
+      }
+    }
+  }
+
+  @include mixins.m(small) {
+    --size: var(--#{variables.$prefix}input-size, var(--#{variables.$prefix}size-small));
+    --horizontal-space: var(--#{variables.$prefix}input-horizontal-space, var(--#{variables.$prefix}horizontal-space-small));
+    --font-size: var(--#{variables.$prefix}input-font-size, var(--#{variables.$prefix}font-size-small));
+  }
+
+  @include mixins.m(medium) {
+    --size: var(--#{variables.$prefix}input-size, var(--#{variables.$prefix}size-medium));
+    --horizontal-space: var(--#{variables.$prefix}input-horizontal-space, var(--#{variables.$prefix}horizontal-space-medium));
+    --font-size: var(--#{variables.$prefix}input-font-size, var(--#{variables.$prefix}font-size-medium));
+  }
+
+  @include mixins.m(large) {
+    --size: var(--#{variables.$prefix}input-size, var(--#{variables.$prefix}size-large));
+    --horizontal-space: var(--#{variables.$prefix}input-horizontal-space, var(--#{variables.$prefix}horizontal-space-large));
+    --font-size: var(--#{variables.$prefix}input-font-size, var(--#{variables.$prefix}font-size-large));
+  }
+
+  @include mixins.e(prefix) {
+    flex-shrink: 0;
+    margin-right: 4px;
+  }
+
+  @include mixins.e(input) {
+    display: inline-block;
+    flex: 1 0 0;
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+    appearance: none;
+    caret-color: var(--#{variables.$prefix}color-primary);
+    background-color: transparent;
+    border: none;
+    outline: none;
+
+    &[type='number'] {
+      appearance: textfield;
+
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        margin: 0;
+        appearance: none;
+      }
+    }
+
+    &::placeholder {
+      color: var(--#{variables.$prefix}color-disabled);
+    }
+  }
+
+  @include mixins.e(clear) {
+    flex-shrink: 0;
+    margin: 0 0 0 4px;
+    color: var(--#{variables.$prefix}color-icon-decorator);
+    cursor: pointer;
+    transition:
+      color var(--#{variables.$prefix}animation-duration-base) linear,
+      opacity var(--#{variables.$prefix}animation-duration-fast) linear;
+
+    &:hover,
+    &:focus {
+      color: var(--#{variables.$prefix}color-light-primary);
+    }
+
+    &:active {
+      color: var(--#{variables.$prefix}color--dark-primary);
+    }
+  }
+
+  @include mixins.e(password) {
+    flex-shrink: 0;
+    padding: 0;
+    margin: 0 0 0 4px;
+    color: var(--#{variables.$prefix}color-icon-decorator);
+    cursor: pointer;
+    transition: color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:hover,
+    &:focus {
+      color: var(--#{variables.$prefix}color-light-primary);
+    }
+
+    &:active {
+      color: var(--#{variables.$prefix}color--dark-primary);
+    }
+  }
+
+  @include mixins.e(suffix) {
+    flex-shrink: 0;
+    margin-left: 4px;
+  }
+
+  @include mixins.e(number-container) {
+    display: inline-flex;
+    flex-direction: column;
+    height: 100%;
+    margin-left: 4px;
+  }
+
+  @include mixins.e(number) {
+    display: inline-flex;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    color: var(--#{variables.$prefix}color-icon-decorator);
+    cursor: pointer;
+    transition:
+      color var(--#{variables.$prefix}animation-duration-base) linear,
+      background-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:hover,
+    &:focus {
+      color: var(--#{variables.$prefix}color-light-primary);
+      background-color: var(--#{variables.$prefix}background-color-light-primary);
+    }
+
+    &:active {
+      color: var(--#{variables.$prefix}color-dark-primary);
+      background-color: var(--#{variables.$prefix}background-color-primary);
+    }
+  }
+}

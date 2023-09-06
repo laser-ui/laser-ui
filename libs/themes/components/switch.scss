@@ -1,0 +1,151 @@
+@use 'sass:map';
+@use '../variables';
+@use '../mixins';
+
+@keyframes #{variables.$prefix}switch-focus {
+  0% {
+    box-shadow: 0 0 0 8px rgb(var(--#{variables.$prefix}color-primary-rgb) / var(--#{variables.$prefix}box-shadow-opacity-normal));
+  }
+
+  100% {
+    box-shadow: 0 0 0 10px rgb(var(--#{variables.$prefix}color-primary-rgb) / var(--#{variables.$prefix}box-shadow-opacity-dark));
+  }
+}
+
+@include mixins.b(switch) {
+  $selector: &;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--font-size);
+  vertical-align: top;
+
+  &:active {
+    @include mixins.e(state-dot) {
+      width: var(--size);
+    }
+  }
+
+  &:focus-within {
+    @include mixins.e(state-dot) {
+      animation: #{variables.$prefix}switch-focus 1.2s linear infinite alternate;
+      animation-fill-mode: both;
+    }
+  }
+
+  @include mixins.when(checked) {
+    @include mixins.e(state-container) {
+      background-color: var(--#{variables.$prefix}color-primary);
+    }
+  }
+
+  @include mixins.when(loading) {
+    pointer-events: none;
+    filter: opacity(70%);
+  }
+
+  @include mixins.when(disabled) {
+    color: var(--#{variables.$prefix}color-disabled);
+    pointer-events: none;
+    filter: brightness(110%) grayscale(50%);
+
+    @include mixins.when(checked) {
+      filter: saturate(50%) grayscale(50%);
+    }
+
+    @include mixins.e(state-dot) {
+      filter: opacity(50%);
+    }
+  }
+
+  @include mixins.m(label-left) {
+    flex-direction: row-reverse;
+
+    @include mixins.e(label) {
+      margin-right: 8px;
+      margin-left: unset;
+    }
+  }
+
+  @include mixins.m(small) {
+    --size: var(--#{variables.$prefix}switch-size, 18px);
+    --font-size: var(--#{variables.$prefix}switch-font-size, var(--#{variables.$prefix}font-size-small));
+  }
+
+  @include mixins.m(medium) {
+    --size: var(--#{variables.$prefix}switch-size, 22px);
+    --font-size: var(--#{variables.$prefix}switch-font-size, var(--#{variables.$prefix}font-size-medium));
+  }
+
+  @include mixins.m(large) {
+    --size: var(--#{variables.$prefix}switch-size, 26px);
+    --font-size: var(--#{variables.$prefix}switch-font-size, var(--#{variables.$prefix}font-size-large));
+  }
+
+  @include mixins.e(state-container) {
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    min-width: calc((var(--size) * 2) - 2px);
+    height: var(--size);
+    padding: 0 calc(var(--size) / 4);
+    background-color: var(--#{variables.$prefix}background-color-img);
+    border-radius: calc(var(--size) / 2);
+    transition: background-color var(--#{variables.$prefix}animation-duration-fast) ease-out;
+  }
+
+  @include mixins.e(state-content) {
+    display: inline-flex;
+    justify-content: center;
+    min-width: calc((var(--size) - 4px) / 1.25);
+    font-size: calc((var(--size) - 4px) / 1.25);
+    line-height: 1;
+    color: map.get(variables.$colors, 'white');
+    transition: opacity var(--#{variables.$prefix}animation-duration-fast) ease-out;
+
+    @include mixins.m(left) {
+      margin-right: auto;
+    }
+  }
+
+  @include mixins.e(state-dot) {
+    position: absolute;
+    top: 2px;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--size) - 4px);
+    height: calc(var(--size) - 4px);
+    font-size: calc(var(--size) - 6px);
+    color: var(--#{variables.$prefix}color-primary);
+    background-color: var(--#{variables.$prefix}background-color);
+    border-radius: calc((var(--size) - 4px) / 2);
+    box-shadow:
+      0 2px 1px -1px var(--#{variables.$prefix}box-shadow-color),
+      0 0 4px 0 var(--#{variables.$prefix}box-shadow-color);
+    transition: width var(--#{variables.$prefix}animation-duration-fast) ease-in;
+  }
+
+  @include mixins.e(input) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    appearance: none;
+    cursor: pointer;
+    opacity: 0;
+  }
+
+  @include mixins.e(label) {
+    margin-left: 8px;
+  }
+}

@@ -1,0 +1,197 @@
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(popover) {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+  outline: none;
+
+  @include mixins.m(top) {
+    @include mixins.e(arrow) {
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%, 50%) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(top-left) {
+    @include mixins.e(arrow) {
+      bottom: 0;
+      left: 20px;
+      transform: translate(0, 50%) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(top-right) {
+    @include mixins.e(arrow) {
+      right: 20px;
+      bottom: 0;
+      transform: translate(0, 50%) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(right) {
+    @include mixins.e(arrow) {
+      top: 50%;
+      left: 0;
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(right-top) {
+    @include mixins.e(arrow) {
+      top: 12px;
+      left: 0;
+      transform: translate(-50%, 0) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(right-bottom) {
+    @include mixins.e(arrow) {
+      bottom: 12px;
+      left: 0;
+      transform: translate(-50%, 0) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(bottom) {
+    @include mixins.e(arrow) {
+      top: 0;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(bottom-left) {
+    @include mixins.e(arrow) {
+      top: 0;
+      left: 20px;
+      transform: translate(0, -50%) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(bottom-right) {
+    @include mixins.e(arrow) {
+      top: 0;
+      right: 20px;
+      transform: translate(0, -50%) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(left) {
+    @include mixins.e(arrow) {
+      top: 50%;
+      right: 0;
+      transform: translate(50%, -50%) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(left-top) {
+    @include mixins.e(arrow) {
+      top: 12px;
+      right: 0;
+      transform: translate(50%, 0) rotate(45deg);
+    }
+  }
+
+  @include mixins.m(left-bottom) {
+    @include mixins.e(arrow) {
+      right: 0;
+      bottom: 12px;
+      transform: translate(50%, 0) rotate(45deg);
+    }
+  }
+
+  @include mixins.e(mask) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    pointer-events: all;
+  }
+
+  @include mixins.e(content) {
+    position: absolute;
+    z-index: 1;
+    max-width: calc(100% - 32px);
+    pointer-events: all;
+    background-color: var(--#{variables.$prefix}background-color);
+    border-radius: var(--#{variables.$prefix}border-radius);
+    outline: none;
+    box-shadow: var(--#{variables.$prefix}box-shadow-popup);
+  }
+
+  @include mixins.e(arrow) {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    pointer-events: none;
+    background-color: inherit;
+  }
+
+  @include mixins.e(body) {
+    padding: 12px;
+  }
+
+  @include mixins.e(header) {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--#{variables.$prefix}color-divider);
+  }
+
+  @include mixins.e(header-title) {
+    @include mixins.utils-ellipsis;
+
+    flex: 1 0 0;
+    font-size: var(--#{variables.$prefix}font-size-title);
+    font-weight: var(--#{variables.$prefix}font-weight-bold);
+  }
+
+  @include mixins.e(header-actions) {
+    @include mixins.polyfill-column-gap(6px);
+
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+
+    .#{variables.$prefix}button {
+      --#{variables.$prefix}button-size: 20px;
+      --#{variables.$prefix}button-padding-size: 6px;
+      --#{variables.$prefix}button-font-size: 14px;
+    }
+  }
+
+  @include mixins.e(footer) {
+    @include mixins.polyfill-column-gap(6px);
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0 12px 10px;
+
+    .#{variables.$prefix}button {
+      --#{variables.$prefix}button-size: 28px;
+      --#{variables.$prefix}button-padding-size: 10px;
+      --#{variables.$prefix}button-font-size: 14px;
+    }
+
+    @include mixins.m(left) {
+      justify-content: flex-start;
+    }
+
+    @include mixins.m(right) {
+      justify-content: flex-end;
+    }
+
+    @include mixins.m(center) {
+      justify-content: center;
+    }
+  }
+}

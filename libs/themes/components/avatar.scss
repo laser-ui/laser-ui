@@ -1,0 +1,36 @@
+@use 'sass:map';
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(avatar) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: top;
+
+  @include mixins.m(icon) {
+    color: map.get(variables.$colors, 'white');
+    background-color: var(--#{variables.$prefix}background-color-img);
+  }
+
+  @include mixins.m(text) {
+    color: map.get(variables.$colors, 'white');
+    background-color: var(--#{variables.$prefix}background-color-img);
+  }
+
+  @include mixins.m(circle) {
+    border-radius: 50%;
+  }
+
+  @include mixins.m(square) {
+    border-radius: var(--#{variables.$prefix}border-radius);
+  }
+
+  @include mixins.e(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}

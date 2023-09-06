@@ -1,0 +1,122 @@
+@use '../variables';
+@use '../mixins';
+
+$transfer-option-height: 32px;
+
+@include mixins.b(transfer) {
+  $selector: &;
+
+  display: flex;
+  align-items: center;
+
+  @each $invalid, $color in ('warning': 'warning', 'error': 'danger') {
+    &[data-l-form-invalid='#{$invalid}'] {
+      #{$selector}__panel {
+        border-color: var(--#{variables.$prefix}color-#{$color}) !important;
+      }
+    }
+  }
+
+  @include mixins.when(disabled) {
+    pointer-events: none;
+    filter: opacity(50%);
+  }
+
+  @include mixins.e(panel) {
+    flex: 1 0 0;
+    overflow: hidden;
+    border: 1px solid var(--#{variables.$prefix}color-border);
+    border-radius: var(--#{variables.$prefix}border-radius);
+  }
+
+  @include mixins.e(actions) {
+    display: flex;
+    flex-direction: column;
+    margin: 0 8px;
+
+    .#{variables.$prefix}button {
+      --#{variables.$prefix}button-size: 20px;
+      --#{variables.$prefix}button-font-size: 14px;
+    }
+
+    .#{variables.$prefix}button + .#{variables.$prefix}button {
+      margin-top: 4px;
+    }
+  }
+
+  @include mixins.e(header) {
+    display: flex;
+    align-items: center;
+    height: 41px;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--#{variables.$prefix}color-divider);
+  }
+
+  @include mixins.e(header-title) {
+    @include mixins.utils-ellipsis;
+
+    flex: 1 0 0;
+    text-align: right;
+  }
+
+  @include mixins.e(search) {
+    margin: 10px 12px;
+  }
+
+  @include mixins.e(list-container) {
+    position: relative;
+  }
+
+  @include mixins.e(list) {
+    position: relative;
+    height: calc(#{$transfer-option-height} * 6);
+    padding: 0;
+    margin: 0;
+    overflow: hidden auto;
+    list-style: none;
+  }
+
+  @include mixins.e(loading) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--#{variables.$prefix}color-primary);
+    background-color: rgb(var(--#{variables.$prefix}background-color-rgb) / 80%);
+  }
+
+  @include mixins.e(option) {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: $transfer-option-height;
+    padding: 0 12px;
+    cursor: pointer;
+    transition: background-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:hover {
+      background-color: var(--#{variables.$prefix}background-color-hover);
+    }
+
+    @include mixins.when(disabled) {
+      color: var(--#{variables.$prefix}color-disabled);
+      pointer-events: none;
+    }
+  }
+
+  @include mixins.e(option-prefix) {
+    display: inline-flex;
+    margin-right: 8px;
+  }
+
+  @include mixins.e(option-content) {
+    @include mixins.utils-ellipsis;
+
+    flex: 1 0 0;
+  }
+}

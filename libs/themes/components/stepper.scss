@@ -1,0 +1,226 @@
+@use 'sass:map';
+@use '../variables';
+@use '../mixins';
+
+@keyframes #{variables.$prefix}stepper-active {
+  0% {
+    box-shadow: 0 0 0 4px var(--color);
+    opacity: var(--#{variables.$prefix}box-shadow-opacity-normal);
+  }
+
+  100% {
+    box-shadow: 0 0 0 6px var(--color);
+    opacity: var(--#{variables.$prefix}box-shadow-opacity-dark);
+  }
+}
+
+@include mixins.b(stepper) {
+  $selector: &;
+
+  display: flex;
+
+  @include mixins.m(button) {
+    @include mixins.e(step) {
+      cursor: pointer;
+      transition: color var(--#{variables.$prefix}animation-duration-base) linear;
+
+      @include mixins.when(wait) {
+        @include mixins.e(step-dot) {
+          transition: border-color var(--#{variables.$prefix}animation-duration-base) linear;
+        }
+      }
+
+      &:hover,
+      &:focus {
+        color: var(--#{variables.$prefix}color-light-primary);
+
+        @include mixins.when(wait) {
+          @include mixins.e(step-dot) {
+            border: 1px solid var(--#{variables.$prefix}color-light-primary);
+          }
+        }
+      }
+    }
+  }
+
+  @include mixins.m(label-bottom) {
+    @include mixins.e(step-header) {
+      justify-content: center;
+    }
+
+    @include mixins.e(step-title) {
+      margin: 8px 0 0;
+      font-size: 1.1em;
+      text-align: center;
+    }
+
+    @include mixins.e(step-separator) {
+      position: absolute;
+    }
+
+    @include mixins.e(step-description) {
+      text-align: center;
+    }
+  }
+
+  @include mixins.m(vertical) {
+    flex-direction: column;
+
+    @include mixins.e(step) {
+      &:not(:last-child) {
+        padding-bottom: 20px;
+      }
+    }
+
+    @include mixins.e(step-separator) {
+      position: absolute;
+      width: 2px;
+
+      &::after {
+        top: 10px;
+        right: 0;
+        bottom: 10px;
+        left: 0;
+      }
+    }
+  }
+
+  @include mixins.e(step) {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    &:not(:last-child) {
+      flex: 1 0 0;
+    }
+
+    @include mixins.when(wait) {
+      --color: var(--#{variables.$prefix}stepper-color, var(--#{variables.$prefix}color-disabled));
+
+      color: var(--color);
+
+      @include mixins.e(step-dot) {
+        border: 1px solid var(--color);
+      }
+    }
+
+    @include mixins.when(active) {
+      --color: var(--#{variables.$prefix}stepper-color, var(--#{variables.$prefix}color-primary));
+
+      @include mixins.e(step-dot) {
+        color: map.get(variables.$colors, 'white');
+        background-color: var(--color);
+
+        &:not(#{$selector}__step-dot--progress)::after {
+          animation: #{variables.$prefix}stepper-active 1.2s linear infinite alternate;
+          animation-fill-mode: both;
+        }
+      }
+    }
+
+    @include mixins.when(completed) {
+      --color: var(--#{variables.$prefix}stepper-color, var(--#{variables.$prefix}color-primary));
+
+      @include mixins.e(step-dot) {
+        color: map.get(variables.$colors, 'white');
+        background-color: var(--color);
+      }
+
+      @include mixins.e(step-separator) {
+        &::after {
+          background-color: var(--color);
+        }
+      }
+    }
+
+    @include mixins.when(warning) {
+      --color: var(--#{variables.$prefix}stepper-color, var(--#{variables.$prefix}color-warning));
+
+      color: var(--color);
+
+      @include mixins.e(step-dot) {
+        color: map.get(variables.$colors, 'white');
+        background-color: var(--color);
+      }
+
+      @include mixins.e(step-separator) {
+        &::after {
+          background-color: var(--color);
+        }
+      }
+    }
+
+    @include mixins.when(error) {
+      --color: var(--#{variables.$prefix}stepper-color, var(--#{variables.$prefix}color-danger));
+
+      color: var(--color);
+
+      @include mixins.e(step-dot) {
+        color: map.get(variables.$colors, 'white');
+        background-color: var(--color);
+      }
+
+      @include mixins.e(step-separator) {
+        &::after {
+          background-color: var(--color);
+        }
+      }
+    }
+  }
+
+  @include mixins.e(step-header) {
+    position: relative;
+    display: flex;
+    font-size: 1.1em;
+  }
+
+  @include mixins.e(step-title) {
+    margin-left: 8px;
+    font-weight: var(--#{variables.$prefix}font-weight-bold);
+  }
+
+  @include mixins.e(step-description) {
+    margin-top: 4px;
+  }
+
+  @include mixins.e(step-dot) {
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+
+    &::after {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      content: '';
+      border-radius: 50%;
+    }
+  }
+
+  @include mixins.e(step-separator) {
+    position: relative;
+    flex: 1 0 0;
+    height: 2px;
+
+    &::after {
+      position: absolute;
+      top: 0;
+      right: 10px;
+      bottom: 0;
+      left: 10px;
+      content: '';
+      background-color: var(--#{variables.$prefix}background-color-indicator);
+    }
+  }
+
+  @include mixins.e(step-progress) {
+    position: absolute;
+    top: -4px;
+    left: -4px;
+  }
+}

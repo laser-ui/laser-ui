@@ -1,0 +1,17 @@
+export const CLASSES = {
+  slider: '^slider',
+  'slider.is-disabled': 'is-disabled',
+  'slider--horizontal': '^slider--horizontal',
+  'slider--vertical': '^slider--vertical',
+  slider__track: '^slider__track',
+  'slider__track--reverse': '^slider__track--reverse',
+  slider__thumb: '^slider__thumb',
+  'slider__thumb.is-focused': 'is-focused',
+  'slider__thumb--draggable': '^slider__thumb--draggable',
+  slider__mark: '^slider__mark',
+  'slider__mark--hidden': '^slider__mark--hidden',
+  'slider__mark-label': '^slider__mark-label',
+  'slider__mark-label.is-active': 'is-active',
+  'slider__input-wrapper': '^slider__input-wrapper',
+  slider__input: '^slider__input',
+};

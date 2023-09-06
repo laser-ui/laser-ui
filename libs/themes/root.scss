@@ -1,0 +1,90 @@
+/* stylelint-disable declaration-property-value-allowed-list */
+@use 'sass:color';
+@use 'variables';
+@use 'rfs/scss' as *;
+
+:root {
+  /** z-index **/
+  --#{variables.$prefix}zindex-absolute: 100;
+  --#{variables.$prefix}zindex-sticky: 900;
+  --#{variables.$prefix}zindex-fixed: 1000;
+  --#{variables.$prefix}zindex-max: 10000;
+
+  /** size **/
+  --#{variables.$prefix}size-small: 32px;
+  --#{variables.$prefix}size-medium: 36px;
+  --#{variables.$prefix}size-large: 40px;
+  --#{variables.$prefix}padding-size-small: 12px;
+  --#{variables.$prefix}padding-size-medium: 16px;
+  --#{variables.$prefix}padding-size-large: 20px;
+  --#{variables.$prefix}horizontal-space-small: 10px;
+  --#{variables.$prefix}horizontal-space-medium: 12px;
+  --#{variables.$prefix}horizontal-space-large: 14px;
+
+  /** font **/
+  @include rfs(0.825rem, --#{variables.$prefix}font-size-small);
+  @include rfs(1rem, --#{variables.$prefix}font-size-medium);
+  @include rfs(1.125rem, --#{variables.$prefix}font-size-large);
+  --#{variables.$prefix}font-size-title: calc(1em + 2px);
+  --#{variables.$prefix}font-size-subtitle: calc(1em - 2px);
+  --#{variables.$prefix}font-size-header: 1.25em;
+  --#{variables.$prefix}font-weight-bold: 600;
+
+  /** animation **/
+  --#{variables.$prefix}animation-duration-slow: 300ms;
+  --#{variables.$prefix}animation-duration-base: 200ms;
+  --#{variables.$prefix}animation-duration-fast: 100ms;
+
+  /** border-radius **/
+  --#{variables.$prefix}border-radius: 2px;
+  --#{variables.$prefix}border-radius-large: 4px;
+
+  /** box-shadow **/
+  --#{variables.$prefix}box-shadow-color: rgb(0 0 0 / 20%);
+  --#{variables.$prefix}box-shadow-popup: rgb(0 0 0 / 6%) 0 0 20px 2px, rgb(0 0 0 / 10%) 0 4px 10px 0;
+  --#{variables.$prefix}box-shadow-dialog: rgb(0 0 0 / 6%) 0 0 32px 2px, rgb(0 0 0 / 10%) 0 4px 12px 0;
+  --#{variables.$prefix}box-shadow-opacity-normal: 16%;
+  --#{variables.$prefix}box-shadow-opacity-dark: 26%;
+
+  /** basic **/
+  --#{variables.$prefix}color-text: rgb(36 41 47);
+  --#{variables.$prefix}color-text-rgb: 36 41 47;
+  --#{variables.$prefix}color-text-sub: rgb(127 130 135);
+  --#{variables.$prefix}color-divider: rgb(239 239 239);
+  --#{variables.$prefix}color-border: rgb(219 219 219);
+  --#{variables.$prefix}color-disabled: rgb(197 199 201);
+  --#{variables.$prefix}color-icon-decorator: rgb(178 179 181);
+  --#{variables.$prefix}background-color: rgb(255 255 255);
+  --#{variables.$prefix}background-color-rgb: 255 255 255;
+  --#{variables.$prefix}background-color-light-gray: rgb(247 247 247);
+  --#{variables.$prefix}background-color-primary-gray: rgb(239 239 239);
+  --#{variables.$prefix}background-color-input: rgb(255 255 255);
+  --#{variables.$prefix}background-color-img: rgb(189 189 189);
+  --#{variables.$prefix}background-color-disabled: rgb(247 247 247);
+  --#{variables.$prefix}background-color-hover: rgb(0 0 0 / 4%);
+  --#{variables.$prefix}background-color-light-hover: rgb(255 255 255 / 32%);
+  --#{variables.$prefix}background-color-mask: rgb(0 0 0 / 50%);
+  --#{variables.$prefix}background-color-indicator: rgb(223 225 230);
+
+  @each $theme, $rgb in variables.$themes {
+    --#{variables.$prefix}color-light-#{$theme}: #{color.scale(rgb($rgb), $lightness: 30%)};
+    --#{variables.$prefix}color-#{$theme}: rgb(#{$rgb});
+    --#{variables.$prefix}color-#{$theme}-rgb: #{$rgb};
+    /* stylelint-disable-next-line scss/operator-no-unspaced */
+    --#{variables.$prefix}color-dark-#{$theme}: #{color.scale(rgb($rgb), $lightness: -10%, $saturation: -10%)};
+    --#{variables.$prefix}background-color-light-#{$theme}: #{color.scale(rgb($rgb), $alpha: -96%)};
+    --#{variables.$prefix}background-color-#{$theme}: #{color.scale(rgb($rgb), $alpha: -90%)};
+  }
+
+  /** empty **/
+  --#{variables.$prefix}empty-img-opacity: 1;
+
+  /** fab **/
+  --#{variables.$prefix}fab-shadow: 0 3px 5px -1px rgb(0 0 0 / 20%), 0 6px 10px 0 rgb(0 0 0 / 14%), 0 1px 14px 0 rgb(0 0 0 / 12%);
+
+  /** skeleton **/
+  --#{variables.$prefix}skeleton-background-color-wave: rgb(255 255 255 / 50%);
+
+  /** tooltip **/
+  --#{variables.$prefix}tooltip-background-color: rgb(38 38 38);
+}

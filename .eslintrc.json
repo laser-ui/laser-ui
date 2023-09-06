@@ -1,0 +1,115 @@
+{
+  "root": true,
+  "ignorePatterns": ["**/*"],
+  "plugins": ["@nx", "import", "react-refresh", "markdown"],
+  "extends": ["plugin:prettier/recommended"],
+  "overrides": [
+    {
+      "files": ["**/*.md"],
+      "processor": "markdown/markdown"
+    },
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {
+        "@nx/enforce-module-boundaries": [
+          "error",
+          {
+            "enforceBuildableLibDependency": true,
+            "allow": [],
+            "depConstraints": [
+              {
+                "sourceTag": "scope:utils",
+                "onlyDependOnLibsWithTags": ["scope:utils"]
+              },
+              {
+                "sourceTag": "scope:hooks",
+                "onlyDependOnLibsWithTags": ["scope:utils", "scope:hooks"]
+              },
+              {
+                "sourceTag": "scope:components",
+                "onlyDependOnLibsWithTags": ["scope:utils", "scope:hooks", "scope:components"]
+              }
+            ]
+          }
+        ],
+        "import/order": [
+          "error",
+          {
+            "groups": ["type", "builtin", "external", "internal", ["parent", "sibling", "index"]],
+            "pathGroups": [
+              {
+                "pattern": "@laser-ui/**",
+                "group": "external"
+              },
+              {
+                "pattern": "*.scss",
+                "group": "index",
+                "patternOptions": {
+                  "matchBase": true
+                },
+                "position": "after"
+              }
+            ],
+            "pathGroupsExcludedImportTypes": ["type", "builtin"],
+            "newlines-between": "always",
+            "alphabetize": {
+              "order": "asc",
+              "caseInsensitive": false
+            },
+            "warnOnUnassignedImports": true
+          }
+        ],
+        "react-refresh/only-export-components": "warn",
+        "no-unreachable": "error"
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "extends": ["plugin:@nx/typescript"],
+      "rules": {
+        "@typescript-eslint/array-type": "error",
+        "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
+        "@typescript-eslint/consistent-type-imports": "error",
+        "@typescript-eslint/method-signature-style": "error",
+        "@typescript-eslint/no-confusing-non-null-assertion": "error",
+        "@typescript-eslint/no-implicit-any-catch": "error",
+        "@typescript-eslint/no-inferrable-types": [
+          "error",
+          {
+            "ignoreParameters": true,
+            "ignoreProperties": true
+          }
+        ],
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            "ignoreRestSiblings": false
+          }
+        ],
+        "no-unused-expressions": "off",
+        "@typescript-eslint/no-unused-expressions": ["error"],
+        "@typescript-eslint/no-non-null-assertion": "error"
+      }
+    },
+    {
+      "files": ["*.js", "*.jsx"],
+      "extends": ["plugin:@nx/javascript"],
+      "rules": {}
+    },
+    {
+      "files": ["**/*.md/*.ts", "**/*.md/*.tsx"],
+      "rules": {
+        "@nx/enforce-module-boundaries": "off",
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": "warn",
+        "@typescript-eslint/no-explicit-any": "warn"
+      }
+    },
+    {
+      "files": "*.json",
+      "parser": "jsonc-eslint-parser",
+      "rules": {}
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(md-route) {
+  /* stylelint-disable-next-line selector-not-notation */
+  code.hljs:not(.app-demo-box code.hljs) {
+    background-color: var(--#{variables.$prefix}background-color) !important;
+    border: 1px solid var(--#{variables.$prefix}color-divider);
+  }
+
+  @include mixins.e(content) {
+    padding: 0 20px 32px;
+
+    @include mixins.media-breakpoint-up(md) {
+      padding: 0 200px 32px 64px;
+    }
+  }
+
+  @include mixins.e(drawer) {
+    @include mixins.media-breakpoint-up(md) {
+      display: none;
+    }
+  }
+
+  @include mixins.e(anchor) {
+    position: fixed;
+    top: 120px;
+    right: 20px;
+    z-index: 910;
+    width: 168px;
+
+    @include mixins.media-breakpoint-down(md) {
+      display: none;
+    }
+  }
+
+  @include mixins.e(anchor-toggler) {
+    position: fixed;
+    right: 20px;
+    bottom: 44px;
+    z-index: 910;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 2px 0;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: var(--#{variables.$prefix}color-light-primary);
+    white-space: nowrap;
+    vertical-align: top;
+    appearance: none;
+    cursor: pointer;
+    background-color: var(--app-background-color-anchor-toggler);
+    border: none;
+    border-radius: 50%;
+    outline: none;
+    box-shadow: 0 2px 20px 2px var(--#{variables.$prefix}box-shadow-color);
+
+    @include mixins.media-breakpoint-up(md) {
+      display: none;
+    }
+  }
+}

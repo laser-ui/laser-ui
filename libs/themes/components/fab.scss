@@ -1,0 +1,293 @@
+@use 'sass:map';
+@use '../variables';
+@use '../mixins';
+
+@keyframes #{variables.$prefix}fab-popup {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@include mixins.b(fab) {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+
+  @include mixins.e(actions) {
+    position: absolute;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+
+    @include mixins.m(top) {
+      top: -11px;
+      left: 0;
+      flex-direction: column-reverse;
+      width: 100%;
+      transform: translateY(-100%);
+    }
+
+    @include mixins.m(right) {
+      top: 0;
+      right: -11px;
+      flex-direction: row;
+      height: 100%;
+      transform: translateX(100%);
+    }
+
+    @include mixins.m(bottom) {
+      bottom: -11px;
+      left: 0;
+      flex-direction: column;
+      width: 100%;
+      transform: translateY(100%);
+    }
+
+    @include mixins.m(left) {
+      top: 0;
+      left: -11px;
+      flex-direction: row-reverse;
+      height: 100%;
+      transform: translateX(-100%);
+    }
+  }
+}
+
+@include mixins.b(fab-button) {
+  $selector: &;
+
+  --size: var(--#{variables.$prefix}fab-button-size, 56px);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--size);
+  height: var(--size);
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  /* stylelint-disable-next-line declaration-property-value-allowed-list */
+  font-size: 24px;
+  white-space: nowrap;
+  vertical-align: top;
+  appearance: none;
+  cursor: pointer;
+  border-radius: var(--#{variables.$prefix}border-radius-large);
+  outline: none;
+  box-shadow: var(--#{variables.$prefix}fab-shadow);
+  transition:
+    color var(--#{variables.$prefix}animation-duration-base) linear,
+    background-color var(--#{variables.$prefix}animation-duration-base) linear,
+    border-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+  &:disabled {
+    pointer-events: none;
+  }
+
+  svg {
+    font-size: 1.25em;
+  }
+
+  @each $theme, $rgb in variables.$themes {
+    @include mixins.theme(#{$theme}) {
+      --color-light: var(--#{variables.$prefix}fab-button-color-light, var(--#{variables.$prefix}color-light-#{$theme}));
+      --color: var(--#{variables.$prefix}fab-button-color, var(--#{variables.$prefix}color-#{$theme}));
+      --color-dark: var(--#{variables.$prefix}fab-button-color-dark, var(--#{variables.$prefix}color-dark-#{$theme}));
+      --background-color-light: var(
+        --#{variables.$prefix}fab-button-background-color-light,
+        var(--#{variables.$prefix}background-color-light-#{$theme})
+      );
+      --background-color: var(--#{variables.$prefix}fab-button-background-color, var(--#{variables.$prefix}background-color-#{$theme}));
+    }
+  }
+
+  @include mixins.when(expand) {
+    @include mixins.e(icon) {
+      opacity: 1;
+      transform: rotate(90deg);
+    }
+
+    @include mixins.e(content) {
+      opacity: 0;
+    }
+  }
+
+  @include mixins.when(loading) {
+    pointer-events: none;
+  }
+
+  @include mixins.m(in-actions) {
+    --size: var(--#{variables.$prefix}fab-button-size, 40px);
+
+    margin: 5px;
+    /* stylelint-disable-next-line declaration-property-value-allowed-list */
+    font-size: 18px;
+    /* stylelint-disable-next-line declaration-empty-line-before */
+    animation: #{variables.$prefix}fab-popup 133ms linear;
+    animation-fill-mode: both;
+  }
+
+  @include mixins.m(primary) {
+    color: map.get(variables.$colors, 'white');
+    background-color: var(--color);
+    border: 1px solid var(--color);
+
+    &:hover,
+    &:focus,
+    &.is-loading {
+      background-color: var(--color-light);
+      border-color: var(--color-light);
+    }
+
+    &:active {
+      background-color: var(--color-dark);
+      border-color: var(--color-dark);
+    }
+
+    &:disabled:not(.is-loading) {
+      filter: saturate(50%) grayscale(50%);
+    }
+  }
+
+  @include mixins.m(secondary) {
+    color: var(--#{variables.$prefix}color-text);
+    background-color: transparent;
+    border: 1px solid var(--#{variables.$prefix}color-border);
+
+    &:hover,
+    &:focus,
+    &.is-loading {
+      color: var(--color-light);
+      border-color: var(--color-light);
+    }
+
+    &:active {
+      color: var(--color-dark);
+      border-color: var(--color-dark);
+    }
+
+    &:disabled:not(.is-loading) {
+      color: var(--#{variables.$prefix}color-disabled);
+      background-color: var(--#{variables.$prefix}background-color-disabled);
+    }
+  }
+
+  @include mixins.m(outline) {
+    color: var(--color);
+    background-color: transparent;
+    border: 1px solid var(--color);
+
+    &:hover,
+    &:focus,
+    &.is-loading {
+      color: var(--color-light);
+      border-color: var(--color-light);
+    }
+
+    &:active {
+      color: var(--color-dark);
+      border-color: var(--color-dark);
+    }
+
+    &:disabled:not(.is-loading) {
+      color: var(--#{variables.$prefix}color-disabled);
+      border-color: var(--#{variables.$prefix}color-border);
+    }
+  }
+
+  @include mixins.m(dashed) {
+    color: var(--color);
+    background-color: transparent;
+    border: 1px dashed var(--color);
+
+    &:hover,
+    &:focus,
+    &.is-loading {
+      color: var(--color-light);
+      border-color: var(--color-light);
+    }
+
+    &:active {
+      color: var(--color-dark);
+      border-color: var(--color-dark);
+    }
+
+    &:disabled:not(.is-loading) {
+      color: var(--#{variables.$prefix}color-disabled);
+      border-color: var(--#{variables.$prefix}color-border);
+    }
+  }
+
+  @include mixins.m(text) {
+    color: var(--#{variables.$prefix}color-text);
+    background-color: transparent;
+    border: none;
+
+    &:hover,
+    &:focus,
+    &.is-loading {
+      color: var(--color-light);
+      background-color: var(--background-color-light);
+    }
+
+    &:active {
+      color: var(--color-dark);
+      background-color: var(--background-color);
+    }
+
+    &:disabled:not(.is-loading) {
+      color: var(--#{variables.$prefix}color-disabled);
+      pointer-events: none;
+      background-color: var(--#{variables.$prefix}background-color-disabled);
+    }
+  }
+
+  @include mixins.m(link) {
+    min-width: unset;
+    height: auto;
+    padding: 0;
+    color: var(--color);
+    background-color: transparent;
+    border: none;
+
+    &:hover,
+    &:focus,
+    &.is-loading {
+      color: var(--color-light);
+    }
+
+    &:active {
+      color: var(--color-dark);
+    }
+
+    &:disabled:not(.is-loading) {
+      color: var(--#{variables.$prefix}color-disabled);
+    }
+  }
+
+  @include mixins.m(circle) {
+    border-radius: 50%;
+  }
+
+  @include mixins.m(round) {
+    border-radius: calc(var(--size) / 2);
+  }
+
+  @include mixins.e(icon) {
+    position: absolute;
+    opacity: 0;
+    transition:
+      opacity var(--#{variables.$prefix}animation-duration-base) linear,
+      transform var(--#{variables.$prefix}animation-duration-base) linear;
+  }
+
+  @include mixins.e(button-content) {
+    opacity: 1;
+    transition: opacity var(--#{variables.$prefix}animation-duration-base) linear;
+  }
+}

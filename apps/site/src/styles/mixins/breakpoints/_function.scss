@@ -1,0 +1,16 @@
+@use 'sass:map';
+@use '../../variables';
+
+@function breakpoint-min($name, $breakpoints: variables.$grid-breakpoints) {
+  $min: map.get($breakpoints, $name);
+  @return if($min != 0, $min, null);
+}
+
+@function breakpoint-max($name, $breakpoints: variables.$grid-breakpoints) {
+  $max: map.get($breakpoints, $name);
+  @return if($max and $max > 0, $max - 0.02, null);
+}
+
+@function breakpoint-infix($name, $breakpoints: $grid-breakpoints) {
+  @return if(breakpoint-min($name, $breakpoints) == null, '', '-#{$name}');
+}

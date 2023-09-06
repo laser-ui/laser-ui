@@ -1,0 +1,62 @@
+/* stylelint-disable declaration-property-value-allowed-list */
+@use 'sass:color';
+@use 'variables' with (
+  $themes: (
+    'primary': 66 140 255,
+    'success': 47 223 117,
+    'warning': 255 213 52,
+    'danger': 255 73 97,
+  )
+);
+
+body.dark {
+  /** box-shadow **/
+  --#{variables.$prefix}box-shadow-color: rgb(0 0 0 / 48%);
+  --#{variables.$prefix}box-shadow-popup: rgb(0 0 0 / 24%) 0 0 20px 2px, rgb(0 0 0 / 32%) 0 4px 10px 0;
+  --#{variables.$prefix}box-shadow-dialog: rgb(0 0 0 / 24%) 0 0 32px 2px, rgb(0 0 0 / 32%) 0 4px 12px 0;
+  --#{variables.$prefix}box-shadow-opacity-normal: 26%;
+  --#{variables.$prefix}box-shadow-opacity-dark: 40%;
+
+  /** basic **/
+  --#{variables.$prefix}color-text: rgb(213 218 222);
+  --#{variables.$prefix}color-text-rgb: 213 218 222;
+  --#{variables.$prefix}color-text-sub: rgb(176 181 185);
+  --#{variables.$prefix}color-divider: rgb(62 62 62);
+  --#{variables.$prefix}color-border: rgb(82 82 82);
+  --#{variables.$prefix}color-disabled: rgb(93 93 94);
+  --#{variables.$prefix}color-icon-decorator: rgb(178 179 181);
+  --#{variables.$prefix}background-color: rgb(43 43 43);
+  --#{variables.$prefix}background-color-rgb: 43 43 43;
+  --#{variables.$prefix}background-color-light-gray: rgb(53 53 53);
+  --#{variables.$prefix}background-color-primary-gray: rgb(67 67 67);
+  --#{variables.$prefix}background-color-input: rgb(27 27 27);
+  --#{variables.$prefix}background-color-img: rgb(102 102 102);
+  --#{variables.$prefix}background-color-disabled: rgb(59 59 59);
+  --#{variables.$prefix}background-color-hover: rgb(255 255 255 / 8%);
+  --#{variables.$prefix}background-color-light-hover: rgb(255 255 255 / 38%);
+  --#{variables.$prefix}background-color-mask: rgb(0 0 0 / 50%);
+  --#{variables.$prefix}background-color-indicator: rgb(103 104 105);
+
+  @each $theme, $rgb in variables.$themes {
+    --#{variables.$prefix}color-light-#{$theme}: #{color.scale(rgb($rgb), $lightness: 30%)};
+    --#{variables.$prefix}color-#{$theme}: rgb(#{$rgb});
+    --#{variables.$prefix}color-#{$theme}-rgb: #{$rgb};
+    /* stylelint-disable-next-line scss/operator-no-unspaced */
+    --#{variables.$prefix}color-dark-#{$theme}: #{color.scale(rgb($rgb), $lightness: -10%, $saturation: -10%)};
+    --#{variables.$prefix}background-color-light-#{$theme}: #{color.scale(rgb($rgb), $alpha: -96%)};
+    --#{variables.$prefix}background-color-#{$theme}: #{color.scale(rgb($rgb), $alpha: -90%)};
+  }
+
+  /** empty **/
+  --#{variables.$prefix}empty-img-opacity: 0.65;
+
+  /** fab **/
+  --#{variables.$prefix}fab-shadow: 0 2px 6px -1px rgb(255 255 255 / 18%), 0 1px 4px 0 rgb(255 255 255 / 8%),
+    0 1px 8px 0 rgb(255 255 255 / 6%);
+
+  /** skeleton **/
+  --#{variables.$prefix}skeleton-background-color-wave: rgb(255 255 255 / 6%);
+
+  /** tooltip **/
+  --#{variables.$prefix}tooltip-background-color: rgb(86 86 86);
+}

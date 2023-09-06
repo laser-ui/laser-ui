@@ -1,0 +1,134 @@
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(pagination) {
+  --size: var(--#{variables.$prefix}pagination-size, var(--size-mini, 32px));
+  --font-size: var(--#{variables.$prefix}pagination-font-size, var(--font-size-mini, var(--#{variables.$prefix}font-size-medium)));
+  --button-padding-size: var(--#{variables.$prefix}pagination-button-padding-size, var(--button-padding-size-mini, 8px));
+  --gutter-x: var(--#{variables.$prefix}pagination-gutter-x, var(--gutter-x-mini, 6px));
+  --gutter-y: var(--#{variables.$prefix}pagination-gutter-y, var(--gutter-y-mini, 6px));
+
+  --#{variables.$prefix}select-size: var(--size);
+  --#{variables.$prefix}input-size: var(--size);
+
+  padding: 0;
+  font-size: var(--font-size);
+
+  @include mixins.e(row) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: calc(-1 * var(--gutter-y)) calc(-0.5 * var(--gutter-x)) 0 calc(-0.5 * var(--gutter-x));
+
+    & > * {
+      padding-right: calc(var(--gutter-x) * 0.5);
+      padding-left: calc(var(--gutter-x) * 0.5);
+      margin-top: var(--gutter-y);
+    }
+  }
+
+  @include mixins.m(mini) {
+    --size-mini: 24px;
+    --font-size-mini: var(--#{variables.$prefix}font-size-small);
+    --button-padding-size-mini: 4px;
+    --gutter-x-mini: 4px;
+    --gutter-y-mini: 2px;
+
+    @include mixins.e(button) {
+      &:not(.is-active) {
+        border-color: transparent;
+      }
+    }
+  }
+
+  @include mixins.e(jump) {
+    display: inline-flex;
+    align-items: center;
+
+    & > * + * {
+      margin-left: 4px;
+    }
+  }
+
+  @include mixins.e(button) {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--size);
+    height: var(--size);
+    vertical-align: top;
+    cursor: pointer;
+    user-select: none;
+    border-radius: var(--#{variables.$prefix}border-radius);
+    outline: none;
+    transition:
+      border-color var(--#{variables.$prefix}animation-duration-base) linear,
+      color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:hover,
+    &:focus {
+      color: var(--#{variables.$prefix}color-light-primary);
+      border-color: var(--#{variables.$prefix}color-light-primary);
+    }
+
+    @include mixins.when(disabled) {
+      color: var(--#{variables.$prefix}color-disabled);
+      pointer-events: none;
+    }
+
+    @include mixins.when(active) {
+      color: var(--#{variables.$prefix}color-primary);
+      border-color: var(--#{variables.$prefix}color-primary);
+    }
+
+    @include mixins.m(border) {
+      border: 1px solid var(--#{variables.$prefix}color-border);
+    }
+
+    @include mixins.m(number) {
+      padding: 0 var(--button-padding-size);
+      transition:
+        border-color var(--#{variables.$prefix}animation-duration-base) linear,
+        color var(--#{variables.$prefix}animation-duration-base) linear,
+        box-shadow var(--#{variables.$prefix}animation-duration-base) linear;
+
+      &:focus-visible {
+        box-shadow: 0 0 0 3px rgb(var(--#{variables.$prefix}color-primary-rgb) / var(--#{variables.$prefix}shadow-normal));
+      }
+    }
+
+    @include mixins.m(jump5) {
+      &:hover,
+      &:focus {
+        @include mixins.e(jump5-icon) {
+          opacity: 1;
+        }
+
+        @include mixins.e(ellipsis) {
+          opacity: 0;
+        }
+      }
+
+      @include mixins.e(jump5-icon) {
+        color: var(--#{variables.$prefix}color-primary);
+        opacity: 0;
+        transition: opacity var(--#{variables.$prefix}animation-duration-fast) linear;
+      }
+    }
+  }
+
+  @include mixins.e(ellipsis) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--#{variables.$prefix}color-disabled);
+    transition: opacity var(--#{variables.$prefix}animation-duration-fast) linear;
+    transform: scale(1.5);
+  }
+}

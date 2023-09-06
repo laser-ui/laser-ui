@@ -1,0 +1,211 @@
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(slides) {
+  position: relative;
+  overflow: hidden;
+  transition: height var(--#{variables.$prefix}animation-duration-base) linear;
+
+  @include mixins.m(vertical) {
+    @include mixins.e(container) {
+      flex-direction: column;
+    }
+
+    @include mixins.e(arrow) {
+      @include mixins.m(prev) {
+        top: 12px;
+        right: unset;
+        bottom: unset;
+        left: 50%;
+        transform: translate(-50%, 0) rotate(90deg);
+
+        @include mixins.when(hidden) {
+          transform: translate(-50%, -50%) rotate(90deg);
+        }
+      }
+
+      @include mixins.m(next) {
+        top: unset;
+        right: unset;
+        bottom: 12px;
+        left: 50%;
+        transform: translate(-50%, 0) rotate(90deg);
+
+        @include mixins.when(hidden) {
+          transform: translate(-50%, 50%) rotate(90deg);
+        }
+      }
+    }
+
+    @include mixins.e(pagination) {
+      right: 10px;
+      bottom: unset;
+      flex-direction: column;
+      width: unset;
+      height: 100%;
+
+      @include mixins.when(hidden) {
+        transform: translate(100%, 0);
+      }
+
+      @include mixins.m(dynamic) {
+        top: calc(50% - 40px);
+        left: unset;
+        width: unset;
+        height: 80px;
+      }
+    }
+
+    @include mixins.e(pagination-radio) {
+      margin: 4px 0;
+    }
+  }
+
+  @include mixins.m(fade) {
+    @include mixins.e(slide) {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      opacity: 0;
+      transition: opacity var(--#{variables.$prefix}animation-duration-base) linear;
+    }
+  }
+
+  @include mixins.e(container) {
+    position: absolute;
+    display: flex;
+    width: 100%;
+    transition: transform var(--#{variables.$prefix}animation-duration-base) linear;
+  }
+
+  @include mixins.e(slide) {
+    flex: 0 0 100%;
+    margin-bottom: auto;
+  }
+
+  @include mixins.e(arrow) {
+    position: absolute;
+    z-index: 5;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    /* stylelint-disable-next-line declaration-property-value-allowed-list */
+    font-size: 18px;
+    color: var(--#{variables.$prefix}text-color);
+    white-space: nowrap;
+    vertical-align: top;
+    appearance: none;
+    cursor: pointer;
+    background-color: var(--#{variables.$prefix}background-color);
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 1px 4px 0 var(--#{variables.$prefix}shadow-color);
+    transition:
+      opacity var(--#{variables.$prefix}animation-duration-base) linear,
+      color var(--#{variables.$prefix}animation-duration-base) linear,
+      background-color var(--#{variables.$prefix}animation-duration-base) linear,
+      transform var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:disabled {
+      cursor: default;
+      opacity: 0.5;
+    }
+
+    &:not(:disabled):hover {
+      color: var(--#{variables.$prefix}color-primary);
+      background-color: var(--#{variables.$prefix}background-color-primary-gray);
+    }
+
+    @include mixins.when(hidden) {
+      opacity: 0;
+    }
+
+    @include mixins.m(prev) {
+      top: 50%;
+      left: 16px;
+      transform: translate(0, -50%);
+
+      @include mixins.when(hidden) {
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    @include mixins.m(next) {
+      top: 50%;
+      right: 16px;
+      transform: translate(0, -50%);
+
+      @include mixins.when(hidden) {
+        transform: translate(50%, -50%);
+      }
+    }
+  }
+
+  @include mixins.e(pagination) {
+    position: absolute;
+    bottom: 12px;
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    transition:
+      opacity var(--#{variables.$prefix}animation-duration-base) linear,
+      transform var(--#{variables.$prefix}animation-duration-base) linear;
+
+    @include mixins.when(hidden) {
+      opacity: 0;
+      transform: translate(0, 100%);
+    }
+
+    @include mixins.m(dynamic) {
+      left: calc(50% - 40px);
+      justify-content: flex-start;
+      width: 80px;
+    }
+  }
+
+  @include mixins.e(pagination-radio) {
+    position: relative;
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    margin: 0 4px;
+    appearance: none;
+    pointer-events: all;
+    cursor: pointer;
+    background: var(--#{variables.$prefix}background-color-mask);
+    border-radius: 50%;
+    transition:
+      transform var(--#{variables.$prefix}animation-duration-base) linear,
+      left var(--#{variables.$prefix}animation-duration-base) linear,
+      top var(--#{variables.$prefix}animation-duration-base) linear;
+
+    @include mixins.when(checked) {
+      background: var(--#{variables.$prefix}color-primary);
+    }
+
+    @include mixins.m(prev-1) {
+      transform: scale(0.66);
+    }
+
+    @include mixins.m(prev-2) {
+      transform: scale(0.33);
+    }
+
+    @include mixins.m(next-1) {
+      transform: scale(0.66);
+    }
+
+    @include mixins.m(next-2) {
+      transform: scale(0.33);
+    }
+  }
+}

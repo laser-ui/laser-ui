@@ -1,0 +1,118 @@
+{
+  "name": "site",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/site/src",
+  "projectType": "application",
+  "targets": {
+    "site-build": {
+      "executor": "@laser-ui/plugins:site-build",
+      "defaultConfiguration": "production",
+      "options": {},
+      "configurations": {
+        "development": {
+          "watch": true
+        },
+        "production": {
+          "watch": false
+        }
+      }
+    },
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/site"
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
+      },
+      "dependsOn": [
+        {
+          "target": "site-build",
+          "params": "ignore"
+        }
+      ]
+    },
+    "site-serve": {
+      "executor": "@nx/vite:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "site:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "site:build:development",
+          "hmr": true
+        },
+        "production": {
+          "buildTarget": "site:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@laser-ui/plugins:multiple",
+      "options": {
+        "tasks": [
+          {
+            "targetDescription": {
+              "project": "site",
+              "target": "site-build",
+              "configuration": "development"
+            }
+          },
+          {
+            "targetDescription": {
+              "project": "site",
+              "target": "site-serve",
+              "configuration": "development"
+            }
+          }
+        ]
+      }
+    },
+    "preview": {
+      "executor": "@nx/vite:preview-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "site:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "site:build:development"
+        },
+        "production": {
+          "buildTarget": "site:build:production"
+        }
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{workspaceRoot}/coverage/apps/site"],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/apps/site"
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/site/**/*.{ts,tsx}"]
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "site:build"
+      }
+    }
+  },
+  "tags": []
+}

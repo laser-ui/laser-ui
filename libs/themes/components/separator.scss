@@ -1,0 +1,95 @@
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(separator) {
+  $selector: &;
+
+  width: 100%;
+  height: 1px;
+  padding: 0;
+  margin: 16px 0;
+  background-color: var(--#{variables.$prefix}color-divider);
+
+  @include mixins.m(text) {
+    display: flex;
+    align-items: center;
+    margin: 24px 0;
+    background-color: unset;
+
+    &::before {
+      height: 1px;
+      content: '';
+      background-color: var(--#{variables.$prefix}color-divider);
+    }
+
+    &::after {
+      height: 1px;
+      content: '';
+      background-color: var(--#{variables.$prefix}color-divider);
+    }
+
+    &#{$selector}--vertical {
+      width: auto;
+      margin: 0 24px;
+
+      &::before {
+        width: 1px;
+        height: unset;
+      }
+
+      &::after {
+        width: 1px;
+        height: unset;
+      }
+
+      @include mixins.e(text) {
+        padding: 8px 0;
+      }
+    }
+  }
+
+  @include mixins.m(text-left) {
+    &::before {
+      flex: 0 0 10%;
+    }
+
+    &::after {
+      flex: 1 0 0;
+    }
+  }
+
+  @include mixins.m(text-right) {
+    &::before {
+      flex: 1 0 0;
+    }
+
+    &::after {
+      flex: 0 0 10%;
+    }
+  }
+
+  @include mixins.m(text-center) {
+    &::before {
+      flex: 1 0 0;
+    }
+
+    &::after {
+      flex: 1 0 0;
+    }
+  }
+
+  @include mixins.m(vertical) {
+    display: inline-flex;
+    flex-direction: column;
+    align-self: stretch;
+    width: 1px;
+    height: unset;
+    margin: 2px 8px;
+  }
+
+  @include mixins.e(text) {
+    flex: 0 0 auto;
+    padding: 0 8px;
+    font-size: var(--#{variables.$prefix}font-size-subtitle);
+  }
+}

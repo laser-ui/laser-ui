@@ -1,0 +1,313 @@
+@use '../variables';
+@use '../mixins';
+
+$cascader-option-height: 32px;
+
+@include mixins.b(cascader) {
+  $selector: &;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: var(--size);
+  padding: 0 calc(var(--horizontal-space) - 1px);
+  font-size: var(--font-size);
+  vertical-align: top;
+  cursor: pointer;
+  background-color: var(--#{variables.$prefix}background-color-input);
+  border: 1px solid var(--#{variables.$prefix}color-border);
+  border-radius: var(--#{variables.$prefix}border-radius);
+  transition: border-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+  &:hover,
+  &:focus-within {
+    border-color: var(--#{variables.$prefix}color-light-primary);
+  }
+
+  @each $invalid, $color in ('warning': 'warning', 'error': 'danger') {
+    &[data-l-form-invalid='#{$invalid}'] {
+      border-color: var(--#{variables.$prefix}color-#{$color}) !important;
+
+      #{$selector}__search {
+        caret-color: var(--#{variables.$prefix}color-#{$color}) !important;
+      }
+    }
+  }
+
+  @include mixins.when(expanded) {
+    border-color: var(--#{variables.$prefix}color-primary);
+
+    @include mixins.e(arrow) {
+      transform: rotate(180deg);
+    }
+  }
+
+  @include mixins.when(disabled) {
+    --#{variables.$prefix}tag-color: var(--#{variables.$prefix}color-disabled);
+
+    color: var(--#{variables.$prefix}color-disabled);
+    pointer-events: none;
+    background-color: var(--#{variables.$prefix}background-color-disabled);
+
+    @include mixins.e(placeholder) {
+      opacity: 0.5;
+    }
+
+    @include mixins.e(icon) {
+      color: var(--#{variables.$prefix}color-disabled);
+    }
+  }
+
+  @include mixins.m(small) {
+    --size: var(--#{variables.$prefix}cascader-size, var(--#{variables.$prefix}size-small));
+    --horizontal-space: var(--#{variables.$prefix}cascader-horizontal-space, var(--#{variables.$prefix}horizontal-space-small));
+    --font-size: var(--#{variables.$prefix}cascader-font-size, var(--#{variables.$prefix}font-size-small));
+  }
+
+  @include mixins.m(medium) {
+    --size: var(--#{variables.$prefix}cascader-size, var(--#{variables.$prefix}size-medium));
+    --horizontal-space: var(--#{variables.$prefix}cascader-horizontal-space, var(--#{variables.$prefix}horizontal-space-medium));
+    --font-size: var(--#{variables.$prefix}cascader-font-size, var(--#{variables.$prefix}font-size-medium));
+  }
+
+  @include mixins.m(large) {
+    --size: var(--#{variables.$prefix}cascader-size, var(--#{variables.$prefix}size-large));
+    --horizontal-space: var(--#{variables.$prefix}cascader-horizontal-space, var(--#{variables.$prefix}horizontal-space-large));
+    --font-size: var(--#{variables.$prefix}cascader-font-size, var(--#{variables.$prefix}font-size-large));
+  }
+
+  @include mixins.e(container) {
+    position: relative;
+    display: inline-flex;
+    flex-grow: 1;
+    align-items: center;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  @include mixins.e(content) {
+    @include mixins.utils-ellipsis;
+
+    .#{variables.$prefix}tag + .#{variables.$prefix}tag {
+      margin-left: 8px;
+    }
+  }
+
+  @include mixins.e(search) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    display: inline-block;
+    min-width: 0;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: var(--#{variables.$prefix}color-text);
+    letter-spacing: inherit;
+    appearance: none;
+    caret-color: var(--#{variables.$prefix}color-primary);
+    background-color: transparent;
+    border: none;
+    outline: none;
+
+    &::-webkit-search-cancel-button {
+      display: none;
+      appearance: none;
+    }
+  }
+
+  @include mixins.e(placeholder-wrapper) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    user-select: none;
+  }
+
+  @include mixins.e(placeholder) {
+    @include mixins.utils-ellipsis;
+
+    color: var(--#{variables.$prefix}color-disabled);
+  }
+
+  @include mixins.e(multiple-count) {
+    z-index: 1;
+    flex-shrink: 0;
+    margin-left: 4px;
+  }
+
+  @include mixins.e(close) {
+    margin: 0 0 0 4px;
+    color: var(--#{variables.$prefix}color-icon-decorator);
+    transition: color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:hover,
+    &:focus {
+      color: var(--#{variables.$prefix}color-light-primary);
+    }
+
+    &:active {
+      color: var(--#{variables.$prefix}color-dark-primary);
+    }
+  }
+
+  @include mixins.e(clear) {
+    position: absolute;
+    right: calc(var(--horizontal-space) - 1px);
+    z-index: 5;
+    color: var(--#{variables.$prefix}color-icon-decorator);
+    transition: color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:hover,
+    &:focus {
+      color: var(--#{variables.$prefix}color-light-primary);
+    }
+
+    &:active {
+      color: var(--#{variables.$prefix}color-dark-primary);
+    }
+  }
+
+  @include mixins.e(icon) {
+    z-index: 1;
+    flex-shrink: 0;
+    margin-left: 4px;
+    color: var(--#{variables.$prefix}color-icon-decorator);
+  }
+
+  @include mixins.e(arrow) {
+    transition: transform var(--#{variables.$prefix}animation-duration-base) linear;
+  }
+
+  @include mixins.e(list) {
+    position: relative;
+    max-height: calc(8px + #{$cascader-option-height} * 6);
+    padding: 4px 0;
+    margin: 0;
+    overflow: hidden auto;
+    list-style: none;
+
+    & + & {
+      border-left: 1px solid var(--#{variables.$prefix}color-divider);
+    }
+
+    @include mixins.m(inline) {
+      display: inline-block;
+      vertical-align: top;
+    }
+  }
+
+  @include mixins.e(option) {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: $cascader-option-height;
+    padding: 0 12px;
+    cursor: pointer;
+    transition: background-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:not(.is-selected):hover {
+      background-color: var(--#{variables.$prefix}background-color-hover);
+    }
+
+    @include mixins.when(focused) {
+      color: var(--#{variables.$prefix}color-light-primary);
+    }
+
+    @include mixins.when(selected) {
+      background-color: var(--#{variables.$prefix}background-color-primary);
+    }
+
+    @include mixins.when(disabled) {
+      color: var(--#{variables.$prefix}color-disabled);
+      pointer-events: none;
+    }
+  }
+
+  @include mixins.e(option-dot) {
+    position: absolute;
+    top: 50%;
+    left: 4px;
+    width: 4px;
+    height: 4px;
+    content: '';
+    background-color: var(--#{variables.$prefix}color-primary);
+    border-radius: 50%;
+    transform: translateY(-50%);
+  }
+
+  @include mixins.e(option-prefix) {
+    display: inline-flex;
+    margin-right: 8px;
+  }
+
+  @include mixins.e(option-content) {
+    @include mixins.utils-ellipsis;
+
+    flex: 1 0 0;
+  }
+
+  @include mixins.e(option-icon) {
+    margin-left: 8px;
+  }
+
+  @include mixins.e(option-group) {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  @include mixins.e(option-group-label) {
+    display: flex;
+    align-items: center;
+    min-height: $cascader-option-height;
+    padding: 0 12px;
+    font-size: var(--#{variables.$prefix}font-size-subtitle);
+    color: var(--#{variables.$prefix}color-text-sub);
+  }
+
+  @include mixins.e(empty) {
+    display: flex;
+    align-items: center;
+    height: $cascader-option-height;
+    padding: 0 12px;
+    color: var(--#{variables.$prefix}color-disabled);
+  }
+}
+
+@include mixins.b(cascader-popup) {
+  position: fixed;
+  overflow: auto hidden;
+  white-space: nowrap;
+  background-color: var(--#{variables.$prefix}background-color);
+  border-radius: var(--#{variables.$prefix}border-radius);
+  box-shadow: var(--#{variables.$prefix}box-shadow-popup);
+
+  @include mixins.e(loading) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: var(--#{variables.$prefix}color-primary);
+    background-color: rgb(var(--#{variables.$prefix}background-color-rgb) / 80%);
+
+    @include mixins.m(empty) {
+      position: relative;
+      justify-content: flex-start;
+      height: 40px;
+      padding: 0 12px;
+      background-color: var(--#{variables.$prefix}background-color);
+    }
+  }
+}

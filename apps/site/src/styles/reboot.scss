@@ -1,0 +1,41 @@
+@use 'variables';
+@use 'mixins';
+
+body {
+  margin: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    'Noto Sans',
+    'Liberation Sans',
+    sans-serif,
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol',
+    'Noto Color Emoji';
+  font-weight: 400;
+  color: var(--#{variables.$prefix}color-text);
+  background-color: var(--app-background-color);
+  text-size-adjust: 100%;
+
+  @include mixins.font-size(1rem);
+}
+
+code:not(.hljs) {
+  display: inline-block;
+  padding: 2px 4px;
+  margin: 1px;
+  font-family: Consolas, Menlo, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 0.875em;
+  background-color: var(--app-background-color-code);
+  border: 1px solid var(--#{variables.$prefix}color-border);
+  border-radius: var(--#{variables.$prefix}border-radius);
+}
+
+.hljs {
+  font-family: Consolas, Menlo, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}

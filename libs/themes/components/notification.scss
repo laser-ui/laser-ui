@@ -1,0 +1,127 @@
+@use '../variables';
+@use '../mixins';
+
+@mixin notification-root {
+  position: fixed;
+  z-index: var(--#{variables.$prefix}zindex-max);
+  pointer-events: none;
+}
+
+##{variables.$prefix}notification-lt-root {
+  top: 20px;
+  left: 20px;
+
+  @include notification-root;
+}
+
+##{variables.$prefix}notification-rt-root {
+  top: 20px;
+  right: 20px;
+
+  @include notification-root;
+}
+
+##{variables.$prefix}notification-lb-root {
+  bottom: 20px;
+  left: 20px;
+
+  @include notification-root;
+}
+
+##{variables.$prefix}notification-rb-root {
+  right: 20px;
+  bottom: 20px;
+
+  @include notification-root;
+}
+
+@include mixins.b(notification) {
+  --color: var(--#{variables.$prefix}notification-color);
+
+  display: flex;
+  align-items: flex-start;
+  width: 380px;
+  max-width: calc(100vw - 40px);
+  padding: 12px 24px;
+  margin-bottom: 20px;
+  pointer-events: all;
+  background-color: var(--#{variables.$prefix}background-color);
+  border-radius: var(--#{variables.$prefix}border-radius);
+  outline: none;
+  box-shadow: var(--#{variables.$prefix}box-shadow-dialog);
+
+  @include mixins.m(success) {
+    --color: var(--#{variables.$prefix}notification-color, var(--#{variables.$prefix}color-success));
+  }
+
+  @include mixins.m(warning) {
+    --color: var(--#{variables.$prefix}notification-color, var(--#{variables.$prefix}color-warning));
+  }
+
+  @include mixins.m(error) {
+    --color: var(--#{variables.$prefix}notification-color, var(--#{variables.$prefix}color-danger));
+  }
+
+  @include mixins.m(info) {
+    --color: var(--#{variables.$prefix}notification-color, var(--#{variables.$prefix}color-primary));
+  }
+
+  @include mixins.e(icon) {
+    padding: 4px 0;
+    margin-right: 10px;
+    /* stylelint-disable-next-line declaration-property-value-allowed-list */
+    font-size: 32px;
+    color: var(--color);
+  }
+
+  @include mixins.e(content) {
+    flex: 1 0 0;
+  }
+
+  @include mixins.e(header) {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  @include mixins.e(title) {
+    flex: 1 0 0;
+    padding: 4px 0;
+    font-size: var(--#{variables.$prefix}font-size-title);
+    font-weight: var(--#{variables.$prefix}font-weight-bold);
+  }
+
+  @include mixins.e(close) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    margin: 0 0 0 8px;
+    font: inherit;
+    font-size: 1.25em;
+    line-height: 1;
+    white-space: nowrap;
+    vertical-align: top;
+    appearance: none;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+    outline: none;
+    transition:
+      color var(--#{variables.$prefix}animation-duration-base) linear,
+      background-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:hover,
+    &:focus {
+      background-color: var(--#{variables.$prefix}background-color-hover);
+    }
+
+    &:active {
+      color: var(--#{variables.$prefix}color-dark-primary);
+    }
+  }
+
+  @include mixins.e(description) {
+    padding: 1px 0 4px;
+  }
+}

@@ -1,0 +1,54 @@
+@use 'sass:map';
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(badge) {
+  position: absolute;
+  z-index: 1;
+  display: inline-block;
+  vertical-align: top;
+  transform: translate(-50%, -50%);
+
+  @each $theme, $rgb in variables.$themes {
+    @include mixins.theme(#{$theme}) {
+      --color: var(--#{variables.$prefix}badge-color, var(--#{variables.$prefix}color-#{$theme}));
+    }
+  }
+
+  @include mixins.m(dot) {
+    @include mixins.e(wrapper) {
+      min-width: 6px;
+      height: 6px;
+      padding: 0;
+      /* stylelint-disable-next-line declaration-property-value-allowed-list */
+      border-radius: 3px;
+    }
+  }
+
+  @include mixins.m(alone) {
+    position: relative;
+    transform: none;
+  }
+
+  @include mixins.e(wrapper) {
+    display: flex;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    overflow: hidden;
+    /* stylelint-disable-next-line declaration-property-value-allowed-list */
+    font-size: 12px;
+    line-height: 20px;
+    color: map.get(variables.$colors, 'white');
+    background-color: var(--color);
+    /* stylelint-disable-next-line declaration-property-value-allowed-list */
+    border-radius: 10px;
+  }
+
+  @include mixins.e(number-container) {
+    display: inline-flex;
+    flex-direction: column;
+    transition: transform var(--#{variables.$prefix}animation-duration-base) ease-out;
+  }
+}

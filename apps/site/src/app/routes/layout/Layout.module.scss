@@ -1,0 +1,16 @@
+@use '~styles/variables';
+@use '~styles/mixins';
+
+@include mixins.b(layout) {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: calc(100% - 64px);
+  padding: 32px 0 0;
+  overflow: auto;
+
+  @include mixins.media-breakpoint-up(md) {
+    width: calc(100% - 260px);
+  }
+}

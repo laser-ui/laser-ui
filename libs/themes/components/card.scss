@@ -1,0 +1,77 @@
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(card) {
+  background-color: var(--#{variables.$prefix}background-color);
+  border: 1px solid var(--#{variables.$prefix}color-border);
+  border-radius: var(--#{variables.$prefix}border-radius);
+  transition: box-shadow var(--#{variables.$prefix}animation-duration-base) linear;
+
+  @include mixins.m(shadow) {
+    box-shadow: 0 2px 8px 0 var(--#{variables.$prefix}box-shadow-color);
+  }
+
+  @include mixins.m(shadow-hover) {
+    &:hover {
+      box-shadow: 0 2px 8px 0 var(--#{variables.$prefix}box-shadow-color);
+    }
+  }
+
+  @include mixins.e(header) {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid var(--#{variables.$prefix}color-border);
+  }
+
+  @include mixins.e(header-title) {
+    @include mixins.utils-ellipsis;
+
+    flex: 1 0 0;
+    font-size: var(--#{variables.$prefix}font-size-title);
+    font-weight: var(--#{variables.$prefix}font-weight-bold);
+  }
+
+  @include mixins.e(header-action) {
+    margin-left: 10px;
+  }
+
+  @include mixins.e(content) {
+    position: relative;
+    padding: 16px;
+  }
+
+  @include mixins.e(actions) {
+    display: flex;
+    height: 48px;
+    border-top: 1px solid var(--#{variables.$prefix}color-border);
+  }
+
+  @include mixins.e(action) {
+    display: inline-flex;
+    flex: 1 0 0;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: var(--#{variables.$prefix}color-text-sub);
+    vertical-align: top;
+    appearance: none;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    transition: color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:hover,
+    &:focus {
+      color: var(--#{variables.$prefix}color-light-primary);
+    }
+
+    @include mixins.when(disabled) {
+      color: var(--#{variables.$prefix}color-disabled);
+      pointer-events: none;
+    }
+  }
+}

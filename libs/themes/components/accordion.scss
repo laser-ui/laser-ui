@@ -1,0 +1,52 @@
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(accordion) {
+  @include mixins.e(item) {
+    border-top: 1px solid var(--#{variables.$prefix}color-border);
+    border-right: 1px solid var(--#{variables.$prefix}color-border);
+    border-left: 1px solid var(--#{variables.$prefix}color-border);
+
+    &:last-child {
+      border-bottom: 1px solid var(--#{variables.$prefix}color-border);
+    }
+  }
+
+  @include mixins.e(item-button) {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    cursor: pointer;
+    background-color: var(--#{variables.$prefix}background-color-light-gray);
+
+    @include mixins.when(disabled) {
+      color: var(--#{variables.$prefix}color-disabled);
+      pointer-events: none;
+    }
+
+    @include mixins.m(arrow-left) {
+      flex-direction: row-reverse;
+
+      @include mixins.e(item-arrow) {
+        margin-right: 10px;
+        margin-left: unset;
+      }
+    }
+  }
+
+  @include mixins.e(item-title) {
+    @include mixins.utils-ellipsis;
+
+    flex: 1 0 0;
+  }
+
+  @include mixins.e(item-arrow) {
+    margin-left: 10px;
+    transition: transform var(--#{variables.$prefix}animation-duration-base) linear;
+  }
+
+  @include mixins.e(item-region) {
+    padding: 16px;
+    border-top: 1px solid var(--#{variables.$prefix}color-border);
+  }
+}

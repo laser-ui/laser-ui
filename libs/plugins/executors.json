@@ -1,0 +1,14 @@
+{
+  "executors": {
+    "site-build": {
+      "implementation": "./src/executors/site-build/executor",
+      "schema": "./src/executors/site-build/schema.json",
+      "description": "site-build executor"
+    },
+    "multiple": {
+      "implementation": "./src/executors/multiple/executor",
+      "schema": "./src/executors/multiple/schema.json",
+      "description": "multiple executor"
+    }
+  }
+}

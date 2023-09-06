@@ -1,0 +1,17 @@
+/* stylelint-disable declaration-property-value-allowed-list */
+$namespace: 'l' !default;
+$prefix: '#{$namespace}-' !default;
+
+$themes: (
+  'primary': 56 128 255,
+  'success': 45 211 111,
+  'warning': 255 196 9,
+  'danger': 235 68 90,
+) !default;
+
+$colors: (
+  'white': #fff,
+  'black': #000,
+) !default;
+
+$enable-gap: false !default;

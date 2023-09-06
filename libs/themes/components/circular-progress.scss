@@ -1,0 +1,30 @@
+@use '../variables';
+@use '../mixins';
+
+@keyframes #{variables.$prefix}circular-progress {
+  0% {
+    stroke-dasharray: 1px, 200px;
+    stroke-dashoffset: 0;
+  }
+
+  50% {
+    stroke-dasharray: 100px, 200px;
+    stroke-dashoffset: -15px;
+  }
+
+  100% {
+    stroke-dasharray: 100px, 200px;
+    stroke-dashoffset: -125px;
+  }
+}
+
+@include mixins.b(circular-progress) {
+  animation: #{variables.$prefix}spin 1.4s infinite linear;
+
+  @include mixins.e(circle) {
+    stroke: currentcolor;
+    stroke-dasharray: 80px, 200px;
+    stroke-dashoffset: 0;
+    animation: #{variables.$prefix}circular-progress 1.4s infinite ease-in-out;
+  }
+}

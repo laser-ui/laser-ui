@@ -1,0 +1,121 @@
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(compose) {
+  display: inline-flex;
+  align-items: stretch;
+  vertical-align: top;
+
+  & > [data-l-compose-disabled='true'] {
+    z-index: 0;
+  }
+
+  & > :not([data-l-compose-disabled='true']) {
+    z-index: 1;
+
+    &[data-l-compose-active='true'] {
+      z-index: 2;
+    }
+
+    &[data-l-form-invalid='warning'] {
+      z-index: 5;
+    }
+
+    &[data-l-form-invalid='error'] {
+      z-index: 6;
+    }
+
+    &:hover {
+      z-index: 9;
+    }
+
+    &:focus,
+    &:focus-within {
+      z-index: 10;
+    }
+  }
+
+  &:not(#{&}--vertical) {
+    & > :not(:first-child):not(:only-child) {
+      margin-left: -1px !important;
+    }
+
+    & > :first-child:not(:only-child) {
+      border-top-right-radius: 0 !important;
+      border-bottom-right-radius: 0 !important;
+    }
+
+    & > :last-child:not(:only-child) {
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+    }
+
+    & > :not(:first-child):not(:last-child) {
+      border-radius: 0 !important;
+    }
+  }
+
+  @include mixins.m(vertical) {
+    flex-direction: column;
+
+    & > :not(:first-child):not(:only-child) {
+      margin-top: -1px !important;
+    }
+
+    & > :first-child:not(:only-child) {
+      border-bottom-right-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+    }
+
+    & > :last-child:not(:only-child) {
+      border-top-left-radius: 0 !important;
+      border-top-right-radius: 0 !important;
+    }
+
+    & > :not(:first-child):not(:last-child) {
+      border-radius: 0 !important;
+    }
+  }
+
+  @include mixins.e(item) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--size);
+    height: var(--size);
+    padding: 0 calc(var(--padding-size) - 1px);
+    font-size: var(--font-size);
+    white-space: nowrap;
+    vertical-align: top;
+    border: 1px solid var(--#{variables.$prefix}color-border);
+    border-radius: var(--#{variables.$prefix}border-radius);
+
+    @include mixins.when(disabled) {
+      color: var(--#{variables.$prefix}color-disabled);
+      pointer-events: none;
+      background-color: var(--#{variables.$prefix}background-color-disabled);
+    }
+
+    @include mixins.m(gray) {
+      background-color: var(--#{variables.$prefix}background-color-light-gray);
+    }
+
+    @include mixins.m(small) {
+      --size: var(--#{variables.$prefix}compose-size, var(--#{variables.$prefix}size-small));
+      --padding-size: var(--#{variables.$prefix}compose-padding-size, var(--#{variables.$prefix}padding-size-small));
+      --font-size: var(--#{variables.$prefix}compose-font-size, var(--#{variables.$prefix}font-size-small));
+    }
+
+    @include mixins.m(medium) {
+      --size: var(--#{variables.$prefix}compose-size, var(--#{variables.$prefix}size-medium));
+      --padding-size: var(--#{variables.$prefix}compose-padding-size, var(--#{variables.$prefix}padding-size-medium));
+      --font-size: var(--#{variables.$prefix}compose-font-size, var(--#{variables.$prefix}font-size-medium));
+    }
+
+    @include mixins.m(large) {
+      --size: var(--#{variables.$prefix}compose-size, var(--#{variables.$prefix}size-large));
+      --padding-size: var(--#{variables.$prefix}compose-padding-size, var(--#{variables.$prefix}padding-size-large));
+      --font-size: var(--#{variables.$prefix}compose-font-size, var(--#{variables.$prefix}font-size-large));
+    }
+  }
+}

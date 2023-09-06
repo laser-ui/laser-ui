@@ -1,0 +1,96 @@
+@use 'variables';
+@use 'mixins';
+
+@each $theme, $rgb in variables.$themes {
+  .app-theme-#{$theme} {
+    color: var(--#{variables.$prefix}color-#{$theme});
+  }
+}
+
+.app-anchor {
+  display: inline-block;
+  margin-left: 8px;
+  color: var(--#{variables.$prefix}color-primary);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity var(--#{variables.$prefix}animation-duration-base) linear;
+
+  &:focus-visible {
+    opacity: 1;
+  }
+}
+
+.app-h:hover .app-anchor {
+  opacity: 1;
+}
+
+.app-h--1 {
+  margin: 8px 0 20px;
+  font-weight: 400;
+
+  @include mixins.font-size(2rem);
+}
+
+.app-h--2 {
+  margin: 38px 0 20px;
+  font-weight: 400;
+
+  @include mixins.font-size(1.5rem);
+}
+
+.app-h--3 {
+  margin: 28px 0 12px;
+  font-weight: 400;
+
+  @include mixins.font-size(1.25rem);
+}
+
+.app-table-container {
+  width: 100%;
+  overflow-x: auto;
+
+  table {
+    min-width: 100%;
+    margin: 8px 0 16px;
+    overflow-wrap: break-word;
+    empty-cells: show;
+    border-spacing: 0;
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: 16px 24px;
+      text-align: left;
+      border: 1px solid var(--#{variables.$prefix}color-divider);
+    }
+
+    th {
+      white-space: nowrap;
+      background: var(--app-background-color-th);
+    }
+
+    td:nth-of-type(1) {
+      font-family: Consolas, Menlo, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+      white-space: nowrap;
+    }
+
+    td:nth-of-type(2) {
+      min-width: 280px;
+    }
+  }
+}
+
+.app-list {
+  li + li {
+    margin-top: 10px;
+  }
+}
+
+.app-link {
+  color: var(--#{variables.$prefix}color-primary);
+  text-decoration: underline rgb(var(--#{variables.$prefix}color-primary-rgb) / 40%);
+
+  &:hover {
+    text-decoration: underline var(--#{variables.$prefix}color-primary);
+  }
+}

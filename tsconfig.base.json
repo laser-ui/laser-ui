@@ -1,0 +1,39 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": true,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "resolveJsonModule": true,
+    "newLine": "LF",
+    "isolatedModules": true,
+    "useDefineForClassFields": true,
+    "noFallthroughCasesInSwitch": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "disableSizeLimit": true,
+    "allowJs": false,
+    "paths": {
+      "@laser-ui/components": ["libs/components/src/index.ts"],
+      "@laser-ui/components/*": ["libs/components/src/*"],
+      "@laser-ui/hooks": ["libs/hooks/src/index.ts"],
+      "@laser-ui/hooks/*": ["libs/hooks/src/*"],
+      "@laser-ui/plugins": ["libs/plugins/src/index.ts"],
+      "@laser-ui/utils": ["libs/utils/src/index.ts"],
+      "@laser-ui/utils/*": ["libs/utils/src/*"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

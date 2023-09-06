@@ -1,0 +1,107 @@
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(timeline) {
+  $selector: &;
+
+  @include mixins.e(content) {
+    display: flex;
+    align-items: stretch;
+
+    #{$selector}__text {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    #{$selector}__track {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #{$selector}__separator {
+      flex: 1 0 0;
+      width: 2px;
+    }
+
+    @include mixins.m(gap) {
+      height: 20px;
+    }
+  }
+
+  @include mixins.e(text-container) {
+    display: flex;
+
+    #{$selector}__text {
+      padding: 0 8px;
+      text-align: center;
+    }
+  }
+
+  @include mixins.e(text) {
+    flex: 1 0 0;
+
+    @include mixins.m(left) {
+      justify-content: flex-end;
+      text-align: right;
+    }
+  }
+
+  @include mixins.e(track-container) {
+    display: flex;
+
+    #{$selector}__track {
+      position: relative;
+      display: flex;
+      flex: 1 0 0;
+      align-items: center;
+    }
+
+    #{$selector}__separator {
+      flex: 1 0 0;
+      height: 2px;
+    }
+  }
+
+  @include mixins.e(track) {
+    color: var(--color);
+
+    @include mixins.when(wait) {
+      --color: var(--#{variables.$prefix}timeline-color, var(--#{variables.$prefix}color-disabled));
+    }
+
+    @include mixins.when(active) {
+      --color: var(--#{variables.$prefix}timeline-color, var(--#{variables.$prefix}color-primary));
+    }
+
+    @include mixins.when(completed) {
+      --color: var(--#{variables.$prefix}timeline-color, var(--#{variables.$prefix}color-success));
+    }
+
+    @include mixins.when(warning) {
+      --color: var(--#{variables.$prefix}timeline-color, var(--#{variables.$prefix}color-warning));
+    }
+
+    @include mixins.when(error) {
+      --color: var(--#{variables.$prefix}timeline-color, var(--#{variables.$prefix}color-danger));
+    }
+  }
+
+  @include mixins.e(dot) {
+    position: relative;
+    z-index: 5;
+    width: 12px;
+    height: 12px;
+    background-color: var(--#{variables.$prefix}background-color);
+    border: 2px solid currentcolor;
+    border-radius: 50%;
+  }
+
+  @include mixins.e(separator) {
+    background-color: var(--#{variables.$prefix}background-color-indicator);
+
+    @include mixins.m(hidden) {
+      background-color: transparent;
+    }
+  }
+}

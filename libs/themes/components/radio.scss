@@ -1,0 +1,203 @@
+@use 'sass:map';
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(radio) {
+  $selector: &;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: top;
+
+  &:hover {
+    @include mixins.e(input) {
+      border-color: var(--#{variables.$prefix}color-light-primary);
+    }
+  }
+
+  @include mixins.when(checked) {
+    &:not(.is-disabled) {
+      @include mixins.e(input) {
+        border-color: var(--#{variables.$prefix}color-primary);
+      }
+
+      @include mixins.e(input-wrapper) {
+        &::before {
+          animation: #{variables.$prefix}wave-spread 0.36s linear;
+          animation-fill-mode: backwards;
+        }
+      }
+    }
+
+    @include mixins.e(input-wrapper) {
+      &::after {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  }
+
+  @include mixins.when(disabled) {
+    color: var(--#{variables.$prefix}color-disabled);
+    pointer-events: none;
+
+    @include mixins.e(input-wrapper) {
+      background-color: var(--#{variables.$prefix}background-color-disabled);
+
+      &::after {
+        background-color: var(--#{variables.$prefix}color-disabled);
+      }
+    }
+  }
+
+  @include mixins.m(button) {
+    height: var(--size);
+    font-size: var(--font-size);
+    white-space: nowrap;
+    cursor: pointer;
+    border: 1px solid var(--#{variables.$prefix}color-border);
+    border-radius: var(--#{variables.$prefix}border-radius);
+    transition:
+      border-color var(--#{variables.$prefix}animation-duration-base) linear,
+      background-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:has(:focus-visible) {
+      border-color: var(--#{variables.$prefix}color-primary-lighter);
+      box-shadow: 0 0 0 3px rgb(var(--#{variables.$prefix}color-primary-rgb) / var(--#{variables.$prefix}box-shadow-opacity-normal));
+    }
+
+    @include mixins.when(disabled) {
+      background-color: var(--#{variables.$prefix}background-color-disabled);
+
+      @include mixins.when(checked) {
+        color: rgb(var(--#{variables.$prefix}color-primary-rgb) / 50%);
+      }
+    }
+
+    @include mixins.e(input-wrapper) {
+      width: 0;
+      height: 0;
+      overflow: hidden;
+    }
+
+    @include mixins.e(label) {
+      display: inline-flex;
+      align-items: center;
+      height: 100%;
+      padding: 0 calc(var(--padding-size) - 1px);
+      margin-left: unset;
+      transition: color var(--#{variables.$prefix}animation-duration-base) linear;
+    }
+  }
+
+  @include mixins.m(button-outline) {
+    &:hover {
+      color: var(--#{variables.$prefix}color-light-primary);
+      border-color: var(--#{variables.$prefix}color-light-primary);
+    }
+
+    @include mixins.when(checked) {
+      color: var(--#{variables.$prefix}color-primary);
+      border-color: var(--#{variables.$prefix}color-primary);
+    }
+  }
+
+  @include mixins.m(button-fill) {
+    background-color: var(--#{variables.$prefix}background-color);
+
+    &:hover {
+      color: var(--#{variables.$prefix}color-light-primary);
+      border-color: var(--#{variables.$prefix}color-light-primary);
+    }
+
+    @include mixins.when(checked) {
+      color: map.get(variables.$colors, 'white');
+      background-color: var(--#{variables.$prefix}color-primary);
+      border-color: var(--#{variables.$prefix}color-primary);
+    }
+  }
+
+  @include mixins.m(button-small) {
+    --size: var(--#{variables.$prefix}radio-size, var(--#{variables.$prefix}size-small));
+    --padding-size: var(--#{variables.$prefix}radio-padding-size, var(--#{variables.$prefix}padding-size-small));
+    --font-size: var(--#{variables.$prefix}radio-font-size, var(--#{variables.$prefix}font-size-small));
+  }
+
+  @include mixins.m(button-medium) {
+    --size: var(--#{variables.$prefix}radio-size, var(--#{variables.$prefix}size-medium));
+    --padding-size: var(--#{variables.$prefix}radio-padding-size, var(--#{variables.$prefix}padding-size-medium));
+    --font-size: var(--#{variables.$prefix}radio-font-size, var(--#{variables.$prefix}font-size-medium));
+  }
+
+  @include mixins.m(button-large) {
+    --size: var(--#{variables.$prefix}radio-size, var(--#{variables.$prefix}size-large));
+    --padding-size: var(--#{variables.$prefix}radio-padding-size, var(--#{variables.$prefix}padding-size-large));
+    --font-size: var(--#{variables.$prefix}radio-font-size, var(--#{variables.$prefix}font-size-large));
+  }
+
+  @include mixins.e(input-wrapper) {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    background-color: var(--#{variables.$prefix}background-color-input);
+    border-radius: 50%;
+
+    &::before {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      content: '';
+      border: 1px solid var(--#{variables.$prefix}color-primary);
+      border-radius: 50%;
+      opacity: 0;
+    }
+
+    &::after {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      bottom: 4px;
+      left: 4px;
+      content: '';
+      background-color: var(--#{variables.$prefix}color-primary);
+      border-radius: 50%;
+      opacity: 0;
+      transition:
+        transform var(--#{variables.$prefix}animation-duration-fast) linear,
+        opacity var(--#{variables.$prefix}animation-duration-fast) linear;
+      transform: scale(0);
+    }
+  }
+
+  @include mixins.e(input) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    appearance: none;
+    cursor: inherit;
+    border: 1px solid var(--#{variables.$prefix}color-border);
+    border-radius: 50%;
+    outline: none;
+    transition: border-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:focus {
+      border-color: var(--#{variables.$prefix}color-light-primary);
+      box-shadow: 0 0 0 3px rgb(var(--#{variables.$prefix}color-primary-rgb) / var(--#{variables.$prefix}box-shadow-opacity-normal));
+    }
+  }
+
+  @include mixins.e(label) {
+    margin-left: 8px;
+  }
+}

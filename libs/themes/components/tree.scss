@@ -1,0 +1,169 @@
+@use '../variables';
+@use '../mixins';
+
+$tree-option-height: 32px;
+
+@include mixins.b(tree) {
+  $selector: &;
+
+  position: relative;
+  padding: 0;
+  margin: 0;
+  overflow: auto;
+  list-style: none;
+  outline: none;
+
+  @include mixins.when(disabled) {
+    pointer-events: none;
+    filter: opacity(50%);
+  }
+
+  @include mixins.m(line) {
+    @include mixins.e(group) {
+      &[role='treeitem']:not(#{$selector}__group--root)::after {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: -18px;
+        width: 1px;
+        pointer-events: none;
+        content: '';
+        background-color: var(--#{variables.$prefix}background-color-indicator);
+      }
+    }
+
+    @include mixins.e(option) {
+      &:not(#{$selector}__option--root) {
+        &::before,
+        &::after {
+          position: absolute;
+          pointer-events: none;
+          content: '';
+          background-color: var(--#{variables.$prefix}background-color-indicator);
+        }
+
+        &::before {
+          top: -50%;
+          left: -18px;
+          width: 1px;
+          height: 100%;
+        }
+
+        &::after {
+          left: -18px;
+          width: 18px;
+          height: 1px;
+        }
+
+        &[role='treeitem'] {
+          &::before {
+            left: -42px;
+          }
+
+          &::after {
+            left: -42px;
+            width: 42px;
+          }
+        }
+
+        &#{$selector}__option--first::before {
+          top: 0;
+          height: 50%;
+        }
+      }
+    }
+  }
+
+  @include mixins.e(group) {
+    position: relative;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    &[role='group']:not(#{$selector}__group--root) {
+      padding-left: 34px;
+    }
+  }
+
+  @include mixins.e(option) {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: $tree-option-height;
+    padding: 0 12px;
+    cursor: pointer;
+    transition: background-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &[role='treeitem'] {
+      margin-left: 24px;
+    }
+
+    &:not(.is-selected):hover {
+      background-color: var(--#{variables.$prefix}background-color-hover);
+    }
+
+    @include mixins.when(selected) {
+      background-color: var(--#{variables.$prefix}background-color-primary);
+    }
+
+    @include mixins.when(disabled) {
+      color: var(--#{variables.$prefix}color-disabled);
+      pointer-events: none;
+    }
+  }
+
+  @include mixins.e(option-dot) {
+    position: absolute;
+    top: 50%;
+    left: 4px;
+    width: 4px;
+    height: 4px;
+    content: '';
+    background-color: var(--#{variables.$prefix}color-primary);
+    border-radius: 50%;
+    transform: translateY(-50%);
+  }
+
+  @include mixins.e(option-icon) {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    width: 24px;
+    height: $tree-option-height;
+    user-select: none;
+
+    &::after {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: -8px;
+      content: '';
+    }
+  }
+
+  @include mixins.e(option-arrow) {
+    transition: transform var(--#{variables.$prefix}animation-duration-base) linear;
+
+    @include mixins.when(expand) {
+      transform: rotate(90deg);
+    }
+  }
+
+  @include mixins.e(option-checkbox) {
+    display: inline-flex;
+    margin-right: 8px;
+  }
+
+  @include mixins.e(option-content) {
+    flex: 1 0 0;
+  }
+
+  @include mixins.e(empty) {
+    display: flex;
+    align-items: center;
+    height: $tree-option-height;
+    padding: 0 12px;
+    color: var(--#{variables.$prefix}color-disabled);
+  }
+}

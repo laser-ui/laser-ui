@@ -1,0 +1,245 @@
+@use 'sass:map';
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(button) {
+  $selector: &;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--size);
+  height: var(--size);
+  margin: 0;
+  font: inherit;
+  font-size: var(--font-size);
+  white-space: nowrap;
+  vertical-align: top;
+  appearance: none;
+  cursor: pointer;
+  border-radius: var(--#{variables.$prefix}border-radius);
+  outline: none;
+  transition:
+    color var(--#{variables.$prefix}animation-duration-base) linear,
+    background-color var(--#{variables.$prefix}animation-duration-base) linear,
+    border-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+  &:disabled {
+    pointer-events: none;
+  }
+
+  @each $theme, $rgb in variables.$themes {
+    @include mixins.theme(#{$theme}) {
+      --color-light: var(--#{variables.$prefix}button-color-light, var(--#{variables.$prefix}color-light-#{$theme}));
+      --color: var(--#{variables.$prefix}button-color, var(--#{variables.$prefix}color-#{$theme}));
+      --color-dark: var(--#{variables.$prefix}button-color-dark, var(--#{variables.$prefix}color-dark-#{$theme}));
+      --background-color-light: var(
+        --#{variables.$prefix}button-background-color-light,
+        var(--#{variables.$prefix}background-color-light-#{$theme})
+      );
+      --background-color: var(--#{variables.$prefix}button-background-color, var(--#{variables.$prefix}background-color-#{$theme}));
+    }
+  }
+
+  @include mixins.when(loading) {
+    pointer-events: none;
+  }
+
+  @include mixins.m(primary) {
+    padding: 0 calc(var(--padding-size) - 1px);
+    color: map.get(variables.$colors, 'white');
+    background-color: var(--color);
+    border: 1px solid var(--color);
+
+    &:hover,
+    &:focus,
+    &.is-loading {
+      background-color: var(--color-light);
+      border-color: var(--color-light);
+    }
+
+    &:active {
+      background-color: var(--color-dark);
+      border-color: var(--color-dark);
+    }
+
+    &:disabled:not(.is-loading) {
+      filter: saturate(50%) grayscale(50%);
+    }
+  }
+
+  @include mixins.m(secondary) {
+    padding: 0 calc(var(--padding-size) - 1px);
+    color: var(--#{variables.$prefix}color-text);
+    background-color: transparent;
+    border: 1px solid var(--#{variables.$prefix}color-border);
+
+    &:hover,
+    &:focus,
+    &.is-loading {
+      color: var(--color-light);
+      border-color: var(--color-light);
+    }
+
+    &:active {
+      color: var(--color-dark);
+      border-color: var(--color-dark);
+    }
+
+    &:disabled:not(.is-loading) {
+      color: var(--#{variables.$prefix}color-disabled);
+      background-color: var(--#{variables.$prefix}background-color-disabled);
+    }
+  }
+
+  @include mixins.m(outline) {
+    padding: 0 calc(var(--padding-size) - 1px);
+    color: var(--color);
+    background-color: transparent;
+    border: 1px solid var(--color);
+
+    &:hover,
+    &:focus,
+    &.is-loading {
+      color: var(--color-light);
+      border-color: var(--color-light);
+    }
+
+    &:active {
+      color: var(--color-dark);
+      border-color: var(--color-dark);
+    }
+
+    &:disabled:not(.is-loading) {
+      color: var(--#{variables.$prefix}color-disabled);
+      border-color: var(--#{variables.$prefix}color-border);
+    }
+  }
+
+  @include mixins.m(dashed) {
+    padding: 0 calc(var(--padding-size) - 1px);
+    color: var(--color);
+    background-color: transparent;
+    border: 1px dashed var(--color);
+
+    &:hover,
+    &:focus,
+    &.is-loading {
+      color: var(--color-light);
+      border-color: var(--color-light);
+    }
+
+    &:active {
+      color: var(--color-dark);
+      border-color: var(--color-dark);
+    }
+
+    &:disabled:not(.is-loading) {
+      color: var(--#{variables.$prefix}color-disabled);
+      border-color: var(--#{variables.$prefix}color-border);
+    }
+  }
+
+  @include mixins.m(text) {
+    padding: 0 var(--padding-size);
+    color: var(--#{variables.$prefix}color-text);
+    background-color: transparent;
+    border: none;
+
+    &:hover,
+    &:focus,
+    &.is-loading {
+      color: var(--color-light);
+      background-color: var(--background-color-light);
+    }
+
+    &:active {
+      color: var(--color-dark);
+      background-color: var(--background-color);
+    }
+
+    &:disabled:not(.is-loading) {
+      color: var(--#{variables.$prefix}color-disabled);
+      pointer-events: none;
+      background-color: var(--#{variables.$prefix}background-color-disabled);
+    }
+  }
+
+  @include mixins.m(link) {
+    min-width: unset;
+    height: auto;
+    padding: 0;
+    color: var(--color);
+    background-color: transparent;
+    border: none;
+
+    &:hover,
+    &:focus,
+    &.is-loading {
+      color: var(--color-light);
+    }
+
+    &:active {
+      color: var(--color-dark);
+    }
+
+    &:disabled:not(.is-loading) {
+      color: var(--#{variables.$prefix}color-disabled);
+    }
+  }
+
+  @include mixins.m(circle) {
+    border-radius: 50%;
+  }
+
+  @include mixins.m(round) {
+    border-radius: calc(var(--size) / 2);
+  }
+
+  @include mixins.m(block) {
+    width: 100%;
+  }
+
+  @include mixins.m(small) {
+    --size: var(--#{variables.$prefix}button-size, var(--#{variables.$prefix}size-small));
+    --padding-size: var(--#{variables.$prefix}button-padding-size, var(--#{variables.$prefix}padding-size-small));
+    --font-size: var(--#{variables.$prefix}button-font-size, var(--#{variables.$prefix}font-size-small));
+  }
+
+  @include mixins.m(medium) {
+    --size: var(--#{variables.$prefix}button-size, var(--#{variables.$prefix}size-medium));
+    --padding-size: var(--#{variables.$prefix}button-padding-size, var(--#{variables.$prefix}padding-size-medium));
+    --font-size: var(--#{variables.$prefix}button-font-size, var(--#{variables.$prefix}font-size-medium));
+  }
+
+  @include mixins.m(large) {
+    --size: var(--#{variables.$prefix}button-size, var(--#{variables.$prefix}size-large));
+    --padding-size: var(--#{variables.$prefix}button-padding-size, var(--#{variables.$prefix}padding-size-large));
+    --font-size: var(--#{variables.$prefix}button-font-size, var(--#{variables.$prefix}font-size-large));
+  }
+
+  @include mixins.m(icon) {
+    &:not(#{$selector}--round) {
+      padding: 0;
+    }
+
+    @include mixins.e(icon) {
+      width: auto;
+    }
+  }
+
+  @include mixins.m(icon-right) {
+    flex-direction: row-reverse;
+
+    @include mixins.e(icon) {
+      justify-content: flex-end;
+    }
+  }
+
+  @include mixins.e(icon) {
+    display: inline-flex;
+    width: calc(1em + 8px);
+    font-size: 1.25em;
+  }
+}

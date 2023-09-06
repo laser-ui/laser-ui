@@ -1,0 +1,213 @@
+@use 'sass:map';
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(image) {
+  position: relative;
+  display: inline-flex;
+  vertical-align: top;
+
+  &:hover {
+    @include mixins.e(actions) {
+      opacity: 1;
+    }
+  }
+
+  @include mixins.e(img) {
+    display: block;
+  }
+
+  @include mixins.e(actions) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--#{variables.$prefix}background-color-mask);
+    opacity: 0;
+    transition: opacity var(--#{variables.$prefix}animation-duration-base) linear;
+  }
+
+  @include mixins.e(action) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: map.get(variables.$colors, 'white');
+    vertical-align: top;
+    appearance: none;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    transition: background-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:hover,
+    &:focus {
+      background-color: var(--#{variables.$prefix}background-color-light-hover);
+    }
+
+    &:disabled {
+      pointer-events: none;
+      filter: opacity(50%);
+    }
+  }
+}
+
+@include mixins.b(image-preview) {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  padding: 68px 68px 98px;
+  overflow: hidden;
+  outline: none;
+
+  @include mixins.e(navigation-button) {
+    position: absolute;
+    z-index: 5;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    /* stylelint-disable-next-line declaration-property-value-allowed-list */
+    font-size: 18px;
+    color: var(--#{variables.$prefix}color-text);
+    white-space: nowrap;
+    vertical-align: top;
+    appearance: none;
+    cursor: pointer;
+    background-color: var(--#{variables.$prefix}background-color);
+    border: none;
+    border-radius: 50%;
+    outline: none;
+    box-shadow: 0 1px 4px 0 var(--#{variables.$prefix}box-shadow-color);
+    transition:
+      color var(--#{variables.$prefix}animation-duration-base) linear,
+      background-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:hover {
+      color: var(--#{variables.$prefix}color-primary);
+      background-color: var(--#{variables.$prefix}background-color-primary-gray);
+    }
+
+    @include mixins.m(prev) {
+      top: 50%;
+      left: 12px;
+      transform: translateY(-50%);
+    }
+
+    @include mixins.m(next) {
+      top: 50%;
+      right: 12px;
+      transform: translateY(-50%);
+    }
+
+    @include mixins.e(toolbar) {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      width: 100%;
+      height: 48px;
+      padding: 0 10px;
+      margin: 0;
+      list-style: none;
+      background-color: var(--#{variables.$prefix}background-color);
+    }
+
+    @include mixins.e(toolbar-page) {
+      @include mixins.polyfill-column-gap(8px);
+
+      display: inline-flex;
+      align-items: center;
+      margin-right: auto;
+    }
+
+    @include mixins.e(toolbar-page-input) {
+      width: 60px;
+    }
+
+    @include mixins.e(toolbar-rotate) {
+      margin-right: 10px;
+    }
+
+    @include mixins.e(toolbar-zoom-input) {
+      width: 80px;
+      margin: 0 4px;
+    }
+
+    @include mixins.e(toolbar-close) {
+      margin-left: 10px;
+    }
+
+    @include mixins.e(img) {
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+      cursor: move;
+      user-select: none;
+      outline: none;
+      object-fit: contain;
+    }
+
+    @include mixins.e(thumbnail-list) {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      z-index: 5;
+      display: flex;
+      padding: 8px;
+      margin: 0;
+      list-style: none;
+      background-color: var(--#{variables.$prefix}background-color);
+      /* stylelint-disable-next-line declaration-property-value-allowed-list */
+      border-radius: 8px;
+      transform: translateX(-50%);
+    }
+
+    @include mixins.e(thumbnail) {
+      width: 52px;
+      height: 52px;
+      cursor: pointer;
+      background-color: var(--#{variables.$prefix}background-color-hover);
+      border: 1px solid transparent;
+      transition: border-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+      & + & {
+        margin-left: 8px;
+      }
+
+      &:hover {
+        border-color: var(--#{variables.$prefix}color-light-primary);
+      }
+
+      @include mixins.when(active) {
+        border-color: var(--#{variables.$prefix}color-primary);
+      }
+    }
+
+    @include mixins.e(thumbnail-img) {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+}

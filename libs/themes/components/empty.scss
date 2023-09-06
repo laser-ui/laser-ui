@@ -1,0 +1,27 @@
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(empty) {
+  $selector: &;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  @include mixins.e(img) {
+    opacity: var(--#{variables.$prefix}empty-img-opacity);
+
+    & + #{$selector}__description {
+      margin-top: 4px;
+    }
+  }
+
+  @include mixins.e(description) {
+    font-size: var(--#{variables.$prefix}font-size-subtitle);
+    color: var(--#{variables.$prefix}color-disabled);
+
+    & + #{$selector}__footer {
+      margin-top: 10px;
+    }
+  }
+}

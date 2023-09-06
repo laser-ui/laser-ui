@@ -1,0 +1,310 @@
+@use 'sass:map';
+@use '../variables';
+@use '../mixins';
+
+$date-picker-cell-height: 28px;
+
+@include mixins.b(date-picker) {
+  $selector: &;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: var(--size);
+  padding: 0 calc(var(--horizontal-space) - 1px);
+  font-size: var(--font-size);
+  vertical-align: top;
+  cursor: pointer;
+  background-color: var(--#{variables.$prefix}background-color-input);
+  border: 1px solid var(--#{variables.$prefix}color-border);
+  border-radius: var(--#{variables.$prefix}border-radius);
+  transition: border-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+  &:hover,
+  &:focus-within {
+    border-color: var(--#{variables.$prefix}color-light-primary);
+  }
+
+  @each $invalid, $color in ('warning': 'warning', 'error': 'danger') {
+    &[data-l-form-invalid='#{$invalid}'] {
+      border-color: var(--#{variables.$prefix}color-#{$color}) !important;
+
+      #{$selector}__input {
+        caret-color: var(--#{variables.$prefix}color-#{$color}) !important;
+      }
+
+      #{$selector}__indicator {
+        background-color: var(--#{variables.$prefix}color-#{$color}) !important;
+      }
+    }
+  }
+
+  @include mixins.when(disabled) {
+    color: var(--#{variables.$prefix}color-disabled);
+    pointer-events: none;
+    background-color: var(--#{variables.$prefix}background-color-disabled);
+
+    @include mixins.e(icon) {
+      color: var(--#{variables.$prefix}color-disabled);
+    }
+  }
+
+  @include mixins.m(small) {
+    --size: var(--#{variables.$prefix}select-size, var(--#{variables.$prefix}size-small));
+    --horizontal-space: var(--#{variables.$prefix}select-horizontal-space, var(--#{variables.$prefix}horizontal-space-small));
+    --font-size: var(--#{variables.$prefix}select-font-size, var(--#{variables.$prefix}font-size-small));
+  }
+
+  @include mixins.m(medium) {
+    --size: var(--#{variables.$prefix}select-size, var(--#{variables.$prefix}size-medium));
+    --horizontal-space: var(--#{variables.$prefix}select-horizontal-space, var(--#{variables.$prefix}horizontal-space-medium));
+    --font-size: var(--#{variables.$prefix}select-font-size, var(--#{variables.$prefix}font-size-medium));
+  }
+
+  @include mixins.m(large) {
+    --size: var(--#{variables.$prefix}select-size, var(--#{variables.$prefix}size-large));
+    --horizontal-space: var(--#{variables.$prefix}select-horizontal-space, var(--#{variables.$prefix}horizontal-space-large));
+    --font-size: var(--#{variables.$prefix}select-font-size, var(--#{variables.$prefix}font-size-large));
+  }
+
+  @include mixins.e(input) {
+    display: inline-block;
+    flex: 1 0 0;
+    min-width: 0;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: var(--#{variables.$prefix}color-text);
+    letter-spacing: inherit;
+    appearance: none;
+    caret-color: var(--#{variables.$prefix}color-primary);
+    background-color: transparent;
+    border: none;
+    outline: none;
+
+    &::placeholder {
+      color: var(--#{variables.$prefix}color-disabled);
+    }
+
+    &:disabled {
+      color: var(--#{variables.$prefix}color-disabled);
+
+      &::placeholder {
+        opacity: 0.5;
+      }
+    }
+  }
+
+  @include mixins.e(indicator) {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    width: 0;
+    height: 2px;
+    pointer-events: none;
+    background-color: var(--#{variables.$prefix}color-primary);
+    opacity: 0;
+    transition:
+      opacity var(--#{variables.$prefix}animation-duration-base) linear,
+      left var(--#{variables.$prefix}animation-duration-slow) linear,
+      width var(--#{variables.$prefix}animation-duration-base) linear;
+  }
+
+  @include mixins.e(separator) {
+    flex-shrink: 0;
+    margin: 0 8px;
+    color: var(--#{variables.$prefix}color-icon-decorator);
+  }
+
+  @include mixins.e(clear) {
+    position: absolute;
+    right: calc(var(--horizontal-space) - 1px);
+    z-index: 1;
+    color: var(--#{variables.$prefix}color-icon-decorator);
+    transition: color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:hover,
+    &:focus {
+      color: var(--#{variables.$prefix}color-light-primary);
+    }
+
+    &:active {
+      color: var(--#{variables.$prefix}color-dark-primary);
+    }
+  }
+
+  @include mixins.e(icon) {
+    flex-shrink: 0;
+    margin-left: 4px;
+    color: var(--#{variables.$prefix}color-icon-decorator);
+  }
+
+  @include mixins.e(preset) {
+    min-width: 120px;
+    padding: 4px;
+    margin: 0;
+    overflow: hidden auto;
+    list-style: none;
+    border-right: 1px solid var(--#{variables.$prefix}color-divider);
+  }
+
+  @include mixins.e(preset-option) {
+    padding: 0 6px;
+    margin: 0;
+    line-height: 28px;
+    list-style: none;
+    cursor: pointer;
+    transition: background-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:hover {
+      background-color: var(--#{variables.$prefix}background-color-hover);
+    }
+  }
+
+  @include mixins.e(panel-wrapper) {
+    white-space: nowrap;
+  }
+
+  @include mixins.e(panel) {
+    display: inline-block;
+    vertical-align: top;
+
+    & + .#{variables.$prefix}time-picker__panel {
+      border-left: 1px solid var(--#{variables.$prefix}color-divider);
+    }
+  }
+
+  @include mixins.e(header) {
+    display: flex;
+    align-items: center;
+    height: 41px;
+    padding: 0 8px;
+    border-bottom: 1px solid var(--#{variables.$prefix}color-divider);
+  }
+
+  @include mixins.e(header-button) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: var(--#{variables.$prefix}color-icon-decorator);
+    white-space: nowrap;
+    vertical-align: top;
+    appearance: none;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    transition: color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:hover,
+    &:focus {
+      color: var(--#{variables.$prefix}color-light-primary);
+    }
+
+    &:active {
+      color: var(--#{variables.$prefix}color-dark-primary);
+    }
+  }
+
+  @include mixins.e(header-date) {
+    margin: 0 auto;
+  }
+
+  @include mixins.e(table) {
+    width: calc(7 * 36px);
+    margin: 4px;
+    table-layout: fixed;
+    border-collapse: collapse;
+
+    tr {
+      height: 32px;
+    }
+  }
+
+  @include mixins.e(cell) {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 26px;
+    cursor: pointer;
+
+    &:not(.is-active):not(.is-hover):not(.is-between):not(.is-between-hover):hover {
+      background-color: var(--#{variables.$prefix}background-color-hover);
+    }
+
+    @include mixins.when(active) {
+      color: map.get(variables.$colors, 'white');
+      background-color: var(--#{variables.$prefix}color-primary);
+    }
+
+    @include mixins.when(hover) {
+      color: map.get(variables.$colors, 'white');
+      background-color: var(--#{variables.$prefix}color-light-primary);
+    }
+
+    @include mixins.when(between) {
+      background-color: var(--#{variables.$prefix}background-color-primary);
+    }
+
+    @include mixins.when(between-hover) {
+      &::before {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        content: '';
+        background-color: var(--#{variables.$prefix}background-color-primary);
+      }
+    }
+
+    @include mixins.when(disabled) {
+      color: var(--#{variables.$prefix}color-disabled);
+      pointer-events: none;
+      background-color: var(--#{variables.$prefix}background-color-disabled);
+    }
+
+    @include mixins.m(out-month) {
+      color: var(--#{variables.$prefix}color-disabled);
+    }
+
+    @include mixins.m(today) {
+      &::after {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        bottom: 2px;
+        left: 2px;
+        content: '';
+        border: 1px solid var(--#{variables.$prefix}color-primary);
+      }
+    }
+  }
+
+  @include mixins.e(footer) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 41px;
+    border-top: 1px solid var(--#{variables.$prefix}color-divider);
+  }
+}
+
+@include mixins.b(date-picker-popup) {
+  position: fixed;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  overflow: auto;
+  background-color: var(--#{variables.$prefix}background-color);
+  border-radius: var(--#{variables.$prefix}border-radius);
+  box-shadow: var(--#{variables.$prefix}box-shadow-popup);
+}

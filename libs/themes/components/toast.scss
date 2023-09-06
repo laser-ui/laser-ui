@@ -1,0 +1,101 @@
+@use '../variables';
+@use '../mixins';
+
+@mixin toast-root {
+  position: fixed;
+  right: 20px;
+  left: 20px;
+  z-index: var(--#{variables.$prefix}zindex-max);
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+##{variables.$prefix}toast-t-root {
+  top: 20px;
+
+  @include toast-root;
+}
+
+##{variables.$prefix}toast-b-root {
+  bottom: 20px;
+
+  @include toast-root;
+}
+
+@include mixins.b(toast) {
+  --color: var(--#{variables.$prefix}toast-color);
+
+  display: flex;
+  align-items: center;
+  max-width: calc(100vw - 40px);
+  padding: 6px 16px;
+  margin: 0 auto 12px;
+  pointer-events: all;
+  background-color: var(--#{variables.$prefix}background-color);
+  border-radius: var(--#{variables.$prefix}border-radius);
+  outline: none;
+  box-shadow: var(--#{variables.$prefix}box-shadow-dialog);
+
+  @include mixins.m(success) {
+    --color: var(--#{variables.$prefix}toast-color, var(--#{variables.$prefix}color-success));
+  }
+
+  @include mixins.m(warning) {
+    --color: var(--#{variables.$prefix}toast-color, var(--#{variables.$prefix}color-warning));
+  }
+
+  @include mixins.m(error) {
+    --color: var(--#{variables.$prefix}toast-color, var(--#{variables.$prefix}color-danger));
+  }
+
+  @include mixins.m(info) {
+    --color: var(--#{variables.$prefix}toast-color, var(--#{variables.$prefix}color-primary));
+  }
+
+  @include mixins.e(icon) {
+    padding: 4px 0;
+    margin-right: 8px;
+    font-size: 1.5em;
+    color: var(--color);
+  }
+
+  @include mixins.e(message) {
+    flex: 1 0 0;
+  }
+
+  @include mixins.e(close) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    margin: 0 0 0 8px;
+    font: inherit;
+    font-size: 1.25em;
+    line-height: 1;
+    white-space: nowrap;
+    vertical-align: top;
+    appearance: none;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+    outline: none;
+    transition:
+      color var(--#{variables.$prefix}animation-duration-base) linear,
+      background-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:hover,
+    &:focus {
+      background-color: var(--#{variables.$prefix}background-color-hover);
+    }
+
+    &:active {
+      color: var(--#{variables.$prefix}color-dark-primary);
+    }
+  }
+
+  @include mixins.e(message) {
+    padding: 4px 0;
+  }
+}

@@ -1,0 +1,194 @@
+@use 'sass:map';
+@use '../variables';
+@use '../mixins';
+
+@keyframes #{variables.$prefix}checkbox-tick {
+  0% {
+    transform: scale(0.7);
+  }
+
+  90% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@include mixins.b(checkbox) {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: top;
+
+  &:hover {
+    @include mixins.e(input) {
+      border-color: var(--#{variables.$prefix}color-light-primary);
+    }
+  }
+
+  @include mixins.when(checked) {
+    &:not(.is-disabled) {
+      @include mixins.e(input) {
+        border-color: var(--#{variables.$prefix}color-primary);
+      }
+
+      @include mixins.e(state-container) {
+        &::before {
+          animation: #{variables.$prefix}wave-spread 0.36s linear;
+          animation-fill-mode: backwards;
+        }
+
+        &::after {
+          background-color: var(--#{variables.$prefix}color-primary);
+        }
+      }
+
+      @include mixins.e(tick) {
+        animation: #{variables.$prefix}checkbox-tick 133ms linear;
+        animation-fill-mode: backwards;
+      }
+    }
+  }
+
+  @include mixins.when(indeterminate) {
+    &:not(.is-disabled) {
+      @include mixins.e(input) {
+        border-color: var(--#{variables.$prefix}color-primary);
+      }
+
+      @include mixins.e(state-container) {
+        &::before {
+          animation: #{variables.$prefix}wave-spread 0.36s linear;
+          animation-fill-mode: backwards;
+        }
+
+        &::after {
+          background-color: var(--#{variables.$prefix}color-primary);
+        }
+      }
+    }
+  }
+
+  @include mixins.when(disabled) {
+    color: var(--#{variables.$prefix}color-disabled);
+    pointer-events: none;
+
+    @include mixins.e(state-container) {
+      &::before {
+        border-color: var(--#{variables.$prefix}color-disabled);
+      }
+
+      &::after {
+        background-color: var(--#{variables.$prefix}background-color-disabled);
+      }
+    }
+
+    @include mixins.e(tick) {
+      &::after {
+        border-bottom-color: var(--#{variables.$prefix}color-disabled);
+        border-left-color: var(--#{variables.$prefix}color-disabled);
+      }
+    }
+
+    @include mixins.e(indeterminate) {
+      background-color: var(--#{variables.$prefix}color-disabled);
+    }
+  }
+
+  @include mixins.e(state-container) {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    background-color: var(--#{variables.$prefix}background-color-input);
+    border-radius: var(--#{variables.$prefix}border-radius);
+
+    &::before {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      content: '';
+      border: 1px solid transparent;
+      border-radius: var(--#{variables.$prefix}border-radius);
+    }
+
+    &::after {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      content: '';
+      background-color: transparent;
+      border-radius: var(--#{variables.$prefix}border-radius);
+      transition:
+        transform var(--#{variables.$prefix}animation-duration-fast) linear,
+        background-color var(--#{variables.$prefix}animation-duration-fast) linear;
+    }
+  }
+
+  @include mixins.e(input) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    appearance: none;
+    cursor: inherit;
+    border: 1px solid var(--#{variables.$prefix}color-border);
+    border-radius: var(--#{variables.$prefix}border-radius);
+    transition: border-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:focus {
+      border-color: var(--#{variables.$prefix}color-light-primary);
+      box-shadow: 0 0 0 3px rgb(var(--#{variables.$prefix}color-primary-rgb) / var(--#{variables.$prefix}box-shadow-opacity-normal));
+    }
+  }
+
+  @include mixins.e(indeterminate) {
+    position: absolute;
+    top: 7px;
+    left: 4px;
+    z-index: 1;
+    width: 8px;
+    height: 2px;
+    background-color: map.get(variables.$colors, 'white');
+  }
+
+  @include mixins.e(tick) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    overflow: hidden;
+    border-radius: var(--#{variables.$prefix}border-radius);
+
+    &::after {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      display: block;
+      width: 10px;
+      height: 6px;
+      content: '';
+      border-bottom: 2px solid map.get(variables.$colors, 'white');
+      border-left: 2px solid map.get(variables.$colors, 'white');
+      transform: rotate(-45deg);
+    }
+  }
+
+  @include mixins.e(label) {
+    margin-left: 8px;
+  }
+}

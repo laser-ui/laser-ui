@@ -1,0 +1,128 @@
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(demo-box) {
+  background-color: var(--#{variables.$prefix}background-color);
+  border: 1px solid var(--#{variables.$prefix}color-divider);
+  border-radius: var(--#{variables.$prefix}border-radius-large);
+
+  & + & {
+    margin-top: 24px;
+  }
+
+  @include mixins.when(active) {
+    border-color: var(--#{variables.$prefix}color-primary);
+  }
+
+  @include mixins.e(renderer) {
+    padding: 42px 24px;
+    overflow-x: auto;
+  }
+
+  @include mixins.e(window) {
+    margin: -42px -24px;
+
+    iframe {
+      display: block;
+      width: 100%;
+      border: none;
+    }
+  }
+
+  @include mixins.e(window-header) {
+    display: flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 8px;
+    background-color: var(--#{variables.$prefix}background-color-primary-gray);
+
+    div:nth-child(1),
+    div:nth-child(2),
+    div:nth-child(3) {
+      width: 12px;
+      height: 12px;
+      margin: 0 4px;
+      border-radius: 50%;
+    }
+
+    div:nth-child(1) {
+      background-color: rgb(var(--#{variables.$prefix}color-danger-rgb) / 70%);
+    }
+
+    div:nth-child(2) {
+      background-color: rgb(var(--#{variables.$prefix}color-success-rgb) / 70%);
+    }
+
+    div:nth-child(3) {
+      background-color: rgb(var(--#{variables.$prefix}color-warning-rgb) / 70%);
+    }
+
+    div:nth-child(4) {
+      flex-grow: 1;
+      height: 14px;
+      margin-left: 8px;
+      background-color: var(--#{variables.$prefix}background-color);
+      border-radius: var(--#{variables.$prefix}border-radius);
+    }
+  }
+
+  @include mixins.e(title) {
+    display: flex;
+    align-items: center;
+    height: 32px;
+    margin-top: -16px;
+    font-size: var(--#{variables.$prefix}font-size-subtitle);
+  }
+
+  @include mixins.e(title-divider) {
+    height: 1px;
+    background-color: var(--#{variables.$prefix}color-divider);
+  }
+
+  @include mixins.e(title-text) {
+    z-index: 1;
+    padding: 0 4px;
+    line-height: 20px;
+    background-color: var(--#{variables.$prefix}background-color);
+  }
+
+  @include mixins.e(description) {
+    padding: 0 24px;
+  }
+
+  @include mixins.e(toolbar) {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 12px 0;
+    border-top: 1px dashed var(--#{variables.$prefix}color-divider);
+
+    @include mixins.polyfill-column-gap(12px);
+  }
+
+  @include mixins.e(button) {
+    color: var(--#{variables.$prefix}color-icon-decorator);
+    cursor: pointer;
+    transition:
+      color var(--#{variables.$prefix}animation-duration-fast) linear,
+      transform var(--#{variables.$prefix}animation-duration-fast) linear;
+
+    &:hover {
+      color: var(--#{variables.$prefix}color-primary);
+      transform: scale(1.2);
+    }
+  }
+
+  @include mixins.e(code) {
+    border-top: 1px dashed var(--#{variables.$prefix}color-divider);
+
+    pre {
+      margin: 0;
+    }
+
+    .hljs {
+      padding: 24px !important;
+      background-color: transparent !important;
+    }
+  }
+}

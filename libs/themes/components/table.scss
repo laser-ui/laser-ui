@@ -1,0 +1,297 @@
+@use '../variables';
+@use '../mixins';
+
+@include mixins.b(table) {
+  $selector: &;
+
+  --padding-size: var(--#{variables.$prefix}table-padding-size, 16px);
+  --color-border: var(--#{variables.$prefix}table-color-border, var(--#{variables.$prefix}color-divider));
+
+  position: relative;
+  width: 100%;
+
+  table {
+    width: 100%;
+    table-layout: auto;
+    border-spacing: 0;
+    border-collapse: separate;
+
+    table {
+      margin-bottom: -1px;
+    }
+  }
+
+  caption {
+    margin-bottom: 10px;
+    font-size: var(--#{variables.$prefix}font-size-title);
+    font-weight: var(--#{variables.$prefix}font-weight-bold);
+  }
+
+  th {
+    padding: var(--padding-size);
+    font-weight: var(--#{variables.$prefix}font-weight-bold);
+    background-color: var(--#{variables.$prefix}background-color-light-gray);
+
+    &:hover #{$selector}__th-action--sort {
+      color: var(--#{variables.$prefix}color-text-sub);
+    }
+  }
+
+  td {
+    padding: var(--padding-size);
+    background-color: var(--#{variables.$prefix}background-color);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  thead th {
+    border-bottom: 1px solid var(--#{variables.$prefix}color-border);
+  }
+
+  tbody th {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  &:not(#{$selector}--border) thead th:not(:last-child):not(#{$selector}__cell--fixed-left#{$selector}__cell--fixed-shadow):after {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 1px;
+    height: 1.6em;
+    content: '';
+    background-color: var(--#{variables.$prefix}color-border);
+    transform: translateY(-50%);
+  }
+
+  @include mixins.m(border) {
+    --color-border: var(--#{variables.$prefix}table-color-border, var(--#{variables.$prefix}color-border));
+
+    table {
+      border-top: 1px solid var(--color-border);
+      border-left: 1px solid var(--color-border);
+    }
+
+    th {
+      border-right: 1px solid var(--color-border);
+    }
+
+    td {
+      border-right: 1px solid var(--color-border);
+    }
+  }
+
+  @include mixins.e(cell) {
+    position: relative;
+
+    @include mixins.m(left) {
+      @include mixins.e(th-actions) {
+        margin-left: auto;
+      }
+    }
+
+    @include mixins.m(right) {
+      @include mixins.e(cell-content) {
+        justify-content: flex-end;
+      }
+
+      @include mixins.e(cell-text) {
+        text-align: right;
+      }
+    }
+
+    @include mixins.m(center) {
+      @include mixins.e(cell-content) {
+        justify-content: center;
+      }
+
+      @include mixins.e(cell-text) {
+        text-align: center;
+      }
+    }
+
+    @include mixins.m(fixed-left) {
+      &::before {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: -1px;
+        width: 30px;
+        pointer-events: none;
+        content: '';
+        transition: box-shadow var(--#{variables.$prefix}animation-duration-base) linear;
+        transform: translateX(100%);
+      }
+
+      &#{$selector}__cell--fixed-shadow::before {
+        box-shadow: inset 8px 0 12px -10px var(--#{variables.$prefix}box-shadow-color);
+      }
+    }
+
+    @include mixins.m(fixed-right) {
+      &::before {
+        position: absolute;
+        top: 0;
+        bottom: -1px;
+        left: 0;
+        width: 30px;
+        pointer-events: none;
+        content: '';
+        transition: box-shadow var(--#{variables.$prefix}animation-duration-base) linear;
+        transform: translateX(-100%);
+      }
+
+      &#{$selector}__cell--fixed-shadow::before {
+        box-shadow: inset -8px 0 12px -10px var(--#{variables.$prefix}box-shadow-color);
+      }
+    }
+
+    @include mixins.m(ellipsis) {
+      @include mixins.e(cell-text) {
+        @include mixins.utils-ellipsis;
+
+        overflow-wrap: unset;
+      }
+    }
+
+    @include mixins.m(th-sort) {
+      cursor: pointer;
+    }
+  }
+
+  @include mixins.e(cell-content) {
+    display: flex;
+    align-items: center;
+  }
+
+  @include mixins.e(cell-text) {
+    overflow-wrap: break-word;
+  }
+
+  @include mixins.e(th-actions) {
+    display: inline-flex;
+    padding-left: 4px;
+  }
+
+  @include mixins.e(th-action) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25em;
+    min-height: 1.25em;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: var(--#{variables.$prefix}color-icon-decorator);
+    white-space: nowrap;
+    vertical-align: top;
+    appearance: none;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    transition: color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:hover,
+    &:active,
+    &:focus {
+      color: var(--#{variables.$prefix}color-text-sub);
+    }
+
+    @include mixins.when(active) {
+      color: var(--#{variables.$prefix}color-primary);
+    }
+
+    @include mixins.when(disabled) {
+      color: var(--#{variables.$prefix}color-disabled);
+      pointer-events: none;
+    }
+
+    @include mixins.m(sort) {
+      flex-direction: column;
+      min-width: 16px;
+    }
+  }
+
+  @include mixins.e(th-sort-icon) {
+    & + & {
+      margin-top: -4px;
+    }
+
+    @include mixins.when(active) {
+      color: var(--#{variables.$prefix}color-primary);
+    }
+  }
+
+  @include mixins.e(filter) {
+    min-width: 120px;
+  }
+
+  @include mixins.e(empty-content) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 128px;
+  }
+
+  @include mixins.e(expand) {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 17px;
+    height: 17px;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: var(--#{variables.$prefix}color-text);
+    white-space: nowrap;
+    vertical-align: top;
+    appearance: none;
+    cursor: pointer;
+    background-color: transparent;
+    border: 1px solid var(--#{variables.$prefix}color-border);
+    border-radius: var(--#{variables.$prefix}border-radius);
+    outline: none;
+    transition: border-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:hover,
+    &:focus {
+      border-color: var(--#{variables.$prefix}color-light-primary);
+    }
+
+    &:active {
+      border-color: var(--#{variables.$prefix}color-dark-primary);
+    }
+
+    &::before {
+      position: absolute;
+      top: 7px;
+      right: 3px;
+      left: 3px;
+      height: 1px;
+      content: '';
+      background-color: currentcolor;
+      transition: transform var(--#{variables.$prefix}animation-duration-base) linear;
+    }
+
+    &::after {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      left: 7px;
+      width: 1px;
+      content: '';
+      background-color: currentcolor;
+      transition: transform var(--#{variables.$prefix}animation-duration-base) linear;
+    }
+
+    @include mixins.when(expand) {
+      &::before {
+        transform: rotate(180deg);
+      }
+
+      &::after {
+        transform: rotate(90deg);
+      }
+    }
+  }
+}

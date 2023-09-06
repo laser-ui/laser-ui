@@ -1,0 +1,15 @@
+// @ts-nocheck
+
+import { MdRoute } from 'apps/site/src/app/components';
+import { memo } from 'react';
+
+export const __Route__ = memo(() => {
+  const props = {
+    'en-US': { html: [__en-US__] },
+    'zh-CN': { html: [__zh-CN__] },
+  };
+
+  return <MdRoute {...props} />;
+});
+
+export default __Route__;

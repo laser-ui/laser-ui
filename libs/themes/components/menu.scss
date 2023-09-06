@@ -1,0 +1,327 @@
+@use '../variables';
+@use '../mixins';
+
+$menu-item-height: 40px;
+
+@include mixins.b(menu) {
+  $selector: &;
+
+  position: relative;
+  padding: 8px 0;
+  outline: none;
+
+  &:not(#{&}--horizontal) {
+    overflow: hidden auto;
+  }
+
+  @include mixins.m(horizontal) {
+    display: inline-flex;
+    align-items: center;
+    min-width: 100%;
+
+    &::after {
+      position: absolute;
+      right: 4px;
+      bottom: 8px;
+      left: 4px;
+      height: 1px;
+      pointer-events: none;
+      content: '';
+      background-color: var(--#{variables.$prefix}background-color-indicator);
+    }
+  }
+
+  @include mixins.e(item) {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: $menu-item-height;
+    margin: 0;
+    list-style: none;
+    cursor: pointer;
+    transition:
+      height var(--#{variables.$prefix}animation-duration-base) linear,
+      color var(--#{variables.$prefix}animation-duration-base) linear,
+      background-color var(--#{variables.$prefix}animation-duration-base) linear;
+
+    &:hover {
+      color: var(--#{variables.$prefix}color-primary);
+    }
+
+    &:not(#{$selector}__item--horizontal):hover {
+      background-color: var(--#{variables.$prefix}background-color-light-primary);
+    }
+
+    @include mixins.when(active) {
+      color: var(--#{variables.$prefix}color-primary);
+
+      &:not(#{$selector}__item--horizontal) {
+        @include mixins.e(indicator-thumb) {
+          transform: scaleY(1);
+        }
+      }
+    }
+
+    @include mixins.when(disabled) {
+      pointer-events: none;
+      filter: opacity(50%);
+    }
+
+    @include mixins.m(item) {
+      padding: 0 16px;
+
+      &#{$selector}__item--horizontal:hover::after {
+        background-color: var(--#{variables.$prefix}color-primary);
+        transform: scaleX(1);
+      }
+    }
+
+    @include mixins.m(sub) {
+      &:not(#{$selector}__item--horizontal) {
+        padding-right: 32px;
+      }
+
+      &#{$selector}__item--horizontal {
+        @include mixins.when(expand) {
+          &::after {
+            background-color: var(--#{variables.$prefix}color-primary);
+            transform: scaleX(1);
+          }
+        }
+      }
+
+      &#{$selector}__item--icon {
+        @include mixins.e(sub-arrow) {
+          opacity: 0;
+        }
+      }
+
+      @include mixins.when(expand) {
+        color: var(--#{variables.$prefix}color-primary);
+      }
+    }
+
+    @include mixins.m(horizontal) {
+      display: inline-flex;
+      min-width: unset;
+      padding: 0 20px;
+
+      &::after {
+        position: absolute;
+        right: 20px;
+        bottom: -2px;
+        left: 20px;
+        z-index: 1;
+        height: 2px;
+        content: '';
+        background-color: transparent;
+        transition:
+          background-color var(--#{variables.$prefix}animation-duration-base) linear,
+          transform var(--#{variables.$prefix}animation-duration-base) linear;
+        transform: scaleX(0.8);
+      }
+
+      @include mixins.when(active) {
+        &::after {
+          background-color: var(--#{variables.$prefix}color-primary);
+          transform: scaleX(1);
+        }
+      }
+
+      @include mixins.e(item-content) {
+        flex-shrink: 0;
+      }
+    }
+
+    @include mixins.m(icon) {
+      height: 52px;
+
+      @include mixins.e(item-icon) {
+        width: 48px;
+        padding-left: 4px;
+        /* stylelint-disable-next-line declaration-property-value-allowed-list */
+        font-size: 24px;
+      }
+    }
+  }
+
+  @include mixins.e(item-icon) {
+    flex-shrink: 0;
+    width: calc(1em + 8px);
+    font-size: 1.25em;
+    transition:
+      width var(--#{variables.$prefix}animation-duration-base) linear,
+      padding var(--#{variables.$prefix}animation-duration-base) linear,
+      font-size var(--#{variables.$prefix}animation-duration-base) linear;
+    transform-origin: left;
+  }
+
+  @include mixins.e(item-content) {
+    @include mixins.utils-ellipsis;
+
+    min-width: 1em;
+  }
+
+  @include mixins.e(group-title) {
+    @include mixins.utils-ellipsis;
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: $menu-item-height;
+    padding: 0 16px;
+    margin: 0;
+    font-size: var(--#{variables.$prefix}font-size-subtitle);
+    color: var(--#{variables.$prefix}color-text-sub);
+  }
+
+  @include mixins.e(group-list) {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  @include mixins.e(sub-list) {
+    position: relative;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  @include mixins.e(sub-arrow) {
+    position: absolute;
+    right: 21px;
+    width: 13px;
+    height: 3px;
+    pointer-events: none;
+    transition: transform var(--#{variables.$prefix}animation-duration-base) linear;
+    transform: rotate(90deg) scale(0.5);
+    transform-origin: 12px center;
+
+    @include mixins.when(expand) {
+      transform: translateY(-3px) rotate(90deg) scale(0.5);
+
+      div:nth-child(1) {
+        transform: rotate(130deg);
+      }
+
+      div:nth-child(2) {
+        transform: rotate(-130deg);
+      }
+    }
+
+    @include mixins.m(horizontal) {
+      right: 18px;
+      transform: rotate(0deg) scale(0.5);
+    }
+
+    div {
+      position: absolute;
+      width: 13px;
+      height: 3px;
+      background-color: currentcolor;
+      /* stylelint-disable-next-line declaration-property-value-allowed-list */
+      border-radius: 3px;
+      transition:
+        color var(--#{variables.$prefix}animation-duration-base) linear,
+        transform var(--#{variables.$prefix}animation-duration-base) linear;
+      transform-origin: 12px center;
+    }
+
+    div:nth-child(1) {
+      transform: rotate(50deg);
+    }
+
+    div:nth-child(2) {
+      transform: rotate(-50deg);
+    }
+  }
+
+  @include mixins.e(indicator) {
+    position: absolute;
+    height: 100%;
+    pointer-events: none;
+
+    @include mixins.m(first) {
+      @include mixins.e(indicator-track) {
+        bottom: 0;
+        height: calc(100% - 8px);
+      }
+
+      @include mixins.e(indicator-thumb) {
+        transform-origin: top;
+      }
+    }
+
+    @include mixins.m(last) {
+      @include mixins.e(indicator-track) {
+        top: 0;
+        height: calc(100% - 8px);
+      }
+
+      @include mixins.e(indicator-thumb) {
+        top: unset;
+        bottom: 8px;
+        transform-origin: bottom;
+      }
+    }
+  }
+
+  @include mixins.e(indicator-track) {
+    position: absolute;
+    left: -8px;
+    width: 2px;
+    height: 100%;
+    background-color: var(--#{variables.$prefix}background-color-indicator);
+
+    @include mixins.m(hidden) {
+      background-color: unset;
+    }
+  }
+
+  @include mixins.e(indicator-thumb) {
+    position: absolute;
+    top: 8px;
+    left: -8px;
+    width: 2px;
+    height: calc(100% - 16px);
+    background-color: var(--#{variables.$prefix}color-primary);
+    transition: transform var(--#{variables.$prefix}animation-duration-base) linear;
+    transform: scaleY(0);
+  }
+
+  @include mixins.e(empty) {
+    display: flex;
+    align-items: center;
+    height: $menu-item-height;
+    color: var(--#{variables.$prefix}color-disabled);
+  }
+}
+
+@include mixins.b(menu-popup) {
+  $menu-selector: '.#{variables.$prefix}menu';
+
+  $padding-size: 8px;
+
+  position: fixed;
+  padding: 4px;
+  background-color: var(--#{variables.$prefix}background-color);
+  border-radius: var(--#{variables.$prefix}border-radius);
+  box-shadow: var(--#{variables.$prefix}box-shadow-popup);
+
+  #{$menu-selector}__item {
+    padding: 0 $padding-size;
+  }
+
+  #{$menu-selector}__item--sub {
+    padding: 0 24px 0 $padding-size;
+  }
+
+  #{$menu-selector}__sub-arrow {
+    right: 12px;
+  }
+
+  #{$menu-selector}__group-title {
+    padding: 0 $padding-size;
+  }
+}
