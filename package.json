@@ -4,6 +4,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
+    "build:affected": "nx affected -t build",
     "build:themes": "ts-node -P ./tools/tsconfig.tools.json ./tools/scripts/build-themes.ts",
     "lint:affected": "nx affected -t lint",
     "lint:style": "stylelint **/*.{css,scss,html,md}",
@@ -89,6 +90,7 @@
     "stylelint-config-recommended-scss": "^12.0.0",
     "stylelint-config-standard": "^34.0.0",
     "stylelint-scss": "^5.0.1",
+    "surge": "^0.23.1",
     "ts-node": "^10.9.1",
     "tslib": "^2.3.0",
     "typescript": "~5.1.3",

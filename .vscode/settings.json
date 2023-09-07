@@ -2,12 +2,8 @@
   "typescript.tsdk": "./node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "eslint.format.enable": true,
-  "stylelint.validate": [
-    "css",
-    "scss",
-    "html",
-    "markdown"
-  ],
+  "eslint.validate": ["json"],
+  "stylelint.validate": ["css", "scss", "html", "markdown"],
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
@@ -41,8 +37,5 @@
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
   "javascript.preferences.importModuleSpecifier": "project-relative",
-  "typescript.preferences.importModuleSpecifier": "project-relative",
-  "eslint.validate": [
-    "json"
-  ]
+  "typescript.preferences.importModuleSpecifier": "project-relative"
 }

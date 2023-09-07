@@ -1,4 +1,4 @@
-import type { AnchorOption } from '@laser-ui/components/anchor/types';
+import type { AnchorItem } from '@laser-ui/components/anchor/types';
 import type { Lang } from '@laser-ui/components/types';
 
 import { Anchor, Drawer, Icon } from '@laser-ui/components';
@@ -26,11 +26,11 @@ export function MdRoute(props: MdRouteProps): JSX.Element | null {
   const { t } = useTranslation();
 
   const [_links, setLinks] = useImmer<{ title?: string; href: string }[]>([]);
-  const links: AnchorOption[] = isUndefined(linksProp)
+  const links: AnchorItem[] = isUndefined(linksProp)
     ? _links
     : (() => {
-        const links: AnchorOption[] = [];
-        const subLinks = new Map<string, AnchorOption[]>();
+        const links: AnchorItem[] = [];
+        const subLinks = new Map<string, AnchorItem[]>();
         for (const { title, href } of linksProp) {
           if (/^[\s\S]+# /.test(title)) {
             const [group, subTitle] = title.split('# ');
