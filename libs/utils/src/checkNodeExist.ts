@@ -1,6 +1,6 @@
 import { isArray, isNumber } from 'lodash';
 
-export function checkNodeExist(node: React.ReactNode) {
+export function checkNodeExist(node: any) {
   if (isNumber(node)) {
     return true;
   }

@@ -1,10 +1,10 @@
-import type { MenuOption } from './types';
+import type { MenuItem } from './types';
 
-export function checkEnableItem<ID extends React.Key, T extends MenuOption<ID>>(item: T) {
+export function checkEnableItem<ID extends React.Key, T extends MenuItem<ID>>(item: T) {
   return (item.type === 'item' || item.type === 'sub') && !item.disabled;
 }
 
-export function getSameLevelEnableItems<ID extends React.Key, T extends MenuOption<ID>>(arr: T[]) {
+export function getSameLevelEnableItems<ID extends React.Key, T extends MenuItem<ID>>(arr: T[]) {
   const items: T[] = [];
   const reduceArr = (arr: T[]) => {
     for (const item of arr) {

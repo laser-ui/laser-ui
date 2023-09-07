@@ -1,19 +1,5 @@
-# components
+# @laser-ui/components
 
-This library was generated with [Nx](https://nx.dev).
+Laser UI: Fast and Powerful React Components.
 
-
-
-## Building
-
-Run `nx build components` to build the library.
-
-
-
-
-
-## Running unit tests
-
-Run `nx test components` to execute the unit tests via [Jest](https://jestjs.io).
-
-
+This package hosts React components.

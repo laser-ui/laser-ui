@@ -18,16 +18,8 @@
             "allow": [],
             "depConstraints": [
               {
-                "sourceTag": "scope:utils",
-                "onlyDependOnLibsWithTags": ["scope:utils"]
-              },
-              {
-                "sourceTag": "scope:hooks",
-                "onlyDependOnLibsWithTags": ["scope:utils", "scope:hooks"]
-              },
-              {
-                "sourceTag": "scope:components",
-                "onlyDependOnLibsWithTags": ["scope:utils", "scope:hooks", "scope:components"]
+                "sourceTag": "*",
+                "onlyDependOnLibsWithTags": ["*"]
               }
             ]
           }

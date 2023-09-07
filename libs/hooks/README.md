@@ -1,19 +1,5 @@
-# hooks
+# @laser-ui/hooks
 
-This library was generated with [Nx](https://nx.dev).
+Laser UI: Fast and Powerful React Components.
 
-
-
-## Building
-
-Run `nx build hooks` to build the library.
-
-
-
-
-
-## Running unit tests
-
-Run `nx test hooks` to execute the unit tests via [Jest](https://jestjs.io).
-
-
+Shared hooks used by Laser UI packages.

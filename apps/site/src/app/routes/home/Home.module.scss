@@ -1,0 +1,73 @@
+@use '~styles/variables';
+@use '~styles/mixins';
+
+@include mixins.b(home-route) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  @include mixins.e(container) {
+    display: flex;
+    flex-flow: column wrap;
+    gap: 20px 60px;
+    align-items: center;
+
+    @include mixins.media-breakpoint-up(md) {
+      flex-direction: row;
+    }
+  }
+
+  @include mixins.e(main) {
+    text-align: center;
+
+    @include mixins.media-breakpoint-up(md) {
+      text-align: left;
+    }
+  }
+
+  @include mixins.e(title) {
+    margin: 0;
+    font-weight: 900;
+
+    @include mixins.font-size(3rem);
+  }
+
+  @include mixins.e(description) {
+    margin: 20px 0;
+    color: rgb(var(--#{variables.$prefix}color-text-rgb) / 80%);
+
+    @include mixins.font-size(1.5rem);
+  }
+
+  @include mixins.e(link) {
+    --#{variables.$prefix}button-size: 48px;
+    --#{variables.$prefix}button-padding-size: 20px;
+    --#{variables.$prefix}button-font-size: 18px;
+
+    font: inherit;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  @include mixins.e(footer) {
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 40px;
+    border-top: 1px solid var(--#{variables.$prefix}color-divider);
+  }
+
+  @include mixins.e(footer-link) {
+    font: inherit;
+    color: var(--#{variables.$prefix}color-primary);
+    text-decoration: none;
+    transition: color var(--#{variables.$prefix}animation-duration-fast) linear;
+
+    &:hover {
+      color: var(--#{variables.$prefix}color-light-primary);
+    }
+  }
+}

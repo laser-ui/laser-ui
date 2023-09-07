@@ -117,8 +117,7 @@ ${scss}
       }
 
       outTSX =
-        String.raw`/* eslint-disable */
-// @ts-nocheck
+        String.raw`// @ts-nocheck
 ` + outTSX;
 
       this.outputFile(join(outDir, `${fileName}.tsx`), outTSX);

@@ -1,7 +1,6 @@
 {
-  "$schema": "./node_modules/lerna/schemas/lerna-schema.json",
-  "useNx": true,
-  "packages": ["libs/components", "libs/hooks", "libs/utils"],
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json",
+  "packages": ["libs/components", "libs/hooks", "libs/utils", "libs/themes"],
   "version": "0.0.0",
   "command": {
     "version": {

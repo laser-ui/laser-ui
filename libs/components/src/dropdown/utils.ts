@@ -1,10 +1,10 @@
-import type { DropdownOption } from './types';
+import type { DropdownItem } from './types';
 
-export function checkEnableItem<ID extends React.Key, T extends DropdownOption<ID>>(item: T) {
+export function checkEnableItem<ID extends React.Key, T extends DropdownItem<ID>>(item: T) {
   return (item.type === 'item' || item.type === 'sub') && !item.disabled;
 }
 
-export function getSameLevelEnableItems<ID extends React.Key, T extends DropdownOption<ID>>(arr: T[]) {
+export function getSameLevelEnableItems<ID extends React.Key, T extends DropdownItem<ID>>(arr: T[]) {
   const items: T[] = [];
   const reduceArr = (arr: T[]) => {
     for (const item of arr) {

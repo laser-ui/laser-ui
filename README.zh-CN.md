@@ -13,20 +13,20 @@
 <!-- prettier-ignore-end -->
 
 </div>
+ 
+ <div align="center">
 
-<div align="center">
-
-English | [简体中文](README.zh-CN.md)
+[English](README.md) | 简体中文
 
 </div>
 
-## Installation
+## 安装
 
 ```bash
 yarn add @react-devui/ui @react-devui/icons @react-devui/hooks @react-devui/utils
 ```
 
-## Getting Started
+## 快速开始
 
 ```tsx
 import type { DRootProps } from '@react-devui/ui';
@@ -55,17 +55,17 @@ export default function App() {
 }
 ```
 
-## Links
+## 链接
 
 - [react-devui.com](//react-devui.com)
 - [admin.react-devui.com](//admin.react-devui.com)
 
-## Contributing
+## 贡献
 
-Please read our [contributing guide](/CONTRIBUTING.md) first.
+请先阅读我们的[贡献指南](/CONTRIBUTING.md)。
 
-Need unit test support (Jest) 🤝.
+需要单元测试支持（Jest） 🤝。
 
-## License
+## 授权协议
 
 [![gitHub license](https://img.shields.io/github/license/DevCloudFE/react-devui?style=flat-square)](/LICENSE)

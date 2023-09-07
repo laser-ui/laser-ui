@@ -11,6 +11,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { FCPLoader } from './components';
 import { STORAGE_KEY } from './configs/storage';
+import HomeRoute from './routes/home/Home';
 import IframeLayout from './routes/layout/IframeLayout';
 import Layout from './routes/layout/Layout';
 import routes from '../dist/routes';
@@ -57,6 +58,7 @@ export function App() {
       <Root context={rootContext}>
         <Routes>
           <Route element={<Layout />}>
+            <Route path="/" element={<HomeRoute />} />
             {routes
               .filter(({ path }) => !path.startsWith('/iframe'))
               .map(({ path, component }) => (

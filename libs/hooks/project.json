@@ -12,15 +12,22 @@
         "rootDir": "libs/hooks/src",
         "main": "libs/hooks/src/index.ts",
         "tsConfig": "libs/hooks/tsconfig.lib.json",
-        "assets": ["libs/hooks/*.md"],
-        "updateBuildableProjectDepsInPackageJson": true
+        "assets": [
+          "libs/hooks/CHANGELOG.md",
+          "libs/hooks/README.md",
+          {
+            "glob": "LICENSE",
+            "input": "",
+            "output": "/"
+          }
+        ]
       }
     },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/hooks/**/*.ts"]
+        "lintFilePatterns": ["libs/hooks/**/*.ts", "libs/hooks/package.json"]
       }
     },
     "test": {
@@ -32,5 +39,5 @@
       }
     }
   },
-  "tags": ["scope:hooks"]
+  "tags": []
 }

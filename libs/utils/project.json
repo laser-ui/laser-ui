@@ -12,15 +12,22 @@
         "rootDir": "libs/utils/src",
         "main": "libs/utils/src/index.ts",
         "tsConfig": "libs/utils/tsconfig.lib.json",
-        "assets": ["libs/utils/*.md"],
-        "updateBuildableProjectDepsInPackageJson": true
+        "assets": [
+          "libs/utils/CHANGELOG.md",
+          "libs/utils/README.md",
+          {
+            "glob": "LICENSE",
+            "input": "",
+            "output": "/"
+          }
+        ]
       }
     },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/utils/**/*.ts"]
+        "lintFilePatterns": ["libs/utils/**/*.ts", "libs/utils/package.json"]
       }
     },
     "test": {
@@ -32,5 +39,5 @@
       }
     }
   },
-  "tags": ["scope:utils"]
+  "tags": []
 }
