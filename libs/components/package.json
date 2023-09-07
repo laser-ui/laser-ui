@@ -24,8 +24,8 @@
   "main": "./index.js",
   "types": "./index.d.ts",
   "dependencies": {
-    "@laser-ui/hooks": "*",
-    "@laser-ui/utils": "*",
+    "@laser-ui/hooks": "0.0.1",
+    "@laser-ui/utils": "0.0.1",
     "@material-design-icons/svg": "^0.14.9",
     "lodash": "^4.17.21",
     "rcl-store": "^2.1.0",
