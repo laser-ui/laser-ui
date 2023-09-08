@@ -5,7 +5,7 @@ import type { CLASSES } from '../vars';
 import { useEventCallback } from '@laser-ui/hooks';
 import { checkNodeExist } from '@laser-ui/utils';
 import { isUndefined } from 'lodash';
-import { cloneElement, forwardRef, isValidElement, useImperativeHandle, useRef, useState } from 'react';
+import { cloneElement, forwardRef, useImperativeHandle, useRef, useState } from 'react';
 
 import { useMaxIndex, useTranslation } from '../../hooks';
 import { Popup } from '../../internal/popup';
@@ -71,7 +71,7 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): JSX.El
   const popupRef = useRef<HTMLDivElement>(null);
 
   const dataRef = useRef<{
-    nodeCache?: React.ReactNode;
+    nodeCache?: React.ReactElement;
   }>({});
 
   const { t } = useTranslation();
@@ -274,8 +274,8 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): JSX.El
       >
         {(listRef, collapseStyle, state) => {
           if (mode !== 'vertical') {
-            if (inNav && state !== 'leaved' && isValidElement(dataRef.current.nodeCache)) {
-              return cloneElement(dataRef.current.nodeCache as React.ReactElement, {
+            if (inNav && state !== 'leaved' && dataRef.current.nodeCache) {
+              return cloneElement(dataRef.current.nodeCache, {
                 style: { ...dataRef.current.nodeCache.props.style, ...collapseStyle },
               });
             }
