@@ -3,7 +3,7 @@ import packageJson from 'package.json';
 
 export default function (name: string) {
   return `{
-  "name": "${name} - ${lernaJson.version}",
+  "name": "${name}",
   "version": "0.0.0",
   "private": true,
   "main": "src/index.tsx",
@@ -14,20 +14,20 @@ export default function (name: string) {
     "@laser-ui/utils": "${lernaJson.version}",
     "dayjs": "${packageJson.devDependencies['dayjs']}",
     "react": "${packageJson.devDependencies['react']}",
-    "react-dom": "${packageJson.devDependencies['react-dom']}",
-    "react-scripts": "latest",
-    "sass": "latest"
+    "react-dom": "${packageJson.devDependencies['react-dom']}"
   },
   "devDependencies": {
     "@types/react": "${packageJson.devDependencies['@types/react']}",
     "@types/react-dom": "${packageJson.devDependencies['@types/react-dom']}",
-    "typescript": "${packageJson.devDependencies['typescript']}"
+    "@vitejs/plugin-react": "${packageJson.devDependencies['@vitejs/plugin-react']}",
+    "sass": "${packageJson.devDependencies['sass']}",
+    "typescript": "${packageJson.devDependencies['typescript']}",
+    "vite": "${packageJson.devDependencies['vite']}",
+    "vite-plugin-svgr": "${packageJson.devDependencies['vite-plugin-svgr']}"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "start": "vite",
+    "build": "vite build"
   }
 }
 `;

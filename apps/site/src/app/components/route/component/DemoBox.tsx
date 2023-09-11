@@ -111,7 +111,7 @@ ${'```'}
             onClick={() => {
               openCodeSandbox(
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                `${document.getElementById('component-route-title')!.textContent!.match(/[a-zA-Z]+/)![0]}:${title}`,
+                `${document.getElementById('component-route-title')!.textContent!.match(/[a-zA-Z]+/)![0]}`,
                 tsxSource,
                 scssSource,
               );
@@ -129,7 +129,7 @@ ${'```'}
             onClick={() => {
               openStackBlitz(
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                `${document.getElementById('component-route-title')!.textContent!.match(/[a-zA-Z]+/)![0]}:${title}`,
+                `${document.getElementById('component-route-title')!.textContent!.match(/[a-zA-Z]+/)![0]}`,
                 tsxSource,
                 scssSource,
               );

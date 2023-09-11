@@ -1,4 +1,4 @@
-export default `@import '~@laser-ui/themes/index';
+export default `@use '@laser-ui/themes/index';
 
 body {
   margin: 0;

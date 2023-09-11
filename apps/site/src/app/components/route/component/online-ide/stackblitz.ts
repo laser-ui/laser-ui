@@ -1,25 +1,24 @@
 import sdk from '@stackblitz/sdk';
-import lernaJson from 'lerna.json';
 
 import AppTsx from './files/App.tsx';
 import indexHtml from './files/index.html';
-import indexTsx from './files/index.tsx';
-import packageJsonFn from './files/stackblitz/package.json';
-import tsconfigJson from './files/stackblitz/tsconfig.json';
+import mainTsx from './files/main.tsx';
+import packageJson from './files/package.json';
+import tsconfigJson from './files/tsconfig.json';
+import viteConfigTs from './files/vite.config.ts';
 
 import stylesScss from './files/styles.scss';
 
 export function openStackBlitz(name: string, tsxSource: string, scssSource?: string) {
-  const [packageJson, dependencies] = packageJsonFn(name);
-
   const files: any = {
     'index.html': indexHtml,
-    'App.tsx': AppTsx,
-    'Demo.tsx': tsxSource,
-    'index.tsx': indexTsx,
-    'styles.scss': stylesScss,
-    'package.json': packageJson,
+    'src/App.tsx': AppTsx,
+    'src/Demo.tsx': tsxSource,
+    'src/main.tsx': mainTsx,
+    'src/styles.scss': stylesScss,
+    'package.json': packageJson(name),
     'tsconfig.json': tsconfigJson,
+    'vite.config.ts': viteConfigTs,
   };
   if (scssSource) {
     files['styles.scss'] = `${stylesScss}
@@ -28,11 +27,10 @@ ${scssSource}`;
 
   sdk.openProject(
     {
-      title: `${name} - ${lernaJson.version}`,
+      title: name,
       description: 'Demo of Laser UI',
-      template: 'create-react-app',
+      template: 'node',
       files: files,
-      dependencies: dependencies,
     },
     { openFile: 'Demo.tsx' },
   );

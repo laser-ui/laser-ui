@@ -1,16 +1,18 @@
 import { getParameters } from 'codesandbox/lib/api/define';
 
 import AppTsx from './files/App.tsx';
-import packageJsonFn from './files/codesandbox/package.json';
-import tsconfigJson from './files/codesandbox/tsconfig.json';
+import sandboxConfigJson from './files/codesandbox/sandbox.config.json.js';
 import indexHtml from './files/index.html';
-import indexTsx from './files/index.tsx';
+import mainTsx from './files/main.tsx';
+import packageJson from './files/package.json';
+import tsconfigJson from './files/tsconfig.json';
+import viteConfigTs from './files/vite.config.ts';
 
 import stylesScss from './files/styles.scss';
 
 export function openCodeSandbox(name: string, tsxSource: string, scssSource?: string) {
   const files: any = {
-    'public/index.html': {
+    'index.html': {
       content: indexHtml,
     },
     'src/App.tsx': {
@@ -19,17 +21,23 @@ export function openCodeSandbox(name: string, tsxSource: string, scssSource?: st
     'src/Demo.tsx': {
       content: tsxSource,
     },
-    'src/index.tsx': {
-      content: indexTsx,
+    'src/main.tsx': {
+      content: mainTsx,
     },
     'src/styles.scss': {
       content: stylesScss,
     },
     'package.json': {
-      content: packageJsonFn(name),
+      content: packageJson(name),
     },
     'tsconfig.json': {
       content: tsconfigJson,
+    },
+    'vite.config.ts': {
+      content: viteConfigTs,
+    },
+    'sandbox.config.json': {
+      content: sandboxConfigJson,
     },
   };
   if (scssSource) {
