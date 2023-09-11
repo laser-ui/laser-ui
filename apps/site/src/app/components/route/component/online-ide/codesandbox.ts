@@ -1,48 +1,48 @@
 import { getParameters } from 'codesandbox/lib/api/define';
 
-import AppTsx from './files/App.tsx';
-import sandboxConfigJson from './files/codesandbox/sandbox.config.json.js';
-import indexHtml from './files/index.html';
-import mainTsx from './files/main.tsx';
+import { FILES } from './files';
+import sandboxConfigJson from './files/codesandbox/sandbox.config.json';
 import packageJson from './files/package.json';
-import tsconfigJson from './files/tsconfig.json';
-import viteConfigTs from './files/vite.config.ts';
-
-import stylesScss from './files/styles.scss';
 
 export function openCodeSandbox(name: string, tsxSource: string, scssSource?: string) {
   const files: any = {
     'index.html': {
-      content: indexHtml,
+      content: FILES['index.html'],
     },
     'src/App.tsx': {
-      content: AppTsx,
+      content: FILES['src/App.tsx'],
     },
     'src/Demo.tsx': {
       content: tsxSource,
     },
     'src/main.tsx': {
-      content: mainTsx,
+      content: FILES['src/main.tsx'],
     },
-    'src/styles.scss': {
-      content: stylesScss,
+    'src/styles/index.scss': {
+      content: FILES['src/styles/index.scss'],
+    },
+    'src/styles/vendor/bootstrap.scss': {
+      content: FILES['src/styles/vendor/bootstrap.scss'],
+    },
+    'src/styles/vendor/laser-ui.scss': {
+      content: FILES['src/styles/vendor/laser-ui.scss'],
     },
     'package.json': {
       content: packageJson(name),
     },
     'tsconfig.json': {
-      content: tsconfigJson,
+      content: FILES['tsconfig.json'],
     },
     'vite.config.ts': {
-      content: viteConfigTs,
+      content: FILES['vite.config.ts'],
     },
     'sandbox.config.json': {
       content: sandboxConfigJson,
     },
   };
   if (scssSource) {
-    files['src/styles.scss'] = {
-      content: `${stylesScss}
+    files['src/styles/index.scss'] = {
+      content: `${FILES['src/styles/index.scss']}
 ${scssSource}`,
     };
   }

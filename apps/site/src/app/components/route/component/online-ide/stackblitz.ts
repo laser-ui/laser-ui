@@ -1,27 +1,23 @@
 import sdk from '@stackblitz/sdk';
 
-import AppTsx from './files/App.tsx';
-import indexHtml from './files/index.html';
-import mainTsx from './files/main.tsx';
+import { FILES } from './files';
 import packageJson from './files/package.json';
-import tsconfigJson from './files/tsconfig.json';
-import viteConfigTs from './files/vite.config.ts';
-
-import stylesScss from './files/styles.scss';
 
 export function openStackBlitz(name: string, tsxSource: string, scssSource?: string) {
   const files: any = {
-    'index.html': indexHtml,
-    'src/App.tsx': AppTsx,
+    'index.html': FILES['index.html'],
+    'src/App.tsx': FILES['src/App.tsx'],
     'src/Demo.tsx': tsxSource,
-    'src/main.tsx': mainTsx,
-    'src/styles.scss': stylesScss,
+    'src/main.tsx': FILES['src/main.tsx'],
+    'src/styles/index.scss': FILES['src/styles/index.scss'],
+    'src/styles/vendor/bootstrap.scss': FILES['src/styles/vendor/bootstrap.scss'],
+    'src/styles/vendor/laser-ui.scss': FILES['src/styles/vendor/laser-ui.scss'],
     'package.json': packageJson(name),
-    'tsconfig.json': tsconfigJson,
-    'vite.config.ts': viteConfigTs,
+    'tsconfig.json': FILES['tsconfig.json'],
+    'vite.config.ts': FILES['vite.config.ts'],
   };
   if (scssSource) {
-    files['styles.scss'] = `${stylesScss}
+    files['src/styles/index.scss'] = `${FILES['src/styles/index.scss']}
 ${scssSource}`;
   }
 
