@@ -1,15 +1,15 @@
 <p align="center">
-  <a href="//react-devui.com" rel="noopener" target="_blank"><img width="150" src="/packages/site/src/assets/logo.svg" alt="DevUI logo"></a>
+  <a href="//laser-ui.surge.sh/" rel="noopener" target="_blank"><img width="150" src="apps/site/public/logo.png" alt="logo"></a>
 </p>
 
-<h1 align="center">React DevUI</h1>
+<h1 align="center">Laser UI</h1>
 
 <div align="center">
 
 <!-- prettier-ignore-start -->
-[![npm latest package](http://img.shields.io/npm/v/@react-devui/ui/latest.svg?style=flat-square)](https://www.npmjs.com/package/@react-devui/ui)
-[![npm bundle size](https://img.shields.io/bundlephobia/minzip/@react-devui/ui?style=flat-square)](https://bundlephobia.com/package/@react-devui/ui)
-[![gitHub workflow status](https://img.shields.io/github/actions/workflow/status/DevCloudFE/react-devui/main.yml?branch=main&style=flat-square)](https://github.com/DevCloudFE/react-devui/actions/workflows/main.yml)
+[![npm latest package](http://img.shields.io/npm/v/@laser-ui/components/latest.svg?style=flat-square)](https://www.npmjs.com/package/@laser-ui/components)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/@laser-ui/components?style=flat-square)](https://bundlephobia.com/package/@laser-ui/components)
+[![gitHub workflow status](https://img.shields.io/github/actions/workflow/status/laser-ui/laser-ui/main.yml?branch=main&style=flat-square)](https://github.com/laser-ui/laser-ui/actions/workflows/main.yml)
 <!-- prettier-ignore-end -->
 
 </div>
@@ -23,49 +23,48 @@ English | [简体中文](README.zh-CN.md)
 ## Installation
 
 ```bash
-yarn add @react-devui/ui @react-devui/icons @react-devui/hooks @react-devui/utils
+npm install @laser-ui/components @laser-ui/hooks @laser-ui/themes @laser-ui/utils
 ```
 
 ## Getting Started
 
 ```tsx
-import type { DRootProps } from '@react-devui/ui';
+import type { LContextIn } from '@laser-ui/components/context';
 
+import { ConfigProvider, Root } from '@laser-ui/components';
 import { useMemo } from 'react';
 
-import { DRoot } from '@react-devui/ui';
-
 export default function App() {
-  const rootContext = useMemo<DRootProps['context']>(
+  const rootContext = useMemo<LContextIn>(
     () => ({
-      layout: { pageScrollEl: '#app-main', contentResizeEl: '#app-content' },
+      layoutPageScrollEl: '#app-main',
+      layoutContentResizeEl: '#app-content',
     }),
-    []
+    [],
   );
 
   return (
-    <DRoot context={rootContext}>
-      <main id="app-main" style={{ overflow: 'auto' }}>
-        <section id="app-content" style={{ height: '200vh' }}>
-          Some content...
-        </section>
-      </main>
-    </DRoot>
+    <ConfigProvider context={rootContext}>
+      <Root>
+        <main id="app-main" style={{ overflow: 'auto' }}>
+          <section id="app-content" style={{ height: '200vh' }}>
+            Some content...
+          </section>
+        </main>
+      </Root>
+    </ConfigProvider>
   );
 }
 ```
 
 ## Links
 
-- [react-devui.com](//react-devui.com)
-- [admin.react-devui.com](//admin.react-devui.com)
+- [laser-ui.surge.sh](//laser-ui.surge.sh)
 
 ## Contributing
 
 Please read our [contributing guide](/CONTRIBUTING.md) first.
 
-Need unit test support (Jest) 🤝.
-
 ## License
 
-[![gitHub license](https://img.shields.io/github/license/DevCloudFE/react-devui?style=flat-square)](/LICENSE)
+[![gitHub license](https://img.shields.io/github/license/laser-ui/laser-ui?style=flat-square)](/LICENSE)
