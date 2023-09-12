@@ -14,6 +14,7 @@ import {
   useComponentProps,
   useControlled,
   useFocusVisible,
+  useJSS,
   useMaxIndex,
   useNamespace,
   useNestedPopup,
@@ -58,6 +59,7 @@ function DropdownFC<ID extends React.Key, T extends DropdownItem<ID>>(
     { dropdown: styleProvider?.dropdown, 'dropdown-popup': styleProvider?.['dropdown-popup'] },
     styleOverrides,
   );
+  const sheet = useJSS<'position'>();
 
   const uniqueId = useId();
   const id = restProps.id ?? `${namespace}-dropdown-${uniqueId}`;
@@ -137,14 +139,10 @@ function DropdownFC<ID extends React.Key, T extends DropdownItem<ID>>(
   const maxZIndex = useMaxIndex(visible);
   const zIndex = !isUndefined(zIndexProp) ? zIndexProp : `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
 
-  const [transformOrigin, setTransformOrigin] = useState<string>();
-  const [popupPositionStyle, setPopupPositionStyle] = useState<React.CSSProperties>({
-    top: '-200vh',
-    left: '-200vw',
-  });
-  const [placement, setPlacement] = useState(placementProp);
+  const transformOrigin = useRef<string>();
+  const placement = useRef(placementProp);
   const updatePosition = useEventCallback(() => {
-    if (visible && triggerRef.current && popupRef.current) {
+    if (visible && triggerRef.current && dropdownRef.current && popupRef.current) {
       const [width, height] = [popupRef.current.offsetWidth, popupRef.current.offsetHeight];
       const position = getVerticalSidePosition(
         triggerRef.current,
@@ -155,12 +153,18 @@ function DropdownFC<ID extends React.Key, T extends DropdownItem<ID>>(
           inWindow: WINDOW_SPACE,
         },
       );
-      setTransformOrigin(position.transformOrigin);
-      setPopupPositionStyle({
+      transformOrigin.current = position.transformOrigin;
+      dropdownRef.current.classList.toggle(`${namespace}-dropdown--${placement.current}`, false);
+      placement.current = position.placement;
+      dropdownRef.current.classList.toggle(`${namespace}-dropdown--${placement.current}`, true);
+      if (sheet.classes.position) {
+        popupRef.current.classList.toggle(sheet.classes.position, false);
+      }
+      sheet.replaceRule('position', {
         top: position.top,
         left: position.left,
       });
-      setPlacement(position.placement);
+      popupRef.current.classList.toggle(sheet.classes.position, true);
     }
   });
 
@@ -490,7 +494,7 @@ function DropdownFC<ID extends React.Key, T extends DropdownItem<ID>>(
                     case 'entering':
                       transitionStyle = {
                         transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-out`).join(', '),
-                        transformOrigin,
+                        transformOrigin: transformOrigin.current,
                       };
                       break;
 
@@ -499,7 +503,7 @@ function DropdownFC<ID extends React.Key, T extends DropdownItem<ID>>(
                         transform: 'scaleY(0.7)',
                         opacity: 0,
                         transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-in`).join(', '),
-                        transformOrigin,
+                        transformOrigin: transformOrigin.current,
                       };
                       break;
 
@@ -514,7 +518,7 @@ function DropdownFC<ID extends React.Key, T extends DropdownItem<ID>>(
                   return (
                     <div
                       {...restProps}
-                      {...mergeCS(styled('dropdown', `dropdown--${placement}`), {
+                      {...mergeCS(styled('dropdown'), {
                         className: restProps.className,
                         style: restProps.style,
                       })}
@@ -535,7 +539,6 @@ function DropdownFC<ID extends React.Key, T extends DropdownItem<ID>>(
                           {...mergeCS(styled('dropdown-popup'), {
                             style: {
                               zIndex,
-                              ...popupPositionStyle,
                               ...transitionStyle,
                             },
                           })}

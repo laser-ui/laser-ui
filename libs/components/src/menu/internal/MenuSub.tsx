@@ -5,9 +5,9 @@ import type { CLASSES } from '../vars';
 import { useEventCallback } from '@laser-ui/hooks';
 import { checkNodeExist } from '@laser-ui/utils';
 import { isUndefined } from 'lodash';
-import { cloneElement, forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { cloneElement, forwardRef, useImperativeHandle, useRef } from 'react';
 
-import { useMaxIndex, useTranslation } from '../../hooks';
+import { useJSS, useMaxIndex, useTranslation } from '../../hooks';
 import { Popup } from '../../internal/popup';
 import { Portal } from '../../internal/portal';
 import { CollapseTransition, Transition } from '../../internal/transition';
@@ -67,6 +67,8 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): JSX.El
     onClick,
   } = props;
 
+  const sheet = useJSS<'position'>();
+
   const triggerRef = useRef<HTMLLIElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
 
@@ -80,11 +82,7 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): JSX.El
   const inHorizontalNav = mode === 'horizontal' && inNav;
   const iconMode = mode === 'icon' && inNav;
 
-  const [popupPositionStyle, setPopupPositionStyle] = useState<React.CSSProperties>({
-    top: '-200vh',
-    left: '-200vw',
-  });
-  const [transformOrigin, setTransformOrigin] = useState<string>();
+  const transformOrigin = useRef<string>();
   const updatePosition = useEventCallback(() => {
     if (visible && popupRef.current && triggerRef.current) {
       const height = popupRef.current.offsetHeight;
@@ -94,7 +92,7 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): JSX.El
         width = triggerRef.current.offsetWidth - 32;
       }
 
-      const { top, left, transformOrigin } = inHorizontalNav
+      const position = inHorizontalNav
         ? getVerticalSidePosition(
             triggerRef.current,
             { width, height },
@@ -113,12 +111,16 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): JSX.El
               inWindow: WINDOW_SPACE,
             },
           );
-      setPopupPositionStyle({
-        top,
-        left,
+      transformOrigin.current = position.transformOrigin;
+      if (sheet.classes.position) {
+        popupRef.current.classList.toggle(sheet.classes.position, false);
+      }
+      sheet.replaceRule('position', {
+        top: position.top,
+        left: position.left,
         width: inHorizontalNav ? width : undefined,
       });
-      setTransformOrigin(transformOrigin);
+      popupRef.current.classList.toggle(sheet.classes.position, true);
     }
   });
 
@@ -203,7 +205,7 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): JSX.El
                       case 'entering':
                         transitionStyle = {
                           transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-out`).join(', '),
-                          transformOrigin,
+                          transformOrigin: transformOrigin.current,
                         };
                         break;
 
@@ -212,7 +214,7 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): JSX.El
                           transform: inHorizontalNav ? 'scaleY(0.7)' : 'scale(0)',
                           opacity: 0,
                           transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-in`).join(', '),
-                          transformOrigin,
+                          transformOrigin: transformOrigin.current,
                         };
                         break;
 
@@ -230,7 +232,6 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): JSX.El
                           style: {
                             minWidth: inHorizontalNav ? undefined : 160,
                             zIndex: `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`,
-                            ...popupPositionStyle,
                             ...transitionStyle,
                           },
                         })}

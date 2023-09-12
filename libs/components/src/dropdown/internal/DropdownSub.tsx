@@ -5,9 +5,9 @@ import { useEventCallback } from '@laser-ui/hooks';
 import { checkNodeExist } from '@laser-ui/utils';
 import { ReactComponent as KeyboardArrowRightOutlined } from '@material-design-icons/svg/outlined/keyboard_arrow_right.svg';
 import { isUndefined } from 'lodash';
-import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 
-import { useTranslation } from '../../hooks';
+import { useJSS, useTranslation } from '../../hooks';
 import { Icon } from '../../icon';
 import { Popup } from '../../internal/popup';
 import { Portal } from '../../internal/portal';
@@ -52,6 +52,8 @@ export const DropdownSub = forwardRef<() => void, DropdownSubProps>((props, ref)
     onVisibleChange,
   } = props;
 
+  const sheet = useJSS<'position'>();
+
   const triggerRef = useRef<HTMLLIElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
 
@@ -59,15 +61,11 @@ export const DropdownSub = forwardRef<() => void, DropdownSubProps>((props, ref)
 
   const visible = !isUndefined(popupState);
 
-  const [transformOrigin, setTransformOrigin] = useState<string>();
-  const [popupPositionStyle, setPopupPositionStyle] = useState<React.CSSProperties>({
-    top: '-200vh',
-    left: '-200vw',
-  });
+  const transformOrigin = useRef<string>();
   const updatePosition = useEventCallback(() => {
     if (visible && popupRef.current && triggerRef.current) {
       const [width, height] = [popupRef.current.offsetWidth, popupRef.current.offsetHeight];
-      const { top, left, transformOrigin } = getHorizontalSidePosition(
+      const position = getHorizontalSidePosition(
         triggerRef.current,
         { width, height },
         {
@@ -75,11 +73,15 @@ export const DropdownSub = forwardRef<() => void, DropdownSubProps>((props, ref)
           inWindow: WINDOW_SPACE,
         },
       );
-      setPopupPositionStyle({
-        top,
-        left,
+      transformOrigin.current = position.transformOrigin;
+      if (sheet.classes.position) {
+        popupRef.current.classList.toggle(sheet.classes.position, false);
+      }
+      sheet.replaceRule('position', {
+        top: position.top,
+        left: position.left,
       });
-      setTransformOrigin(transformOrigin);
+      popupRef.current.classList.toggle(sheet.classes.position, true);
     }
   });
 
@@ -138,7 +140,7 @@ export const DropdownSub = forwardRef<() => void, DropdownSubProps>((props, ref)
                   case 'entering':
                     transitionStyle = {
                       transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-out`).join(', '),
-                      transformOrigin,
+                      transformOrigin: transformOrigin.current,
                     };
                     break;
 
@@ -147,7 +149,7 @@ export const DropdownSub = forwardRef<() => void, DropdownSubProps>((props, ref)
                       transform: 'scale(0)',
                       opacity: 0,
                       transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-in`).join(', '),
-                      transformOrigin,
+                      transformOrigin: transformOrigin.current,
                     };
                     break;
 
@@ -164,7 +166,7 @@ export const DropdownSub = forwardRef<() => void, DropdownSubProps>((props, ref)
                     {...mergeCS(styled('dropdown-popup'), {
                       style: {
                         zIndex,
-                        ...popupPositionStyle,
+
                         ...transitionStyle,
                       },
                     })}

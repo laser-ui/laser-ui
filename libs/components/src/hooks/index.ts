@@ -2,6 +2,7 @@ export { useComponentProps } from './useComponentProps';
 export { useControlled } from './useControlled';
 export { useDesign } from './useDesign';
 export { useFocusVisible } from './useFocusVisible';
+export { useJSS } from './useJSS';
 export { useLayout } from './useLayout';
 export { useListenGlobalScrolling } from './useListenGlobalScrolling';
 export { useLockScroll } from './useLockScroll';

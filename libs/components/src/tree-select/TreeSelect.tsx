@@ -21,6 +21,7 @@ import {
   useControlled,
   useDesign,
   useFocusVisible,
+  useJSS,
   useLayout,
   useListenGlobalScrolling,
   useMaxIndex,
@@ -98,6 +99,7 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
     },
     styleOverrides,
   );
+  const sheet = useJSS<'position'>();
 
   const dataRef = useRef<{
     expands: Set<V>;
@@ -298,11 +300,7 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
   const maxZIndex = useMaxIndex(visible);
   const zIndex = `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
 
-  const [transformOrigin, setTransformOrigin] = useState<string>();
-  const [popupPositionStyle, setPopupPositionStyle] = useState<React.CSSProperties>({
-    top: '-200vh',
-    left: '-200vw',
-  });
+  const transformOrigin = useRef<string>();
   const updatePosition = useEventCallback(() => {
     if (visible && boxRef.current && popupRef.current) {
       const boxWidth = boxRef.current.offsetWidth;
@@ -317,13 +315,17 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
           inWindow: WINDOW_SPACE,
         },
       );
-      setTransformOrigin(position.transformOrigin);
-      setPopupPositionStyle({
+      transformOrigin.current = position.transformOrigin;
+      if (sheet.classes.position) {
+        popupRef.current.classList.toggle(sheet.classes.position, false);
+      }
+      sheet.replaceRule('position', {
         top: position.top,
         left: position.left,
         minWidth: Math.min(boxWidth, maxWidth),
         maxWidth,
       });
+      popupRef.current.classList.toggle(sheet.classes.position, true);
     }
   });
 
@@ -738,7 +740,7 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
               case 'entering':
                 transitionStyle = {
                   transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-out`).join(', '),
-                  transformOrigin,
+                  transformOrigin: transformOrigin.current,
                 };
                 break;
 
@@ -747,7 +749,7 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
                   transform: 'scaleY(0.7)',
                   opacity: 0,
                   transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-in`).join(', '),
-                  transformOrigin,
+                  transformOrigin: transformOrigin.current,
                 };
                 break;
 
@@ -764,7 +766,6 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
                 {...mergeCS(styled('tree-select-popup'), {
                   style: {
                     zIndex,
-                    ...popupPositionStyle,
                     ...transitionStyle,
                   },
                 })}

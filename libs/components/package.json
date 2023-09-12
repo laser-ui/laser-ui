@@ -29,6 +29,8 @@
     "@laser-ui/hooks": "0.0.5",
     "@laser-ui/utils": "0.0.5",
     "@material-design-icons/svg": "^0.14.9",
+    "jss": "^10.10.0",
+    "jss-preset-default": "^10.10.0",
     "lodash": "^4.17.21",
     "rcl-store": "^2.1.0",
     "rxjs": "^7.8.1"

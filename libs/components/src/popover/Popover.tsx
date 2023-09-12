@@ -2,12 +2,12 @@ import type { PopoverProps, PopoverRef } from './types';
 
 import { useEventCallback, useRefExtra } from '@laser-ui/hooks';
 import { isFunction, isString, isUndefined } from 'lodash';
-import { cloneElement, forwardRef, useId, useImperativeHandle, useRef, useState } from 'react';
+import { cloneElement, forwardRef, useId, useImperativeHandle, useRef } from 'react';
 
 import { PopoverFooter } from './PopoverFooter';
 import { PopoverHeader } from './PopoverHeader';
 import { CLASSES, TTANSITION_DURING } from './vars';
-import { useComponentProps, useControlled, useLockScroll, useMaxIndex, useNamespace, useStyled } from '../hooks';
+import { useComponentProps, useControlled, useJSS, useLockScroll, useMaxIndex, useNamespace, useStyled } from '../hooks';
 import { Popup } from '../internal/popup';
 import { Portal } from '../internal/portal';
 import { Transition } from '../internal/transition';
@@ -47,6 +47,7 @@ function PopoverFC(props: PopoverProps, ref: React.ForwardedRef<PopoverRef>): JS
 
   const namespace = useNamespace();
   const styled = useStyled(CLASSES, { popover: styleProvider?.popover }, styleOverrides);
+  const sheet = useJSS<'position'>();
 
   const uniqueId = useId();
   let triggerId: string;
@@ -69,31 +70,33 @@ function PopoverFC(props: PopoverProps, ref: React.ForwardedRef<PopoverRef>): JS
   const maxZIndex = useMaxIndex(visible);
   const zIndex = !isUndefined(zIndexProp) ? zIndexProp : `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
 
-  const [popupPositionStyle, setPopupPositionStyle] = useState<React.CSSProperties>({
-    top: '-200vh',
-    left: '-200vw',
-  });
-  const [transformOrigin, setTransformOrigin] = useState<string>();
-  const [placement, setPlacement] = useState(placementProp);
+  const transformOrigin = useRef<string>();
+  const placement = useRef(placementProp);
   const updatePosition = useEventCallback(() => {
-    if (visible && triggerRef.current && popupRef.current) {
+    if (visible && triggerRef.current && popoverRef.current && popupRef.current) {
       const position = getPopupPosition(
         triggerRef.current,
         { width: popupRef.current.offsetWidth, height: popupRef.current.offsetHeight },
         {
           placement: placementProp,
-          placementFallback: placement,
+          placementFallback: placement.current,
           placementFixed,
           gap,
           inWindow,
         },
       );
-      setPopupPositionStyle({
+      transformOrigin.current = position.transformOrigin;
+      popoverRef.current.classList.toggle(`${namespace}-popover--${placement.current}`, false);
+      placement.current = position.placement;
+      popoverRef.current.classList.toggle(`${namespace}-popover--${placement.current}`, true);
+      if (sheet.classes.position) {
+        popupRef.current.classList.toggle(sheet.classes.position, false);
+      }
+      sheet.replaceRule('position', {
         top: position.top,
         left: position.left,
       });
-      setTransformOrigin(position.transformOrigin);
-      setPlacement(position.placement);
+      popupRef.current.classList.toggle(sheet.classes.position, true);
     }
   });
 
@@ -203,7 +206,7 @@ function PopoverFC(props: PopoverProps, ref: React.ForwardedRef<PopoverRef>): JS
                     case 'entering':
                       transitionStyle = {
                         transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING.enter}ms ease-out`).join(', '),
-                        transformOrigin,
+                        transformOrigin: transformOrigin.current,
                       };
                       break;
 
@@ -212,7 +215,7 @@ function PopoverFC(props: PopoverProps, ref: React.ForwardedRef<PopoverRef>): JS
                         transform: 'scale(0.3)',
                         opacity: 0,
                         transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING.leave}ms ease-in`).join(', '),
-                        transformOrigin,
+                        transformOrigin: transformOrigin.current,
                       };
                       break;
 
@@ -223,7 +226,7 @@ function PopoverFC(props: PopoverProps, ref: React.ForwardedRef<PopoverRef>): JS
                   return (
                     <div
                       {...restProps}
-                      {...mergeCS(styled('popover', `popover--${placement}`), {
+                      {...mergeCS(styled('popover'), {
                         className: restProps.className,
                         style: {
                           ...restProps.style,
@@ -265,10 +268,7 @@ function PopoverFC(props: PopoverProps, ref: React.ForwardedRef<PopoverRef>): JS
                         <div
                           ref={popupRef}
                           {...mergeCS(styled('popover__content'), {
-                            style: {
-                              ...popupPositionStyle,
-                              ...transitionStyle,
-                            },
+                            style: transitionStyle,
                           })}
                         >
                           {arrow && <div {...styled('popover__arrow')} />}

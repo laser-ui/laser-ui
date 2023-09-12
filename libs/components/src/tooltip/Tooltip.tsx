@@ -2,10 +2,10 @@ import type { TooltipProps, TooltipRef } from './types';
 
 import { useEventCallback, useRefExtra } from '@laser-ui/hooks';
 import { isFunction, isUndefined } from 'lodash';
-import { cloneElement, forwardRef, useId, useImperativeHandle, useRef, useState } from 'react';
+import { cloneElement, forwardRef, useId, useImperativeHandle, useRef } from 'react';
 
 import { CLASSES, TTANSITION_DURING } from './vars';
-import { useComponentProps, useControlled, useMaxIndex, useNamespace, useStyled } from '../hooks';
+import { useComponentProps, useControlled, useJSS, useMaxIndex, useNamespace, useStyled } from '../hooks';
 import { Popup } from '../internal/popup';
 import { Portal } from '../internal/portal';
 import { Transition } from '../internal/transition';
@@ -40,12 +40,13 @@ export const Tooltip = forwardRef<TooltipRef, TooltipProps>((props, ref): JSX.El
 
   const namespace = useNamespace();
   const styled = useStyled(CLASSES, { tooltip: styleProvider?.tooltip }, styleOverrides);
+  const sheet = useJSS<'position'>();
 
   const uniqueId = useId();
   const id = restProps.id ?? `${namespace}-tooltip-${uniqueId}`;
 
   const triggerRef = useRefExtra<HTMLElement>(() => document.querySelector(`[aria-describedby="${id}"]`));
-  const popupRef = useRef<HTMLDivElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
   const scrollingRef = useRefExtra(scrolling);
 
   const [visible, changeVisible] = useControlled<boolean>(defaultVisible ?? false, visibleProp, onVisibleChange);
@@ -53,31 +54,33 @@ export const Tooltip = forwardRef<TooltipRef, TooltipProps>((props, ref): JSX.El
   const maxZIndex = useMaxIndex(visible);
   const zIndex = !isUndefined(zIndexProp) ? zIndexProp : `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
 
-  const [popupPositionStyle, setPopupPositionStyle] = useState<React.CSSProperties>({
-    top: '-200vh',
-    left: '-200vw',
-  });
-  const [transformOrigin, setTransformOrigin] = useState<string>();
-  const [placement, setPlacement] = useState(placementProp);
+  const transformOrigin = useRef<string>();
+  const placement = useRef(placementProp);
   const updatePosition = useEventCallback(() => {
-    if (visible && triggerRef.current && popupRef.current) {
+    if (visible && triggerRef.current && tooltipRef.current) {
       const position = getPopupPosition(
         triggerRef.current,
-        { width: popupRef.current.offsetWidth, height: popupRef.current.offsetHeight },
+        { width: tooltipRef.current.offsetWidth, height: tooltipRef.current.offsetHeight },
         {
           placement: placementProp,
-          placementFallback: placement,
+          placementFallback: placement.current,
           placementFixed,
           gap,
           inWindow,
         },
       );
-      setPopupPositionStyle({
+      transformOrigin.current = position.transformOrigin;
+      tooltipRef.current.classList.toggle(`${namespace}-tooltip--${placement.current}`, false);
+      placement.current = position.placement;
+      tooltipRef.current.classList.toggle(`${namespace}-tooltip--${placement.current}`, true);
+      if (sheet.classes.position) {
+        tooltipRef.current.classList.toggle(sheet.classes.position, false);
+      }
+      sheet.replaceRule('position', {
         top: position.top,
         left: position.left,
       });
-      setTransformOrigin(position.transformOrigin);
-      setPlacement(position.placement);
+      tooltipRef.current.classList.toggle(sheet.classes.position, true);
     }
   });
 
@@ -98,7 +101,7 @@ export const Tooltip = forwardRef<TooltipRef, TooltipProps>((props, ref): JSX.El
       updatePosition={{
         fn: updatePosition,
         triggerRef,
-        popupRef,
+        popupRef: tooltipRef,
         containerRefs: [scrollingRef],
       }}
       onVisibleChange={changeVisible}
@@ -156,7 +159,7 @@ export const Tooltip = forwardRef<TooltipRef, TooltipProps>((props, ref): JSX.El
                     case 'entering':
                       transitionStyle = {
                         transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING.enter}ms ease-out`).join(', '),
-                        transformOrigin,
+                        transformOrigin: transformOrigin.current,
                       };
                       break;
 
@@ -165,7 +168,7 @@ export const Tooltip = forwardRef<TooltipRef, TooltipProps>((props, ref): JSX.El
                         transform: 'scale(0.3)',
                         opacity: 0,
                         transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING.leave}ms ease-in`).join(', '),
-                        transformOrigin,
+                        transformOrigin: transformOrigin.current,
                       };
                       break;
 
@@ -180,16 +183,15 @@ export const Tooltip = forwardRef<TooltipRef, TooltipProps>((props, ref): JSX.El
                   return renderPopup(
                     <div
                       {...restProps}
-                      {...mergeCS(styled('tooltip', `tooltip--${placement}`), {
+                      {...mergeCS(styled('tooltip'), {
                         className: restProps.className,
                         style: {
                           ...restProps.style,
                           zIndex,
-                          ...popupPositionStyle,
                           ...transitionStyle,
                         },
                       })}
-                      ref={popupRef}
+                      ref={tooltipRef}
                       id={id}
                       role="tooltip"
                     >

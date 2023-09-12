@@ -21,6 +21,7 @@ import {
   useControlled,
   useDesign,
   useFocusVisible,
+  useJSS,
   useLayout,
   useListenGlobalScrolling,
   useMaxIndex,
@@ -83,6 +84,7 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
 
   const namespace = useNamespace();
   const styled = useStyled(CLASSES, { select: styleProvider?.select, 'select-popup': styleProvider?.['select-popup'] }, styleOverrides);
+  const sheet = useJSS<'position'>();
 
   const { t } = useTranslation();
 
@@ -264,11 +266,7 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
   const maxZIndex = useMaxIndex(visible);
   const zIndex = `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
 
-  const [transformOrigin, setTransformOrigin] = useState<string>();
-  const [popupPositionStyle, setPopupPositionStyle] = useState<React.CSSProperties>({
-    top: '-200vh',
-    left: '-200vw',
-  });
+  const transformOrigin = useRef<string>();
   const updatePosition = useEventCallback(() => {
     if (visible && boxRef.current && popupRef.current) {
       if (monospaced) {
@@ -282,12 +280,16 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
             inWindow: WINDOW_SPACE,
           },
         );
-        setTransformOrigin(position.transformOrigin);
-        setPopupPositionStyle({
+        transformOrigin.current = position.transformOrigin;
+        if (sheet.classes.position) {
+          popupRef.current.classList.toggle(sheet.classes.position, false);
+        }
+        sheet.replaceRule('position', {
           top: position.top,
           left: position.left,
           width,
         });
+        popupRef.current.classList.toggle(sheet.classes.position, true);
       } else {
         const boxWidth = boxRef.current.offsetWidth;
         const height = popupRef.current.offsetHeight;
@@ -301,13 +303,17 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
             inWindow: WINDOW_SPACE,
           },
         );
-        setTransformOrigin(position.transformOrigin);
-        setPopupPositionStyle({
+        transformOrigin.current = position.transformOrigin;
+        if (sheet.classes.position) {
+          popupRef.current.classList.toggle(sheet.classes.position, false);
+        }
+        sheet.replaceRule('position', {
           top: position.top,
           left: position.left,
           minWidth: Math.min(boxWidth, maxWidth),
           maxWidth,
         });
+        popupRef.current.classList.toggle(sheet.classes.position, true);
       }
     }
   });
@@ -701,7 +707,7 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
               case 'entering':
                 transitionStyle = {
                   transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-out`).join(', '),
-                  transformOrigin,
+                  transformOrigin: transformOrigin.current,
                 };
                 break;
 
@@ -710,7 +716,7 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
                   transform: 'scaleY(0.7)',
                   opacity: 0,
                   transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-in`).join(', '),
-                  transformOrigin,
+                  transformOrigin: transformOrigin.current,
                 };
                 break;
 
@@ -727,7 +733,6 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
                 {...mergeCS(styled('select-popup'), {
                   style: {
                     zIndex,
-                    ...popupPositionStyle,
                     ...transitionStyle,
                   },
                 })}

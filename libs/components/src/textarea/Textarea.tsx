@@ -5,7 +5,7 @@ import { isFunction, isNumber, isUndefined } from 'lodash';
 import { forwardRef, useEffect, useRef } from 'react';
 
 import { CLASSES } from './vars';
-import { useComponentProps, useControlled, useDesign, useScopedProps, useStyled } from '../hooks';
+import { useComponentProps, useControlled, useDesign, useJSS, useScopedProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>((props, ref): JSX.Element | null => {
@@ -25,6 +25,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>((props, r
   } = useComponentProps('Textarea', props);
 
   const styled = useStyled(CLASSES, { textarea: styleProvider?.textarea }, styleOverrides);
+  const sheet = useJSS<'rows'>();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const combineTextareaRef = useForkRef(textareaRef, ref);
@@ -71,10 +72,16 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>((props, r
           }
         }
       }
-      textareaRef.current.style.height = isUndefined(height) ? '' : height + outerSize + 'px';
-      textareaRef.current.style.overflow = isUndefined(overflow) ? '' : 'hidden';
-      textareaRef.current.style.minHeight = isUndefined(minHeight) ? '' : minHeight + outerSize + 'px';
-      textareaRef.current.style.maxHeight = isUndefined(maxHeight) ? '' : maxHeight + outerSize + 'px';
+      if (sheet.classes.rows) {
+        textareaRef.current.classList.toggle(sheet.classes.rows, false);
+      }
+      sheet.replaceRule('rows', {
+        height: isUndefined(height) ? undefined : height + outerSize,
+        overflow: isUndefined(overflow) ? undefined : 'hidden',
+        minHeight: isUndefined(minHeight) ? undefined : minHeight + outerSize,
+        maxHeight: isUndefined(maxHeight) ? undefined : maxHeight + outerSize,
+      });
+      textareaRef.current.classList.toggle(sheet.classes.rows, true);
     }
   });
 

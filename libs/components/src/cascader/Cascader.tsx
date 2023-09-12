@@ -21,6 +21,7 @@ import {
   useControlled,
   useDesign,
   useFocusVisible,
+  useJSS,
   useLayout,
   useListenGlobalScrolling,
   useMaxIndex,
@@ -88,6 +89,7 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
     { cascader: styleProvider?.cascader, 'cascader-popup': styleProvider?.['cascader-popup'] },
     styleOverrides,
   );
+  const sheet = useJSS<'position'>();
 
   const { t } = useTranslation();
 
@@ -278,11 +280,7 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
   const maxZIndex = useMaxIndex(visible);
   const zIndex = `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
 
-  const [transformOrigin, setTransformOrigin] = useState<string>();
-  const [popupPositionStyle, setPopupPositionStyle] = useState<React.CSSProperties>({
-    top: '-200vh',
-    left: '-200vw',
-  });
+  const transformOrigin = useRef<string>();
   const updatePosition = useEventCallback(() => {
     if (visible && boxRef.current && popupRef.current) {
       const height = popupRef.current.offsetHeight;
@@ -296,12 +294,16 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
           inWindow: WINDOW_SPACE,
         },
       );
-      setTransformOrigin(position.transformOrigin);
-      setPopupPositionStyle({
+      transformOrigin.current = position.transformOrigin;
+      if (sheet.classes.position) {
+        popupRef.current.classList.toggle(sheet.classes.position, false);
+      }
+      sheet.replaceRule('position', {
         top: position.top,
         left: position.left,
         maxWidth,
       });
+      popupRef.current.classList.toggle(sheet.classes.position, true);
     }
   });
 
@@ -687,7 +689,7 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
               case 'entering':
                 transitionStyle = {
                   transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-out`).join(', '),
-                  transformOrigin,
+                  transformOrigin: transformOrigin.current,
                 };
                 break;
 
@@ -696,7 +698,7 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
                   transform: 'scaleY(0.7)',
                   opacity: 0,
                   transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-in`).join(', '),
-                  transformOrigin,
+                  transformOrigin: transformOrigin.current,
                 };
                 break;
 
@@ -713,7 +715,6 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
                 {...mergeCS(styled('cascader-popup'), {
                   style: {
                     zIndex,
-                    ...popupPositionStyle,
                     ...transitionStyle,
                   },
                 })}

@@ -5,7 +5,7 @@ import { ReactComponent as CancelFilled } from '@material-design-icons/svg/fille
 import { ReactComponent as AccessTimeOutlined } from '@material-design-icons/svg/outlined/access_time.svg';
 import { ReactComponent as SwapHorizOutlined } from '@material-design-icons/svg/outlined/swap_horiz.svg';
 import { isNull, isUndefined } from 'lodash';
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 
 import { TimePickerPanel } from './internal/TimePickerPanel';
 import { deepCompareDate, orderTime } from './utils';
@@ -16,6 +16,7 @@ import {
   useComponentProps,
   useControlled,
   useDesign,
+  useJSS,
   useLayout,
   useListenGlobalScrolling,
   useMaxIndex,
@@ -65,6 +66,7 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
     { 'time-picker': styleProvider?.['time-picker'], 'time-picker-popup': styleProvider?.['time-picker-popup'] },
     styleOverrides,
   );
+  const sheet = useJSS<'position'>();
 
   const { t } = useTranslation();
   const forceUpdate = useForceUpdate();
@@ -170,11 +172,7 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
   const maxZIndex = useMaxIndex(visible);
   const zIndex = `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
 
-  const [transformOrigin, setTransformOrigin] = useState<string>();
-  const [popupPositionStyle, setPopupPositionStyle] = useState<React.CSSProperties>({
-    top: '-200vh',
-    left: '-200vw',
-  });
+  const transformOrigin = useRef<string>();
   const updatePosition = useEventCallback(() => {
     if (visible && boxRef.current && popupRef.current) {
       const height = popupRef.current.offsetHeight;
@@ -188,12 +186,16 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
           inWindow: WINDOW_SPACE,
         },
       );
-      setTransformOrigin(position.transformOrigin);
-      setPopupPositionStyle({
+      transformOrigin.current = position.transformOrigin;
+      if (sheet.classes.position) {
+        popupRef.current.classList.toggle(sheet.classes.position, false);
+      }
+      sheet.replaceRule('position', {
         top: position.top,
         left: position.left,
         maxWidth,
       });
+      popupRef.current.classList.toggle(sheet.classes.position, true);
     }
   });
 
@@ -460,7 +462,7 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
               case 'entering':
                 transitionStyle = {
                   transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-out`).join(', '),
-                  transformOrigin,
+                  transformOrigin: transformOrigin.current,
                 };
                 break;
 
@@ -469,7 +471,7 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
                   transform: 'scaleY(0.7)',
                   opacity: 0,
                   transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-in`).join(', '),
-                  transformOrigin,
+                  transformOrigin: transformOrigin.current,
                 };
                 break;
 
@@ -486,7 +488,6 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
                 {...mergeCS(styled('time-picker-popup'), {
                   style: {
                     zIndex,
-                    ...popupPositionStyle,
                     ...transitionStyle,
                   },
                 })}

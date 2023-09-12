@@ -5,7 +5,7 @@ import { ReactComponent as CancelFilled } from '@material-design-icons/svg/fille
 import { ReactComponent as CalendarTodayOutlined } from '@material-design-icons/svg/outlined/calendar_today.svg';
 import { ReactComponent as SwapHorizOutlined } from '@material-design-icons/svg/outlined/swap_horiz.svg';
 import { isArray, isBoolean, isNull, isUndefined } from 'lodash';
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 
 import { DatePickerPanel } from './internal/DatePickerPanel';
 import { CLASSES } from './vars';
@@ -15,6 +15,7 @@ import {
   useComponentProps,
   useControlled,
   useDesign,
+  useJSS,
   useLayout,
   useListenGlobalScrolling,
   useMaxIndex,
@@ -72,6 +73,7 @@ export const DatePicker = forwardRef<DatePickerRef, DatePickerProps>((props, ref
     },
     styleOverrides,
   );
+  const sheet = useJSS<'position'>();
 
   const { t } = useTranslation();
   const forceUpdate = useForceUpdate();
@@ -183,11 +185,7 @@ export const DatePicker = forwardRef<DatePickerRef, DatePickerProps>((props, ref
   const maxZIndex = useMaxIndex(visible);
   const zIndex = `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
 
-  const [transformOrigin, setTransformOrigin] = useState<string>();
-  const [popupPositionStyle, setPopupPositionStyle] = useState<React.CSSProperties>({
-    top: '-200vh',
-    left: '-200vw',
-  });
+  const transformOrigin = useRef<string>();
   const updatePosition = useEventCallback(() => {
     if (visible && boxRef.current && popupRef.current) {
       const height = popupRef.current.offsetHeight;
@@ -201,12 +199,16 @@ export const DatePicker = forwardRef<DatePickerRef, DatePickerProps>((props, ref
           inWindow: WINDOW_SPACE,
         },
       );
-      setTransformOrigin(position.transformOrigin);
-      setPopupPositionStyle({
+      transformOrigin.current = position.transformOrigin;
+      if (sheet.classes.position) {
+        popupRef.current.classList.toggle(sheet.classes.position, false);
+      }
+      sheet.replaceRule('position', {
         top: position.top,
         left: position.left,
         maxWidth,
       });
+      popupRef.current.classList.toggle(sheet.classes.position, true);
     }
   });
 
@@ -473,7 +475,7 @@ export const DatePicker = forwardRef<DatePickerRef, DatePickerProps>((props, ref
               case 'entering':
                 transitionStyle = {
                   transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-out`).join(', '),
-                  transformOrigin,
+                  transformOrigin: transformOrigin.current,
                 };
                 break;
 
@@ -482,7 +484,7 @@ export const DatePicker = forwardRef<DatePickerRef, DatePickerProps>((props, ref
                   transform: 'scaleY(0.7)',
                   opacity: 0,
                   transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-in`).join(', '),
-                  transformOrigin,
+                  transformOrigin: transformOrigin.current,
                 };
                 break;
 
@@ -499,7 +501,6 @@ export const DatePicker = forwardRef<DatePickerRef, DatePickerProps>((props, ref
                 {...mergeCS(styled('date-picker-popup'), {
                   style: {
                     zIndex,
-                    ...popupPositionStyle,
                     ...transitionStyle,
                   },
                 })}

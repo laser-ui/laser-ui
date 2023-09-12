@@ -1,9 +1,9 @@
 import type { AnchorItem, AnchorProps, AnchorRef } from './types';
 
-import { useEvent, useEventCallback, useIsomorphicLayoutEffect, useRefExtra, useResize } from '@laser-ui/hooks';
+import { useEvent, useEventCallback, useMount, useRefExtra, useResize } from '@laser-ui/hooks';
 import { getOffsetToRoot, scrollTo, toPx } from '@laser-ui/utils';
 import { isArray, isString, isUndefined } from 'lodash';
-import { Fragment, forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { Fragment, forwardRef, useImperativeHandle, useRef, useState } from 'react';
 
 import { CLASSES, DOT_INDICATOR, LINE_INDICATOR } from './vars';
 import { useComponentProps, useLayout, useListenGlobalScrolling, useStyled } from '../hooks';
@@ -26,10 +26,9 @@ function AnchorFC<T extends AnchorItem>(props: AnchorProps<T>, ref: React.Forwar
   const styled = useStyled(CLASSES, { anchor: styleProvider?.anchor }, styleOverrides);
   const { pageScrollRef, contentResizeRef } = useLayout();
 
+  const pageRef = useRefExtra(page ?? (() => pageScrollRef.current));
   const anchorRef = useRef<HTMLUListElement>(null);
   const indicatorRef = useRef<HTMLDivElement>(null);
-  const activeLinkRef = useRef<HTMLLIElement>(null);
-  const pageRef = useRefExtra(page ?? (() => pageScrollRef.current));
 
   const dataRef = useRef<{
     clearTid?: () => void;
@@ -38,7 +37,7 @@ function AnchorFC<T extends AnchorItem>(props: AnchorProps<T>, ref: React.Forwar
   const [active, setActive] = useState<string | null>(null);
 
   const updateAnchor = useEventCallback(() => {
-    if (pageRef.current) {
+    if (pageRef.current && anchorRef.current && indicatorRef.current) {
       const pageTop = getOffsetToRoot(pageRef.current);
       let nearestEl: [string, number] | undefined;
       const reduceLinks = (arr: T[]) => {
@@ -64,22 +63,8 @@ function AnchorFC<T extends AnchorItem>(props: AnchorProps<T>, ref: React.Forwar
 
       const href = nearestEl ? nearestEl[0] : null;
       setActive(href);
-    }
-  });
-  useIsomorphicLayoutEffect(() => {
-    updateAnchor();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const listenGlobalScrolling = useListenGlobalScrolling(updateAnchor);
-  useEvent(pageRef, 'scroll', updateAnchor, { passive: true }, listenGlobalScrolling);
-
-  useResize(contentResizeRef, updateAnchor);
-
-  useEffect(() => {
-    if (anchorRef.current && indicatorRef.current) {
-      if (activeLinkRef.current) {
-        const rect = activeLinkRef.current.getBoundingClientRect();
+      if (href) {
+        const rect = (anchorRef.current.querySelector(`[data-l-href="${href}"]`) as HTMLLIElement).getBoundingClientRect();
         const top = rect.top - anchorRef.current.getBoundingClientRect().top + rect.height / 2;
         indicatorRef.current.style.cssText = `opacity:1;top:${top}px;`;
       } else {
@@ -87,6 +72,14 @@ function AnchorFC<T extends AnchorItem>(props: AnchorProps<T>, ref: React.Forwar
       }
     }
   });
+  useMount(() => {
+    updateAnchor();
+  });
+
+  const listenGlobalScrolling = useListenGlobalScrolling(updateAnchor);
+  useEvent(pageRef, 'scroll', updateAnchor, { passive: true }, listenGlobalScrolling);
+
+  useResize(contentResizeRef, updateAnchor);
 
   useImperativeHandle(
     ref,
@@ -121,14 +114,13 @@ function AnchorFC<T extends AnchorItem>(props: AnchorProps<T>, ref: React.Forwar
     const getNodes = (arr: T[], level = 0): JSX.Element[] =>
       arr.map((link) => {
         const { title: linkTitle, href: linkHref, target: linkTarget, children } = link;
-        const isActive = linkHref === active;
         return (
           <Fragment key={`${linkHref}-${level}`}>
             <li
               {...styled('anchor__link', {
-                'anchor__link.is-active': isActive,
+                'anchor__link.is-active': linkHref === active,
               })}
-              ref={isActive ? activeLinkRef : undefined}
+              data-l-href={linkHref}
             >
               <a
                 style={{ paddingLeft: 16 + level * 16 }}
