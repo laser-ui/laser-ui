@@ -1,6 +1,6 @@
 {
   "name": "@laser-ui/components",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "React components.",
   "keywords": [
     "ui",
@@ -26,8 +26,8 @@
   "module": "./index.js",
   "types": "./index.d.ts",
   "dependencies": {
-    "@laser-ui/hooks": "0.0.5",
-    "@laser-ui/utils": "0.0.5",
+    "@laser-ui/hooks": "0.1.0",
+    "@laser-ui/utils": "0.1.0",
     "@material-design-icons/svg": "^0.14.9",
     "jss": "^10.10.0",
     "jss-preset-default": "^10.10.0",
