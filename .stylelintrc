@@ -1,14 +1,21 @@
 {
   "extends": ["stylelint-config-standard", "stylelint-config-recess-order", "stylelint-config-recommended-scss"],
-  "rules": {},
+  "rules": {
+    "at-rule-empty-line-before": null,
+    "selector-class-pattern": null,
+    "import-notation": null,
+    "selector-not-notation": "simple",
+    "declaration-block-no-redundant-longhand-properties": [
+      true,
+      {
+        "ignoreShorthands": ["inset"]
+      }
+    ]
+  },
   "overrides": [
     {
       "files": ["*.scss", "**/*.scss"],
       "rules": {
-        "at-rule-empty-line-before": null,
-        "selector-class-pattern": null,
-        "import-notation": null,
-        "selector-not-notation": "simple",
         "declaration-property-value-allowed-list": {
           "/color/": ["/var/", "/\\$/", "currentcolor", "transparent", "unset", "inherit"],
           "font-size": ["/var/", "/\\$/", "/[0-9]+em$/", "unset", "inherit"],
@@ -17,12 +24,6 @@
         "declaration-property-value-disallowed-list": {
           "transition": ["/all/", "/[0-9]ms/"]
         },
-        "declaration-block-no-redundant-longhand-properties": [
-          true,
-          {
-            "ignoreShorthands": ["inset"]
-          }
-        ],
         "selector-pseudo-class-no-unknown": [
           true,
           {

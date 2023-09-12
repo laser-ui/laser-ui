@@ -1,27 +1,38 @@
 # Internationalization
 
-Here is the [full configuration](https://github.com/DevCloudFE/react-devui/blob/main/packages/ui/src/components/root/resources.json).
+Here is the [full configuration](https://github.com/laser-ui/laser-ui/blob/main/libs/components/src/resources.json).
 
 ## Modify language
 
-The default language is `en-US`, if you need to use another language, please configure `DRoot`:
+The default language is `en-US`, if you need to use another language, please configure `Root` component:
 
 ```tsx
-import type { DRootProps } from '@react-devui/ui';
+import type { LContextIn } from '@laser-ui/components/context';
 
+import { ConfigProvider, Root } from '@laser-ui/components';
 import { useMemo } from 'react';
 
-import { DRoot } from '@react-devui/ui';
-
 export default function App() {
-  const rootContext = useMemo<DRootProps['context']>(
+  const lContext = useMemo<LContextIn>(
     () => ({
-      i18n: { lang: 'zh-CN' },
+      layoutPageScrollEl: '#app-main',
+      layoutContentResizeEl: '#app-content',
     }),
-    []
+    [],
   );
+  const rootContext = useMemo(() => ({ i18n: { lang: 'zh-CN' } }), []);
 
-  return <DRoot context={rootContext}>Some content...</DRoot>;
+  return (
+    <ConfigProvider context={lContext}>
+      <Root context={rootContext}>
+        <main id="app-main" style={{ overflow: 'auto' }}>
+          <section id="app-content" style={{ height: '200vh' }}>
+            Some content...
+          </section>
+        </main>
+      </Root>
+    </ConfigProvider>
+  );
 }
 ```
 
@@ -30,27 +41,14 @@ export default function App() {
 Partially modifications are supported:
 
 ```tsx
-import type { DRootProps } from '@react-devui/ui';
-
-import { useMemo } from 'react';
-
-import { DRoot } from '@react-devui/ui';
-
-export default function App() {
-  const rootContext = useMemo<DRootProps['context']>(
-    () => ({
-      i18n: {
-        resources: {
-          'en-US': { DatePicker: { Now: 'Present' } },
-          'zh-CN': { DatePicker: { Now: '现在' } },
-        },
-      },
-    }),
-    []
-  );
-
-  return <DRoot context={rootContext}>Some content...</DRoot>;
-}
+rootContext = {
+  i18n: {
+    resources: {
+      'en-US': { DatePicker: { Now: 'Present' } },
+      'zh-CN': { DatePicker: { Now: '现在' } },
+    },
+  },
+};
 ```
 
 ## Add language
@@ -58,26 +56,15 @@ export default function App() {
 Support for adding languages:
 
 ```tsx
-import type { DRootProps } from '@react-devui/ui';
-
-import { useMemo } from 'react';
-
-import { DRoot } from '@react-devui/ui';
-
-export default function App() {
-  const rootContext = useMemo<DRootProps['context']>(
-    () => ({
-      i18n: {
-        lang: 'ja-JP',
-        resources: {
-          'ja-JP': { DatePicker: { Now: '今' } },
-          ...otherConfig,
-        },
+rootContext = {
+  i18n: {
+    resources: {
+      lang: 'ja-JP',
+      'ja-JP': {
+        DatePicker: { Now: '今' },
+        ...otherConfig,
       },
-    }),
-    []
-  );
-
-  return <DRoot context={rootContext}>Some content...</DRoot>;
-}
+    },
+  },
+};
 ```

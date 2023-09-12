@@ -35,7 +35,7 @@ import { ConfigProvider, Root } from '@laser-ui/components';
 import { useMemo } from 'react';
 
 export default function App() {
-  const rootContext = useMemo<LContextIn>(
+  const lContext = useMemo<LContextIn>(
     () => ({
       layoutPageScrollEl: '#app-main',
       layoutContentResizeEl: '#app-content',
@@ -44,7 +44,7 @@ export default function App() {
   );
 
   return (
-    <ConfigProvider context={rootContext}>
+    <ConfigProvider context={lContext}>
       <Root>
         <main id="app-main" style={{ overflow: 'auto' }}>
           <section id="app-content" style={{ height: '200vh' }}>

@@ -10,7 +10,7 @@ export function HomeRoute(): JSX.Element | null {
   const { t } = useTranslation();
 
   useEffect(() => {
-    document.title = 'React DevUI';
+    document.title = 'Laser UI';
   }, []);
 
   return (

@@ -4,15 +4,7 @@
 
 ## 组件库是否含有副作用
 
-组件库仅样式覆盖了全局的 `box-sizing`，这也是目前绝大多数人的选择：
-
-```scss
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-```
+- `@laser-ui/themes` 中的 [reboot.scss](https://github.com/laser-ui/laser-ui/blob/main/libs/themes/reboot.scss) 覆盖了某些全局样式。
 
 ## 组件何时受控
 
@@ -24,6 +16,6 @@
 
 ## 如何修改 dayjs 配置
 
-首先我们应该确保项目是全局唯一的 `dayjs`，所以组件库的 `dayjs` 是放在 `peerDependencies` 中。
+项目应当使用全局唯一的 `dayjs`，所以组件库的 `dayjs` 是放在 `peerDependencies` 中。
 
-您只需要在您的项目中配置 `dayjs` 即可，最佳实践是创建一个 `dayjs.ts` 来共享 `dayjs` 配置，可参考 [dayjs.ts](https://github.com/DevCloudFE/react-devui/blob/main/packages/platform/src/app/dayjs.ts) 。
+您需要在您的项目中导入组件库的 [dayjs](https://github.com/laser-ui/laser-ui/blob/main/libs/components/src/dayjs.ts) 做配置修改。

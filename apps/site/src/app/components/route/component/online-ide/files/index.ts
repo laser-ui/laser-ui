@@ -38,7 +38,7 @@ import { useMemo } from 'react';
 import Demo from './Demo';
 
 export function App() {
-  const rootContext = useMemo<LContextIn>(
+  const lContext = useMemo<LContextIn>(
     () => ({
       layoutPageScrollEl: '#app-main',
       layoutContentResizeEl: '#app-content',
@@ -47,7 +47,7 @@ export function App() {
   );
 
   return (
-    <ConfigProvider context={rootContext}>
+    <ConfigProvider context={lContext}>
       <Root>
         <main id="app-main">
           <section id="app-content">

@@ -142,7 +142,7 @@ jobs:
           comment-id: ${{ steps.couc.outputs.comment-id }}
           body: |
             <!-- pr-preview-comment -->
-            Website [preview](//react-devui-${{ github.sha }}.surge.sh) has been generated!  :tada: :tada: :tada:
+            Website [preview](//laser-ui-${{ github.sha }}.surge.sh) has been generated!  :tada: :tada: :tada:
           edit-mode: replace
       - name: Update comment
         if: steps.fc.outputs.comment-id != ''
@@ -151,5 +151,5 @@ jobs:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           body: |
             <!-- pr-preview-comment -->
-            Website [preview](//react-devui-${{ github.sha }}.surge.sh) has been generated!  :tada: :tada: :tada:
+            Website [preview](//laser-ui-${{ github.sha }}.surge.sh) has been generated!  :tada: :tada: :tada:
           edit-mode: replace

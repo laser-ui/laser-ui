@@ -1,29 +1,21 @@
 # FAQ
 
-Some frequently asked questions are listed below:
+Listed below are some frequently asked questions:
 
 ## Does the component library contain side effects?
 
-The component library only covers the global `box-sizing`, which is currently the choice of most people:
+- [reboot.scss](https://github.com/laser-ui/laser-ui/blob/main/libs/themes/reboot.scss) in `@laser-ui/themes` overrides some globals style.
 
-```scss
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-```
+## When is the component controlled?
 
-## When components are controlled
+We agree that `undefined` means that the component is in an uncontrolled state, and other values ​​represent that the component is controlled.
 
-We agree that `undefined` represents that the component is in an uncontrolled state, and other values represent that the component is controlled.
+## What is the general null value of a controlled component?
 
-## What is the general null value of the controlled component
-
-The null value of the controlled component is generally defined as `null`, please refer to the component API for the actual situation.
+The null value of a controlled component is generally defined as `null`. For actual conditions, please refer to the component API.
 
 ## How to modify dayjs configuration
 
-First of all, we should ensure that the project is the only `dayjs` globally, so the `dayjs` of the component library is placed in `peerDependencies`.
+The project should use the globally unique `dayjs`, so the `dayjs` of the component library is placed in `peerDependencies`.
 
-You only need to configure `dayjs` in your project, the best practice is to create a `dayjs.ts` to share `dayjs` configuration, please refer to [dayjs.ts](https://github.com/DevCloudFE/react-devui/blob/main/packages/platform/src/app/dayjs.ts).
+You need to import [dayjs](https://github.com/laser-ui/laser-ui/blob/main/libs/components/src/dayjs.ts) of the component library into your project to make configuration changes.
