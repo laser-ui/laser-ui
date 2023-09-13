@@ -149,7 +149,7 @@ function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
   };
 
   let handleKeyDown: React.KeyboardEventHandler<HTMLElement> | undefined;
-  const nodes = (menuRef: any) => {
+  const nodes = (() => {
     const getNodes = (arr: T[], level: number, subParents: T[], inNav = false): JSX.Element[] => {
       const posinset = new Map<ID, [number, number]>();
       let noGroup: T[] = [];
@@ -377,7 +377,6 @@ function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
                 }}
                 namespace={namespace}
                 styled={styled}
-                menuRef={menuRef}
                 id={id}
                 level={level}
                 space={space}
@@ -427,7 +426,7 @@ function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
     };
 
     return getNodes(list, 0, [], true);
-  };
+  })();
 
   useImperativeHandle(
     ref,
@@ -516,7 +515,7 @@ function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
               preventBlur(e);
             }}
           >
-            {nodes(menuRef)}
+            {nodes}
           </nav>,
         );
       }}

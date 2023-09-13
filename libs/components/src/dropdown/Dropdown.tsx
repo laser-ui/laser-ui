@@ -337,7 +337,6 @@ function DropdownFC<ID extends React.Key, T extends DropdownItem<ID>>(
                 }}
                 namespace={namespace}
                 styled={styled}
-                dropdownRef={dropdownRef}
                 id={id}
                 level={level}
                 icon={itemIcon}

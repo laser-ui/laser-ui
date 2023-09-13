@@ -18,7 +18,6 @@ interface MenuSubProps {
   children: React.ReactNode;
   namespace: string;
   styled: Styled<typeof CLASSES>;
-  menuRef: React.RefObject<HTMLElement>;
   id: string;
   level: number;
   space: number;
@@ -45,7 +44,6 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): JSX.El
     children,
     namespace,
     styled,
-    menuRef,
     id,
     level,
     space,
@@ -193,7 +191,17 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): JSX.El
               </li>,
             )}
             {mode !== 'vertical' && (
-              <Portal selector={() => menuRef.current}>
+              <Portal
+                selector={() => {
+                  let el = document.getElementById(`${namespace}-menu-root`);
+                  if (!el) {
+                    el = document.createElement('div');
+                    el.id = `${namespace}-menu-root`;
+                    document.body.appendChild(el);
+                  }
+                  return el;
+                }}
+              >
                 <Transition enter={visible} during={TTANSITION_DURING_POPUP} afterRender={updatePosition}>
                   {(state) => {
                     let transitionStyle: React.CSSProperties = {};

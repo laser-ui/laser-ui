@@ -17,7 +17,6 @@ import { TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../../vars';
 
 interface DropdownSubProps {
   children: React.ReactNode;
-  dropdownRef: React.RefObject<HTMLDivElement>;
   namespace: string;
   styled: Styled<typeof CLASSES>;
   id: string;
@@ -34,23 +33,8 @@ interface DropdownSubProps {
 }
 
 export const DropdownSub = forwardRef<() => void, DropdownSubProps>((props, ref): JSX.Element | null => {
-  const {
-    children,
-    namespace,
-    styled,
-    dropdownRef,
-    id,
-    level,
-    icon,
-    list,
-    popupState,
-    trigger,
-    empty,
-    focus,
-    disabled,
-    zIndex,
-    onVisibleChange,
-  } = props;
+  const { children, namespace, styled, id, level, icon, list, popupState, trigger, empty, focus, disabled, zIndex, onVisibleChange } =
+    props;
 
   const sheet = useJSS<'position'>();
 
@@ -128,7 +112,17 @@ export const DropdownSub = forwardRef<() => void, DropdownSubProps>((props, ref)
               </div>
             </li>,
           )}
-          <Portal selector={() => dropdownRef.current}>
+          <Portal
+            selector={() => {
+              let el = document.getElementById(`${namespace}-dropdown-root`);
+              if (!el) {
+                el = document.createElement('div');
+                el.id = `${namespace}-dropdown-root`;
+                document.body.appendChild(el);
+              }
+              return el;
+            }}
+          >
             <Transition enter={visible} during={TTANSITION_DURING_POPUP} afterRender={updatePosition}>
               {(state) => {
                 let transitionStyle: React.CSSProperties = {};
