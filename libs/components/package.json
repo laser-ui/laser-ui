@@ -28,7 +28,7 @@
   "dependencies": {
     "@laser-ui/hooks": "0.1.0",
     "@laser-ui/utils": "0.1.0",
-    "@material-design-icons/svg": "^0.14.9",
+    "@material-design-icons/svg": "^0.14.12",
     "jss": "^10.10.0",
     "jss-preset-default": "^10.10.0",
     "lodash": "^4.17.21",
