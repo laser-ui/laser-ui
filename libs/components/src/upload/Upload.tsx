@@ -56,13 +56,14 @@ function UploadFC(props: UploadProps, ref: React.ForwardedRef<HTMLInputElement>)
     if (customUpload) {
       customUpload(fileList);
     } else {
+      let n: React.Key = Date.now();
       const filesAdded: UploadFile[] = [];
       for (let index = 0; index < fileList.length; index++) {
         const file = fileList.item(index);
         if (file) {
           const xhr = new XMLHttpRequest();
 
-          let uid: React.Key = Date.now();
+          let uid: React.Key = ++n;
           const add = (obj: any) => {
             const fileURL = URL.createObjectURL(file);
             dataRef.current.fileURLs.push(fileURL);
