@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.3](https://github.com/laser-ui/laser-ui/compare/v0.1.2...v0.1.3) (2023-09-15)
+
+### Bug Fixes
+
+- **components:** fix creating uid when upload file ([5e3a8af](https://github.com/laser-ui/laser-ui/commit/5e3a8afa656721871e88f01f0b6e48843bdb64c1))
+- **components:** fix width of form-item's content ([6063665](https://github.com/laser-ui/laser-ui/commit/60636657f4c581bc2964471f30078f1685f906c1))
+
 ## [0.1.2](https://github.com/laser-ui/laser-ui/compare/v0.1.1...v0.1.2) (2023-09-14)
 
 **Note:** Version bump only for package @laser-ui/source
