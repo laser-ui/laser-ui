@@ -240,8 +240,12 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
         <div
           {...mergeCS(styled('form__item-content'), {
             style: {
-              width: `calc(100% - ${formContext.vertical ? '0px' : labelWidth === 'auto' ? 'var(--label-width)' : labelWidth}${
-                isNumber(labelWidth) ? 'px' : ''
+              width: `calc(100% - ${
+                formContext.vertical
+                  ? '0px'
+                  : labelWidth === 'auto'
+                  ? 'var(--label-width)'
+                  : labelWidth + (isNumber(labelWidth) ? 'px' : '')
               } - ${formContext.feedbackIcon ? 'var(--size)' : '0px'})`,
             },
           })}
