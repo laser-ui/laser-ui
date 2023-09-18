@@ -38,8 +38,10 @@ export function Icon(props: IconProps): JSX.Element | null {
         ...children.props,
         style: {
           ...children.props.style,
-          transform: isUndefined(rotate) ? undefined : `rotate(${rotate}deg)`,
-          animation: spin ? `${namespace}-spin ${spinSpeed}${isNumber(spinSpeed) ? 's' : ''} linear infinite` : undefined,
+          transform: isUndefined(rotate) ? children.props.style?.transform : `rotate(${rotate}deg)`,
+          animation: spin
+            ? `${namespace}-spin ${spinSpeed}${isNumber(spinSpeed) ? 's' : ''} linear infinite`
+            : children.props.style?.animation,
         },
         fill: 'currentColor',
         width,

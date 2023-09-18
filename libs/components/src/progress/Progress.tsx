@@ -79,13 +79,8 @@ export function Progress(props: ProgressProps): JSX.Element | null {
           const dash = c - (pattern === 'circle' ? 0 : (gapDegree / 360) * c);
 
           return (
-            <Icon size={size}>
-              <svg
-                {...mergeCS(styled('progress__svg'), {
-                  style: { transform: pattern === 'circle' ? 'rotate(-90deg)' : `rotate(${90 + gapDegree / 2}deg)` },
-                })}
-                viewBox="0 0 120 120"
-              >
+            <Icon size={size} rotate={pattern === 'circle' ? -90 : 90 + gapDegree / 2}>
+              <svg {...styled('progress__svg')} viewBox="0 0 120 120">
                 {linearGradient && (
                   <defs>
                     <linearGradient id={`${namespace}-progress-gradient-${uniqueId}-1`} gradientUnits="userSpaceOnUse">
