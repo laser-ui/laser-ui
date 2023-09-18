@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.4](https://github.com/laser-ui/laser-ui/compare/v0.1.3...v0.1.4) (2023-09-18)
+
+**Note:** Version bump only for package @laser-ui/themes
+
 ## [0.1.3](https://github.com/laser-ui/laser-ui/compare/v0.1.2...v0.1.3) (2023-09-15)
 
 **Note:** Version bump only for package @laser-ui/themes

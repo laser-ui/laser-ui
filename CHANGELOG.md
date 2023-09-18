@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.4](https://github.com/laser-ui/laser-ui/compare/v0.1.3...v0.1.4) (2023-09-18)
+
+### Bug Fixes
+
+- **components:** fix `Icon` override style ([fc75aca](https://github.com/laser-ui/laser-ui/commit/fc75acac62f714ff5d8b633ed572331cac82b2cb))
+
 ## [0.1.3](https://github.com/laser-ui/laser-ui/compare/v0.1.2...v0.1.3) (2023-09-15)
 
 ### Bug Fixes
