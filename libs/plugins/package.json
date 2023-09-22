@@ -3,5 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "type": "commonjs",
-  "executors": "./executors.json"
+  "executors": "./executors.json",
+  "dependencies": {
+    "@nx/devkit": "16.8.1"
+  }
 }

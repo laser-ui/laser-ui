@@ -1,0 +1,32 @@
+{
+  "name": "themes",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/themes/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@laser-ui/plugins:css",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/themes",
+        "main": "libs/themes/index.scss",
+        "assets": [
+          "libs/themes/CHANGELOG.md",
+          "libs/themes/README.md",
+          {
+            "glob": "LICENSE",
+            "input": "",
+            "output": "/"
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["pnpm exec stylelint libs/themes/**/*.{css,scss,html,md}"]
+      }
+    }
+  },
+  "tags": []
+}

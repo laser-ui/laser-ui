@@ -5,11 +5,10 @@
   "license": "MIT",
   "scripts": {
     "build:affected": "nx affected -t build",
-    "build:themes": "ts-node -P ./tools/tsconfig.tools.json ./tools/scripts/build-themes.ts",
     "lint:affected": "nx affected -t lint",
     "lint:style": "stylelint **/*.{css,scss,html,md}",
     "prepare": "husky install && ts-node -P ./tools/tsconfig.tools.json ./tools/scripts/husky.ts",
-    "prepublishOnly": "pnpm run build:themes && nx run-many -t build -p components hooks utils",
+    "prepublishOnly": "nx run-many -t build -p components hooks utils themes",
     "test:affected": "nx affected -t test",
     "util:sort-package-json": "sort-package-json 'package.json' 'libs/*/package.json'",
     "version": "prettier lerna.json --write"
