@@ -16,7 +16,8 @@ export default function (name: string) {
     "dayjs": "${packageJson.devDependencies['dayjs']}",
     "immer": "${packageJson.devDependencies['immer']}",
     "react": "${packageJson.devDependencies['react']}",
-    "react-dom": "${packageJson.devDependencies['react-dom']}"
+    "react-dom": "${packageJson.devDependencies['react-dom']}",
+    "tslib": "${packageJson.devDependencies.tslib}"
   },
   "devDependencies": {
     "@types/react": "${packageJson.devDependencies['@types/react']}",

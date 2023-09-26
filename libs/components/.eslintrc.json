@@ -29,7 +29,7 @@
           "error",
           {
             "ignoredFiles": ["{projectRoot}/vite.config.{js,ts,mjs,mts}"],
-            "ignoredDependencies": ["tslib"]
+            "ignoredDependencies": []
           }
         ]
       }
