@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.5](https://github.com/laser-ui/laser-ui/compare/v0.1.4...v0.1.5) (2023-10-09)
+
+### Bug Fixes
+
+- **components:** fix form `enter` ([ebbe78b](https://github.com/laser-ui/laser-ui/commit/ebbe78b2afc3ee3f257847f143ee23fe12fd17fa))
+
 ## [0.1.4](https://github.com/laser-ui/laser-ui/compare/v0.1.3...v0.1.4) (2023-09-18)
 
 ### Bug Fixes
