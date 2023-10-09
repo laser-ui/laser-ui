@@ -50,6 +50,17 @@ export const Form: {
         style: restProps.style,
       })}
       ref={formRef}
+      onSubmit={(e) => {
+        restProps.onSubmit?.(e);
+
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      onReset={(e) => {
+        restProps.onReset?.(e);
+
+        e.preventDefault();
+      }}
     >
       <ConfigProvider context={{ componentSize: size }}>
         <FormContext.Provider
