@@ -1,9 +1,7 @@
 import type { FormGroup } from './form-group';
 import type { AsyncValidatorFn, FormControlStatus, ValidationErrors, ValidatorFn } from './types';
-import type { Subscription } from 'rxjs';
 
 import { isArray } from 'lodash';
-import { forkJoin, from } from 'rxjs';
 
 import { DISABLED, INVALID, PENDING, VALID } from './vars';
 
@@ -37,11 +35,8 @@ function composeAsyncValidators(validators: (AsyncValidatorFn | null)[]): AsyncV
 
   return function (control: AbstractControl) {
     return new Promise((resolve) => {
-      const observables = forkJoin(presentValidators.map((fn) => fn(control)));
-      observables.subscribe({
-        next: (errors) => {
-          resolve(mergeErrors(errors));
-        },
+      Promise.all(presentValidators.map((fn) => fn(control))).then((errors) => {
+        resolve(mergeErrors(errors));
       });
     });
   };
@@ -80,7 +75,7 @@ export abstract class AbstractControl<V = any> {
   private _errors: ValidationErrors | null = null;
 
   private _hasOwnPendingAsyncValidator = false;
-  private _asyncValidationSubscription?: Subscription;
+  private _abortAsyncValidation?: () => void;
 
   private _composedValidatorFn: ValidatorFn | null;
   private _composedAsyncValidatorFn: AsyncValidatorFn | null;
@@ -341,8 +336,8 @@ export abstract class AbstractControl<V = any> {
   }
 
   protected _cancelExistingSubscription(): void {
-    if (this._asyncValidationSubscription) {
-      this._asyncValidationSubscription.unsubscribe();
+    if (this._abortAsyncValidation) {
+      this._abortAsyncValidation();
       this._hasOwnPendingAsyncValidator = false;
     }
   }
@@ -352,14 +347,20 @@ export abstract class AbstractControl<V = any> {
       this._status = PENDING;
       this._hasOwnPendingAsyncValidator = true;
 
-      this._asyncValidationSubscription = from(this.asyncValidator(this)).subscribe((errors) => {
-        this._hasOwnPendingAsyncValidator = false;
-        // This will trigger the recalculation of the validation status, which depends on
-        // the state of the asynchronous validation (whether it is in progress or not). So, it is
-        // necessary that we have updated the `_hasOwnPendingAsyncValidator` boolean flag first.
-        this.setErrors(errors);
+      let abort = false;
+      this._abortAsyncValidation = () => {
+        abort = true;
+      };
+      this.asyncValidator(this).then((errors) => {
+        if (!abort) {
+          this._hasOwnPendingAsyncValidator = false;
+          // This will trigger the recalculation of the validation status, which depends on
+          // the state of the asynchronous validation (whether it is in progress or not). So, it is
+          // necessary that we have updated the `_hasOwnPendingAsyncValidator` boolean flag first.
+          this.setErrors(errors);
 
-        (this.root as any)._emitChange?.();
+          (this.root as any)._emitChange?.();
+        }
       });
     }
   }

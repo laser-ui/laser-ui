@@ -3,7 +3,6 @@ import type { PopupProps } from './types';
 import { useAsync, useEvent, useRefExtra, useResize } from '@laser-ui/hooks';
 import { isUndefined } from 'lodash';
 import { cloneElement, useEffect, useRef } from 'react';
-import { fromEvent } from 'rxjs';
 
 import { useLayout, useListenGlobalScrolling } from '../../hooks';
 
@@ -68,17 +67,18 @@ export function Popup(props: PopupProps): JSX.Element | null {
   const listenGlobalScrolling = useListenGlobalScrolling(updatePosition.fn, disabled || !visibleProp);
   useEffect(() => {
     if (!disabled && visibleProp && !listenGlobalScrolling) {
-      const ob = fromEvent(
-        [pageScrollRef, ...updatePosition.containerRefs].map((ref) => ref.current).filter((el) => el) as HTMLElement[],
-        'scroll',
-        { passive: true },
-      ).subscribe({
-        next: () => {
-          updatePosition.fn();
-        },
+      const els = [pageScrollRef, ...updatePosition.containerRefs].map((ref) => ref.current).filter((el) => el) as HTMLElement[];
+      const listener = () => {
+        updatePosition.fn();
+      };
+      els.forEach((el) => {
+        el.addEventListener('scroll', listener, { passive: true });
       });
+
       return () => {
-        ob.unsubscribe();
+        els.forEach((el) => {
+          el.removeEventListener('scroll', listener);
+        });
       };
     }
   });
