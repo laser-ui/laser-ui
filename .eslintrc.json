@@ -1,7 +1,7 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nx", "import", "react-refresh", "markdown"],
+  "plugins": ["@nx", "import", "react-refresh", "react-hooks", "markdown"],
   "extends": ["plugin:prettier/recommended"],
   "overrides": [
     {
@@ -51,7 +51,6 @@
             "warnOnUnassignedImports": true
           }
         ],
-        "react-refresh/only-export-components": "warn",
         "no-unreachable": "error"
       }
     },

@@ -10,7 +10,8 @@
           {
             "additionalHooks": "(useIsomorphicLayoutEffect)"
           }
-        ]
+        ],
+        "react-refresh/only-export-components": "warn"
       }
     },
     {

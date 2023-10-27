@@ -1,9 +1,1 @@
-# compiled output
-dist
-tmp
-
-# dependencies
 node_modules
-
-# misc
-/coverage
