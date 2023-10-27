@@ -8,7 +8,7 @@ export interface FabProps extends BaseProps<'fab', typeof CLASSES>, Omit<React.H
   children: React.ReactElement;
   expand?: boolean;
   defaultExpand?: boolean;
-  list: { placement: 'top' | 'right' | 'bottom' | 'left'; actions: React.ReactElement[] }[];
+  list?: { placement: 'top' | 'right' | 'bottom' | 'left'; actions: React.ReactElement[] }[];
   onExpandChange?: (expand: boolean) => void;
 }
 
