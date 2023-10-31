@@ -6,7 +6,7 @@ import type { AvatarProps } from '../avatar';
 import type { BadgeProps, BadgeTextProps } from '../badge';
 import type { BreadcrumbProps } from '../breadcrumb';
 import type { ButtonProps } from '../button';
-import type { CardActionProps, CardContentProps, CardHeaderProps, CardProps } from '../card';
+import type { CardActionProps, CardActionsProps, CardContentProps, CardHeaderProps, CardProps } from '../card';
 import type { CascaderProps } from '../cascader';
 import type { CheckboxGroupProps, CheckboxProps } from '../checkbox';
 import type { ComposeItemProps, ComposeProps } from '../compose';
@@ -78,6 +78,7 @@ export interface ComponentProps {
   Card: CardProps;
   CardHeader: CardHeaderProps;
   CardContent: CardContentProps;
+  CardActions: CardActionsProps;
   CardAction: CardActionProps;
   Cascader: CascaderProps<any, any>;
   Checkbox: CheckboxProps;
