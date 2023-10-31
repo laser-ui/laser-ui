@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/laser-ui/laser-ui/compare/v0.1.6...v0.2.0) (2023-10-31)
+
+### Bug Fixes
+
+- **components:** `list` is optional in `Fab` ([8ee4ae2](https://github.com/laser-ui/laser-ui/commit/8ee4ae2dd032e4ad8ecd0a1e955489c52a335231))
+- **components:** remove Slides's radio value ([f8b07ea](https://github.com/laser-ui/laser-ui/commit/f8b07ea58131e125cd7bdaaa6221be82d32971b7))
+
 ## [0.1.6](https://github.com/laser-ui/laser-ui/compare/v0.1.5...v0.1.6) (2023-10-13)
 
 **Note:** Version bump only for package @laser-ui/source
