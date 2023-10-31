@@ -16,7 +16,7 @@ export function useEvent<E = Event>(
       el.addEventListener(eventName, listener, options);
 
       return () => {
-        el.removeEventListener(eventName, listener);
+        el.removeEventListener(eventName, listener, options);
       };
     }
   });

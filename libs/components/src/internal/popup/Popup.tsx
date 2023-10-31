@@ -77,7 +77,7 @@ export function Popup(props: PopupProps): JSX.Element | null {
 
       return () => {
         els.forEach((el) => {
-          el.removeEventListener('scroll', listener);
+          el.removeEventListener('scroll', listener, { passive: true } as any);
         });
       };
     }
