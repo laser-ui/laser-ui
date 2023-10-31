@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.1](https://github.com/laser-ui/laser-ui/compare/v0.2.0...v0.2.1) (2023-10-31)
+
+### Bug Fixes
+
+- use the same values used for the call to addEventListener() when calling removeEventListener() ([deaffc3](https://github.com/laser-ui/laser-ui/commit/deaffc31f60a956ef38085c135ded6ad7b7db2e6))
+
 # [0.2.0](https://github.com/laser-ui/laser-ui/compare/v0.1.6...v0.2.0) (2023-10-31)
 
 **Note:** Version bump only for package @laser-ui/hooks
