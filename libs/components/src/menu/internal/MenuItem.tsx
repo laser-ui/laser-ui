@@ -31,36 +31,40 @@ export function MenuItem(props: MenuItemProps): JSX.Element | null {
   const inHorizontalNav = mode === 'horizontal' && inNav;
   const iconMode = mode === 'icon' && inNav;
 
-  return (
-    <Tooltip title={children} visible={iconMode ? undefined : false} placement="right">
-      <li
-        {...mergeCS(
-          styled('menu__item', 'menu__item--item', {
-            'menu__item--horizontal': inHorizontalNav,
-            'menu__item--icon': iconMode,
-            'menu__item.is-active': active,
-            'menu__item.is-disabled': disabled,
-          }),
-          { style: { paddingLeft: space + level * step } },
-        )}
-        id={id}
-        role="menuitem"
-        aria-disabled={disabled}
-        onClick={onClick}
+  const node = (
+    <li
+      {...mergeCS(
+        styled('menu__item', 'menu__item--item', {
+          'menu__item--horizontal': inHorizontalNav,
+          'menu__item--icon': iconMode,
+          'menu__item.is-active': active,
+          'menu__item.is-disabled': disabled,
+        }),
+        { style: { paddingLeft: space + level * step } },
+      )}
+      id={id}
+      role="menuitem"
+      aria-disabled={disabled}
+      onClick={onClick}
+    >
+      {focus && <div className={`${namespace}-focus-outline`} />}
+      <div
+        {...styled('menu__indicator', {
+          'menu__indicator--first': posinset[0] === 0 && posinset[1] > 1,
+          'menu__indicator--last': posinset[0] === posinset[1] - 1 && posinset[1] > 1,
+        })}
       >
-        {focus && <div className={`${namespace}-focus-outline`} />}
-        <div
-          {...styled('menu__indicator', {
-            'menu__indicator--first': posinset[0] === 0 && posinset[1] > 1,
-            'menu__indicator--last': posinset[0] === posinset[1] - 1 && posinset[1] > 1,
-          })}
-        >
-          <div {...styled('menu__indicator-track', { 'menu__indicator-track--hidden': level === 0 })} />
-          <div {...styled('menu__indicator-thumb')} />
-        </div>
-        {checkNodeExist(icon) && <div {...styled('menu__item-icon')}>{icon}</div>}
-        <div {...styled('menu__item-content')}>{children}</div>
-      </li>
+        <div {...styled('menu__indicator-track', { 'menu__indicator-track--hidden': level === 0 })} />
+        <div {...styled('menu__indicator-thumb')} />
+      </div>
+      {checkNodeExist(icon) && <div {...styled('menu__item-icon')}>{icon}</div>}
+      <div {...styled('menu__item-content')}>{children}</div>
+    </li>
+  );
+
+  return (
+    <Tooltip title={children} placement="right">
+      {(render) => (iconMode ? render(node) : node)}
     </Tooltip>
   );
 }
