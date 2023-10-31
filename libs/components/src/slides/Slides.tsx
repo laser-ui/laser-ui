@@ -400,7 +400,6 @@ export function Slides<ID extends React.Key, T extends SlidesItem<ID>>(props: Sl
                 )}
                 key={slide.id}
                 type="radio"
-                value={slide.id}
                 checked={checked}
                 name={uniqueId}
                 title={slide.tooltip}
