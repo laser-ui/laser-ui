@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.2](https://github.com/laser-ui/laser-ui/compare/v0.2.1...v0.2.2) (2023-10-31)
+
+### Bug Fixes
+
+- **components:** fix menu item tooltip in icon mode ([9107374](https://github.com/laser-ui/laser-ui/commit/91073748a13b12c676a983cb21e6c794b285ea43))
+
 ## [0.2.1](https://github.com/laser-ui/laser-ui/compare/v0.2.0...v0.2.1) (2023-10-31)
 
 ### Bug Fixes
