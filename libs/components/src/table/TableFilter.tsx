@@ -78,7 +78,7 @@ export function TableFilter(props: TableFilterProps): JSX.Element | null {
             </Button>,
             'ok',
           ]}
-        ></Popover.Footer>
+        />
       }
       visible={visible}
       trigger="click"

@@ -133,7 +133,7 @@ export function TransferPanel<V extends React.Key, T extends TransferItem<V>>(pr
                 }}
               >
                 <div {...styled('transfer__option-prefix')}>
-                  <Checkbox model={(item as any)[IS_SELECTED]} disabled={itemDisabled}></Checkbox>
+                  <Checkbox model={(item as any)[IS_SELECTED]} disabled={itemDisabled} />
                 </div>
                 <div {...styled('transfer__option-content')}>{customItem ? customItem(item) : itemLabel}</div>
               </li>

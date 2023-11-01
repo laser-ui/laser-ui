@@ -102,7 +102,7 @@ export const Badge: {
               {dot ? null : (
                 <>
                   {nums.map((n, i) => (
-                    <BadgeNumber key={nums.length - i} styled={styled} value={n} valueDown={dataRef.current.valueDown}></BadgeNumber>
+                    <BadgeNumber key={nums.length - i} styled={styled} value={n} valueDown={dataRef.current.valueDown} />
                   ))}
                   {value > max ? '+' : ''}
                 </>

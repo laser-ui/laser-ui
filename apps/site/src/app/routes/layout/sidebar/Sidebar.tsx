@@ -107,7 +107,7 @@ export function Sidebar(props: SidebarProps): JSX.Element | null {
             }))
       }
       active={active}
-    ></Menu>
+    />
   );
 
   return (

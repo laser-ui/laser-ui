@@ -14,7 +14,7 @@ export function CircularProgress(props: React.SVGProps<SVGSVGElement>): JSX.Elem
       })}
       viewBox="22 22 44 44"
     >
-      <circle {...styled('circular-progress__circle')} cx={44} cy={44} r={18.337} strokeWidth={3.6} fill="none"></circle>
+      <circle {...styled('circular-progress__circle')} cx={44} cy={44} r={18.337} strokeWidth={3.6} fill="none" />
     </svg>
   );
 }
