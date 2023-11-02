@@ -18,7 +18,6 @@ export const Image: {
   const {
     styleOverrides,
     styleProvider,
-    src,
     loading,
     error,
     actions,
@@ -40,8 +39,8 @@ export const Image: {
     isError: false,
   });
 
-  if (src !== dataRef.current.prevSrc) {
-    dataRef.current.prevSrc = src;
+  if (imgProps.src !== dataRef.current.prevSrc) {
+    dataRef.current.prevSrc = imgProps.src;
     dataRef.current.isLoading = true;
     dataRef.current.isError = false;
   }
@@ -66,7 +65,6 @@ export const Image: {
             display: (dataRef.current.isLoading && loading) || (dataRef.current.isError && error) ? 'none' : undefined,
           },
         })}
-        src={src}
         onLoadStart={(e) => {
           // https://bugs.chromium.org/p/chromium/issues/detail?id=458851
           imgProps?.onLoadStart?.(e);

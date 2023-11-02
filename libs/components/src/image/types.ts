@@ -4,11 +4,10 @@ import type { BaseProps } from '../types';
 export {};
 
 export interface ImageProps extends BaseProps<'image', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
-  src: string;
+  imgProps: React.ImgHTMLAttributes<HTMLImageElement>;
   loading?: React.ReactNode;
   error?: React.ReactNode;
   actions?: React.ReactElement[];
-  imgProps?: React.ImgHTMLAttributes<HTMLImageElement>;
 }
 
 export interface ImageActionProps extends BaseProps<'image', typeof CLASSES>, React.ButtonHTMLAttributes<HTMLButtonElement> {}
