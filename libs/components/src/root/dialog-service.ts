@@ -20,6 +20,11 @@ export class DialogService {
           ...props,
           visible: true,
           skipFirstTransition: false,
+          onClose: () => {
+            (props as any).onClose?.();
+
+            DialogService.close(dialogKey);
+          },
           afterVisibleChange: (visible: boolean) => {
             (props as any).afterVisibleChange?.(visible);
 
