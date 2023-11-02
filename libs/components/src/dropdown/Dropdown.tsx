@@ -398,10 +398,7 @@ function DropdownFC<ID extends React.Key, T extends DropdownItem<ID>>(
         popupRef,
         containerRefs: [],
       }}
-      onVisibleChange={(visible) => {
-        console.log(visible);
-        changeVisible(visible);
-      }}
+      onVisibleChange={changeVisible}
     >
       {({ renderTrigger, renderPopup }) => {
         const render = (el: React.ReactElement) => {
