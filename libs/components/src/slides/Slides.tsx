@@ -1,8 +1,8 @@
 import type { SlidesAutoplayOptions, SlidesItem, SlidesPaginationOptions, SlidesProps } from './types';
 
 import { useAsync, useEvent, useRefExtra } from '@laser-ui/hooks';
-import { ReactComponent as KeyboardArrowLeftOutlined } from '@material-design-icons/svg/outlined/keyboard_arrow_left.svg';
-import { ReactComponent as KeyboardArrowRightOutlined } from '@material-design-icons/svg/outlined/keyboard_arrow_right.svg';
+import KeyboardArrowLeftOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_left.svg?react';
+import KeyboardArrowRightOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_right.svg?react';
 import { isBoolean, isNumber, isUndefined, nth } from 'lodash';
 import { useEffect, useId, useRef, useState } from 'react';
 

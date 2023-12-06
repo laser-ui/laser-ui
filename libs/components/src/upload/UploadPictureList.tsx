@@ -1,7 +1,7 @@
 import type { UploadPictureListProps } from './types';
 
 import { useImmer } from '@laser-ui/hooks';
-import { ReactComponent as InsertDriveFileTwoTone } from '@material-design-icons/svg/two-tone/insert_drive_file.svg';
+import InsertDriveFileTwoTone from '@material-design-icons/svg/two-tone/insert_drive_file.svg?react';
 import { isNumber, isUndefined } from 'lodash';
 import { Children, cloneElement, useContext } from 'react';
 

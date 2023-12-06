@@ -1,7 +1,7 @@
 import type { UploadButtonProps } from './types';
 
-import { ReactComponent as AddOutlined } from '@material-design-icons/svg/outlined/add.svg';
-import { ReactComponent as InsertDriveFileTwoTone } from '@material-design-icons/svg/two-tone/insert_drive_file.svg';
+import AddOutlined from '@material-design-icons/svg/outlined/add.svg?react';
+import InsertDriveFileTwoTone from '@material-design-icons/svg/two-tone/insert_drive_file.svg?react';
 import { Children, cloneElement, forwardRef } from 'react';
 
 import { UploadAction } from './UploadAction';

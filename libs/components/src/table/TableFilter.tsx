@@ -1,6 +1,6 @@
 import type { TableFilterProps } from './types';
 
-import { ReactComponent as SearchOutlined } from '@material-design-icons/svg/outlined/search.svg';
+import SearchOutlined from '@material-design-icons/svg/outlined/search.svg?react';
 
 import { CLASSES } from './vars';
 import { Button } from '../button';

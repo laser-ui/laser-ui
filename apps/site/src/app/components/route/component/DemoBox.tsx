@@ -1,8 +1,8 @@
 import { Icon, Tabs, Tooltip } from '@laser-ui/components';
 import { useMount } from '@laser-ui/hooks';
 import { classNames, copy } from '@laser-ui/utils';
-import { ReactComponent as CheckOutlined } from '@material-design-icons/svg/outlined/check.svg';
-import { ReactComponent as ContentCopyOutlined } from '@material-design-icons/svg/outlined/content_copy.svg';
+import CheckOutlined from '@material-design-icons/svg/outlined/check.svg?react';
+import ContentCopyOutlined from '@material-design-icons/svg/outlined/content_copy.svg?react';
 import { isArray } from 'lodash';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';

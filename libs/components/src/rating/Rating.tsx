@@ -1,7 +1,7 @@
 import type { RatingProps } from './types';
 
 import { checkNodeExist } from '@laser-ui/utils';
-import { ReactComponent as StarFilled } from '@material-design-icons/svg/filled/star.svg';
+import StarFilled from '@material-design-icons/svg/filled/star.svg?react';
 import { isFunction } from 'lodash';
 import { useId, useState } from 'react';
 

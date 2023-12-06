@@ -1,10 +1,10 @@
 import type { PaginationProps } from './types';
 
-import { ReactComponent as KeyboardArrowLeftOutlined } from '@material-design-icons/svg/outlined/keyboard_arrow_left.svg';
-import { ReactComponent as KeyboardArrowRightOutlined } from '@material-design-icons/svg/outlined/keyboard_arrow_right.svg';
-import { ReactComponent as KeyboardDoubleArrowLeftOutlined } from '@material-design-icons/svg/outlined/keyboard_double_arrow_left.svg';
-import { ReactComponent as KeyboardDoubleArrowRightOutlined } from '@material-design-icons/svg/outlined/keyboard_double_arrow_right.svg';
-import { ReactComponent as MoreHorizOutlined } from '@material-design-icons/svg/outlined/more_horiz.svg';
+import KeyboardArrowLeftOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_left.svg?react';
+import KeyboardArrowRightOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_right.svg?react';
+import KeyboardDoubleArrowLeftOutlined from '@material-design-icons/svg/outlined/keyboard_double_arrow_left.svg?react';
+import KeyboardDoubleArrowRightOutlined from '@material-design-icons/svg/outlined/keyboard_double_arrow_right.svg?react';
+import MoreHorizOutlined from '@material-design-icons/svg/outlined/more_horiz.svg?react';
 import { isNull, isNumber } from 'lodash';
 import { Fragment, cloneElement, useRef, useState } from 'react';
 

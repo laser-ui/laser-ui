@@ -1,12 +1,12 @@
 import type { ImagePreviewProps } from './types';
 
 import { useEvent, useImmer, useRefExtra } from '@laser-ui/hooks';
-import { ReactComponent as CloseOutlined } from '@material-design-icons/svg/outlined/close.svg';
-import { ReactComponent as KeyboardArrowLeftOutlined } from '@material-design-icons/svg/outlined/keyboard_arrow_left.svg';
-import { ReactComponent as KeyboardArrowRightOutlined } from '@material-design-icons/svg/outlined/keyboard_arrow_right.svg';
-import { ReactComponent as Rotate90DegreesCwOutlined } from '@material-design-icons/svg/outlined/rotate_90_degrees_cw.svg';
-import { ReactComponent as ZoomInOutlined } from '@material-design-icons/svg/outlined/zoom_in.svg';
-import { ReactComponent as ZoomOutOutlined } from '@material-design-icons/svg/outlined/zoom_out.svg';
+import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
+import KeyboardArrowLeftOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_left.svg?react';
+import KeyboardArrowRightOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_right.svg?react';
+import Rotate90DegreesCwOutlined from '@material-design-icons/svg/outlined/rotate_90_degrees_cw.svg?react';
+import ZoomInOutlined from '@material-design-icons/svg/outlined/zoom_in.svg?react';
+import ZoomOutOutlined from '@material-design-icons/svg/outlined/zoom_out.svg?react';
 import { isNull, isUndefined } from 'lodash';
 import { useRef, useState } from 'react';
 

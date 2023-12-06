@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "sourceMap": false,
-    "types": ["node", "@nx/react/typings/image.d.ts"]
+    "types": ["node", "@nx/react/typings/image.d.ts", "vite-plugin-svgr/client.d.ts"]
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts", "src/**/*.spec.tsx", "src/**/*.test.tsx"]

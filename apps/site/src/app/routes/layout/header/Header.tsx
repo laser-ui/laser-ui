@@ -6,7 +6,7 @@ import type { Lang } from '@laser-ui/components/types';
 import { Dropdown, Icon, Menu, Separator } from '@laser-ui/components';
 import { useStorage } from '@laser-ui/hooks';
 import { classNames } from '@laser-ui/utils';
-import { ReactComponent as TranslateOutlined } from '@material-design-icons/svg/outlined/translate.svg';
+import TranslateOutlined from '@material-design-icons/svg/outlined/translate.svg?react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 

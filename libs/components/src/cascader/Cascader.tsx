@@ -5,10 +5,10 @@ import type { AbstractTreeNode } from '../tree/node/abstract-node';
 
 import { useEvent, useEventCallback, useForkRef, useResize } from '@laser-ui/hooks';
 import { findNested } from '@laser-ui/utils';
-import { ReactComponent as CancelFilled } from '@material-design-icons/svg/filled/cancel.svg';
-import { ReactComponent as CloseOutlined } from '@material-design-icons/svg/outlined/close.svg';
-import { ReactComponent as KeyboardArrowDownOutlined } from '@material-design-icons/svg/outlined/keyboard_arrow_down.svg';
-import { ReactComponent as SearchOutlined } from '@material-design-icons/svg/outlined/search.svg';
+import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
+import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
+import KeyboardArrowDownOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_down.svg?react';
+import SearchOutlined from '@material-design-icons/svg/outlined/search.svg?react';
 import { isNull, isUndefined } from 'lodash';
 import { createElement, forwardRef, useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
 

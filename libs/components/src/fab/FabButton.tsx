@@ -1,6 +1,6 @@
 import type { FabButtonProps } from './types';
 
-import { ReactComponent as AddOutlined } from '@material-design-icons/svg/outlined/add.svg';
+import AddOutlined from '@material-design-icons/svg/outlined/add.svg?react';
 import { forwardRef } from 'react';
 
 import { BUTTON_CLASSES } from './vars';

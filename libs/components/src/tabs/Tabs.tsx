@@ -3,9 +3,9 @@ import type { DropdownItem } from '../dropdown/types';
 
 import { useEventCallback, useIsomorphicLayoutEffect, useResize } from '@laser-ui/hooks';
 import { checkScrollEnd, findNested } from '@laser-ui/utils';
-import { ReactComponent as AddOutlined } from '@material-design-icons/svg/outlined/add.svg';
-import { ReactComponent as CloseOutlined } from '@material-design-icons/svg/outlined/close.svg';
-import { ReactComponent as MoreHorizOutlined } from '@material-design-icons/svg/outlined/more_horiz.svg';
+import AddOutlined from '@material-design-icons/svg/outlined/add.svg?react';
+import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
+import MoreHorizOutlined from '@material-design-icons/svg/outlined/more_horiz.svg?react';
 import { isUndefined, nth } from 'lodash';
 import { forwardRef, useEffect, useId, useImperativeHandle, useRef, useState } from 'react';
 

@@ -1,12 +1,12 @@
 import type { ProgressProps } from './types';
 
 import { checkNodeExist } from '@laser-ui/utils';
-import { ReactComponent as CancelFilled } from '@material-design-icons/svg/filled/cancel.svg';
-import { ReactComponent as CheckCircleFilled } from '@material-design-icons/svg/filled/check_circle.svg';
-import { ReactComponent as WarningFilled } from '@material-design-icons/svg/filled/warning.svg';
-import { ReactComponent as CheckOutlined } from '@material-design-icons/svg/outlined/check.svg';
-import { ReactComponent as CloseOutlined } from '@material-design-icons/svg/outlined/close.svg';
-import { ReactComponent as WarningAmberOutlined } from '@material-design-icons/svg/outlined/warning_amber.svg';
+import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
+import CheckCircleFilled from '@material-design-icons/svg/filled/check_circle.svg?react';
+import WarningFilled from '@material-design-icons/svg/filled/warning.svg?react';
+import CheckOutlined from '@material-design-icons/svg/outlined/check.svg?react';
+import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
+import WarningAmberOutlined from '@material-design-icons/svg/outlined/warning_amber.svg?react';
 import { isUndefined } from 'lodash';
 import { useId } from 'react';
 

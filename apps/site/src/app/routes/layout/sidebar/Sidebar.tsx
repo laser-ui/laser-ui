@@ -4,9 +4,9 @@ import type { Lang } from '@laser-ui/components/types';
 
 import { Drawer, Icon, Menu } from '@laser-ui/components';
 import { useStorage } from '@laser-ui/hooks';
-import { ReactComponent as BookOutlined } from '@material-design-icons/svg/outlined/book.svg';
-import { ReactComponent as DashboardOutlined } from '@material-design-icons/svg/outlined/dashboard.svg';
-import { ReactComponent as NavigateNextOutlined } from '@material-design-icons/svg/outlined/navigate_next.svg';
+import BookOutlined from '@material-design-icons/svg/outlined/book.svg?react';
+import DashboardOutlined from '@material-design-icons/svg/outlined/dashboard.svg?react';
+import NavigateNextOutlined from '@material-design-icons/svg/outlined/navigate_next.svg?react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 

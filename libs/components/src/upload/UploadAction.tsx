@@ -1,8 +1,8 @@
 import type { UploadActionProps, UploadFile } from './types';
 
 import { saveFile } from '@laser-ui/utils';
-import { ReactComponent as DeleteOutlineOutlined } from '@material-design-icons/svg/outlined/delete_outline.svg';
-import { ReactComponent as FileDownloadOutlined } from '@material-design-icons/svg/outlined/file_download.svg';
+import DeleteOutlineOutlined from '@material-design-icons/svg/outlined/delete_outline.svg?react';
+import FileDownloadOutlined from '@material-design-icons/svg/outlined/file_download.svg?react';
 import { isUndefined } from 'lodash';
 import { forwardRef } from 'react';
 

@@ -1,6 +1,6 @@
 import type { AccordionItem, AccordionProps } from './types';
 
-import { ReactComponent as KeyboardArrowDownOutlined } from '@material-design-icons/svg/outlined/keyboard_arrow_down.svg';
+import KeyboardArrowDownOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_down.svg?react';
 import { isNull, isUndefined, nth } from 'lodash';
 import { useId } from 'react';
 

@@ -1,6 +1,6 @@
 import type { UploadPreviewActionProps, UploadFile } from './types';
 
-import { ReactComponent as VisibilityOutlinedIcon } from '@material-design-icons/svg/outlined/visibility.svg';
+import VisibilityOutlinedIcon from '@material-design-icons/svg/outlined/visibility.svg?react';
 import { isUndefined } from 'lodash';
 import { forwardRef } from 'react';
 

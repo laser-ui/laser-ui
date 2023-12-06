@@ -3,10 +3,10 @@ import type { CLASSES } from '../vars';
 import type { UnitType } from 'dayjs';
 
 import { useAsync, useEvent, useRefExtra } from '@laser-ui/hooks';
-import { ReactComponent as KeyboardArrowLeftOutlined } from '@material-design-icons/svg/outlined/keyboard_arrow_left.svg';
-import { ReactComponent as KeyboardArrowRightOutlined } from '@material-design-icons/svg/outlined/keyboard_arrow_right.svg';
-import { ReactComponent as KeyboardDoubleArrowLeftOutlined } from '@material-design-icons/svg/outlined/keyboard_double_arrow_left.svg';
-import { ReactComponent as KeyboardDoubleArrowRightOutlined } from '@material-design-icons/svg/outlined/keyboard_double_arrow_right.svg';
+import KeyboardArrowLeftOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_left.svg?react';
+import KeyboardArrowRightOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_right.svg?react';
+import KeyboardDoubleArrowLeftOutlined from '@material-design-icons/svg/outlined/keyboard_double_arrow_left.svg?react';
+import KeyboardDoubleArrowRightOutlined from '@material-design-icons/svg/outlined/keyboard_double_arrow_right.svg?react';
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 
 import dayjs from '../../dayjs';

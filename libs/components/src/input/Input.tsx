@@ -2,9 +2,9 @@ import type { InputProps } from './types';
 
 import { useForkRef } from '@laser-ui/hooks';
 import { checkNodeExist } from '@laser-ui/utils';
-import { ReactComponent as CancelFilled } from '@material-design-icons/svg/filled/cancel.svg';
-import { ReactComponent as VisibilityOutlined } from '@material-design-icons/svg/outlined/visibility.svg';
-import { ReactComponent as VisibilityOffOutlined } from '@material-design-icons/svg/outlined/visibility_off.svg';
+import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
+import VisibilityOutlined from '@material-design-icons/svg/outlined/visibility.svg?react';
+import VisibilityOffOutlined from '@material-design-icons/svg/outlined/visibility_off.svg?react';
 import { useRef } from 'react';
 
 import { InputNumber } from './InputNumber';

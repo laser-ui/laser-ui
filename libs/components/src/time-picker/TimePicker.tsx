@@ -1,9 +1,9 @@
 import type { TimePickerProps, TimePickerRef } from './types';
 
 import { useAsync, useEvent, useEventCallback, useForceUpdate, useForkRef, useImmer, useResize } from '@laser-ui/hooks';
-import { ReactComponent as CancelFilled } from '@material-design-icons/svg/filled/cancel.svg';
-import { ReactComponent as AccessTimeOutlined } from '@material-design-icons/svg/outlined/access_time.svg';
-import { ReactComponent as SwapHorizOutlined } from '@material-design-icons/svg/outlined/swap_horiz.svg';
+import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
+import AccessTimeOutlined from '@material-design-icons/svg/outlined/access_time.svg?react';
+import SwapHorizOutlined from '@material-design-icons/svg/outlined/swap_horiz.svg?react';
 import { isNull, isUndefined } from 'lodash';
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 

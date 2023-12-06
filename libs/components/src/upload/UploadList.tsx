@@ -1,7 +1,7 @@
 import type { UploadListProps } from './types';
 
 import { useImmer } from '@laser-ui/hooks';
-import { ReactComponent as AttachFileOutlined } from '@material-design-icons/svg/outlined/attach_file.svg';
+import AttachFileOutlined from '@material-design-icons/svg/outlined/attach_file.svg?react';
 import { isNumber, isUndefined } from 'lodash';
 import { Children, cloneElement, useContext } from 'react';
 

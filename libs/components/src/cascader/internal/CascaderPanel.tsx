@@ -6,7 +6,7 @@ import type { CLASSES } from '../vars';
 
 import { useEventCallback } from '@laser-ui/hooks';
 import { scrollIntoViewIfNeeded } from '@laser-ui/utils';
-import { ReactComponent as KeyboardArrowRightOutlined } from '@material-design-icons/svg/outlined/keyboard_arrow_right.svg';
+import KeyboardArrowRightOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_right.svg?react';
 import { isNumber, isUndefined } from 'lodash';
 import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
 

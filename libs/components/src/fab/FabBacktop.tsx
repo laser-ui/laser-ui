@@ -3,7 +3,7 @@ import type { TransitionState } from '../internal/transition/types';
 
 import { useEvent, useIsomorphicLayoutEffect, useRefExtra, useResize } from '@laser-ui/hooks';
 import { scrollTo, toPx } from '@laser-ui/utils';
-import { ReactComponent as VerticalAlignTopOutlined } from '@material-design-icons/svg/outlined/vertical_align_top.svg';
+import VerticalAlignTopOutlined from '@material-design-icons/svg/outlined/vertical_align_top.svg?react';
 import { isString } from 'lodash';
 import { cloneElement, useRef, useState } from 'react';
 

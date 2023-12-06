@@ -1,9 +1,9 @@
 import type { DatePickerProps, DatePickerRef } from './types';
 
 import { useAsync, useEvent, useEventCallback, useForceUpdate, useForkRef, useImmer, useResize } from '@laser-ui/hooks';
-import { ReactComponent as CancelFilled } from '@material-design-icons/svg/filled/cancel.svg';
-import { ReactComponent as CalendarTodayOutlined } from '@material-design-icons/svg/outlined/calendar_today.svg';
-import { ReactComponent as SwapHorizOutlined } from '@material-design-icons/svg/outlined/swap_horiz.svg';
+import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
+import CalendarTodayOutlined from '@material-design-icons/svg/outlined/calendar_today.svg?react';
+import SwapHorizOutlined from '@material-design-icons/svg/outlined/swap_horiz.svg?react';
 import { isArray, isBoolean, isNull, isUndefined } from 'lodash';
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 

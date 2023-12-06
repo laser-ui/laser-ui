@@ -1,11 +1,11 @@
 import type { AlertProps } from './types';
 
 import { checkNodeExist } from '@laser-ui/utils';
-import { ReactComponent as CheckCircleOutlined } from '@material-design-icons/svg/outlined/check_circle.svg';
-import { ReactComponent as CloseOutlined } from '@material-design-icons/svg/outlined/close.svg';
-import { ReactComponent as HighlightOffOutlined } from '@material-design-icons/svg/outlined/highlight_off.svg';
-import { ReactComponent as InfoOutlined } from '@material-design-icons/svg/outlined/info.svg';
-import { ReactComponent as WarningAmberOutlined } from '@material-design-icons/svg/outlined/warning_amber.svg';
+import CheckCircleOutlined from '@material-design-icons/svg/outlined/check_circle.svg?react';
+import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
+import HighlightOffOutlined from '@material-design-icons/svg/outlined/highlight_off.svg?react';
+import InfoOutlined from '@material-design-icons/svg/outlined/info.svg?react';
+import WarningAmberOutlined from '@material-design-icons/svg/outlined/warning_amber.svg?react';
 import { isUndefined } from 'lodash';
 
 import { CLASSES } from './vars';

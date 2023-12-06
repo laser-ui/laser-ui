@@ -2,7 +2,7 @@ import type { Lang } from '@laser-ui/components/types';
 
 import { Icon } from '@laser-ui/components';
 import { useStorage } from '@laser-ui/hooks';
-import { ReactComponent as WarningAmberOutlined } from '@material-design-icons/svg/outlined/warning_amber.svg';
+import WarningAmberOutlined from '@material-design-icons/svg/outlined/warning_amber.svg?react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';

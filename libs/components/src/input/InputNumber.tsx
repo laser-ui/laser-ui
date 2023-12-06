@@ -2,9 +2,9 @@ import type { InputNumberProps } from './types';
 
 import { useAsync, useEvent, useForceUpdate, useForkRef, useRefExtra } from '@laser-ui/hooks';
 import { checkNodeExist } from '@laser-ui/utils';
-import { ReactComponent as CancelFilled } from '@material-design-icons/svg/filled/cancel.svg';
-import { ReactComponent as KeyboardArrowDownOutlined } from '@material-design-icons/svg/outlined/keyboard_arrow_down.svg';
-import { ReactComponent as KeyboardArrowUpOutlined } from '@material-design-icons/svg/outlined/keyboard_arrow_up.svg';
+import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
+import KeyboardArrowDownOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_down.svg?react';
+import KeyboardArrowUpOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_up.svg?react';
 import { isNull, isUndefined } from 'lodash';
 import { useRef } from 'react';
 

@@ -3,7 +3,7 @@ import type { VirtualScrollOptimization } from '../../virtual-scroll/types';
 import type { TransferItem } from '../types';
 
 import { checkNodeExist } from '@laser-ui/utils';
-import { ReactComponent as SearchOutlined } from '@material-design-icons/svg/outlined/search.svg';
+import SearchOutlined from '@material-design-icons/svg/outlined/search.svg?react';
 import { isNumber } from 'lodash';
 import { useCallback, useId, useMemo, useRef } from 'react';
 

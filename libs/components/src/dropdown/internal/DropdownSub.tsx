@@ -3,7 +3,7 @@ import type { CLASSES } from '../vars';
 
 import { useEventCallback } from '@laser-ui/hooks';
 import { checkNodeExist } from '@laser-ui/utils';
-import { ReactComponent as KeyboardArrowRightOutlined } from '@material-design-icons/svg/outlined/keyboard_arrow_right.svg';
+import KeyboardArrowRightOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_right.svg?react';
 import { isUndefined } from 'lodash';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 

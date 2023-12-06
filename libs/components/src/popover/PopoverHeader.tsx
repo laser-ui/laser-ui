@@ -1,7 +1,7 @@
 import type { PopoverHeaderProps } from './types';
 import type { ButtonProps } from '../button';
 
-import { ReactComponent as CloseOutlined } from '@material-design-icons/svg/outlined/close.svg';
+import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
 import { Children } from 'react';
 
 import { CLASSES } from './vars';

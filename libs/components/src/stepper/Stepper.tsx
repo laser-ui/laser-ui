@@ -1,8 +1,8 @@
 import type { StepperItem, StepperProps } from './types';
 
 import { checkNodeExist } from '@laser-ui/utils';
-import { ReactComponent as CheckOutlined } from '@material-design-icons/svg/outlined/check.svg';
-import { ReactComponent as CloseOutlined } from '@material-design-icons/svg/outlined/close.svg';
+import CheckOutlined from '@material-design-icons/svg/outlined/check.svg?react';
+import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
 import { isNumber, isUndefined } from 'lodash';
 
 import { CLASSES } from './vars';

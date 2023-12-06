@@ -6,9 +6,9 @@ import type { CLASSES } from '../vars';
 
 import { useEventCallback } from '@laser-ui/hooks';
 import { scrollIntoViewIfNeeded } from '@laser-ui/utils';
-import { ReactComponent as AddBoxOutlined } from '@material-design-icons/svg/outlined/add_box.svg';
-import { ReactComponent as ArrowRightOutlined } from '@material-design-icons/svg/outlined/arrow_right.svg';
-import { ReactComponent as IndeterminateCheckBoxOutlined } from '@material-design-icons/svg/outlined/indeterminate_check_box.svg';
+import AddBoxOutlined from '@material-design-icons/svg/outlined/add_box.svg?react';
+import ArrowRightOutlined from '@material-design-icons/svg/outlined/arrow_right.svg?react';
+import IndeterminateCheckBoxOutlined from '@material-design-icons/svg/outlined/indeterminate_check_box.svg?react';
 import { isUndefined } from 'lodash';
 import { cloneElement, forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
 

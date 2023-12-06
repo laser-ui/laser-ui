@@ -1,9 +1,9 @@
 import type { FormControlProvider, FormErrors, FormItemProps } from './types';
 
-import { ReactComponent as CancelFilled } from '@material-design-icons/svg/filled/cancel.svg';
-import { ReactComponent as CheckCircleFilled } from '@material-design-icons/svg/filled/check_circle.svg';
-import { ReactComponent as ErrorFilled } from '@material-design-icons/svg/filled/error.svg';
-import { ReactComponent as HelpOutlineOutlined } from '@material-design-icons/svg/outlined/help_outline.svg';
+import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
+import CheckCircleFilled from '@material-design-icons/svg/filled/check_circle.svg?react';
+import ErrorFilled from '@material-design-icons/svg/filled/error.svg?react';
+import HelpOutlineOutlined from '@material-design-icons/svg/outlined/help_outline.svg?react';
 import { isBoolean, isFunction, isNull, isNumber, isString } from 'lodash';
 import { useContext, useId, useRef } from 'react';
 
