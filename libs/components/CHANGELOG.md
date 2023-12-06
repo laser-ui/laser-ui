@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/laser-ui/laser-ui/compare/v0.3.0...v0.4.0) (2023-12-06)
+
+### Features
+
+- update `vite-plugin-svgr` to **v4** ([5d05979](https://github.com/laser-ui/laser-ui/commit/5d0597973f3f41968bf70542e96eb9318f439328))
+
 # [0.3.0](https://github.com/laser-ui/laser-ui/compare/v0.2.2...v0.3.0) (2023-11-03)
 
 **Note:** Version bump only for package @laser-ui/components
