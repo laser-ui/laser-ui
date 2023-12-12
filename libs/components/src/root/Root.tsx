@@ -10,11 +10,41 @@ import dayjs from '../dayjs';
 import { Portal } from '../internal/portal';
 import resources from '../resources.json';
 
+function WindowSize() {
+  const windowSizeRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (windowSizeRef.current) {
+      const observer = new ResizeObserver((entries) => {
+        const entry = entries[0];
+        ROOT_DATA.windowSize = { width: entry.contentRect.width, height: entry.contentRect.height };
+      });
+      observer.observe(windowSizeRef.current);
+      return () => {
+        observer.disconnect();
+      };
+    }
+  });
+
+  return (
+    <div
+      ref={windowSizeRef}
+      style={{
+        position: 'fixed',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        pointerEvents: 'none',
+      }}
+    />
+  );
+}
+
 export function Root(props: RootProps): JSX.Element | null {
   const { context: contextProp, children } = props;
 
   const windowRef = useRefExtra(() => window);
-  const windowSizeRef = useRef<HTMLDivElement>(null);
 
   const [{ dialogs }] = useStore(Store, ['dialogs']);
 
@@ -36,19 +66,6 @@ export function Root(props: RootProps): JSX.Element | null {
     },
     { capture: true },
   );
-
-  useEffect(() => {
-    if (windowSizeRef.current) {
-      const observer = new ResizeObserver(() => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        ROOT_DATA.windowSize = { width: windowSizeRef.current!.clientWidth, height: windowSizeRef.current!.clientHeight };
-      });
-      observer.observe(windowSizeRef.current);
-      return () => {
-        observer.disconnect();
-      };
-    }
-  });
 
   const context = useMemo(() => {
     const { i18n } = contextProp ?? {};
@@ -91,22 +108,14 @@ export function Root(props: RootProps): JSX.Element | null {
   }
 
   return (
-    <RootContext.Provider value={context}>
-      {children}
-      {dialogs.map(({ type, key, props }) => createElement(type, { key, ...props }))}
+    <>
+      <RootContext.Provider value={context}>
+        {children}
+        {dialogs.map(({ type, key, props }) => createElement(type, { key, ...props }))}
+      </RootContext.Provider>
       <Portal selector={() => document.body}>
-        <div
-          ref={windowSizeRef}
-          style={{
-            position: 'fixed',
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0,
-            pointerEvents: 'none',
-          }}
-        />
+        <WindowSize />
       </Portal>
-    </RootContext.Provider>
+    </>
   );
 }
