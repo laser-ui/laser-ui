@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="//laser-ui.surge.sh/" rel="noopener" target="_blank"><img width="150" src="apps/site/public/logo.png" alt="logo"></a>
+  <a href="//laser-ui.github.io/" rel="noopener" target="_blank"><img width="150" src="apps/site/public/logo.png" alt="logo"></a>
 </p>
 
 <h1 align="center">Laser UI</h1>
@@ -59,7 +59,7 @@ export default function App() {
 
 ## 链接
 
-- [laser-ui.surge.sh](//laser-ui.surge.sh)
+- [laser-admin.surge.sh](//laser-admin.surge.sh)
 
 ## 贡献
 
