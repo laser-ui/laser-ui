@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.1](https://github.com/laser-ui/laser-ui/compare/v0.4.0...v0.4.1) (2023-12-12)
+
+### Bug Fixes
+
+- **ui:** fix get window size ([c909d89](https://github.com/laser-ui/laser-ui/commit/c909d898d48d715758744d4201888824e1e09af4))
+
 # [0.4.0](https://github.com/laser-ui/laser-ui/compare/v0.3.0...v0.4.0) (2023-12-06)
 
 ### Features
