@@ -77,6 +77,7 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
     customSearch,
     inputRef: inputRefProp,
     inputRender,
+    popupRender,
     onModelChange,
     onFirstExpand,
     onExpandsChange,
@@ -777,61 +778,70 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
                   preventBlur(e);
                 }}
               >
-                {loading && (
-                  <div
-                    {...styled('tree-select-popup__loading', {
-                      'tree-select-popup__loading--empty': isEmpty,
-                    })}
-                  >
-                    <Icon>
-                      <CircularProgress />
-                    </Icon>
-                  </div>
-                )}
-                {loading && isEmpty ? null : hasSearch ? (
-                  <TreeSelectSearchPanel
-                    ref={focusRef}
-                    namespace={namespace}
-                    styled={styled}
-                    id={listId}
-                    list={searchList}
-                    customItem={customItem}
-                    itemId={getItemId}
-                    itemFocused={itemFocusedWithSearch}
-                    multiple={multiple}
-                    onlyLeafSelectable={onlyLeafSelectable}
-                    virtual={virtual}
-                    focusVisible={focusVisible}
-                    onClick={(item) => {
-                      setItemFocusedWithSearch(item);
-                      changeSelectedByClickWithSearch(item);
-                    }}
-                  />
-                ) : (
-                  <TreePanel
-                    style={{ maxHeight: 264, padding: '4px 0' }}
-                    ref={focusRef}
-                    id={listId}
-                    namespace={namespace}
-                    styled={styled as any}
-                    list={nodes}
-                    itemId={getItemId}
-                    itemSelected={!multiple && hasSelected ? nodesMap.get(selected as V) : undefined}
-                    itemFocused={itemFocusedWithoutSearch}
-                    expands={expands}
-                    customItem={customItem}
-                    showLine={showLine}
-                    multiple={multiple}
-                    onlyLeafSelectable={onlyLeafSelectable}
-                    disabled={false}
-                    virtual={virtual === false ? undefined : { listSize: 264, listPadding: 4, itemSize: isNumber(virtual) ? virtual : 32 }}
-                    focusVisible={focusVisible}
-                    onNodeFocus={setItemFocusedWithoutSearch}
-                    onNodeExpand={handleExpand}
-                    onNodeClick={changeSelectedByClickWithoutSearch}
-                    onScrollBottom={onScrollBottom}
-                  />
-                )}
+                {(() => {
+                  const el = (
+                    <div {...styled('tree-select-popup__content')}>
+                      {loading && (
+                        <div
+                          {...styled('tree-select-popup__loading', {
+                            'tree-select-popup__loading--empty': isEmpty,
+                          })}
+                        >
+                          <Icon>
+                            <CircularProgress />
+                          </Icon>
+                        </div>
+                      )}
+                      {loading && isEmpty ? null : hasSearch ? (
+                        <TreeSelectSearchPanel
+                          ref={focusRef}
+                          namespace={namespace}
+                          styled={styled}
+                          id={listId}
+                          list={searchList}
+                          customItem={customItem}
+                          itemId={getItemId}
+                          itemFocused={itemFocusedWithSearch}
+                          multiple={multiple}
+                          onlyLeafSelectable={onlyLeafSelectable}
+                          virtual={virtual}
+                          focusVisible={focusVisible}
+                          onClick={(item) => {
+                            setItemFocusedWithSearch(item);
+                            changeSelectedByClickWithSearch(item);
+                          }}
+                        />
+                      ) : (
+                        <TreePanel
+                          style={{ maxHeight: 264, padding: '4px 0' }}
+                          ref={focusRef}
+                          id={listId}
+                          namespace={namespace}
+                          styled={styled as any}
+                          list={nodes}
+                          itemId={getItemId}
+                          itemSelected={!multiple && hasSelected ? nodesMap.get(selected as V) : undefined}
+                          itemFocused={itemFocusedWithoutSearch}
+                          expands={expands}
+                          customItem={customItem}
+                          showLine={showLine}
+                          multiple={multiple}
+                          onlyLeafSelectable={onlyLeafSelectable}
+                          disabled={false}
+                          virtual={
+                            virtual === false ? undefined : { listSize: 264, listPadding: 4, itemSize: isNumber(virtual) ? virtual : 32 }
+                          }
+                          focusVisible={focusVisible}
+                          onNodeFocus={setItemFocusedWithoutSearch}
+                          onNodeExpand={handleExpand}
+                          onNodeClick={changeSelectedByClickWithoutSearch}
+                          onScrollBottom={onScrollBottom}
+                        />
+                      )}
+                    </div>
+                  );
+                  return popupRender ? popupRender(el) : el;
+                })()}
               </div>
             );
           }}

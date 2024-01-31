@@ -45,6 +45,7 @@ export interface SelectProps<V extends React.Key, T extends SelectItem<V>>
   createItem?: (value: string) => T | undefined;
   inputRef?: React.ForwardedRef<HTMLInputElement>;
   inputRender?: CloneHTMLElement;
+  popupRender?: (el: React.ReactElement) => React.ReactNode;
   onModelChange?: (value: any, origin: any) => void;
   onVisibleChange?: (visible: boolean) => void;
   onSearch?: (value: string) => void;

@@ -30,6 +30,7 @@ export interface DropdownProps<ID extends React.Key, T extends DropdownItem<ID>>
   arrow?: boolean;
   escClosable?: boolean;
   zIndex?: number | string;
+  popupRender?: (el: React.ReactElement) => React.ReactNode;
   onVisibleChange?: (visible: boolean) => void;
   afterVisibleChange?: (visible: boolean) => void;
   onClick?: (id: ID, origin: T) => void | false;

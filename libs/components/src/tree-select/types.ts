@@ -41,6 +41,7 @@ export interface TreeSelectProps<V extends React.Key, T extends TreeItem<V>>
   };
   inputRef?: React.ForwardedRef<HTMLInputElement>;
   inputRender?: CloneHTMLElement;
+  popupRender?: (el: React.ReactElement) => React.ReactNode;
   onModelChange?: (value: any, origin: any) => void;
   onFirstExpand?: (value: V, origin: T) => void;
   onExpandsChange?: (values: V[], origins: T[]) => void;

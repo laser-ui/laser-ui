@@ -16,6 +16,7 @@ export const CLASSES = {
   select__icon: '^select__icon',
   select__arrow: '^select__arrow',
   'select-popup': '^select-popup',
+  'select-popup__content': '^select-popup__content',
   'select-popup__loading': '^select-popup__loading',
   'select-popup__loading--empty': '^select-popup__loading--empty',
   select__list: '^select__list',

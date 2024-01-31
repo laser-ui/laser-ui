@@ -73,6 +73,7 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
     customSearch,
     inputRef: inputRefProp,
     inputRender,
+    popupRender,
     onModelChange,
     onVisibleChange,
     onSearch,
@@ -726,54 +727,61 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
                   preventBlur(e);
                 }}
               >
-                {loading && (
-                  <div
-                    {...styled('cascader-popup__loading', {
-                      'cascader-popup__loading--empty': isEmpty,
-                    })}
-                  >
-                    <Icon>
-                      <CircularProgress />
-                    </Icon>
-                  </div>
-                )}
-                {loading && isEmpty ? null : hasSearch ? (
-                  <CascaderSearchPanel
-                    ref={focusRef}
-                    namespace={namespace}
-                    styled={styled}
-                    id={listId}
-                    list={searchList}
-                    customItem={customItem}
-                    itemId={getItemId}
-                    itemFocused={itemFocusedWithSearch}
-                    multiple={multiple}
-                    onlyLeafSelectable={onlyLeafSelectable}
-                    virtual={virtual}
-                    focusVisible={focusVisible}
-                    onClick={(item) => {
-                      changeItemFocusedWithSearch(item);
-                      changeSelectedByClickWithSearch(item);
-                    }}
-                  />
-                ) : (
-                  <CascaderPanel
-                    ref={focusRef}
-                    namespace={namespace}
-                    styled={styled}
-                    id={listId}
-                    list={nodes}
-                    customItem={customItem}
-                    itemId={getItemId}
-                    itemSelected={!multiple && hasSelected ? nodesMap.get(selected as V) : undefined}
-                    itemFocused={itemFocusedWithoutSearch}
-                    multiple={multiple}
-                    virtual={virtual}
-                    focusVisible={focusVisible}
-                    onFocus={changeItemFocusedWithoutSearch}
-                    onClick={changeSelectedByClickWithoutSearch}
-                  />
-                )}
+                {(() => {
+                  const el = (
+                    <div {...styled('cascader-popup__content')}>
+                      {loading && (
+                        <div
+                          {...styled('cascader-popup__loading', {
+                            'cascader-popup__loading--empty': isEmpty,
+                          })}
+                        >
+                          <Icon>
+                            <CircularProgress />
+                          </Icon>
+                        </div>
+                      )}
+                      {loading && isEmpty ? null : hasSearch ? (
+                        <CascaderSearchPanel
+                          ref={focusRef}
+                          namespace={namespace}
+                          styled={styled}
+                          id={listId}
+                          list={searchList}
+                          customItem={customItem}
+                          itemId={getItemId}
+                          itemFocused={itemFocusedWithSearch}
+                          multiple={multiple}
+                          onlyLeafSelectable={onlyLeafSelectable}
+                          virtual={virtual}
+                          focusVisible={focusVisible}
+                          onClick={(item) => {
+                            changeItemFocusedWithSearch(item);
+                            changeSelectedByClickWithSearch(item);
+                          }}
+                        />
+                      ) : (
+                        <CascaderPanel
+                          ref={focusRef}
+                          namespace={namespace}
+                          styled={styled}
+                          id={listId}
+                          list={nodes}
+                          customItem={customItem}
+                          itemId={getItemId}
+                          itemSelected={!multiple && hasSelected ? nodesMap.get(selected as V) : undefined}
+                          itemFocused={itemFocusedWithoutSearch}
+                          multiple={multiple}
+                          virtual={virtual}
+                          focusVisible={focusVisible}
+                          onFocus={changeItemFocusedWithoutSearch}
+                          onClick={changeSelectedByClickWithoutSearch}
+                        />
+                      )}
+                    </div>
+                  );
+                  return popupRender ? popupRender(el) : el;
+                })()}
               </div>
             );
           }}

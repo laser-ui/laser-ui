@@ -45,6 +45,7 @@ export interface CascaderProps<V extends React.Key, T extends CascaderItem<V>>
   };
   inputRef?: React.ForwardedRef<HTMLInputElement>;
   inputRender?: CloneHTMLElement;
+  popupRender?: (el: React.ReactElement) => React.ReactNode;
   onModelChange?: (value: any, origin: any) => void;
   onVisibleChange?: (visible: boolean) => void;
   onSearch?: (value: string) => void;

@@ -16,6 +16,7 @@ export const CLASSES = {
   'tree-select__icon': '^tree-select__icon',
   'tree-select__arrow': '^tree-select__arrow',
   'tree-select-popup': '^tree-select-popup',
+  'tree-select-popup__content': '^tree-select-popup__content',
   'tree-select-popup__loading': '^tree-select-popup__loading',
   'tree-select-popup__loading--empty': '^tree-select-popup__loading--empty',
   tree: '^tree',

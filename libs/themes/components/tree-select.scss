@@ -194,6 +194,10 @@ $tree-select-option-height: 32px;
   border-radius: var(--#{variables.$prefix}border-radius);
   box-shadow: var(--#{variables.$prefix}box-shadow-popup);
 
+  @include mixins.e(content) {
+    position: relative;
+  }
+
   @include mixins.e(loading) {
     position: absolute;
     top: 0;

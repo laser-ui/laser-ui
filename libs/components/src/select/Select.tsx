@@ -71,6 +71,7 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
     createItem,
     inputRef: inputRefProp,
     inputRender,
+    popupRender,
     onModelChange,
     onVisibleChange,
     onSearch,
@@ -744,113 +745,125 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
                   preventBlur(e);
                 }}
               >
-                {loading && (
-                  <div
-                    {...styled('select-popup__loading', {
-                      'select-popup__loading--empty': list.length === 0,
-                    })}
-                  >
-                    <Icon>
-                      <CircularProgress />
-                    </Icon>
-                  </div>
-                )}
-                {loading && list.length === 0 ? null : (
-                  <VirtualScroll
-                    {...vsProps}
-                    ref={vsRef}
-                    enable={virtual !== false}
-                    listSize={264}
-                    listPadding={4}
-                    itemRender={(item, index, props, ancestry, children) => {
-                      const { label: itemLabel, value: itemValue, disabled: itemDisabled } = item;
-
-                      const node = customItem ? customItem(item) : itemLabel;
-
-                      if (children) {
-                        return (
-                          <ul {...styled('select__option-group')} key={itemValue} role="group" aria-labelledby={getItemId(itemValue)}>
-                            <li {...styled('select__option-group-label')} key={itemValue} id={getItemId(itemValue)} role="presentation">
-                              <div {...styled('select__option-content')}>{node}</div>
-                            </li>
-                            {children}
-                          </ul>
-                        );
-                      }
-
-                      let isSelected = false;
-                      if (multiple) {
-                        isSelected = (selected as Set<V>).has(itemValue);
-                      } else {
-                        isSelected = (selected as V | null) === itemValue;
-                      }
-
-                      return (
-                        <li
-                          {...mergeCS(
-                            styled('select__option', {
-                              'select__option.is-selected': !multiple && isSelected,
-                              'select__option.is-disabled': itemDisabled,
-                            }),
-                            { style: { paddingLeft: ancestry.length === 0 ? undefined : 12 + 8 } },
-                          )}
-                          {...props}
-                          key={itemValue}
-                          id={getItemId(itemValue)}
-                          title={((item as any)[IS_CREATED] ? t('Create') + ' ' : '') + itemLabel}
-                          role="option"
-                          aria-selected={isSelected}
-                          aria-disabled={itemDisabled}
-                          onClick={() => {
-                            if ((item as any)[IS_CREATED]) {
-                              handleCreateItem(item);
-                            }
-                            changeItemFocused(item);
-                            changeSelectedByClick(itemValue);
-                          }}
+                {(() => {
+                  const el = (
+                    <div {...styled('select-popup__content')}>
+                      {loading && (
+                        <div
+                          {...styled('select-popup__loading', {
+                            'select-popup__loading--empty': list.length === 0,
+                          })}
                         >
-                          {focusVisible && itemFocused?.value === itemValue && <div className={`${namespace}-focus-outline`} />}
-                          {(item as any)[IS_CREATED] ? (
-                            <div {...styled('select__option-prefix')}>
-                              <Icon theme="primary">
-                                <AddOutlined />
-                              </Icon>
-                            </div>
-                          ) : multiple ? (
-                            <div {...styled('select__option-prefix')}>
-                              <Checkbox model={isSelected} disabled={itemDisabled} />
-                            </div>
-                          ) : null}
-                          <div {...styled('select__option-content')}>{node}</div>
-                        </li>
-                      );
-                    }}
-                    itemFocused={itemFocused?.value}
-                    itemEmptyRender={() => (
-                      <li {...mergeCS(styled('select__empty'), { style: { paddingLeft: 12 + 8 } })}>
-                        <div {...styled('select__option-content')}>{t('No Data')}</div>
-                      </li>
-                    )}
-                    itemInAriaSetsize={(item) => !item.children}
-                    placeholder="li"
-                    onScrollEnd={onScrollBottom}
-                  >
-                    {(vsList, onScroll) => (
-                      <ul
-                        {...styled('select__list')}
-                        ref={listRef}
-                        id={listId}
-                        tabIndex={-1}
-                        role="listbox"
-                        aria-multiselectable={multiple}
-                        aria-activedescendant={isUndefined(itemFocused) ? undefined : getItemId(itemFocused.value)}
-                        onScroll={onScroll}
-                      >
-                        {list.length === 0 ? <Empty style={{ padding: '12px 0' }} image={Empty.SIMPLE_IMG} /> : vsList}
-                      </ul>
-                    )}
-                  </VirtualScroll>
-                )}
+                          <Icon>
+                            <CircularProgress />
+                          </Icon>
+                        </div>
+                      )}
+                      {loading && list.length === 0 ? null : (
+                        <VirtualScroll
+                          {...vsProps}
+                          ref={vsRef}
+                          enable={virtual !== false}
+                          listSize={264}
+                          listPadding={4}
+                          itemRender={(item, index, props, ancestry, children) => {
+                            const { label: itemLabel, value: itemValue, disabled: itemDisabled } = item;
+
+                            const node = customItem ? customItem(item) : itemLabel;
+
+                            if (children) {
+                              return (
+                                <ul {...styled('select__option-group')} key={itemValue} role="group" aria-labelledby={getItemId(itemValue)}>
+                                  <li
+                                    {...styled('select__option-group-label')}
+                                    key={itemValue}
+                                    id={getItemId(itemValue)}
+                                    role="presentation"
+                                  >
+                                    <div {...styled('select__option-content')}>{node}</div>
+                                  </li>
+                                  {children}
+                                </ul>
+                              );
+                            }
+
+                            let isSelected = false;
+                            if (multiple) {
+                              isSelected = (selected as Set<V>).has(itemValue);
+                            } else {
+                              isSelected = (selected as V | null) === itemValue;
+                            }
+
+                            return (
+                              <li
+                                {...mergeCS(
+                                  styled('select__option', {
+                                    'select__option.is-selected': !multiple && isSelected,
+                                    'select__option.is-disabled': itemDisabled,
+                                  }),
+                                  { style: { paddingLeft: ancestry.length === 0 ? undefined : 12 + 8 } },
+                                )}
+                                {...props}
+                                key={itemValue}
+                                id={getItemId(itemValue)}
+                                title={((item as any)[IS_CREATED] ? t('Create') + ' ' : '') + itemLabel}
+                                role="option"
+                                aria-selected={isSelected}
+                                aria-disabled={itemDisabled}
+                                onClick={() => {
+                                  if ((item as any)[IS_CREATED]) {
+                                    handleCreateItem(item);
+                                  }
+                                  changeItemFocused(item);
+                                  changeSelectedByClick(itemValue);
+                                }}
+                              >
+                                {focusVisible && itemFocused?.value === itemValue && <div className={`${namespace}-focus-outline`} />}
+                                {(item as any)[IS_CREATED] ? (
+                                  <div {...styled('select__option-prefix')}>
+                                    <Icon theme="primary">
+                                      <AddOutlined />
+                                    </Icon>
+                                  </div>
+                                ) : multiple ? (
+                                  <div {...styled('select__option-prefix')}>
+                                    <Checkbox model={isSelected} disabled={itemDisabled} />
+                                  </div>
+                                ) : null}
+                                <div {...styled('select__option-content')}>{node}</div>
+                              </li>
+                            );
+                          }}
+                          itemFocused={itemFocused?.value}
+                          itemEmptyRender={() => (
+                            <li {...mergeCS(styled('select__empty'), { style: { paddingLeft: 12 + 8 } })}>
+                              <div {...styled('select__option-content')}>{t('No Data')}</div>
+                            </li>
+                          )}
+                          itemInAriaSetsize={(item) => !item.children}
+                          placeholder="li"
+                          onScrollEnd={onScrollBottom}
+                        >
+                          {(vsList, onScroll) => (
+                            <ul
+                              {...styled('select__list')}
+                              ref={listRef}
+                              id={listId}
+                              tabIndex={-1}
+                              role="listbox"
+                              aria-multiselectable={multiple}
+                              aria-activedescendant={isUndefined(itemFocused) ? undefined : getItemId(itemFocused.value)}
+                              onScroll={onScroll}
+                            >
+                              {list.length === 0 ? <Empty style={{ padding: '12px 0' }} image={Empty.SIMPLE_IMG} /> : vsList}
+                            </ul>
+                          )}
+                        </VirtualScroll>
+                      )}
+                    </div>
+                  );
+                  return popupRender ? popupRender(el) : el;
+                })()}
               </div>
             );
           }}

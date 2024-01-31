@@ -16,6 +16,7 @@ export const CLASSES = {
   cascader__icon: '^cascader__icon',
   cascader__arrow: '^cascader__arrow',
   'cascader-popup': '^cascader-popup',
+  'cascader-popup__content': '^cascader-popup__content',
   'cascader-popup__loading': '^cascader-popup__loading',
   'cascader-popup__loading--empty': '^cascader-popup__loading--empty',
   cascader__list: '^cascader__list',

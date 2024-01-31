@@ -45,6 +45,7 @@ function DropdownFC<ID extends React.Key, T extends DropdownItem<ID>>(
     arrow = false,
     escClosable = true,
     zIndex: zIndexProp,
+    popupRender,
     onVisibleChange,
     afterVisibleChange,
     onClick,
@@ -543,17 +544,22 @@ function DropdownFC<ID extends React.Key, T extends DropdownItem<ID>>(
                           })}
                           ref={popupRef}
                         >
-                          <ul
-                            {...styled('dropdown__list')}
-                            ref={ulRef}
-                            id={id}
-                            tabIndex={-1}
-                            role="menu"
-                            aria-labelledby={triggerId}
-                            aria-activedescendant={isUndefined(focusId) ? undefined : getItemId(focusId)}
-                          >
-                            {list.length === 0 ? <div {...styled('dropdown__empty')}>{t('No Data')}</div> : nodes}
-                          </ul>
+                          {(() => {
+                            const el = (
+                              <ul
+                                {...styled('dropdown__list')}
+                                ref={ulRef}
+                                id={id}
+                                tabIndex={-1}
+                                role="menu"
+                                aria-labelledby={triggerId}
+                                aria-activedescendant={isUndefined(focusId) ? undefined : getItemId(focusId)}
+                              >
+                                {list.length === 0 ? <div {...styled('dropdown__empty')}>{t('No Data')}</div> : nodes}
+                              </ul>
+                            );
+                            return popupRender ? popupRender(el) : el;
+                          })()}
                           {arrow && <div {...styled('dropdown__arrow')} />}
                         </div>,
                       )}
