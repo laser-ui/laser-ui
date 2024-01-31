@@ -67,7 +67,7 @@
     "jsdom": "~22.1.0",
     "jss": "^10.10.0",
     "jss-preset-default": "^10.10.0",
-    "lerna": "^7.2.0",
+    "lerna": "^8.0.2",
     "lodash": "^4.17.21",
     "marked": "^6.0.0",
     "marked-highlight": "^2.0.6",
