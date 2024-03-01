@@ -44,8 +44,10 @@ function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
   const getItemId = (id: ID) => `${namespace}-menu-item-${id}-${uniqueId}`;
 
   const dataRef = useRef<{
+    mousedown: boolean;
     updatePosition: Map<ID, () => void>;
   }>({
+    mousedown: false,
     updatePosition: new Map(),
   });
 
@@ -486,7 +488,10 @@ function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
             onFocus={(e) => {
               restProps.onFocus?.(e);
 
-              initFocus();
+              if (!dataRef.current.mousedown) {
+                initFocus();
+              }
+              dataRef.current.mousedown = false;
             }}
             onBlur={(e) => {
               restProps.onBlur?.(e);
@@ -507,6 +512,7 @@ function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
             onMouseDown={(e) => {
               restProps.onMouseDown?.(e);
 
+              dataRef.current.mousedown = true;
               preventBlur(e);
             }}
             onMouseUp={(e) => {
