@@ -1,0 +1,63 @@
+diff --git a/src/utils/package-json/update-package-json.js b/src/utils/package-json/update-package-json.js
+index 06d708619b413540b7c1e24231fc63564339316a..1818a47d1fa68a914e46cedf31c3626315883316 100644
+--- a/src/utils/package-json/update-package-json.js
++++ b/src/utils/package-json/update-package-json.js
+@@ -123,23 +123,23 @@ function getUpdatedPackageJsonContent(packageJson, options) {
+     const hasCjsFormat = !options.format || options.format?.includes('cjs');
+     const hasEsmFormat = options.format?.includes('esm');
+     if (options.generateExportsField) {
+-        packageJson.exports =
++        packageJson.exports ??=
+             typeof packageJson.exports === 'string' ? {} : { ...packageJson.exports };
+-        packageJson.exports['./package.json'] = './package.json';
++        packageJson.exports['./package.json'] ??= './package.json';
+     }
+     if (hasEsmFormat) {
+         const esmExports = getExports({
+             ...options,
+             fileExt: options.outputFileExtensionForEsm ?? '.js',
+         });
+-        packageJson.module = esmExports['.'];
++        packageJson.module ??= esmExports['.'];
+         if (!hasCjsFormat) {
+-            packageJson.type = 'module';
++            packageJson.type ??= 'module';
+             packageJson.main ??= esmExports['.'];
+         }
+         if (options.generateExportsField) {
+             for (const [exportEntry, filePath] of Object.entries(esmExports)) {
+-                packageJson.exports[exportEntry] = hasCjsFormat
++                packageJson.exports[exportEntry] ??= hasCjsFormat
+                     ? { import: filePath }
+                     : filePath;
+             }
+@@ -153,9 +153,9 @@ function getUpdatedPackageJsonContent(packageJson, options) {
+             ...options,
+             fileExt: options.outputFileExtensionForCjs ?? '.js',
+         });
+-        packageJson.main = cjsExports['.'];
++        packageJson.main ??= cjsExports['.'];
+         if (!hasEsmFormat) {
+-            packageJson.type = 'commonjs';
++            packageJson.type ??= 'commonjs';
+         }
+         if (options.generateExportsField) {
+             for (const [exportEntry, filePath] of Object.entries(cjsExports)) {
+@@ -163,7 +163,7 @@ function getUpdatedPackageJsonContent(packageJson, options) {
+                     packageJson.exports[exportEntry]['default'] ??= filePath;
+                 }
+                 else {
+-                    packageJson.exports[exportEntry] = filePath;
++                    packageJson.exports[exportEntry] ??= filePath;
+                 }
+             }
+         }
+@@ -172,7 +172,7 @@ function getUpdatedPackageJsonContent(packageJson, options) {
+         const mainFile = (0, path_1.basename)(options.main).replace(/\.[tj]s$/, '');
+         const relativeMainFileDir = (0, get_main_file_dir_1.getRelativeDirectoryToProjectRoot)(options.main, options.projectRoot);
+         const typingsFile = `${relativeMainFileDir}${mainFile}.d.ts`;
+-        packageJson.types = packageJson.types ?? typingsFile;
++        packageJson.types ??= typingsFile;
+     }
+     return packageJson;
+ }

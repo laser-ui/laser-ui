@@ -109,5 +109,10 @@
   },
   "nx": {
     "includedScripts": []
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@nx/js@17.0.2": "patches/@nx__js@17.0.2.patch"
+    }
   }
 }
