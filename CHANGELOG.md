@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/laser-ui/laser-ui/compare/v0.5.0...v0.6.0) (2024-03-06)
+
+### Bug Fixes
+
+- **components:** menu init focus only pressing the tab key ([b72b64a](https://github.com/laser-ui/laser-ui/commit/b72b64a4c5d012065debba7903e40e3808c91764))
+- pnpm patch @nx/js ([96711d1](https://github.com/laser-ui/laser-ui/commit/96711d12de06fa8c0a14c2eb55505ca41e3bab3b))
+
 # [0.5.0](https://github.com/laser-ui/laser-ui/compare/v0.4.1...v0.5.0) (2024-01-31)
 
 ### Features
