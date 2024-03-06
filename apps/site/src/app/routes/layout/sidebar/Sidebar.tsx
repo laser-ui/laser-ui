@@ -3,7 +3,6 @@ import type { MenuItem } from '@laser-ui/components/menu/types';
 import type { Lang } from '@laser-ui/components/types';
 
 import { Drawer, Icon, Menu } from '@laser-ui/components';
-import { useStorage } from '@laser-ui/hooks';
 import BookOutlined from '@material-design-icons/svg/outlined/book.svg?react';
 import DashboardOutlined from '@material-design-icons/svg/outlined/dashboard.svg?react';
 import NavigateNextOutlined from '@material-design-icons/svg/outlined/navigate_next.svg?react';
@@ -11,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 
 import menu from '../../../../dist/menu.json';
-import { STORAGE_KEY } from '../../../configs/storage';
+import { useStorage } from '../../../hooks';
 
 import styles from './Sidebar.module.scss';
 
@@ -19,7 +18,7 @@ export function Sidebar(props: SidebarProps): JSX.Element | null {
   const { route, menuOpen, onMenuOpenChange } = props;
 
   const { t } = useTranslation();
-  const languageStorage = useStorage<Lang>(...STORAGE_KEY.language);
+  const languageStorage = useStorage<Lang>('language');
 
   const location = useLocation();
   const active = location.pathname.match(new RegExp(String.raw`^\/${route}\/(.+$)`))?.[1] ?? null;

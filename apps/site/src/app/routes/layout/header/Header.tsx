@@ -4,13 +4,12 @@ import type { DropdownItem } from '@laser-ui/components/dropdown/types';
 import type { Lang } from '@laser-ui/components/types';
 
 import { Dropdown, Icon, Menu, Separator } from '@laser-ui/components';
-import { useStorage } from '@laser-ui/hooks';
 import { classNames } from '@laser-ui/utils';
 import TranslateOutlined from '@material-design-icons/svg/outlined/translate.svg?react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 
-import { STORAGE_KEY } from '../../../configs/storage';
+import { useStorage } from '../../../hooks';
 
 import styles from './Header.module.scss';
 
@@ -18,8 +17,8 @@ export function Header(props: HeaderProps): JSX.Element | null {
   const { menuOpen, onMenuOpenChange } = props;
 
   const { i18n, t } = useTranslation();
-  const languageStorage = useStorage<Lang>(...STORAGE_KEY.language);
-  const themeStorage = useStorage<Theme>(...STORAGE_KEY.theme);
+  const languageStorage = useStorage<Lang>('language');
+  const themeStorage = useStorage<Theme>('theme');
 
   const location = useLocation();
   const active = location.pathname.startsWith('/docs') ? 'docs' : location.pathname.startsWith('/components') ? 'components' : null;

@@ -3,22 +3,21 @@ import type { LContextIn } from '@laser-ui/components/context';
 import type { Lang } from '@laser-ui/components/types';
 
 import { ConfigProvider, Root } from '@laser-ui/components';
-import { useStorage } from '@laser-ui/hooks';
 import highlightDarkStyles from 'highlight.js/styles/github-dark.css?inline';
 import highlightStyles from 'highlight.js/styles/github.css?inline';
 import { Suspense, createElement, useEffect, useMemo } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { FCPLoader } from './components';
-import { STORAGE_KEY } from './configs/storage';
+import { useStorage } from './hooks';
 import HomeRoute from './routes/home/Home';
 import IframeLayout from './routes/layout/IframeLayout';
 import Layout from './routes/layout/Layout';
 import routes from '../dist/routes';
 
 export function App() {
-  const languageStorage = useStorage<Lang>(...STORAGE_KEY.language);
-  const themeStorage = useStorage<Theme>(...STORAGE_KEY.theme);
+  const languageStorage = useStorage<Lang>('language');
+  const themeStorage = useStorage<Theme>('theme');
 
   useEffect(() => {
     document.documentElement.lang = languageStorage.value;
