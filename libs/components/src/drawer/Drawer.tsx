@@ -64,7 +64,7 @@ export const Drawer: {
   const drawerContext = useContext(DrawerContext);
   const drawerContextValue = useCallback(
     (offsets: Offsets) => {
-      const offset = (offsets[placement].reduce((v, r) => v + r, 0) / 3) * 2;
+      const offset = offsets[placement].reduce((sum, v) => Math.min((v / 3) * 2, 200) + sum, 0);
       if (drawerRef.current) {
         drawerRef.current.style.transform =
           placement === 'top'
