@@ -1,3 +1,5 @@
+import type { Offsets } from './types';
+
 import { createContext } from 'react';
 
 export const CLASSES = {
@@ -18,8 +20,6 @@ export const CLASSES = {
 };
 
 export const DrawerContext = createContext<
-  {
-    uniqueId: string;
-    placement: 'top' | 'right' | 'bottom' | 'left';
-  }[]
->([]);
+  (offsets: Offsets) => void
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+>(() => {});

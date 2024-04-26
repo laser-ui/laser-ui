@@ -1,8 +1,9 @@
 import type { DrawerProps } from './types';
+import type { Offsets } from './types';
 import type { TransitionState } from '../internal/transition/types';
 
 import { isString, isUndefined } from 'lodash';
-import { cloneElement, useContext, useEffect, useId, useMemo, useRef } from 'react';
+import { cloneElement, useCallback, useContext, useEffect, useId, useRef } from 'react';
 
 import { DrawerFooter } from './DrawerFooter';
 import { DrawerHeader } from './DrawerHeader';
@@ -48,6 +49,7 @@ export const Drawer: {
   const styled = useStyled(CLASSES, { drawer: styleProvider?.drawer }, styleOverrides);
 
   const drawerRef = useRef<HTMLDivElement>(null);
+  const drawerContentRef = useRef<HTMLDivElement>(null);
 
   const dataRef = useRef<{
     prevActiveEl: HTMLElement | null;
@@ -60,33 +62,54 @@ export const Drawer: {
   const bodyId = `${namespace}-drawer-content-${uniqueId}`;
 
   const drawerContext = useContext(DrawerContext);
-  const ancestryIds: string[] = [];
-  if (visible) {
-    drawerContext.forEach((ancestry) => {
-      if (ancestry.placement === placement) {
-        ancestryIds.push(ancestry.uniqueId);
+  const drawerContextValue = useCallback(
+    (offsets: Offsets) => {
+      const offset = (offsets[placement].reduce((v, r) => v + r, 0) / 3) * 2;
+      if (drawerRef.current) {
+        drawerRef.current.style.transform =
+          placement === 'top'
+            ? `translateY(${offset}px)`
+            : placement === 'right'
+            ? `translateX(-${offset}px)`
+            : placement === 'bottom'
+            ? `translateY(-${offset}px)`
+            : `translateX(${offset}px)`;
       }
-    });
-  }
-  const drawerContextValue = useMemo(() => drawerContext.concat({ uniqueId, placement }), [drawerContext, placement, uniqueId]);
-  useEffect(() => {
-    let offset = 0;
-    document.querySelectorAll(`[data-l-drawer-ancestry~="${uniqueId}"]`).forEach((el) => {
-      offset += placement === 'top' || placement === 'bottom' ? (el as HTMLElement).offsetHeight : (el as HTMLElement).offsetWidth;
-    });
-    offset = (offset / 3) * 2;
-
-    if (drawerRef.current) {
-      drawerRef.current.style.transform =
-        placement === 'top'
-          ? `translateY(${offset}px)`
-          : placement === 'right'
-          ? `translateX(-${offset}px)`
-          : placement === 'bottom'
-          ? `translateY(-${offset}px)`
-          : `translateX(${offset}px)`;
+      if (drawerContentRef.current) {
+        drawerContext({
+          ...offsets,
+          [placement]: [
+            placement === 'top' || placement === 'bottom' ? drawerContentRef.current.offsetHeight : drawerContentRef.current.offsetWidth,
+          ].concat(offsets[placement]),
+        });
+      }
+    },
+    [drawerContext, placement],
+  );
+  const handleVisibleChange = (visible: boolean) => {
+    if (drawerContentRef.current) {
+      drawerContext(
+        Object.assign(
+          { top: [], right: [], bottom: [], left: [] },
+          {
+            [placement]: visible
+              ? [
+                  placement === 'top' || placement === 'bottom'
+                    ? drawerContentRef.current.offsetHeight
+                    : drawerContentRef.current.offsetWidth,
+                ]
+              : [],
+          },
+        ),
+      );
     }
-  });
+  };
+  useEffect(() => {
+    if (!visible) {
+      handleVisibleChange(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible]);
 
   const maxZIndex = useMaxIndex(visible);
   const zIndex = !isUndefined(zIndexProp)
@@ -153,6 +176,9 @@ export const Drawer: {
         during={TTANSITION_DURING_BASE}
         skipFirstTransition={skipFirstTransition}
         destroyWhenLeaved={destroyAfterClose}
+        afterRender={() => {
+          handleVisibleChange(true);
+        }}
         afterEnter={() => {
           afterVisibleChange?.(true);
 
@@ -217,7 +243,7 @@ export const Drawer: {
                   ...transitionStyles[state],
                 },
               })}
-              data-l-drawer-ancestry={ancestryIds.join(' ')}
+              ref={drawerContentRef}
             >
               {headerNode}
               <div {...styled('drawer__body')} id={bodyId}>

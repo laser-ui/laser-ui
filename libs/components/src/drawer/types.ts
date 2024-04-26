@@ -37,3 +37,10 @@ export interface DrawerFooterProps extends BaseProps<'drawer', typeof CLASSES>, 
   onCancelClick?: () => any | Promise<any>;
   onOkClick?: () => any | Promise<any>;
 }
+
+export interface Offsets {
+  top: number[];
+  right: number[];
+  bottom: number[];
+  left: number[];
+}

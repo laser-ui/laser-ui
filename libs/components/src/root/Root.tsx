@@ -3,7 +3,7 @@ import type { RootProps } from './types';
 import { useEvent, useRefExtra } from '@laser-ui/hooks';
 import { isString, set } from 'lodash';
 import { useStore } from 'rcl-store';
-import { createElement, useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 import { ROOT_DATA, RootContext, Store } from './vars';
 import dayjs from '../dayjs';
@@ -111,7 +111,7 @@ export function Root(props: RootProps): JSX.Element | null {
     <>
       <RootContext.Provider value={context}>
         {children}
-        {dialogs.map(({ type, key, props }) => createElement(type, { key, ...props }))}
+        {dialogs.map(({ node }) => node)}
       </RootContext.Provider>
       <Portal selector={() => document.body}>
         <WindowSize />

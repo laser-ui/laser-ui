@@ -1,3 +1,4 @@
+import type { DialogInstance } from '../dialog-service';
 import type { Lang } from '../types';
 
 import { createStore } from 'rcl-store';
@@ -6,7 +7,7 @@ import { createContext } from 'react';
 import resources from '../resources.json';
 
 export const Store = createStore<{
-  dialogs: { type: any; key: string | number; props: any }[];
+  dialogs: DialogInstance<any>[];
 }>({
   dialogs: [],
 });
