@@ -6,10 +6,12 @@ import { LocalStorageService } from './local-storage';
 export interface Configs {
   service: AbstractStorage<any, any>;
   parser?: AbstractParserOptions<any>;
+  default: any;
 }
 
 export const CONFIGS: Configs = {
   service: new LocalStorageService(),
+  default: {},
 };
 
 export function config(configs: Partial<Configs>) {

@@ -45,7 +45,7 @@ export function useStorage<V>(
   set: (value: V | ((prev?: V) => V)) => void;
   remove: () => void;
 } {
-  const { defaultValue = null, parser = 'plain' } = options ?? {};
+  const { defaultValue = key in CONFIGS.default ? CONFIGS.default[key] : null, parser = 'plain' } = options ?? {};
 
   const { serializer, deserializer } = (CONFIGS.parser ?? CONFIGS.service.parser ?? MEMORY_STORAGE_PARSER)[parser] as any;
 
