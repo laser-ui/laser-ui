@@ -1,4 +1,5 @@
 import type { MatchRoutes } from './reuse-route';
+import type { Route } from './types';
 import type { Location, RouteMatch } from 'react-router-dom';
 
 import { isNull, isUndefined } from 'lodash';
@@ -7,7 +8,6 @@ import { UNSAFE_RouteContext, useLocation } from 'react-router-dom';
 
 import { RouterContext } from './context';
 import { ReuseRoute } from './reuse-route';
-import { Route } from './types';
 import { querySelector } from './utils';
 
 interface KeepProps {
@@ -19,12 +19,12 @@ const Keep = memo(
   (prev, next) => next.keep,
 );
 
-interface RouteProps {
+interface WrapperProps {
   children: React.ReactElement | null;
   cache: boolean;
   retrieveScroll: React.MutableRefObject<{ retrieveScroll?: () => void }>;
 }
-function Route(props: RouteProps) {
+function Wrapper(props: WrapperProps) {
   const { children, cache, retrieveScroll } = props;
 
   useEffect(() => {
@@ -102,11 +102,11 @@ export function createReuseOutlet(reuse: Map<string, (string | RegExp)[]>, optio
         {[[ReuseRoute.getPath(matches), [outlet, {}]] as [string, [React.ReactElement | null, any]]]
           .concat(Array.from(reuseRoute.routes.entries()))
           .map(([path, [node]], index) => (
-            <Route key={path} cache={index > 0} retrieveScroll={cache}>
+            <Wrapper key={path} cache={index > 0} retrieveScroll={cache}>
               <Fragment key={isUndefined(routeKey) ? location.pathname : routeKey === false ? undefined : routeKey(location, matches)}>
                 {node}
               </Fragment>
-            </Route>
+            </Wrapper>
           ))}
       </>
     );
