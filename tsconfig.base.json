@@ -26,6 +26,8 @@
     "disableSizeLimit": true,
     "allowJs": false,
     "paths": {
+      "@laser-ui/admin": ["libs/admin/index.ts"],
+      "@laser-ui/admin/*": ["libs/admin/*"],
       "@laser-ui/components": ["libs/components/src/index.ts"],
       "@laser-ui/components/*": ["libs/components/src/*"],
       "@laser-ui/hooks": ["libs/hooks/src/index.ts"],

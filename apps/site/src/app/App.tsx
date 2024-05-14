@@ -2,6 +2,7 @@ import type { Theme } from '../types';
 import type { LContextIn } from '@laser-ui/components/context';
 import type { Lang } from '@laser-ui/components/types';
 
+import { useStorage } from '@laser-ui/admin';
 import { ConfigProvider, Root } from '@laser-ui/components';
 import highlightDarkStyles from 'highlight.js/styles/github-dark.css?inline';
 import highlightStyles from 'highlight.js/styles/github.css?inline';
@@ -9,7 +10,6 @@ import { Suspense, createElement, useEffect, useMemo } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { FCPLoader } from './components';
-import { useStorage } from './hooks';
 import HomeRoute from './routes/home/Home';
 import IframeLayout from './routes/layout/IframeLayout';
 import Layout from './routes/layout/Layout';

@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
+    "sourceMap": false,
+    "types": ["node", "@nx/react/typings/image.d.ts", "vite-plugin-svgr/client.d.ts"]
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts", "**/*.spec.tsx", "**/*.test.tsx"]
+}

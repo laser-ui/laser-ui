@@ -1,5 +1,6 @@
 import type { Lang } from '@laser-ui/components/types';
 
+import { useStorage } from '@laser-ui/admin';
 import { Icon } from '@laser-ui/components';
 import WarningAmberOutlined from '@material-design-icons/svg/outlined/warning_amber.svg?react';
 import { useEffect } from 'react';
@@ -8,7 +9,6 @@ import { Link } from 'react-router-dom';
 
 import composeUrl from '../../../../assets/compose.png';
 import virtualScrollUrl from '../../../../assets/virtual-scroll.png';
-import { useStorage } from '../../../hooks';
 import marked from '../marked';
 import { MdRoute } from '../md/MdRoute';
 import { decode } from '../utils';

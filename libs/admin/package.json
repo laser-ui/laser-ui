@@ -1,0 +1,37 @@
+{
+  "name": "@laser-ui/admin",
+  "version": "0.0.1",
+  "description": "Advanced modules for enterprise applications.",
+  "keywords": [
+    "ui",
+    "laser-ui",
+    "admin",
+    "react",
+    "react-admin"
+  ],
+  "homepage": "https://github.com/laser-ui/laser-ui",
+  "bugs": {
+    "url": "https://github.com/laser-ui/laser-ui/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/laser-ui/laser-ui.git"
+  },
+  "license": "MIT",
+  "author": "Xie Jay <xiejay97@gmail.com>",
+  "sideEffects": false,
+  "type": "module",
+  "main": "./index.js",
+  "module": "./index.js",
+  "types": "./index.d.ts",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "peerDependencies": {
+    "react-router-dom": ">=6.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "directory": "../../dist/libs/admin"
+  }
+}

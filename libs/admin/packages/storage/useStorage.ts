@@ -3,13 +3,8 @@ import type { AbstractParserOptions } from './parser';
 import { isNull } from 'lodash';
 import { useMemo, useSyncExternalStore } from 'react';
 
-import { STRING_PARSER } from './parser';
-import { STORAGE } from '../../configs/storage';
-
-interface UseStorageMethod<V> {
-  set: (value: V) => void;
-  remove: () => void;
-}
+import { CONFIGS, config } from './configs';
+import { MEMORY_STORAGE_PARSER } from './memory-storage';
 
 class Store {
   private _listeners: (() => void)[] = [];
@@ -38,13 +33,21 @@ class Store {
 }
 const STROES = new Map<any, Store>();
 
+export interface Options<T> {
+  defaultValue?: T;
+  parser?: keyof AbstractParserOptions<any>;
+}
 export function useStorage<V>(
-  key: keyof typeof STORAGE,
-  parser: keyof AbstractParserOptions<any> = 'plain',
-): { readonly value: V } & UseStorageMethod<V> {
-  const { PARSER } = useStorage;
+  key: string,
+  options?: Options<V>,
+): {
+  readonly value: V;
+  set: (value: V | ((prev?: V) => V)) => void;
+  remove: () => void;
+} {
+  const { defaultValue = null, parser = 'plain' } = options ?? {};
 
-  const { serializer, deserializer } = PARSER[parser] as any;
+  const { serializer, deserializer } = (CONFIGS.parser ?? CONFIGS.service.parser ?? MEMORY_STORAGE_PARSER)[parser] as any;
 
   const store = useMemo(() => {
     let store = STROES.get(key);
@@ -59,23 +62,24 @@ export function useStorage<V>(
       emitChange: store.emitChange.bind(store),
     };
   }, [key]);
-  const value = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
+  let value: any = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
+  value = isNull(value) ? defaultValue : deserializer(value);
 
   return {
-    value: isNull(value) ? STORAGE[key] : deserializer(value),
-    set: (value) => {
-      const originValue = serializer(value);
-      localStorage.setItem(key, originValue);
+    value,
+    set: (val) => {
+      const originValue = serializer(typeof val === 'function' ? (val as (prev?: V) => V)(value) : val);
+      CONFIGS.service.setItem(key, originValue);
       store.emitChange();
     },
     remove: () => {
-      localStorage.removeItem(key);
+      CONFIGS.service.removeItem(key);
       store.emitChange();
     },
   };
 }
 
-useStorage.PARSER = STRING_PARSER as AbstractParserOptions<any>;
+useStorage.config = config;
 useStorage.clear = () => {
   localStorage.clear();
   for (const [, store] of STROES) {

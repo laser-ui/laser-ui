@@ -1,13 +1,13 @@
 import type { AnchorItem } from '@laser-ui/components/anchor/types';
 import type { Lang } from '@laser-ui/components/types';
 
+import { useStorage } from '@laser-ui/admin';
 import { Anchor, Drawer, Icon } from '@laser-ui/components';
 import { useImmer } from '@laser-ui/hooks';
 import { isString, isUndefined } from 'lodash';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useStorage } from '../../../hooks';
 import marked from '../marked';
 import { decode } from '../utils';
 
