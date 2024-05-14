@@ -28,7 +28,7 @@ export interface IndexRoute extends IndexRouteObject {
   data?: RouteData;
 }
 export interface NonIndexRoute extends Omit<NonIndexRouteObject, 'children'> {
-  children?: NonIndexRoute[];
+  children?: Route[];
   data?: RouteData;
 }
 export type Route = IndexRoute | NonIndexRoute;
@@ -37,7 +37,7 @@ export interface IndexRouteItem extends IndexRouteObject {
   data?: RouteData | ((params: any) => RouteData);
 }
 export interface NonIndexRouteItem extends Omit<NonIndexRouteObject, 'children'> {
-  children?: NonIndexRouteItem[];
+  children?: RouteItem[];
   data?: RouteData | ((params: any) => RouteData);
 }
 export type RouteItem = IndexRouteItem | NonIndexRouteItem;
