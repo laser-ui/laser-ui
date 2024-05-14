@@ -9,12 +9,12 @@ export type MatchRoutes = ReturnType<typeof matchRoutes>;
 export class ReuseRoute {
   static getPath(routes: MatchRoutes): string | null {
     if (routes) {
-      return routes.reduce((previous, current) => (previous += previous + (current.route.path ?? '/')), '/').replace(/\/+/g, '/');
+      return routes.reduce((previous, current) => previous + '/' + (current.route.path ?? '/'), '/').replace(/\/+/g, '/');
     }
     return routes;
   }
 
-  public pages = new Map<string, React.ReactNode>();
+  public routes = new Map<string, [React.ReactElement | null, any]>();
 
   private _currPath: string | null = null;
   private _futurePath: string | null = null;
@@ -29,16 +29,16 @@ export class ReuseRoute {
       const matches = this._reuse.get(this._currPath)!;
       const shouldDetach = matches.some((match) => (isString(match) ? match === this._futurePath : match.test(this._futurePath!)));
       if (!shouldDetach) {
-        this.pages.delete(this._currPath);
+        this.routes.delete(this._currPath);
       }
       return shouldDetach;
     }
     return false;
   }
 
-  store(routes: MatchRoutes, node: React.ReactNode): void {
+  store(routes: MatchRoutes, node: React.ReactElement | null, data: any): void {
     if (this._currPath) {
-      this.pages.set(this._currPath, node);
+      this.routes.set(this._currPath, [node, data]);
     }
   }
 
@@ -47,18 +47,18 @@ export class ReuseRoute {
       const matches = this._reuse.get(this._futurePath)!;
       const shouldAttach = matches.some((match) => (isString(match) ? match === this._currPath : match.test(this._currPath!)));
       if (!shouldAttach) {
-        this.pages.delete(this._futurePath);
+        this.routes.delete(this._futurePath);
       }
       return shouldAttach;
     }
     return false;
   }
 
-  retrieve(routes: MatchRoutes): React.ReactNode | null {
+  retrieve(routes: MatchRoutes): [React.ReactElement | null, any] | null {
     if (this._futurePath) {
-      const page = this.pages.get(this._futurePath);
+      const page = this.routes.get(this._futurePath);
       if (page) {
-        this.pages.delete(this._futurePath);
+        this.routes.delete(this._futurePath);
         return page;
       }
     }

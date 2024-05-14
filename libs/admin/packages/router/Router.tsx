@@ -1,62 +1,94 @@
-import type { MatchRoutes } from './reuse-route';
+import type { CanActivateFn, Route, RouteItem, TitleOptions } from './types';
+import type { RouteMatch } from 'react-router-dom';
 
-import { isNull, isUndefined } from 'lodash';
-import { Fragment, memo, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { isFunction, isUndefined, nth } from 'lodash';
+import { memo, useEffect } from 'react';
+import { matchRoutes, renderMatches, useLocation } from 'react-router-dom';
 
-import { ReuseRoute } from './reuse-route';
-
-const Keep = memo(
-  (props: { children: React.ReactElement; keep: boolean }) => {
-    return props.children;
-  },
-  (prev, next) => next.keep,
-);
+import { RouterContext } from './context';
 
 export interface RouterProps {
-  children: React.ReactNode;
-  matches: MatchRoutes;
-  reuse?: ReuseRoute;
-  routeKey?: ((matches: MatchRoutes) => React.Key) | false;
+  routes: RouteItem[];
+  titleOptions: TitleOptions;
 }
 
-export function Router(props: RouterProps) {
-  const { children, matches, reuse, routeKey } = props;
+export const Router = memo(
+  (props: RouterProps) => {
+    const { routes, titleOptions } = props;
 
-  const location = useLocation();
+    const location = useLocation();
 
-  const cache = useRef<[MatchRoutes, React.ReactNode]>([null, null]);
+    const matches = matchRoutes(routes, location) as any as RouteMatch<string, Route>[] | null;
+    if (matches) {
+      matches.forEach((matche) => {
+        if (isFunction(matche.route.data)) {
+          matche.route.data = matche.route.data(matche.params);
+        }
+      });
+    }
 
-  let page = children;
-  if (reuse) {
-    if (reuse.shouldReuseRoute(cache.current[0], matches)) {
-      if (reuse.shouldDetach(cache.current[0])) {
-        reuse.store(...cache.current);
+    const element: React.ReactNode = (() => {
+      if (!matches) {
+        return null;
       }
-      if (reuse.shouldAttach(matches)) {
-        const saved = reuse.retrieve(matches);
-        if (!isNull(saved)) {
-          page = saved;
+
+      let canActivateChild: CanActivateFn[] = [];
+      for (const match of matches) {
+        const routeData = (match.route as Route).data;
+        if (routeData && routeData.canActivate) {
+          for (const canActivate of routeData.canActivate.concat(canActivateChild)) {
+            const can = canActivate(match.route);
+            if (can !== true) {
+              return can;
+            }
+          }
+        }
+        if (routeData && routeData.canActivateChild) {
+          canActivateChild = canActivateChild.concat(routeData.canActivateChild);
         }
       }
-    }
-  }
 
-  cache.current = [matches, page];
+      return renderMatches(matches);
+    })();
 
-  return (
-    <>
-      {[[ReuseRoute.getPath(matches), page] as [string, React.ReactNode]]
-        .concat(reuse ? Array.from(reuse.pages.entries()) : [])
-        .map(([path, node], index) => (
-          <section key={path} style={index > 0 ? { visibility: 'hidden' } : undefined} aria-hidden={index > 0}>
-            <Keep keep={index > 0}>
-              <Fragment key={isUndefined(routeKey) ? location.pathname : routeKey === false ? undefined : routeKey(matches)}>
-                {node as any}
-              </Fragment>
-            </Keep>
-          </section>
-        ))}
-    </>
-  );
-}
+    const title: string | undefined = (() => {
+      if (matches) {
+        const match = nth(matches, -1);
+        if (match) {
+          const { title } = match.route.data ?? {};
+          return isFunction(title) ? title(match.params) : title;
+        }
+      }
+    })();
+    useEffect(() => {
+      if (isUndefined(title)) {
+        document.title = titleOptions.default ?? '';
+      } else {
+        const arr = [title];
+        if (titleOptions.prefix) {
+          arr.unshift(titleOptions.prefix);
+        }
+        if (titleOptions.suffix) {
+          arr.push(titleOptions.suffix);
+        }
+        document.title = arr.join(titleOptions.separator ?? ' - ');
+      }
+      return () => {
+        document.title = titleOptions.default ?? '';
+      };
+    });
+
+    return (
+      <RouterContext.Provider
+        value={{
+          outlet: element,
+          matches,
+          title,
+        }}
+      >
+        {element}
+      </RouterContext.Provider>
+    );
+  },
+  () => true,
+);
