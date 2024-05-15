@@ -175,6 +175,9 @@ devDependencies:
   jss-preset-default:
     specifier: ^10.10.0
     version: 10.10.0
+  jsurl:
+    specifier: ^0.1.5
+    version: 0.1.5
   lerna:
     specifier: ^8.0.2
     version: 8.0.2(@swc-node/register@1.6.8)(@swc/core@1.3.95)
@@ -10626,6 +10629,10 @@ packages:
       csstype: 3.1.2
       is-in-browser: 1.1.3
       tiny-warning: 1.0.3
+    dev: true
+
+  /jsurl@0.1.5:
+    resolution: {integrity: sha512-HyrafsIRCa+VlJAsvuvxWUM0iMeZd6+2J4JngECGF0JTRi5moUFV/mLxgyYfDizGF4ofLLYRpvD/Kt1d9wlUUg==}
     dev: true
 
   /jsx-ast-utils@3.3.4:
