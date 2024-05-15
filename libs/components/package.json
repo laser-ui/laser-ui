@@ -26,8 +26,6 @@
   "module": "./index.js",
   "types": "./index.d.ts",
   "dependencies": {
-    "@laser-ui/hooks": "0.6.2",
-    "@laser-ui/utils": "0.6.2",
     "@material-design-icons/svg": "^0.14.12",
     "jss": "^10.10.0",
     "jss-preset-default": "^10.10.0",

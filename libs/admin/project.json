@@ -15,7 +15,7 @@
       }
     },
     "publish": {
-      "command": "node tools/scripts/publish.mjs admin {args.ver} {args.tag}",
+      "command": "node tools/scripts/publish.mjs admin",
       "dependsOn": ["build"]
     },
     "lint": {

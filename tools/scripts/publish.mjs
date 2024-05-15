@@ -23,9 +23,12 @@ function invariant(condition, message) {
 // Executing publish script: node path/to/publish.mjs {name} --version {version} --tag {tag} --otp {otp}
 // Default "tag" to "next" so we won't publish the "latest" tag by accident.
 const options = {};
-process.argv.slice(3).forEach((val, index, arr) => {
+process.argv.slice(3).forEach((val) => {
   if (val.startsWith('--')) {
-    options[val.slice(2)] = arr[index + 1];
+    const [key, value] = val.split('=');
+    if (key && value) {
+      options[key.slice(2)] = value;
+    }
   }
 });
 const name = process.argv[2];

@@ -28,7 +28,7 @@
         "@nx/dependency-checks": [
           "error",
           {
-            "ignoredDependencies": ["react", "react-dom", "tslib"]
+            "ignoredDependencies": ["react", "react-dom", "tslib", "@laser-ui/hooks"]
           }
         ]
       }
