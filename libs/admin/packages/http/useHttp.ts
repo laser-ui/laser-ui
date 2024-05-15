@@ -1,6 +1,7 @@
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useEventCallback, useUnmount } from '@laser-ui/hooks';
+import { useRef } from 'react';
 
 import { axios } from './axios';
 import { config } from './configs';
@@ -21,7 +22,7 @@ export interface Http {
 export function useHttp(err: (error: AxiosError) => void): Http {
   const aborts = useRef<Set<() => void>>(new Set());
 
-  const req = <T = any, D = any>(config: HttpRequestConfig<D>): HttpResponse<T> => {
+  const http: any = useEventCallback(<T = any, D = any>(config: HttpRequestConfig<D>): HttpResponse<T> => {
     const controller = new AbortController();
     const abort = () => {
       controller.abort();
@@ -41,18 +42,16 @@ export function useHttp(err: (error: AxiosError) => void): Http {
     request.abort = abort;
 
     return request;
-  };
-  const ref = useRef<any>(req);
-  ref.current = req;
-
-  const http: any = useCallback((...args: any[]) => ref.current(...args), []);
+  });
   http.abort = () => {
     for (const abort of aborts.current) {
       abort();
     }
     aborts.current.clear();
   };
-  useEffect(() => () => http.abort(), []);
+  useUnmount(() => {
+    http.abort();
+  });
 
   return http;
 }
