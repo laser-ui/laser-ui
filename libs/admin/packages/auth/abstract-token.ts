@@ -5,7 +5,7 @@ import { isNull } from 'lodash';
 
 import { LocalStorageService } from '../storage/local-storage';
 
-export interface Configs {
+export interface TokenConfigs {
   storage: AbstractStorage<string, string>;
   key: string;
   expirationOffset: number;
@@ -14,7 +14,7 @@ export interface Configs {
 }
 
 export abstract class Token {
-  private _configs: Configs = {
+  private _configs: TokenConfigs = {
     storage: new LocalStorageService(),
     key: 'token',
     expirationOffset: 10 * 1000,
@@ -39,7 +39,7 @@ export abstract class Token {
     }
   }
 
-  constructor(configs: Partial<Configs>) {
+  constructor(configs: Partial<TokenConfigs>) {
     Object.keys(configs).forEach((key) => {
       (this._configs as any)[key] = (configs as any)[key];
     });

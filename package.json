@@ -46,6 +46,7 @@
     "@vitejs/plugin-react": "~4.0.4",
     "@vitest/coverage-c8": "~0.32.4",
     "@vitest/ui": "~0.32.4",
+    "axios": "^1.6.8",
     "bootstrap": "^5.3.2",
     "codesandbox": "^2.2.3",
     "cypress": "^13.0.0",

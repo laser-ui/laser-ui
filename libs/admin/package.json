@@ -28,6 +28,7 @@
     "lodash": "^4.17.21"
   },
   "peerDependencies": {
+    "axios": "^1.6.0",
     "react-router-dom": ">=6.0.0"
   },
   "publishConfig": {
