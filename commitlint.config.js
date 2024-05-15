@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const message = process.env['HUSKY_GIT_PARAMS'];
 const types = ['feat', 'fix', 'chore', 'docs', 'style', 'refactor', 'perf', 'test', 'revert'];
-const scopes = ['components', 'hooks', 'utils', 'themes', 'admin'];
+const scopes = ['components', 'hooks', 'utils', 'themes', 'admin', 'rcharts'];
 
 function parseMessage(message) {
   const PATTERN = /^(\w*)(?:\((.*)\))?!?: (.*)$/;

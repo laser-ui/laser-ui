@@ -51,6 +51,7 @@
     "codesandbox": "^2.2.3",
     "cypress": "^13.0.0",
     "dayjs": "^1.11.9",
+    "echarts": "^5.5.0",
     "eslint": "8.46.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-plugin-cypress": "2.14.0",

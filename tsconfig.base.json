@@ -33,6 +33,8 @@
       "@laser-ui/hooks": ["libs/hooks/src/index.ts"],
       "@laser-ui/hooks/*": ["libs/hooks/src/*"],
       "@laser-ui/plugins": ["libs/plugins/src/index.ts"],
+      "@laser-ui/rcharts": ["libs/rcharts/src/index.ts"],
+      "@laser-ui/rcharts/*": ["libs/rcharts/src/*"],
       "@laser-ui/utils": ["libs/utils/src/index.ts"],
       "@laser-ui/utils/*": ["libs/utils/src/*"]
     }

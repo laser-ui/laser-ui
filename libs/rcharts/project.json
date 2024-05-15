@@ -1,0 +1,30 @@
+{
+  "name": "rcharts",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/rcharts/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/rcharts",
+        "main": "libs/rcharts/src/index.ts",
+        "tsConfig": "libs/rcharts/tsconfig.lib.json",
+        "assets": ["libs/rcharts/*.md"]
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs rcharts",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/rcharts/**/*.{ts,tsx,md}", "libs/rcharts/package.json"]
+      }
+    }
+  },
+  "tags": []
+}
