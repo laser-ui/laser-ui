@@ -76,6 +76,9 @@ devDependencies:
   '@types/fs-extra':
     specifier: ^11.0.1
     version: 11.0.1
+  '@types/jsurl':
+    specifier: ^0.1.2
+    version: 0.1.2
   '@types/lodash':
     specifier: ^4.14.198
     version: 4.14.198
@@ -4222,6 +4225,10 @@ packages:
     resolution: {integrity: sha512-GSgiRCVeapDN+3pqA35IkQwasaCh/0YFH5dEF6S88iDvEn901DjOeH3/QPY+XYP1DFzDZPvIvfeEgk+7br5png==}
     dependencies:
       '@types/node': 18.14.2
+    dev: true
+
+  /@types/jsurl@0.1.2:
+    resolution: {integrity: sha512-uZOjZDzB0x48XKmMvykALaLWZ1xF85BcoI/7K6f+oqNdYtnomXVfQJC7CdJER4GTlgli5zA+QwZc82JulVw4xg==}
     dev: true
 
   /@types/keyv@3.1.4:

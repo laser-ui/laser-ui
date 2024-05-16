@@ -36,6 +36,7 @@
     "@swc/helpers": "0.5.3",
     "@testing-library/react": "14.0.0",
     "@types/fs-extra": "^11.0.1",
+    "@types/jsurl": "^0.1.2",
     "@types/lodash": "^4.14.198",
     "@types/node": "18.14.2",
     "@types/react": "18.2.24",

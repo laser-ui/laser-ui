@@ -28,6 +28,9 @@
     "jsurl": "^0.1.5",
     "lodash": "^4.17.21"
   },
+  "devDependencies": {
+    "@types/jsurl": "^0.1.2"
+  },
   "peerDependencies": {
     "axios": "^1.6.0",
     "react-router-dom": ">=6.0.0"
