@@ -49,40 +49,46 @@ export function createReuseOutlet(reuse: Map<string, (string | RegExp)[]>, optio
 
   const { scrollSelector, routeKey } = options;
 
+  let key = -1;
+
   return memo(() => {
     const location = useLocation();
 
     const cache = useRef<{
-      path: string;
-      matches: MatchRoutes;
-      outlet: React.ReactElement | null;
-      data: any;
+      prevMatches: MatchRoutes;
+      prevMatchPath: string | null;
+      prevOutlet: React.ReactElement | null;
+      prevData: any;
+      key: number;
       retrieveScroll?: () => void;
     }>({
-      path: '/',
-      matches: null,
-      outlet: null,
-      data: { top: 0, left: 0 },
+      prevMatches: null,
+      prevMatchPath: null,
+      prevOutlet: null,
+      prevData: { top: 0, left: 0, key },
+      key,
     });
 
-    if (location.pathname !== cache.current.path) {
-      cache.current.path = location.pathname;
-      const el = querySelector(scrollSelector);
-      if (el) {
-        cache.current.data = { top: el.scrollTop, left: el.scrollLeft };
-      }
-    }
-
-    let outlet = useContext(UNSAFE_RouteContext).outlet;
+    let { outlet } = useContext(UNSAFE_RouteContext);
     const { matches } = useContext(RouterContext);
-    if (reuseRoute.shouldReuseRoute(cache.current.matches, matches)) {
-      if (reuseRoute.shouldDetach(cache.current.matches)) {
-        reuseRoute.store(cache.current.matches, cache.current.outlet, cache.current.data);
+    const matchPath = ReuseRoute.getPath(matches);
+
+    if (reuseRoute.shouldReuseRoute(cache.current.prevMatches, matches)) {
+      const el = querySelector(scrollSelector);
+      cache.current.prevData = Object.assign({ key: cache.current.key }, el ? { top: el.scrollTop, left: el.scrollLeft } : {});
+
+      key += 1;
+      cache.current.key = key;
+
+      if (reuseRoute.shouldDetach(cache.current.prevMatches)) {
+        reuseRoute.store(cache.current.prevMatches, cache.current.prevOutlet, cache.current.prevData);
       }
       if (reuseRoute.shouldAttach(matches)) {
         const saved = reuseRoute.retrieve(matches);
         if (!isNull(saved)) {
-          outlet = saved[0] as React.ReactElement;
+          outlet = saved[0];
+          cache.current.prevData = saved[1];
+          cache.current.key = saved[1].key;
           cache.current.retrieveScroll = () => {
             cache.current.retrieveScroll = undefined;
             const el = querySelector(scrollSelector);
@@ -94,20 +100,20 @@ export function createReuseOutlet(reuse: Map<string, (string | RegExp)[]>, optio
         }
       }
     }
-    cache.current.matches = matches;
-    cache.current.outlet = outlet;
+
+    cache.current.prevMatches = matches;
+    cache.current.prevMatchPath = matchPath;
+    cache.current.prevOutlet = outlet;
+
+    const k = isUndefined(routeKey) ? location.pathname : routeKey === false ? undefined : routeKey(location, matches);
 
     return (
       <>
-        {[[ReuseRoute.getPath(matches), [outlet, {}]] as [string, [React.ReactElement | null, any]]]
-          .concat(Array.from(reuseRoute.routes.entries()))
-          .map(([path, [node]], index) => (
-            <Wrapper key={path} cache={index > 0} retrieveScroll={cache}>
-              <Fragment key={isUndefined(routeKey) ? location.pathname : routeKey === false ? undefined : routeKey(location, matches)}>
-                {node}
-              </Fragment>
-            </Wrapper>
-          ))}
+        {[[outlet, { key: cache.current.key }] as const].concat(Array.from(reuseRoute.routes.values())).map(([node, { key }], index) => (
+          <Wrapper key={key} cache={index > 0} retrieveScroll={cache}>
+            <Fragment key={k}>{node}</Fragment>
+          </Wrapper>
+        ))}
       </>
     );
   });
