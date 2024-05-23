@@ -9,7 +9,6 @@ export interface TokenConfigs {
   storage: AbstractStorage<string, string>;
   key: string;
   expirationOffset: number;
-  refresh: false | (() => Promise<string>);
   refreshOffset: number;
 }
 
@@ -18,17 +17,25 @@ export abstract class Token {
     storage: new LocalStorageService(),
     key: 'token',
     expirationOffset: 10 * 1000,
-    refresh: false,
     refreshOffset: 60 * 1000,
   };
   private _value: string | null = null;
+  private _refresh: false | (() => Promise<string>) = false;
   private _cancelRefresh = () => {};
 
   public abstract get expiration(): number | null;
   public abstract set expiration(val: number | null);
 
+  public get configs(): TokenConfigs {
+    return this._configs;
+  }
+
   public get value(): string | null {
     return this._value;
+  }
+
+  public set refresh(val: false | (() => Promise<string>)) {
+    this._refresh = val;
   }
 
   public get expired(): boolean {
@@ -42,10 +49,8 @@ export abstract class Token {
   constructor(configs: Partial<TokenConfigs>) {
     this.config(configs);
 
-    if (this._configs.refresh) {
-      if (this._configs.refreshOffset <= this._configs.expirationOffset) {
-        throw new Error('`refreshOffset` should be greater than `expirationOffset`');
-      }
+    if (this._configs.refreshOffset <= this._configs.expirationOffset) {
+      throw new Error('`refreshOffset` should be greater than `expirationOffset`');
     }
 
     this.updateToken(this._configs.storage.getItem(this._configs.key));
@@ -56,12 +61,13 @@ export abstract class Token {
       this._value = val;
 
       this._cancelRefresh();
-      const refreshToken = this._configs.refresh;
-      if (refreshToken && val && !isNull(this.expiration) && !this.expired) {
+      if (val && !isNull(this.expiration) && !this.expired) {
         const timeout = this.expiration - Date.now() - this._configs.refreshOffset;
         new Promise<string>((resolve, reject) => {
           const tid = window.setTimeout(() => {
-            refreshToken().then((token) => resolve(token));
+            if (this._refresh) {
+              this._refresh().then(resolve);
+            }
           }, timeout);
           this._cancelRefresh = () => {
             clearTimeout(tid);

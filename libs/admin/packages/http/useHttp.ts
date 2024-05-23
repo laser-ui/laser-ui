@@ -4,7 +4,7 @@ import { useEventCallback, useUnmount } from '@laser-ui/hooks';
 import { useRef } from 'react';
 
 import { axios } from './axios';
-import { config } from './configs';
+import { CONFIGS, config } from './configs';
 
 export interface HttpRequestConfig<T> extends AxiosRequestConfig<T> {
   url: string;
@@ -57,3 +57,4 @@ export function useHttp(err: (error: AxiosError) => void): Http {
 }
 
 useHttp.config = config;
+useHttp.configs = CONFIGS;

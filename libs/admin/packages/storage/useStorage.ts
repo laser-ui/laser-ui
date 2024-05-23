@@ -22,7 +22,7 @@ class Store {
   }
 
   getSnapshot() {
-    return localStorage.getItem(this._key);
+    return CONFIGS.service.getItem(this._key);
   }
 
   emitChange() {
@@ -79,9 +79,20 @@ export function useStorage<V>(
   };
 }
 
+useStorage.get = <V>(key: string, options?: Options<V>) => {
+  const { defaultValue = key in CONFIGS.default ? CONFIGS.default[key] : null, parser = 'plain' } = options ?? {};
+
+  const { deserializer } = (CONFIGS.parser ?? CONFIGS.service.parser ?? MEMORY_STORAGE_PARSER)[parser] as any;
+
+  let value: any = CONFIGS.service.getItem(key);
+  value = isNull(value) ? defaultValue : deserializer(value);
+
+  return value;
+};
 useStorage.config = config;
+useStorage.configs = CONFIGS;
 useStorage.clear = () => {
-  localStorage.clear();
+  CONFIGS.service.clear();
   for (const [, store] of STROES) {
     store.emitChange();
   }

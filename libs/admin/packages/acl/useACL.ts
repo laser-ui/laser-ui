@@ -24,3 +24,4 @@ function getSnapshot() {
 export function useACL() {
   return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 }
+useACL.acl = acl;
