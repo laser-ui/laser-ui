@@ -40,9 +40,7 @@ export abstract class Token {
   }
 
   constructor(configs: Partial<TokenConfigs>) {
-    Object.keys(configs).forEach((key) => {
-      (this._configs as any)[key] = (configs as any)[key];
-    });
+    this.config(configs);
 
     if (this._configs.refresh) {
       if (this._configs.refreshOffset <= this._configs.expirationOffset) {
@@ -76,6 +74,12 @@ export abstract class Token {
           .catch(() => {});
       }
     }
+  }
+
+  config(configs: Partial<TokenConfigs>) {
+    Object.keys(configs).forEach((key) => {
+      (this._configs as any)[key] = (configs as any)[key];
+    });
   }
 
   set(val: string) {
