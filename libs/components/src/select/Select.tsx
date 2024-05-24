@@ -509,27 +509,23 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
     let suffixNode: React.ReactNode = null;
     let selectedLabel: string | undefined;
     if (multiple) {
-      const selectedItems: T[] = [];
-      for (const v of _selected as V[]) {
-        const item = itemsMap.get(v);
-        if (item) {
-          selectedItems.push(item);
-        }
-      }
+      const selectedItems = (_selected as V[]).map((value) => {
+        const item = itemsMap.get(value);
+        return {
+          value,
+          label: customSelected ? customSelected(value, item) : item ? item.label : String(value),
+          item,
+        };
+      });
 
       suffixNode = (
         <Dropdown
-          list={selectedItems.map<DropdownItem<V>>((item) => {
-            const { label: itemLabel, value: itemValue, disabled: itemDisabled } = item;
-            const text = customSelected ? customSelected(item) : itemLabel;
-
-            return {
-              id: itemValue,
-              title: text,
-              type: 'item',
-              disabled: itemDisabled,
-            };
-          })}
+          list={selectedItems.map<DropdownItem<V>>(({ value, label, item }) => ({
+            id: value,
+            title: label,
+            type: 'item',
+            disabled: item?.disabled,
+          }))}
           onClick={(id: V) => {
             changeSelectedByClick(id);
             return false;
@@ -540,10 +536,10 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
           </Tag>
         </Dropdown>
       );
-      selectedNode = selectedItems.map((item) => (
-        <Tag key={item.value} size={size}>
-          {customSelected ? customSelected(item) : item.label}
-          {!(item.disabled || disabled) && (
+      selectedNode = selectedItems.map(({ value, label, item }) => (
+        <Tag key={value} size={size}>
+          {label}
+          {!(item?.disabled || disabled) && (
             <div
               {...styled('select__close')}
               role="button"
@@ -551,7 +547,7 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
               onClick={(e) => {
                 e.stopPropagation();
 
-                changeSelectedByClick(item.value);
+                changeSelectedByClick(value);
               }}
             >
               <Icon>
@@ -564,10 +560,8 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
     } else {
       if (!isNull(selected)) {
         const item = itemsMap.get(selected as V);
-        if (item) {
-          selectedLabel = item.label;
-          selectedNode = customSelected ? customSelected(item) : selectedLabel;
-        }
+        selectedLabel = item ? item.label : String(selected);
+        selectedNode = customSelected ? customSelected(selected as V, item) : selectedLabel;
       }
     }
     return [selectedNode, suffixNode, selectedLabel];

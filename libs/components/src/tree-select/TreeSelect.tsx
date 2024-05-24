@@ -544,31 +544,30 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
     let suffixNode: React.ReactNode = null;
     let selectedLabel: string | undefined;
     if (multiple) {
-      const selectedNodes: MultipleTreeNode<V, T>[] = [];
-      for (const v of _selected as V[]) {
-        const node = nodesMap.get(v);
-        if (node) {
-          selectedNodes.push(node as MultipleTreeNode<V, T>);
-        }
-      }
+      const selectedNodes = (_selected as V[]).map<{ value: V; label: string; node?: MultipleTreeNode<V, T> }>((value) => {
+        const node = nodesMap.get(value) as MultipleTreeNode<V, T> | undefined;
+        return {
+          value,
+          label: customSelected ? customSelected(value, node?.origin) : node ? node.origin.label : String(value),
+          node,
+        };
+      });
 
       suffixNode = (
         <Dropdown
-          list={selectedNodes.map<DropdownItem<V> & { node: MultipleTreeNode<V, T> }>((node) => {
-            const { value: itemValue, disabled: itemDisabled } = node.origin;
-            const title = customSelected ? customSelected(node.origin) : getTreeNodeLabel(node);
-
-            return {
-              id: itemValue,
-              title,
-              type: 'item',
-              disabled: itemDisabled,
-              node,
-            };
-          })}
-          onClick={(id, item) => {
-            const checkeds = (item.node as MultipleTreeNode<V, T>).changeStatus('UNCHECKED', selected as Set<V>);
-            changeSelected(Array.from(checkeds.keys()));
+          list={selectedNodes.map<DropdownItem<V>>(({ value, label, node }) => ({
+            id: value,
+            title: label,
+            type: 'item',
+            disabled: node?.origin.disabled,
+          }))}
+          onClick={(id) => {
+            changeSelected((draft) => {
+              (draft as V[]).splice(
+                (draft as V[]).findIndex((v) => v === id),
+                1,
+              );
+            });
             return false;
           }}
         >
@@ -577,10 +576,10 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
           </Tag>
         </Dropdown>
       );
-      selectedNode = selectedNodes.map((node) => (
-        <Tag key={node.id} size={size}>
-          {customSelected ? customSelected(node.origin) : node.origin.label}
-          {!(node.disabled || disabled) && (
+      selectedNode = selectedNodes.map(({ value, label, node }) => (
+        <Tag key={value} size={size}>
+          {label}
+          {!(node?.disabled || disabled) && (
             <div
               {...styled('tree-select__close')}
               role="button"
@@ -602,10 +601,8 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
     } else {
       if (!isNull(selected)) {
         const node = nodesMap.get(selected as V);
-        if (node) {
-          selectedLabel = getTreeNodeLabel(node);
-          selectedNode = customSelected ? customSelected(node.origin) : selectedLabel;
-        }
+        selectedLabel = node ? getTreeNodeLabel(node) : String(selected);
+        selectedNode = customSelected ? customSelected(selected as V, node?.origin) : selectedLabel;
       }
     }
     return [selectedNode, suffixNode, selectedLabel];

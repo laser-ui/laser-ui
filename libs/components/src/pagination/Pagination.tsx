@@ -294,7 +294,7 @@ export function Pagination(props: PaginationProps): JSX.Element | null {
                     model={pageSize}
                     size={mini ? 'small' : undefined}
                     customItem={(item) => (customRender && customRender.pageSize ? customRender.pageSize(item.value) : item.label)}
-                    customSelected={(select) => `${select.label}${t('Pagination', ' / Page')}`}
+                    customSelected={(value, selected) => (selected ? `${selected.label}${t('Pagination', ' / Page')}` : String(value))}
                     onModelChange={(value) => {
                       if (!isNull(value)) {
                         changePageSize(value);

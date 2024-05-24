@@ -38,7 +38,7 @@ export interface CascaderProps<V extends React.Key, T extends CascaderItem<V>>
   virtual?: boolean | number;
   escClosable?: boolean;
   customItem?: (item: T) => React.ReactNode;
-  customSelected?: (selected: T) => string;
+  customSelected?: (value: V, selected?: T) => string;
   customSearch?: {
     filter?: (value: string, item: T) => boolean;
     sort?: (a: T, b: T) => number;
