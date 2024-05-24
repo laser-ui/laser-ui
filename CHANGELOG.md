@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.3](https://github.com/laser-ui/laser-ui/compare/v0.6.2...v0.6.3) (2024-05-24)
+
+### Bug Fixes
+
+- **admin:** fix reuse route ([6e68a3b](https://github.com/laser-ui/laser-ui/commit/6e68a3b9ce62be1f1d15e475b22128282b80006e))
+- **admin:** fix ts error ([34f2e07](https://github.com/laser-ui/laser-ui/commit/34f2e07825ebb2df299f11a5f5cf5a975a1a3e05))
+- **admin:** fix ts of router ([8575423](https://github.com/laser-ui/laser-ui/commit/8575423b7e41424c00d9acce8f39c1dd8a9c5fd5))
+
+### Features
+
+- add `@laser-ui/admin` ([3f35710](https://github.com/laser-ui/laser-ui/commit/3f35710fdb4f39b6d7bcee7aea9bc41e3f4d491c))
+- add `@laser-ui/rcharts` ([62fa8e6](https://github.com/laser-ui/laser-ui/commit/62fa8e61fbf8991b0f19b681ba35dc108a7a194b))
+- **admin:** `useStorage` support global default values ([0342a79](https://github.com/laser-ui/laser-ui/commit/0342a7980c67a16c44541e5d6973c8571850f655))
+- **admin:** add `http` module ([7fe1393](https://github.com/laser-ui/laser-ui/commit/7fe13937ca5947c3123cafc5fd9d89aaed31e801))
+- **admin:** add `useQuery` ([4b3ef33](https://github.com/laser-ui/laser-ui/commit/4b3ef333a3cc4b79a6d60418f50e1cc909d7c8c7))
+- **admin:** add useful interfaces ([f433d73](https://github.com/laser-ui/laser-ui/commit/f433d73322df282b2991d0246ce3b74171eba19b))
+- **admin:** token support config ([a6a0717](https://github.com/laser-ui/laser-ui/commit/a6a071792560228bea2808aa70d4f5ae339ec097))
+- **components:** show selected even if no option ([ddcdf74](https://github.com/laser-ui/laser-ui/commit/ddcdf744faaf8c3ccd3359f00d5c56807b21b85f))
+
 ## [0.6.2](https://github.com/laser-ui/laser-ui/compare/v0.6.1...v0.6.2) (2024-04-26)
 
 **Note:** Version bump only for package @laser-ui/source
