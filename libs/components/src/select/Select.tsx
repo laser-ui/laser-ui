@@ -560,8 +560,7 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
     } else {
       if (!isNull(selected)) {
         const item = itemsMap.get(selected as V);
-        selectedLabel = item ? item.label : String(selected);
-        selectedNode = customSelected ? customSelected(selected as V, item) : selectedLabel;
+        selectedNode = selectedLabel = customSelected ? customSelected(selected as V, item) : item ? item.label : String(selected);
       }
     }
     return [selectedNode, suffixNode, selectedLabel];

@@ -601,8 +601,11 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
     } else {
       if (!isNull(selected)) {
         const node = nodesMap.get(selected as V);
-        selectedLabel = node ? getTreeNodeLabel(node) : String(selected);
-        selectedNode = customSelected ? customSelected(selected as V, node?.origin) : selectedLabel;
+        selectedNode = selectedLabel = customSelected
+          ? customSelected(selected as V, node?.origin)
+          : node
+          ? getTreeNodeLabel(node)
+          : String(selected);
       }
     }
     return [selectedNode, suffixNode, selectedLabel];
