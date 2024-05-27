@@ -1,5 +1,6 @@
 import type { AbstractParserOptions } from './parser';
 
+import { useEventCallback } from '@laser-ui/hooks';
 import { isNull } from 'lodash';
 import { useMemo, useSyncExternalStore } from 'react';
 
@@ -62,20 +63,20 @@ export function useStorage<V>(
       emitChange: store.emitChange.bind(store),
     };
   }, [key]);
-  let value: any = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
-  value = isNull(value) ? defaultValue : deserializer(value);
+  const _value: any = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
+  const value = useMemo(() => (isNull(_value) ? defaultValue : deserializer(_value)), [_value]);
 
   return {
     value,
-    set: (val) => {
+    set: useEventCallback((val) => {
       const originValue = serializer(typeof val === 'function' ? (val as (prev?: V) => V)(value) : val);
       CONFIGS.service.setItem(key, originValue);
       store.emitChange();
-    },
-    remove: () => {
+    }),
+    remove: useEventCallback(() => {
       CONFIGS.service.removeItem(key);
       store.emitChange();
-    },
+    }),
   };
 }
 
