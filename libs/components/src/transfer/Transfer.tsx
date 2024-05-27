@@ -6,7 +6,7 @@ import { isUndefined } from 'lodash';
 import { useMemo } from 'react';
 
 import { TransferPanel } from './internal/TransferPanel';
-import { CLASSES, IS_SELECTED } from './vars';
+import { CLASSES, IS_SELECTED, NO_MATCH } from './vars';
 import { Button } from '../button';
 import { useComponentProps, useControlled, useDesign, useNamespace, useScopedProps, useStyled } from '../hooks';
 import { Icon } from '../icon';
@@ -87,28 +87,40 @@ export function Transfer<V extends React.Key, T extends TransferItem<V>>(props: 
         (item: T, searchValue: string) => customSearch!.filter!(searchValue, item);
     const sortFn = customSearch?.sort;
 
-    listProp.forEach((item) => {
-      const index = valueRight.has(item.value) ? 1 : 0;
-      const newItem = Object.assign({ [IS_SELECTED]: false }, item);
-
-      const search = searchValue[index];
-      if (!search || filterFn(item, search)) {
-        if (selected.has(item.value)) {
-          newItem[IS_SELECTED] = true;
-          selectedCount[index] += 1;
-          if (!item.disabled) {
-            hasSelected[index] = true;
-          }
-        } else {
-          if (!item.disabled) {
-            allSelected[index] = false;
-          }
-        }
-
-        list[index].push(newItem);
+    const handleItem = (item: T, index: 0 | 1, noMatch: boolean) => {
+      const newItem = Object.assign({ [IS_SELECTED]: false, [NO_MATCH]: noMatch }, item);
+      if (selected.has(item.value)) {
+        newItem[IS_SELECTED] = true;
+        selectedCount[index] += 1;
         if (!item.disabled) {
-          empty[index] = false;
+          hasSelected[index] = true;
         }
+      } else {
+        if (!item.disabled) {
+          allSelected[index] = false;
+        }
+      }
+
+      list[index].push(newItem);
+      if (!item.disabled) {
+        empty[index] = false;
+      }
+    };
+
+    listProp.forEach((item) => {
+      if (!valueRight.has(item.value)) {
+        if (!searchValue[0] || filterFn(item, searchValue[0])) {
+          handleItem(item, 0, false);
+        }
+      }
+    });
+
+    _valueRight.forEach((value) => {
+      const item = itemsMap.get(value);
+      if (!searchValue[1]) {
+        handleItem(item ?? ({ label: value, value } as T), 1, !item);
+      } else if (item && filterFn(item, searchValue[0])) {
+        handleItem(item, 1, false);
       }
     });
 
@@ -155,17 +167,23 @@ export function Transfer<V extends React.Key, T extends TransferItem<V>>(props: 
 
   const handleButtonClick = (isLeft: boolean) => {
     changeValueRight((draft) => {
-      const newValueRight = new Set(draft);
-      (isLeft ? list[0] : list[1]).forEach((item) => {
-        if ((item as any)[IS_SELECTED]) {
-          if (isLeft) {
+      if (isLeft) {
+        const newValueRight = new Set();
+        list[0].forEach((item) => {
+          if ((item as any)[IS_SELECTED]) {
             newValueRight.add(item.value);
-          } else {
+          }
+        });
+        return Array.from(newValueRight).concat(draft);
+      } else {
+        const newValueRight = new Set(draft);
+        list[1].forEach((item) => {
+          if ((item as any)[IS_SELECTED]) {
             newValueRight.delete(item.value);
           }
-        }
-      });
-      return Array.from(newValueRight);
+        });
+        return Array.from(newValueRight);
+      }
     });
 
     changeSelected((draft) => {

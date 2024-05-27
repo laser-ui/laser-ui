@@ -16,3 +16,4 @@ export const CLASSES = {
 };
 
 export const IS_SELECTED = Symbol();
+export const NO_MATCH = Symbol();

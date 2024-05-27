@@ -14,7 +14,7 @@ import { Icon } from '../../icon';
 import { Input } from '../../input';
 import { CircularProgress } from '../../internal/circular-progress';
 import { VirtualScroll, type VirtualScrollRef } from '../../virtual-scroll';
-import { IS_SELECTED, type CLASSES } from '../vars';
+import { IS_SELECTED, type CLASSES, NO_MATCH } from '../vars';
 
 export interface TransferPanelProps<V extends React.Key, T extends TransferItem<V>> {
   namespace: string;
@@ -26,7 +26,7 @@ export interface TransferPanelProps<V extends React.Key, T extends TransferItem<
   loading: boolean;
   searchable: boolean;
   virtual: boolean | number;
-  customItem: ((item: T) => React.ReactNode) | undefined;
+  customItem?: (value: V, item?: T) => React.ReactNode;
   onSelectedChange: (value: V) => void;
   onAllSelectedChange: (selected: boolean) => void;
   onSearch: (value: string) => void;
@@ -114,31 +114,29 @@ export function TransferPanel<V extends React.Key, T extends TransferItem<V>>(pr
           enable={virtual !== false}
           listSize={192}
           listPadding={0}
-          itemRender={(item, index, props) => {
-            const { label: itemLabel, value: itemValue, disabled: itemDisabled } = item;
-
-            return (
-              <li
-                {...styled('transfer__option', {
-                  'transfer__option.is-disabled': itemDisabled,
-                })}
-                {...props}
-                key={itemValue}
-                id={getItemId(itemValue)}
-                title={itemLabel}
-                onClick={() => {
-                  if (!itemDisabled) {
-                    onSelectedChange?.(itemValue);
-                  }
-                }}
-              >
-                <div {...styled('transfer__option-prefix')}>
-                  <Checkbox model={(item as any)[IS_SELECTED]} disabled={itemDisabled} />
-                </div>
-                <div {...styled('transfer__option-content')}>{customItem ? customItem(item) : itemLabel}</div>
-              </li>
-            );
-          }}
+          itemRender={(item, index, props) => (
+            <li
+              {...styled('transfer__option', {
+                'transfer__option.is-disabled': item.disabled,
+              })}
+              {...props}
+              key={item.value}
+              id={getItemId(item.value)}
+              title={item.label}
+              onClick={() => {
+                if (!item.disabled) {
+                  onSelectedChange?.(item.value);
+                }
+              }}
+            >
+              <div {...styled('transfer__option-prefix')}>
+                <Checkbox model={(item as any)[IS_SELECTED]} disabled={item.disabled} />
+              </div>
+              <div {...styled('transfer__option-content')}>
+                {customItem ? customItem(item.value, (item as any)[NO_MATCH] ? undefined : item) : item.label}
+              </div>
+            </li>
+          )}
           placeholder="li"
           onScrollEnd={onScrollBottom}
         >

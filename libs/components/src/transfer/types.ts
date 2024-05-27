@@ -26,7 +26,7 @@ export interface TransferProps<V extends React.Key, T extends TransferItem<V>>
   loading?: [boolean?, boolean?];
   disabled?: boolean;
   virtual?: boolean | number;
-  customItem?: (item: T) => React.ReactNode;
+  customItem?: (value: V, item?: T) => React.ReactNode;
   customSearch?: {
     filter?: (value: string, item: T) => boolean;
     sort?: (a: T, b: T) => number;
