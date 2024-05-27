@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.4](https://github.com/laser-ui/laser-ui/compare/v0.6.3...v0.6.4) (2024-05-27)
+
+### Bug Fixes
+
+- **components:** use custom title if provide customSelected ([0dbdb2f](https://github.com/laser-ui/laser-ui/commit/0dbdb2f285900c45cccdd5fed47eb3429f238d73))
+
+### Features
+
+- **components:** transfer custom item even if no option ([9706ec5](https://github.com/laser-ui/laser-ui/commit/9706ec5e4aea60329b1cf9718b05a214acae3958))
+
 ## [0.6.3](https://github.com/laser-ui/laser-ui/compare/v0.6.2...v0.6.3) (2024-05-24)
 
 ### Features
