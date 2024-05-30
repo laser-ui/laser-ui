@@ -1,3 +1,5 @@
 export {};
 
-export type Theme = 'light' | 'dark';
+export type AppLang = 'en-US' | 'zh-CN';
+
+export type AppTheme = 'light' | 'dark';

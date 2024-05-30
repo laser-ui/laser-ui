@@ -1,5 +1,3 @@
-import type { Lang } from '@laser-ui/components/types';
-
 import { useStorage } from '@laser-pro/storage';
 import { Icon } from '@laser-ui/components';
 import WarningAmberOutlined from '@material-design-icons/svg/outlined/warning_amber.svg?react';
@@ -9,6 +7,7 @@ import { Link } from 'react-router-dom';
 
 import composeUrl from '../../../../assets/compose.png';
 import virtualScrollUrl from '../../../../assets/virtual-scroll.png';
+import { STORAGE } from '../../../configs/storage';
 import marked from '../marked';
 import { MdRoute } from '../md/MdRoute';
 import { decode } from '../utils';
@@ -44,7 +43,7 @@ export function ComponentRoute(props: ComponentRouteProps): JSX.Element | null {
   })();
 
   const { t } = useTranslation();
-  const languageStorage = useStorage<Lang>('language');
+  const languageStorage = useStorage(...STORAGE.language);
 
   useEffect(() => {
     document.title = title + (languageStorage.value !== 'en-US' ? ` ${subtitle}` : '') + ' - Laser UI';

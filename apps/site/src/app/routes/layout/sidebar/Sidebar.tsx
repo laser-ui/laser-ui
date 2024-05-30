@@ -1,6 +1,5 @@
 import type { SidebarProps } from './types';
 import type { MenuItem } from '@laser-ui/components/menu/types';
-import type { Lang } from '@laser-ui/components/types';
 
 import { useStorage } from '@laser-pro/storage';
 import { Drawer, Icon, Menu } from '@laser-ui/components';
@@ -11,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 
 import menu from '../../../../dist/menu.json';
+import { STORAGE } from '../../../configs/storage';
 
 import styles from './Sidebar.module.scss';
 
@@ -18,7 +18,7 @@ export function Sidebar(props: SidebarProps): JSX.Element | null {
   const { route, menuOpen, onMenuOpenChange } = props;
 
   const { t } = useTranslation();
-  const languageStorage = useStorage<Lang>('language');
+  const languageStorage = useStorage(...STORAGE.language);
 
   const location = useLocation();
   const active = location.pathname.match(new RegExp(String.raw`^\/${route}\/(.+$)`))?.[1] ?? null;

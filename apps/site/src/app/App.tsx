@@ -1,6 +1,4 @@
-import type { Theme } from '../types';
 import type { LContextIn } from '@laser-ui/components/context';
-import type { Lang } from '@laser-ui/components/types';
 
 import { useStorage } from '@laser-pro/storage';
 import { ConfigProvider, Root } from '@laser-ui/components';
@@ -10,14 +8,15 @@ import { Suspense, createElement, useEffect, useMemo } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { FCPLoader } from './components';
+import { STORAGE } from './configs/storage';
 import HomeRoute from './routes/home/Home';
 import IframeLayout from './routes/layout/IframeLayout';
 import Layout from './routes/layout/Layout';
 import routes from '../dist/routes';
 
 export function App() {
-  const languageStorage = useStorage<Lang>('language');
-  const themeStorage = useStorage<Theme>('theme');
+  const languageStorage = useStorage(...STORAGE.language);
+  const themeStorage = useStorage(...STORAGE.theme);
 
   useEffect(() => {
     document.documentElement.lang = languageStorage.value;

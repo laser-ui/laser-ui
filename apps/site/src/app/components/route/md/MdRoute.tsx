@@ -1,5 +1,4 @@
 import type { AnchorItem } from '@laser-ui/components/anchor/types';
-import type { Lang } from '@laser-ui/components/types';
 
 import { useStorage } from '@laser-pro/storage';
 import { Anchor, Drawer, Icon } from '@laser-ui/components';
@@ -8,6 +7,7 @@ import { isString, isUndefined } from 'lodash';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { STORAGE } from '../../../configs/storage';
 import marked from '../marked';
 import { decode } from '../utils';
 
@@ -22,7 +22,7 @@ export function MdRoute(props: MdRouteProps): JSX.Element | null {
 
   const html = htmlProp ? marked(decode(htmlProp)) : undefined;
 
-  const languageStorage = useStorage<Lang>('language');
+  const languageStorage = useStorage(...STORAGE.language);
   const { t } = useTranslation();
 
   const [_links, setLinks] = useImmer<{ title?: string; href: string }[]>([]);
