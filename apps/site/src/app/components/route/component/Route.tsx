@@ -1,7 +1,7 @@
 import type { ComponentRouteProps } from './ComponentRoute';
 import type { Lang } from '@laser-ui/components/types';
 
-import { useStorage } from '@laser-ui/admin';
+import { useStorage } from '@laser-pro/storage';
 import { createElement } from 'react';
 
 import { ComponentRoute } from './ComponentRoute';

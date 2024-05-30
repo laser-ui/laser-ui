@@ -12,12 +12,12 @@ export default function (name: string) {
     "@laser-ui/hooks": "${lernaJson.version}",
     "@laser-ui/themes": "${lernaJson.version}",
     "@laser-ui/utils": "${lernaJson.version}",
-    "bootstrap": "${packageJson.devDependencies['bootstrap']}",
-    "dayjs": "${packageJson.devDependencies['dayjs']}",
-    "immer": "${packageJson.devDependencies['immer']}",
-    "react": "${packageJson.devDependencies['react']}",
-    "react-dom": "${packageJson.devDependencies['react-dom']}",
-    "tslib": "${packageJson.devDependencies.tslib}"
+    "bootstrap": "${packageJson.dependencies['bootstrap']}",
+    "dayjs": "${packageJson.dependencies['dayjs']}",
+    "immer": "${packageJson.dependencies['immer']}",
+    "react": "${packageJson.dependencies['react']}",
+    "react-dom": "${packageJson.dependencies['react-dom']}",
+    "tslib": "${packageJson.dependencies.tslib}"
   },
   "devDependencies": {
     "@types/react": "${packageJson.devDependencies['@types/react']}",

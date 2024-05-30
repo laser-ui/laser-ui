@@ -2,7 +2,7 @@ import type { Theme } from '../types';
 import type { LContextIn } from '@laser-ui/components/context';
 import type { Lang } from '@laser-ui/components/types';
 
-import { useStorage } from '@laser-ui/admin';
+import { useStorage } from '@laser-pro/storage';
 import { ConfigProvider, Root } from '@laser-ui/components';
 import highlightDarkStyles from 'highlight.js/styles/github-dark.css?inline';
 import highlightStyles from 'highlight.js/styles/github.css?inline';

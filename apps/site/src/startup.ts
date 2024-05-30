@@ -1,4 +1,4 @@
-import { useStorage } from '@laser-ui/admin';
+import { useStorage } from '@laser-pro/storage';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 

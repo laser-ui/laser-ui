@@ -1,7 +1,7 @@
 import type { AnchorItem } from '@laser-ui/components/anchor/types';
 import type { Lang } from '@laser-ui/components/types';
 
-import { useStorage } from '@laser-ui/admin';
+import { useStorage } from '@laser-pro/storage';
 import { Anchor, Drawer, Icon } from '@laser-ui/components';
 import { useImmer } from '@laser-ui/hooks';
 import { isString, isUndefined } from 'lodash';

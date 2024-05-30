@@ -1,7 +1,7 @@
 import type { MdRouteProps } from './MdRoute';
 import type { Lang } from '@laser-ui/components/types';
 
-import { useStorage } from '@laser-ui/admin';
+import { useStorage } from '@laser-pro/storage';
 import { createElement } from 'react';
 
 import { MdRoute } from './MdRoute';

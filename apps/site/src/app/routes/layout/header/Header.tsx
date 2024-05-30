@@ -3,7 +3,7 @@ import type { Theme } from '../../../../types';
 import type { DropdownItem } from '@laser-ui/components/dropdown/types';
 import type { Lang } from '@laser-ui/components/types';
 
-import { useStorage } from '@laser-ui/admin';
+import { useStorage } from '@laser-pro/storage';
 import { Dropdown, Icon, Menu, Separator } from '@laser-ui/components';
 import { classNames } from '@laser-ui/utils';
 import TranslateOutlined from '@material-design-icons/svg/outlined/translate.svg?react';

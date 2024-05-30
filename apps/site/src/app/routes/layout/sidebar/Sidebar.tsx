@@ -2,7 +2,7 @@ import type { SidebarProps } from './types';
 import type { MenuItem } from '@laser-ui/components/menu/types';
 import type { Lang } from '@laser-ui/components/types';
 
-import { useStorage } from '@laser-ui/admin';
+import { useStorage } from '@laser-pro/storage';
 import { Drawer, Icon, Menu } from '@laser-ui/components';
 import BookOutlined from '@material-design-icons/svg/outlined/book.svg?react';
 import DashboardOutlined from '@material-design-icons/svg/outlined/dashboard.svg?react';

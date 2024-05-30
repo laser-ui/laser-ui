@@ -1,6 +1,6 @@
 import type { Lang } from '@laser-ui/components/types';
 
-import { useStorage } from '@laser-ui/admin';
+import { useStorage } from '@laser-pro/storage';
 import { Icon } from '@laser-ui/components';
 import WarningAmberOutlined from '@material-design-icons/svg/outlined/warning_amber.svg?react';
 import { useEffect } from 'react';
