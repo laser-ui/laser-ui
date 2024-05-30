@@ -14,7 +14,7 @@
     "version": "prettier lerna.json --write"
   },
   "dependencies": {
-    "@laser-pro/storage": "^0.0.2",
+    "@laser-pro/storage": "^0.0.4",
     "@material-design-icons/svg": "^0.14.12",
     "axios": "^1.6.8",
     "bootstrap": "^5.3.2",

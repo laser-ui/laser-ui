@@ -11,8 +11,8 @@ patchedDependencies:
 
 dependencies:
   '@laser-pro/storage':
-    specifier: ^0.0.2
-    version: 0.0.2(@laser-ui/hooks@0.6.4)
+    specifier: ^0.0.4
+    version: 0.0.4(@laser-ui/hooks@0.6.4)
   '@material-design-icons/svg':
     specifier: ^0.14.12
     version: 0.14.12
@@ -2426,8 +2426,8 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
 
-  /@laser-pro/storage@0.0.2(@laser-ui/hooks@0.6.4):
-    resolution: {integrity: sha512-clql8qK87K3jCZMIv0fT9W6LAZcwGyDxmaYKKDQEvovLBvdAbr5qwops/wJgjjztx1V2K7T+bmKpQ2Faj3n5Sg==}
+  /@laser-pro/storage@0.0.4(@laser-ui/hooks@0.6.4):
+    resolution: {integrity: sha512-uLLvsI1c520FJRs3ORD5zAP6EnvqI4FXvFwzobZIcoIaHV3NUm8mgcIOASfWwgUSAH0ufvnotV7r/XIaZUn1aQ==}
     peerDependencies:
       '@laser-ui/hooks': '>=0.6.0'
     dependencies:
