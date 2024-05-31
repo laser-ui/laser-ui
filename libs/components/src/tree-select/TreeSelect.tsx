@@ -176,8 +176,6 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
     } else {
       if (node.isLeaf || !onlyLeafSelectable) {
         changeSelected(node.id);
-      }
-      if (node.isLeaf) {
         changeVisible(false);
       }
     }
