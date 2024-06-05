@@ -69,6 +69,7 @@ $time-picker-cell-height: 28px;
   @include mixins.e(input) {
     display: inline-block;
     flex: 1 0 0;
+    width: 100%;
     min-width: 0;
     padding: 0;
     margin: 0;
