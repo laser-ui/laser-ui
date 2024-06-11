@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.5](https://github.com/laser-ui/laser-ui/compare/v0.6.4...v0.6.5) (2024-06-11)
+
+### Bug Fixes
+
+- **components:** fix close tree-select ([6b0fca1](https://github.com/laser-ui/laser-ui/commit/6b0fca121cd15b5f218c0d363309e085d26291b1))
+- **themes:** input set width to 100% ([50e8736](https://github.com/laser-ui/laser-ui/commit/50e87360abe40b0e2c46dc5fd7dc146975885522))
+
 ## [0.6.4](https://github.com/laser-ui/laser-ui/compare/v0.6.3...v0.6.4) (2024-05-27)
 
 ### Bug Fixes
