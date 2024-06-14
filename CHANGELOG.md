@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.6](https://github.com/laser-ui/laser-ui/compare/v0.6.5...v0.6.6) (2024-06-14)
+
+### Features
+
+- **components:** emit change after IME composition ends ([1f80404](https://github.com/laser-ui/laser-ui/commit/1f80404d037c74bd125ca0415c79f0542b6b4ce1))
+
 ## [0.6.5](https://github.com/laser-ui/laser-ui/compare/v0.6.4...v0.6.5) (2024-06-11)
 
 ### Bug Fixes
