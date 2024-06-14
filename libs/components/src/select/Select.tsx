@@ -13,6 +13,7 @@ import { isNull, isNumber, isUndefined } from 'lodash';
 import { createElement, forwardRef, useCallback, useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
 
 import { CLASSES, IS_CREATED } from './vars';
+import { BaseInput } from '../base-input';
 import { Checkbox } from '../checkbox';
 import { Dropdown } from '../dropdown';
 import { Empty } from '../empty';
@@ -345,7 +346,7 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
   const clearable = clearableProp && hasSelected && !visible && !loading && !disabled;
   const inputNode = focusVisibleWrapper(
     createElement<any>(
-      searchable ? 'input' : 'div',
+      searchable ? BaseInput : 'div',
       Object.assign(
         {
           ...mergeCS(styled('select__search'), {
@@ -486,11 +487,6 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
               }
             }
           },
-          onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-            if (searchable) {
-              changeSearchValue(e.currentTarget.value);
-            }
-          },
         },
         searchable
           ? {
@@ -498,6 +494,9 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
               value: searchValue,
               autoComplete: 'off',
               disabled,
+              onValueChange: (val: string) => {
+                changeSearchValue(val);
+              },
             }
           : {},
       ),

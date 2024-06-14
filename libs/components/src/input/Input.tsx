@@ -9,6 +9,7 @@ import { useRef } from 'react';
 
 import { InputNumber } from './InputNumber';
 import { CLASSES } from './vars';
+import { BaseInput } from '../base-input';
 import { useComponentProps, useControlled, useDesign, useScopedProps, useStyled, useTranslation } from '../hooks';
 import { Icon } from '../icon';
 import { mergeCS } from '../utils';
@@ -62,7 +63,7 @@ export const Input: {
   const designProps = useDesign({ compose: { disabled }, form: formControl });
 
   const inputNode = (
-    <input
+    <BaseInput
       {...styled('input__input')}
       {...formControl?.inputAria}
       ref={combineInputRef}
@@ -70,8 +71,8 @@ export const Input: {
       type={type === 'password' ? (password ? 'password' : 'text') : type}
       placeholder={placeholder}
       disabled={disabled}
-      onChange={(e) => {
-        changeValue(e.currentTarget.value);
+      onValueChange={(val) => {
+        changeValue(val);
       }}
     />
   );

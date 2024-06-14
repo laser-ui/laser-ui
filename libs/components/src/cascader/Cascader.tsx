@@ -15,6 +15,7 @@ import { createElement, forwardRef, useId, useImperativeHandle, useMemo, useRef,
 import { CascaderPanel } from './internal/CascaderPanel';
 import { CascaderSearchPanel } from './internal/CascaderSearchPanel';
 import { CLASSES } from './vars';
+import { BaseInput } from '../base-input';
 import { Dropdown } from '../dropdown';
 import {
   useComponentProps,
@@ -334,7 +335,7 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
   const clearable = clearableProp && hasSelected && !visible && !loading && !disabled;
   const inputNode = focusVisibleWrapper(
     createElement<any>(
-      searchable ? 'input' : 'div',
+      searchable ? BaseInput : 'div',
       Object.assign(
         {
           ...mergeCS(styled('cascader__search'), {
@@ -476,11 +477,6 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
               }
             }
           },
-          onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-            if (searchable) {
-              changeSearchValue(e.currentTarget.value);
-            }
-          },
         },
         searchable
           ? {
@@ -488,6 +484,9 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
               value: searchValue,
               autoComplete: 'off',
               disabled,
+              onValueChange: (val: string) => {
+                changeSearchValue(val);
+              },
             }
           : {},
       ),

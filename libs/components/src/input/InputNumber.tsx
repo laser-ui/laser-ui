@@ -9,6 +9,7 @@ import { isNull, isUndefined } from 'lodash';
 import { useRef } from 'react';
 
 import { CLASSES } from './vars';
+import { BaseInput } from '../base-input';
 import { useComponentProps, useControlled, useDesign, useScopedProps, useStyled, useTranslation } from '../hooks';
 import { Icon } from '../icon';
 import { mergeCS } from '../utils';
@@ -118,7 +119,7 @@ export function InputNumber(props: InputNumberProps) {
   const designProps = useDesign({ compose: { disabled }, form: formControl });
 
   const inputNode = (
-    <input
+    <BaseInput
       {...styled('input__input')}
       {...formControl?.inputAria}
       ref={combineInputRef}
@@ -129,16 +130,16 @@ export function InputNumber(props: InputNumberProps) {
       type="number"
       placeholder={placeholder}
       disabled={disabled}
-      onChange={(e) => {
+      onValueChange={(val) => {
         forceUpdate();
-        dataRef.current.inputValue = e.currentTarget.value;
+        dataRef.current.inputValue = val;
 
-        if (e.currentTarget.value.length === 0) {
+        if (val.length === 0) {
           changeValue(null);
         } else {
-          const val = Number(e.currentTarget.value);
-          if ((isUndefined(max) || val <= max) && (isUndefined(min) || val >= min) && (!integer || Number.isInteger(val))) {
-            changeValue(val);
+          const num = Number(val);
+          if ((isUndefined(max) || num <= max) && (isUndefined(min) || num >= min) && (!integer || Number.isInteger(num))) {
+            changeValue(num);
           }
         }
       }}
@@ -152,17 +153,17 @@ export function InputNumber(props: InputNumberProps) {
         if (inputValue.length === 0) {
           changeValue(null);
         } else {
-          let val = Number(inputValue);
-          if (!isUndefined(max) && val > max) {
-            val = max;
+          let num = Number(inputValue);
+          if (!isUndefined(max) && num > max) {
+            num = max;
           }
-          if (!isUndefined(min) && val < min) {
-            val = min;
+          if (!isUndefined(min) && num < min) {
+            num = min;
           }
-          if (integer && !Number.isInteger(val)) {
-            val = Math.round(val);
+          if (integer && !Number.isInteger(num)) {
+            num = Math.round(num);
           }
-          changeValue(val);
+          changeValue(num);
         }
       }}
     />

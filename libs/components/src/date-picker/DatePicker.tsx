@@ -9,6 +9,7 @@ import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 
 import { DatePickerPanel } from './internal/DatePickerPanel';
 import { CLASSES } from './vars';
+import { BaseInput } from '../base-input';
 import { Button } from '../button';
 import dayjs from '../dayjs';
 import {
@@ -284,7 +285,7 @@ export const DatePicker = forwardRef<DatePickerRef, DatePickerProps>((props, ref
     const value = isLeft ? valueLeft : valueRight;
     const render = inputRender?.[index];
     const node = (
-      <input
+      <BaseInput
         {...styled('date-picker__input')}
         {...formControl?.inputAria}
         ref={isLeft ? combineInputLeftRef : combineInputRightRef}
@@ -294,12 +295,12 @@ export const DatePicker = forwardRef<DatePickerRef, DatePickerProps>((props, ref
         size={22}
         placeholder={isLeft ? placeholderLeft : placeholderRight}
         disabled={disabled}
-        onChange={(e) => {
+        onValueChange={(val) => {
           forceUpdate();
-          dataRef.current.inputValue[index] = e.currentTarget.value;
+          dataRef.current.inputValue[index] = val;
 
-          if (dayjs(e.currentTarget.value, format, true).isValid()) {
-            const date = dayjs(e.currentTarget.value, format).toDate();
+          if (dayjs(val, format, true).isValid()) {
+            const date = dayjs(val, format).toDate();
             changeValue(date);
             updatePanel(date);
           }

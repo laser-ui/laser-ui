@@ -15,6 +15,7 @@ import { createElement, forwardRef, useId, useImperativeHandle, useMemo, useRef,
 
 import { TreeSelectSearchPanel } from './internal/TreeSelectSearchPanel';
 import { CLASSES } from './vars';
+import { BaseInput } from '../base-input';
 import { Dropdown } from '../dropdown';
 import {
   useComponentProps,
@@ -377,7 +378,7 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
   const clearable = clearableProp && hasSelected && !visible && !loading && !disabled;
   const inputNode = focusVisibleWrapper(
     createElement<any>(
-      searchable ? 'input' : 'div',
+      searchable ? BaseInput : 'div',
       Object.assign(
         {
           ...mergeCS(styled('tree-select__search'), {
@@ -519,11 +520,6 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
               }
             }
           },
-          onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-            if (searchable) {
-              changeSearchValue(e.currentTarget.value);
-            }
-          },
         },
         searchable
           ? {
@@ -531,6 +527,9 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
               value: searchValue,
               autoComplete: 'off',
               disabled,
+              onValueChange: (val: string) => {
+                changeSearchValue(val);
+              },
             }
           : {},
       ),
