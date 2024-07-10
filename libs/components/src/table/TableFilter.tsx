@@ -1,6 +1,7 @@
 import type { TableFilterProps } from './types';
 
 import SearchOutlined from '@material-design-icons/svg/outlined/search.svg?react';
+import { isUndefined } from 'lodash';
 
 import { CLASSES } from './vars';
 import { Button } from '../button';
@@ -15,6 +16,7 @@ export function TableFilter(props: TableFilterProps): JSX.Element | null {
     styleOverrides,
     styleProvider,
     content,
+    footer,
     visible,
     placement = 'bottom-right',
     placementFixed = false,
@@ -65,20 +67,24 @@ export function TableFilter(props: TableFilterProps): JSX.Element | null {
         </div>
       }
       footer={
-        <Popover.Footer
-          styleOverrides={{ popover__footer: { style: { justifyContent: 'space-between' } } }}
-          actions={[
-            <Button
-              pattern="link"
-              onClick={() => {
-                onReset?.();
-              }}
-            >
-              {t('Table', 'Reset')}
-            </Button>,
-            'ok',
-          ]}
-        />
+        isUndefined(footer) ? (
+          <Popover.Footer
+            styleOverrides={{ popover__footer: { style: { justifyContent: 'space-between' } } }}
+            actions={[
+              <Button
+                pattern="link"
+                onClick={() => {
+                  onReset?.();
+                }}
+              >
+                {t('Table', 'Reset')}
+              </Button>,
+              'ok',
+            ]}
+          />
+        ) : footer === false ? undefined : (
+          footer
+        )
       }
       visible={visible}
       trigger="click"

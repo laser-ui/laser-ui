@@ -50,6 +50,7 @@ export interface TableFilterProps
     Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'content'> {
   children: React.ReactElement | ((render: CloneHTMLElement) => React.ReactNode);
   content?: React.ReactNode;
+  footer?: React.ReactElement | false;
   visible?: boolean;
   placement?: PopupPlacement;
   placementFixed?: boolean;
