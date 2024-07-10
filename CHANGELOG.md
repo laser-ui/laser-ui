@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.7](https://github.com/laser-ui/laser-ui/compare/v0.6.6...v0.6.7) (2024-07-10)
+
+### Bug Fixes
+
+- **components:** fix get window size ([5f20aa9](https://github.com/laser-ui/laser-ui/commit/5f20aa9b5c8fb4e0dd40c9516847461e18ab5b65))
+
+### Features
+
+- **components:** table-filter support custom footer ([31faf0a](https://github.com/laser-ui/laser-ui/commit/31faf0a9488744d83c3e9f9276bfac225ea4514b))
+
 ## [0.6.6](https://github.com/laser-ui/laser-ui/compare/v0.6.5...v0.6.6) (2024-06-14)
 
 ### Features
