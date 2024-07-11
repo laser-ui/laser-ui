@@ -1,6 +1,6 @@
 {
   "name": "@laser-ui/themes",
-  "version": "0.6.7",
+  "version": "1.0.0",
   "description": "The Sass-based styling solution of Laser UI.",
   "keywords": [
     "ui",
