@@ -43,7 +43,7 @@ export function getVerticalSidePosition(
       top = Math.min(Math.max(top, inWindow), ROOT_DATA.windowSize.height - height - inWindow);
     }
     if (inWindow !== false) {
-      left = Math.min(Math.max(left, inWindow), window.screen.availWidth - width - inWindow);
+      left = Math.min(Math.max(left, inWindow), ROOT_DATA.windowSize.width - width - inWindow);
     }
 
     const transformOrigin = placement === 'top' || placement === 'top-left' || placement === 'top-right' ? 'center bottom' : 'center top';
