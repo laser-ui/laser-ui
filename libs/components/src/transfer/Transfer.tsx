@@ -119,7 +119,7 @@ export function Transfer<V extends React.Key, T extends TransferItem<V>>(props: 
       const item = itemsMap.get(value);
       if (!searchValue[1]) {
         handleItem(item ?? ({ label: value, value } as T), 1, !item);
-      } else if (item && filterFn(item, searchValue[0])) {
+      } else if (item && filterFn(item, searchValue[1])) {
         handleItem(item, 1, false);
       }
     });
