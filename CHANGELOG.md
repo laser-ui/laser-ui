@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.1](https://github.com/laser-ui/laser-ui/compare/v1.0.0...v1.0.1) (2024-07-12)
+
+### Bug Fixes
+
+- **components:** fix transfer search ([7304120](https://github.com/laser-ui/laser-ui/commit/7304120c8748e6c74c77d3f62a0b0f67d7466fa9))
+
 # [1.0.0](https://github.com/laser-ui/laser-ui/compare/v0.6.7...v1.0.0) (2024-07-11)
 
 ### Bug Fixes
