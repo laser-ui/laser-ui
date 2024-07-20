@@ -69,10 +69,10 @@ export function Notification(props: NotificationProps): JSX.Element | null {
           placement === 'left-top'
             ? `${namespace}-notification-lt-root`
             : placement === 'right-top'
-            ? `${namespace}-notification-rt-root`
-            : placement === 'left-bottom'
-            ? `${namespace}-notification-lb-root`
-            : `${namespace}-notification-rb-root`;
+              ? `${namespace}-notification-rt-root`
+              : placement === 'left-bottom'
+                ? `${namespace}-notification-lb-root`
+                : `${namespace}-notification-rb-root`;
 
         let root = document.getElementById(`${namespace}-notification-root`);
         if (!root) {

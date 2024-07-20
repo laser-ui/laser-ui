@@ -61,11 +61,11 @@ export const UploadAction = forwardRef<HTMLDivElement, UploadActionProps>((props
       role={restProps['role'] ?? 'button'}
       tabIndex={restProps['tabIndex'] ?? (disabled ? -1 : 0)}
       title={
-        restProps.title ?? preset === 'download'
+        (restProps.title ?? preset === 'download')
           ? t('Upload', 'Download file')
           : preset === 'remove'
-          ? t('Upload', 'Remove file')
-          : undefined
+            ? t('Upload', 'Remove file')
+            : undefined
       }
       onClick={(e) => {
         restProps.onClick?.(e);

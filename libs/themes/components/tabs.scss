@@ -333,6 +333,10 @@
   }
 
   @include mixins.m(small) {
+    --tab-padding: var(--#{variables.$prefix}tabs-tab-padding, 12px);
+    --tab-gap: var(--#{variables.$prefix}tabs-tab-gap, 20px);
+    --tablist-font-size: var(--#{variables.$prefix}tabs-tablist-font-size, var(--#{variables.$prefix}font-size-small));
+
     &:not(#{$selector}--slider) {
       --tab-size: var(--#{variables.$prefix}tabs-tab-size, 36px);
     }
@@ -340,13 +344,13 @@
     &#{$selector}--slider {
       --tab-size: var(--#{variables.$prefix}tabs-tab-size, 32px);
     }
-
-    --tab-padding: var(--#{variables.$prefix}tabs-tab-padding, 12px);
-    --tab-gap: var(--#{variables.$prefix}tabs-tab-gap, 20px);
-    --tablist-font-size: var(--#{variables.$prefix}tabs-tablist-font-size, var(--#{variables.$prefix}font-size-small));
   }
 
   @include mixins.m(medium) {
+    --tab-padding: var(--#{variables.$prefix}tabs-tab-padding, 16px);
+    --tab-gap: var(--#{variables.$prefix}tabs-tab-gap, 32px);
+    --tablist-font-size: var(--#{variables.$prefix}tabs-tablist-font-size, var(--#{variables.$prefix}font-size-medium));
+
     &:not(#{$selector}--slider) {
       --tab-size: var(--#{variables.$prefix}tabs-tab-size, 44px);
     }
@@ -354,13 +358,13 @@
     &#{$selector}--slider {
       --tab-size: var(--#{variables.$prefix}tabs-tab-size, 36px);
     }
-
-    --tab-padding: var(--#{variables.$prefix}tabs-tab-padding, 16px);
-    --tab-gap: var(--#{variables.$prefix}tabs-tab-gap, 32px);
-    --tablist-font-size: var(--#{variables.$prefix}tabs-tablist-font-size, var(--#{variables.$prefix}font-size-medium));
   }
 
   @include mixins.m(large) {
+    --tab-padding: var(--#{variables.$prefix}tabs-tab-padding, 20px);
+    --tab-gap: var(--#{variables.$prefix}tabs-tab-gap, 36px);
+    --tablist-font-size: var(--#{variables.$prefix}tabs-tablist-font-size, var(--#{variables.$prefix}font-size-large));
+
     &:not(#{$selector}--slider) {
       --tab-size: var(--#{variables.$prefix}tabs-tab-size, 52px);
     }
@@ -368,10 +372,6 @@
     &#{$selector}--slider {
       --tab-size: var(--#{variables.$prefix}tabs-tab-size, 44px);
     }
-
-    --tab-padding: var(--#{variables.$prefix}tabs-tab-padding, 20px);
-    --tab-gap: var(--#{variables.$prefix}tabs-tab-gap, 36px);
-    --tablist-font-size: var(--#{variables.$prefix}tabs-tablist-font-size, var(--#{variables.$prefix}font-size-large));
   }
 
   @include mixins.e(tablist-wrapper) {

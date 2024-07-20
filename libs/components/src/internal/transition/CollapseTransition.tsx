@@ -67,8 +67,8 @@ export function CollapseTransition(props: CollapseTransitionProps): JSX.Element 
               ? dataRef.current.width
               : originalSizeProp.width
             : originalSizeProp.height === 'auto'
-            ? dataRef.current.height
-            : originalSizeProp.height,
+              ? dataRef.current.height
+              : originalSizeProp.height,
         };
         if (!isUndefined(originalSizeProp.padding)) {
           originalSize.padding = originalSizeProp.padding.map((p) => getSizeStyle(p)).join(' ');

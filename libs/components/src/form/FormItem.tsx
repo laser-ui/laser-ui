@@ -244,8 +244,8 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
                 formContext.vertical
                   ? '0px'
                   : labelWidth === 'auto'
-                  ? 'var(--label-width)'
-                  : labelWidth + (isNumber(labelWidth) ? 'px' : '')
+                    ? 'var(--label-width)'
+                    : labelWidth + (isNumber(labelWidth) ? 'px' : '')
               } - ${formContext.feedbackIcon ? 'var(--size)' : '0px'})`,
             },
           })}
@@ -321,10 +321,10 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
                       validateState === ValidateState.Pending
                         ? 'pending'
                         : validateState === ValidateState.Error
-                        ? 'error'
-                        : validateState === ValidateState.Warning
-                        ? 'warning'
-                        : 'success'
+                          ? 'error'
+                          : validateState === ValidateState.Warning
+                            ? 'warning'
+                            : 'success'
                     ] ?? icon(validateState)
                   );
                 }

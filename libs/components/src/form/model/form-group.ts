@@ -7,19 +7,16 @@ type Mutable<T> = {
   -readonly [P in keyof T]: T[P];
 };
 
-type GetFormControlPropertyFromArray<T, A> = Mutable<A> extends [infer K, ...infer R]
-  ? K extends keyof T
-    ? GetFormControlPropertyFromArray<T[K], R>
-    : any
-  : T;
+type GetFormControlPropertyFromArray<T, A> =
+  Mutable<A> extends [infer K, ...infer R] ? (K extends keyof T ? GetFormControlPropertyFromArray<T[K], R> : any) : T;
 
 type GetFormControlProperty<T, S> = S extends `${infer K}.${infer R}`
   ? K extends keyof T
     ? GetFormControlProperty<T[K], R>
     : any
   : S extends keyof T
-  ? T[S]
-  : any;
+    ? T[S]
+    : any;
 
 type GetFormGroupT<C extends FormGroup<any>> = C extends FormGroup<infer T> ? T : unknown;
 type GetFormGroupValue<T extends { [K in keyof T]: AbstractControl }> = {

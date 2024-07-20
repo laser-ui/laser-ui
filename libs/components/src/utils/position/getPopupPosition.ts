@@ -152,8 +152,8 @@ export function getPopupPosition(
         ...(placement === 'top'
           ? (['bottom', 'bottom-left', 'bottom-right'] as const)
           : placement === 'top-left'
-          ? (['bottom-left', 'bottom', 'bottom-right'] as const)
-          : (['bottom-right', 'bottom', 'bottom-left'] as const)),
+            ? (['bottom-left', 'bottom', 'bottom-right'] as const)
+            : (['bottom-right', 'bottom', 'bottom-left'] as const)),
       ]);
     } else if (placement.startsWith('right')) {
       position = getPosition([
@@ -167,8 +167,8 @@ export function getPopupPosition(
         ...(placement === 'right'
           ? (['left', 'left-top', 'left-bottom'] as const)
           : placement === 'right-top'
-          ? (['left-top', 'left', 'left-bottom'] as const)
-          : (['left-bottom', 'left', 'left-top'] as const)),
+            ? (['left-top', 'left', 'left-bottom'] as const)
+            : (['left-bottom', 'left', 'left-top'] as const)),
       ]);
     } else if (placement.startsWith('bottom')) {
       position = getPosition([
@@ -182,8 +182,8 @@ export function getPopupPosition(
         ...(placement === 'bottom'
           ? (['top', 'top-left', 'top-right'] as const)
           : placement === 'bottom-left'
-          ? (['top-left', 'top', 'top-right'] as const)
-          : (['top-right', 'top', 'top-left'] as const)),
+            ? (['top-left', 'top', 'top-right'] as const)
+            : (['top-right', 'top', 'top-left'] as const)),
       ]);
     } else {
       position = getPosition([
@@ -197,8 +197,8 @@ export function getPopupPosition(
         ...(placement === 'left'
           ? (['right', 'right-top', 'right-bottom'] as const)
           : placement === 'left-top'
-          ? (['right-top', 'right', 'right-bottom'] as const)
-          : (['right-bottom', 'right', 'right-top'] as const)),
+            ? (['right-top', 'right', 'right-bottom'] as const)
+            : (['right-bottom', 'right', 'right-top'] as const)),
       ]);
     }
     return updatePosition(position);

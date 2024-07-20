@@ -113,8 +113,8 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>((props, r
           {isFunction(showCount)
             ? showCount(value.length)
             : isUndefined(restProps.maxLength)
-            ? value.length
-            : `${value.length} / ${restProps.maxLength}`}
+              ? value.length
+              : `${value.length} / ${restProps.maxLength}`}
         </div>
       )}
     </>

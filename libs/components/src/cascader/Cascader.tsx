@@ -558,8 +558,8 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
         selectedNode = selectedLabel = customSelected
           ? customSelected(selected as V, node?.origin)
           : node
-          ? getTreeNodeLabel(node)
-          : String(selected);
+            ? getTreeNodeLabel(node)
+            : String(selected);
       }
     }
     return [selectedNode, suffixNode, selectedLabel];

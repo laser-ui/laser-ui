@@ -53,8 +53,8 @@ export function Avatar(props: AvatarProps): JSX.Element | null {
             type === 'icon'
               ? `calc((${size}${isNumber(size) ? 'px' : ''} / 2) * 1.25)`
               : type === 'text'
-              ? `calc(${size}${isNumber(size) ? 'px' : ''} / 2)`
-              : undefined,
+                ? `calc(${size}${isNumber(size) ? 'px' : ''} / 2)`
+                : undefined,
         },
       })}
     >

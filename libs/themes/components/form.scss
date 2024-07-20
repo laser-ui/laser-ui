@@ -84,12 +84,12 @@
   }
 
   @include mixins.e(item-label-extra) {
-    @include mixins.polyfill-column-gap(4px);
-
     display: inline-flex;
     align-items: center;
     margin-left: 4px;
     color: var(--#{variables.$prefix}color-text-sub);
+
+    @include mixins.polyfill-column-gap(4px);
   }
 
   @include mixins.e(item-content) {

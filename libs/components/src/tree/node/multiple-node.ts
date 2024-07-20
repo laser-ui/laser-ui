@@ -48,10 +48,10 @@ export class MultipleTreeNode<ID extends React.Key, T extends TreeNode> extends 
       this._status = hasIndeterminate
         ? INDETERMINATE
         : checkedNum === 0
-        ? UNCHECKED
-        : checkedNum === enabledLength
-        ? CHECKED
-        : INDETERMINATE;
+          ? UNCHECKED
+          : checkedNum === enabledLength
+            ? CHECKED
+            : INDETERMINATE;
     } else {
       this._status = checkeds.has(this._id) ? CHECKED : UNCHECKED;
     }

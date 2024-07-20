@@ -14,7 +14,7 @@
     "version": "prettier lerna.json --write"
   },
   "dependencies": {
-    "@laser-pro/storage": "^0.0.4",
+    "@laser-pro/storage": "^0.1.0",
     "@material-design-icons/svg": "^0.14.12",
     "axios": "^1.6.8",
     "bootstrap": "^5.3.2",
@@ -109,7 +109,7 @@
   "engines": {
     "node": "16.x || 18.x || 20.x",
     "npm": "Please use pnpm instead of NPM to install dependencies",
-    "pnpm": "8.x"
+    "pnpm": "9.x"
   },
   "nx": {
     "includedScripts": []

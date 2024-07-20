@@ -155,11 +155,11 @@
   }
 
   @include mixins.e(header-actions) {
-    @include mixins.polyfill-column-gap(6px);
-
     display: inline-flex;
     flex-shrink: 0;
     align-items: center;
+
+    @include mixins.polyfill-column-gap(6px);
 
     .#{variables.$prefix}button {
       --#{variables.$prefix}button-size: 20px;
@@ -169,12 +169,12 @@
   }
 
   @include mixins.e(footer) {
-    @include mixins.polyfill-column-gap(6px);
-
     position: relative;
     display: flex;
     align-items: center;
     padding: 0 12px 10px;
+
+    @include mixins.polyfill-column-gap(6px);
 
     .#{variables.$prefix}button {
       --#{variables.$prefix}button-size: 28px;

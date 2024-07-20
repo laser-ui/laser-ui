@@ -34,8 +34,8 @@ export function getVerticalSidePosition(
       placement === 'top' || placement === 'bottom'
         ? targetRect.left + (targetRect.width - width) / 2
         : placement === 'top-left' || placement === 'bottom-left'
-        ? targetRect.left
-        : targetRect.left + targetRect.width - width;
+          ? targetRect.left
+          : targetRect.left + targetRect.width - width;
     const inBound = [top, ROOT_DATA.windowSize.width - left - width, ROOT_DATA.windowSize.height - top - height, left].every(
       (num) => num >= bound,
     );

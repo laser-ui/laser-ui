@@ -70,10 +70,10 @@ export const Drawer: {
           placement === 'top'
             ? `translateY(${offset}px)`
             : placement === 'right'
-            ? `translateX(-${offset}px)`
-            : placement === 'bottom'
-            ? `translateY(-${offset}px)`
-            : `translateX(${offset}px)`;
+              ? `translateX(-${offset}px)`
+              : placement === 'bottom'
+                ? `translateY(-${offset}px)`
+                : `translateX(${offset}px)`;
       }
       if (drawerContentRef.current) {
         drawerContext({
@@ -115,8 +115,8 @@ export const Drawer: {
   const zIndex = !isUndefined(zIndexProp)
     ? zIndexProp
     : !isFixed
-    ? `var(--${namespace}-zindex-absolute)`
-    : `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
+      ? `var(--${namespace}-zindex-absolute)`
+      : `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
 
   useLockScroll(isFixed && visible);
 
@@ -125,10 +125,10 @@ export const Drawer: {
       placement === 'top'
         ? 'translate(0, -100%)'
         : placement === 'right'
-        ? 'translate(100%, 0)'
-        : placement === 'bottom'
-        ? 'translate(0, 100%)'
-        : 'translate(-100%, 0)';
+          ? 'translate(100%, 0)'
+          : placement === 'bottom'
+            ? 'translate(0, 100%)'
+            : 'translate(-100%, 0)';
 
     return {
       enter: { transform },

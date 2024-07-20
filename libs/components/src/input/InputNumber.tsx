@@ -64,8 +64,8 @@ export function InputNumber(props: InputNumberProps) {
     dataRef.current.inputFocused && !isUndefined(dataRef.current.inputValue)
       ? dataRef.current.inputValue
       : isNull(value)
-      ? ''
-      : value.toString();
+        ? ''
+        : value.toString();
   const changeValue = (val: number | null) => {
     if ((isNull(val) ? '' : val.toString()) !== inputValue) {
       forceUpdate();

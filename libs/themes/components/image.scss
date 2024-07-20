@@ -133,11 +133,11 @@
     }
 
     @include mixins.e(toolbar-page) {
-      @include mixins.polyfill-column-gap(8px);
-
       display: inline-flex;
       align-items: center;
       margin-right: auto;
+
+      @include mixins.polyfill-column-gap(8px);
     }
 
     @include mixins.e(toolbar-page-input) {
@@ -164,8 +164,8 @@
       touch-action: none;
       cursor: move;
       user-select: none;
-      outline: none;
       object-fit: contain;
+      outline: none;
     }
 
     @include mixins.e(thumbnail-list) {

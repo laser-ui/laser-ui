@@ -236,7 +236,7 @@ function PopoverFC(props: PopoverProps, ref: React.ForwardedRef<PopoverRef>): JS
                       })}
                       ref={popoverRef}
                       tabIndex={-1}
-                      role={restProps.role ?? modal ? 'alertdialog' : 'dialog'}
+                      role={(restProps.role ?? modal) ? 'alertdialog' : 'dialog'}
                       aria-modal={modal}
                       aria-labelledby={headerNode ? titleId : undefined}
                       aria-describedby={bodyId}

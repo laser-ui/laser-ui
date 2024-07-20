@@ -40,7 +40,7 @@ export const Badge: {
   });
 
   const show = showZero || valueProp > 0;
-  const value = show ? valueProp : dataRef.current.saveValue ?? 0;
+  const value = show ? valueProp : (dataRef.current.saveValue ?? 0);
   dataRef.current.saveValue = value;
 
   const nums = (value > max ? max : value)
