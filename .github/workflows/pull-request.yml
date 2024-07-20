@@ -18,7 +18,7 @@ jobs:
           node-version: '18'
       - uses: pnpm/action-setup@v2
         with:
-          version: '8'
+          version: '9'
           run_install: false
       - run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
       - uses: actions/cache@v3
@@ -42,7 +42,7 @@ jobs:
           node-version: '18'
       - uses: pnpm/action-setup@v2
         with:
-          version: '8'
+          version: '9'
           run_install: false
       - run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
       - uses: actions/cache@v3
@@ -71,7 +71,7 @@ jobs:
           node-version: ${{ matrix.node }}
       - uses: pnpm/action-setup@v2
         with:
-          version: '8'
+          version: '9'
           run_install: false
       - run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
       - uses: actions/cache@v3
@@ -118,7 +118,7 @@ jobs:
           node-version: '18'
       - uses: pnpm/action-setup@v2
         with:
-          version: '8'
+          version: '9'
           run_install: false
       - run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
       - uses: actions/cache@v3
