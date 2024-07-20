@@ -5,7 +5,7 @@ import { isFunction, isNumber, isUndefined } from 'lodash';
 import { forwardRef, useEffect, useRef } from 'react';
 
 import { CLASSES } from './vars';
-import { useComponentProps, useControlled, useDesign, useJSS, useScopedProps, useStyled } from '../hooks';
+import { useComponentProps, useControlled, useDesign, useScopedProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>((props, ref): JSX.Element | null => {
@@ -25,7 +25,6 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>((props, r
   } = useComponentProps('Textarea', props);
 
   const styled = useStyled(CLASSES, { textarea: styleProvider?.textarea }, styleOverrides);
-  const sheet = useJSS<'rows'>();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const combineTextareaRef = useForkRef(textareaRef, ref);
@@ -35,53 +34,38 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>((props, r
   const { size, disabled } = useScopedProps({ size: sizeProp, disabled: restProps.disabled || formControl?.control.disabled });
 
   useEffect(() => {
-    if (textareaRef.current) {
-      const cssText = textareaRef.current.style.cssText;
-      textareaRef.current.value = '';
-      textareaRef.current.rows = 1;
-      textareaRef.current.style.cssText = cssText + 'box-sizing:content-box;overflow:hidden;height:0px;min-height:unset;';
-      const outerSize = textareaRef.current.offsetHeight;
-      textareaRef.current.style.cssText = cssText + 'overflow:hidden;height:0px;min-height:unset;padding:0px;';
-      const lineHeight = textareaRef.current.scrollHeight;
-      textareaRef.current.value = value;
-      const n = Math.round(textareaRef.current.scrollHeight / lineHeight);
+    const textareaEl = textareaRef.current;
+    if (textareaEl && autoRows !== false) {
+      const cssText = textareaEl.style.cssText;
+      const rows = textareaEl.rows;
 
-      if (isNumber(restProps.rows)) {
-        textareaRef.current.rows = restProps.rows;
+      if (autoRows === true) {
+        textareaEl.style.cssText = cssText + 'overflow:hidden;height:0px;min-height:unset;';
+        const height = textareaEl.scrollHeight + (textareaEl.offsetHeight - textareaEl.clientHeight);
+        textareaEl.style.cssText = cssText;
+        textareaEl.style.height = height + 'px';
       } else {
-        textareaRef.current.removeAttribute('rows');
-      }
-      textareaRef.current.style.cssText = cssText;
+        textareaEl.style.cssText = cssText + 'overflow:hidden;height:0px;padding:0px;min-height:unset;';
+        const rowsHeight = textareaEl.scrollHeight + (textareaEl.offsetHeight - textareaEl.clientHeight);
+        textareaEl.rows = 1;
+        textareaEl.style.cssText = cssText + 'overflow:hidden;padding:0px;height:unset;min-height:unset;';
+        const rowHeight = textareaEl.clientHeight;
+        let n = Math.round(rowsHeight / rowHeight);
 
-      let height: number | undefined;
-      let overflow: 'hidden' | undefined;
-      let minHeight: number | undefined;
-      let maxHeight: number | undefined;
-      if (autoRows !== false) {
-        height = n * lineHeight;
-        overflow = 'hidden';
-        if (autoRows !== true) {
-          if (isNumber(autoRows.minRows)) {
-            minHeight = autoRows.minRows * lineHeight;
-          }
-          if (isNumber(autoRows.maxRows)) {
-            maxHeight = autoRows.maxRows * lineHeight;
-            if (autoRows.maxRows < n) {
-              overflow = undefined;
-            }
-          }
+        if (isNumber(autoRows.minRows) && n < autoRows.minRows) {
+          n = autoRows.minRows;
         }
+        if (isNumber(autoRows.maxRows) && n > autoRows.maxRows) {
+          n = autoRows.maxRows;
+        }
+        textareaEl.rows = n;
+        textareaEl.style.cssText = cssText + 'height:unset;min-height:unset;';
       }
-      if (sheet.classes.rows) {
-        textareaRef.current.classList.toggle(sheet.classes.rows, false);
-      }
-      sheet.replaceRule('rows', {
-        height: isUndefined(height) ? undefined : height + outerSize,
-        overflow: isUndefined(overflow) ? undefined : 'hidden',
-        minHeight: isUndefined(minHeight) ? undefined : minHeight + outerSize,
-        maxHeight: isUndefined(maxHeight) ? undefined : maxHeight + outerSize,
-      });
-      textareaRef.current.classList.toggle(sheet.classes.rows, true);
+
+      return () => {
+        textareaEl.style.cssText = cssText;
+        textareaEl.rows = rows;
+      };
     }
   });
 
