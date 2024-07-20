@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.2](https://github.com/laser-ui/laser-ui/compare/v1.0.1...v1.0.2) (2024-07-20)
+
+### Bug Fixes
+
+- **components:** fix `Textarea` auto rows ([df91d01](https://github.com/laser-ui/laser-ui/commit/df91d01000137f7a93f0f59407c9f1d738e67d85))
+
 ## [1.0.1](https://github.com/laser-ui/laser-ui/compare/v1.0.0...v1.0.1) (2024-07-12)
 
 ### Bug Fixes
