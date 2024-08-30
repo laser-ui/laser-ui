@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.1](https://github.com/laser-ui/laser-ui/compare/v1.1.0...v1.1.1) (2024-08-30)
+
+### Bug Fixes
+
+- fix automatically update when nested ([d1c0b46](https://github.com/laser-ui/laser-ui/commit/d1c0b4645965e31b382058b60b2569b253c162e5))
+
 # [1.1.0](https://github.com/laser-ui/laser-ui/compare/v1.0.2...v1.1.0) (2024-08-30)
 
 ### Features
