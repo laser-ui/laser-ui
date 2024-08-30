@@ -31,7 +31,6 @@ export const Tooltip = forwardRef<TooltipRef, TooltipProps>((props, ref): JSX.El
     skipFirstTransition = true,
     destroyAfterClose = true,
     zIndex: zIndexProp,
-    scrolling,
     onVisibleChange,
     afterVisibleChange,
 
@@ -47,7 +46,6 @@ export const Tooltip = forwardRef<TooltipRef, TooltipProps>((props, ref): JSX.El
 
   const triggerRef = useRefExtra<HTMLElement>(() => document.querySelector(`[aria-describedby="${id}"]`));
   const tooltipRef = useRef<HTMLDivElement>(null);
-  const scrollingRef = useRefExtra(scrolling);
 
   const [visible, changeVisible] = useControlled<boolean>(defaultVisible ?? false, visibleProp, onVisibleChange);
 
@@ -102,7 +100,6 @@ export const Tooltip = forwardRef<TooltipRef, TooltipProps>((props, ref): JSX.El
         fn: updatePosition,
         triggerRef,
         popupRef: tooltipRef,
-        containerRefs: [scrollingRef],
       }}
       onVisibleChange={changeVisible}
     >

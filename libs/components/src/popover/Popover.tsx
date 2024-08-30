@@ -36,7 +36,6 @@ function PopoverFC(props: PopoverProps, ref: React.ForwardedRef<PopoverRef>): JS
     skipFirstTransition = true,
     destroyAfterClose = true,
     zIndex: zIndexProp,
-    scrolling,
     onVisibleChange,
     afterVisibleChange,
 
@@ -57,7 +56,6 @@ function PopoverFC(props: PopoverProps, ref: React.ForwardedRef<PopoverRef>): JS
   const triggerRef = useRefExtra(() => document.getElementById(triggerId));
   const popoverRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
-  const scrollingRef = useRefExtra(scrolling);
 
   const dataRef = useRef<{
     prevActiveEl: HTMLElement | null;
@@ -132,7 +130,6 @@ function PopoverFC(props: PopoverProps, ref: React.ForwardedRef<PopoverRef>): JS
         fn: updatePosition,
         triggerRef,
         popupRef,
-        containerRefs: [scrollingRef],
       }}
       onVisibleChange={changeVisible}
     >
@@ -236,7 +233,7 @@ function PopoverFC(props: PopoverProps, ref: React.ForwardedRef<PopoverRef>): JS
                       })}
                       ref={popoverRef}
                       tabIndex={-1}
-                      role={(restProps.role ?? modal) ? 'alertdialog' : 'dialog'}
+                      role={restProps.role ?? modal ? 'alertdialog' : 'dialog'}
                       aria-modal={modal}
                       aria-labelledby={headerNode ? titleId : undefined}
                       aria-describedby={bodyId}

@@ -3,7 +3,7 @@ import type { CascaderItem, CascaderProps, CascaderRef } from './types';
 import type { DropdownItem } from '../dropdown/types';
 import type { AbstractTreeNode } from '../tree/node/abstract-node';
 
-import { useEvent, useEventCallback, useForkRef, useResize } from '@laser-ui/hooks';
+import { useEventCallback, useForkRef, useResize } from '@laser-ui/hooks';
 import { findNested } from '@laser-ui/utils';
 import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
 import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
@@ -19,12 +19,12 @@ import { BaseInput } from '../base-input';
 import { Dropdown } from '../dropdown';
 import {
   useComponentProps,
+  useContainerScrolling,
   useControlled,
   useDesign,
   useFocusVisible,
   useJSS,
   useLayout,
-  useListenGlobalScrolling,
   useMaxIndex,
   useNamespace,
   useScopedProps,
@@ -99,7 +99,7 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
   const listId = `${namespace}-cascader-list-${uniqueId}`;
   const getItemId = (val: V) => `${namespace}-cascader-item-${val}-${uniqueId}`;
 
-  const { pageScrollRef, contentResizeRef } = useLayout();
+  const { contentResizeRef } = useLayout();
 
   const boxRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -309,8 +309,7 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
     }
   });
 
-  const listenGlobalScrolling = useListenGlobalScrolling(updatePosition, !visible);
-  useEvent(pageScrollRef, 'scroll', updatePosition, { passive: true }, !visible || listenGlobalScrolling);
+  useContainerScrolling(boxRef, updatePosition, !visible);
 
   useResize(boxRef, updatePosition, undefined, !visible);
   useResize(popupRef, updatePosition, undefined, !visible);
@@ -558,8 +557,8 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
         selectedNode = selectedLabel = customSelected
           ? customSelected(selected as V, node?.origin)
           : node
-            ? getTreeNodeLabel(node)
-            : String(selected);
+          ? getTreeNodeLabel(node)
+          : String(selected);
       }
     }
     return [selectedNode, suffixNode, selectedLabel];

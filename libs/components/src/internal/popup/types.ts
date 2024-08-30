@@ -13,7 +13,6 @@ export interface PopupProps {
     fn: () => void;
     triggerRef: React.RefObject<HTMLElement>;
     popupRef: React.RefObject<HTMLElement>;
-    containerRefs: React.RefObject<HTMLElement | null>[];
   };
   onVisibleChange: (visible: boolean) => void;
 }

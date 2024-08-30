@@ -8,4 +8,5 @@ export { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 export { useMount } from './useMount';
 export { useRefExtra } from './useRefExtra';
 export { useResize } from './useResize';
+export { useScroll } from './useScroll';
 export { useUnmount } from './useUnmount';

@@ -136,7 +136,6 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): JSX.El
           fn: updatePosition,
           triggerRef,
           popupRef,
-          containerRefs: [],
         }}
         onVisibleChange={onVisibleChange}
       >

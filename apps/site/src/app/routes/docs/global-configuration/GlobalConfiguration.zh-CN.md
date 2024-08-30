@@ -10,6 +10,5 @@ interface LContextData {
   componentDefaultProps: { [K in keyof ComponentProps]?: Partial<ComponentProps[K]> };
   layoutPageScrollEl: RefExtra | null;
   layoutContentResizeEl: RefExtra | null;
-  listenGlobalScrolling: boolean;
 }
 ```

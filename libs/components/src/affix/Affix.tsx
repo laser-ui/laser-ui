@@ -1,11 +1,11 @@
 import type { AffixProps, AffixRef } from './types';
 
-import { useEvent, useEventCallback, useMount, useRefExtra, useResize } from '@laser-ui/hooks';
+import { useEventCallback, useMount, useRefExtra, useResize } from '@laser-ui/hooks';
 import { getOffsetToRoot, toPx } from '@laser-ui/utils';
 import { isFunction, isString, isUndefined } from 'lodash';
 import { cloneElement, forwardRef, useId, useImperativeHandle, useState } from 'react';
 
-import { useComponentProps, useJSS, useLayout, useListenGlobalScrolling, useNamespace } from '../hooks';
+import { useComponentProps, useContainerScrolling, useJSS, useLayout, useNamespace } from '../hooks';
 
 export const Affix = forwardRef<AffixRef, AffixProps>((props, ref): JSX.Element | null => {
   const { children, top = 0, target, zIndex } = useComponentProps('Affix', props);
@@ -57,9 +57,7 @@ export const Affix = forwardRef<AffixRef, AffixProps>((props, ref): JSX.Element 
     updatePosition();
   });
 
-  const listenGlobalScrolling = useListenGlobalScrolling(updatePosition);
-  useEvent(pageScrollRef, 'scroll', updatePosition, { passive: true }, listenGlobalScrolling);
-  useEvent(targetRef, 'scroll', updatePosition, { passive: true }, listenGlobalScrolling || isUndefined(target));
+  useContainerScrolling(affixRef, updatePosition);
 
   useResize(sticky ? placeholderRef : affixRef, updatePosition);
   useResize(contentResizeRef, updatePosition);

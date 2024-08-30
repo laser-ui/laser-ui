@@ -12,7 +12,6 @@ interface LContextData {
   componentDefaultProps: { [K in keyof ComponentProps]?: Partial<ComponentProps[K]> };
   layoutPageScrollEl: RefExtra | null;
   layoutContentResizeEl: RefExtra | null;
-  listenGlobalScrolling: boolean;
 }
 
 export type LContextIn = Partial<LContextData>;
@@ -24,7 +23,6 @@ export class LContextManager {
   public componentDefaultProps: LContextData['componentDefaultProps'];
   public layoutPageScrollEl: LContextData['layoutPageScrollEl'];
   public layoutContentResizeEl: LContextData['layoutContentResizeEl'];
-  public listenGlobalScrolling: LContextData['listenGlobalScrolling'];
 
   private _parent: LContextManager | null = null;
 
@@ -49,7 +47,6 @@ export class LContextManager {
     this.componentDefaultProps = context.componentDefaultProps;
     this.layoutPageScrollEl = context.layoutPageScrollEl;
     this.layoutContentResizeEl = context.layoutContentResizeEl;
-    this.listenGlobalScrolling = context.listenGlobalScrolling;
   }
 
   setParent(parent: LContextManager): void {
@@ -64,7 +61,6 @@ export class LContextManager {
       componentDefaultProps: Object.assign({}, this.componentDefaultProps),
       layoutPageScrollEl: this.layoutPageScrollEl,
       layoutContentResizeEl: this.layoutContentResizeEl,
-      listenGlobalScrolling: this.listenGlobalScrolling,
     };
 
     (Object.keys(context) as (keyof LContextIn)[]).forEach((key) => {
@@ -89,6 +85,5 @@ export const LContext = createContext(
     componentDefaultProps: {},
     layoutPageScrollEl: ':root',
     layoutContentResizeEl: null,
-    listenGlobalScrolling: false,
   }),
 );

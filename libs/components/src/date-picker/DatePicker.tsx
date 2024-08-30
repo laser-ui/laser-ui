@@ -1,6 +1,6 @@
 import type { DatePickerProps, DatePickerRef } from './types';
 
-import { useAsync, useEvent, useEventCallback, useForceUpdate, useForkRef, useImmer, useResize } from '@laser-ui/hooks';
+import { useAsync, useEventCallback, useForceUpdate, useForkRef, useImmer, useResize } from '@laser-ui/hooks';
 import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
 import CalendarTodayOutlined from '@material-design-icons/svg/outlined/calendar_today.svg?react';
 import SwapHorizOutlined from '@material-design-icons/svg/outlined/swap_horiz.svg?react';
@@ -14,11 +14,11 @@ import { Button } from '../button';
 import dayjs from '../dayjs';
 import {
   useComponentProps,
+  useContainerScrolling,
   useControlled,
   useDesign,
   useJSS,
   useLayout,
-  useListenGlobalScrolling,
   useMaxIndex,
   useNamespace,
   useScopedProps,
@@ -80,7 +80,7 @@ export const DatePicker = forwardRef<DatePickerRef, DatePickerProps>((props, ref
   const forceUpdate = useForceUpdate();
   const async = useAsync();
 
-  const { pageScrollRef, contentResizeRef } = useLayout();
+  const { contentResizeRef } = useLayout();
 
   const boxRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -131,7 +131,7 @@ export const DatePicker = forwardRef<DatePickerRef, DatePickerProps>((props, ref
     (a, b) => deepCompareDate(a, b, format),
     formControl?.control,
   );
-  let [valueLeft, valueRight = null] = range ? ((_value as [Date, Date] | null) ?? [null, null]) : [_value as Date | null, null];
+  let [valueLeft, valueRight = null] = range ? (_value as [Date, Date] | null) ?? [null, null] : [_value as Date | null, null];
   if (range) {
     if (isNull(_value)) {
       [valueLeft, valueRight] = dataRef.current.rangeDate;
@@ -178,7 +178,7 @@ export const DatePicker = forwardRef<DatePickerRef, DatePickerProps>((props, ref
   };
 
   const [placeholderLeft = t('DatePicker', range ? 'Start date' : 'Select date'), placeholderRight = t('DatePicker', 'End date')] = range
-    ? ((placeholder as [string?, string?] | undefined) ?? [])
+    ? (placeholder as [string?, string?] | undefined) ?? []
     : [placeholder as string | undefined];
 
   const { size, disabled } = useScopedProps({ size: sizeProp, disabled: disabledProp || formControl?.control.disabled });
@@ -213,8 +213,7 @@ export const DatePicker = forwardRef<DatePickerRef, DatePickerProps>((props, ref
     }
   });
 
-  const listenGlobalScrolling = useListenGlobalScrolling(updatePosition, !visible);
-  useEvent(pageScrollRef, 'scroll', updatePosition, { passive: true }, !visible || listenGlobalScrolling);
+  useContainerScrolling(boxRef, updatePosition, !visible);
 
   useResize(boxRef, updatePosition, undefined, !visible);
   useResize(popupRef, updatePosition, undefined, !visible);

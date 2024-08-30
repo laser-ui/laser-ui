@@ -1,7 +1,6 @@
 import type { CLASSES } from './vars';
 import type { ButtonProps } from '../button';
 import type { BaseProps, CloneHTMLElement, PopupPlacement } from '../types';
-import type { RefExtra } from '@laser-ui/hooks/useRefExtra';
 
 export {};
 
@@ -31,7 +30,6 @@ export interface PopoverProps
   skipFirstTransition?: boolean;
   destroyAfterClose?: boolean;
   zIndex?: number | string;
-  scrolling?: RefExtra;
   onVisibleChange?: (visible: boolean) => void;
   afterVisibleChange?: (visible: boolean) => void;
 }

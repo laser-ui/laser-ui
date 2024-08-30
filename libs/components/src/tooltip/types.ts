@@ -1,6 +1,5 @@
 import type { CLASSES } from './vars';
 import type { BaseProps, CloneHTMLElement, PopupPlacement } from '../types';
-import type { RefExtra } from '@laser-ui/hooks/useRefExtra';
 
 export {};
 
@@ -27,7 +26,6 @@ export interface TooltipProps
   skipFirstTransition?: boolean;
   destroyAfterClose?: boolean;
   zIndex?: number | string;
-  scrolling?: RefExtra;
   onVisibleChange?: (visible: boolean) => void;
   afterVisibleChange?: (visible: boolean) => void;
 }

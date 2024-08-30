@@ -8,7 +8,7 @@ import { isString } from 'lodash';
 import { cloneElement, useRef, useState } from 'react';
 
 import { FabButton } from './FabButton';
-import { useComponentProps, useLayout, useListenGlobalScrolling } from '../hooks';
+import { useComponentProps, useLayout } from '../hooks';
 import { Icon } from '../icon';
 import { Transition } from '../internal/transition';
 import { TTANSITION_DURING_BASE } from '../vars';
@@ -56,8 +56,7 @@ export function FabBacktop(props: FabBacktopProps): JSX.Element | null {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const listenGlobalScrolling = useListenGlobalScrolling(updateBackTop);
-  useEvent(pageRef, 'scroll', updateBackTop, { passive: true }, listenGlobalScrolling);
+  useEvent(pageRef, 'scroll', updateBackTop, { passive: true });
 
   useResize(contentResizeRef, updateBackTop);
 

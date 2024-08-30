@@ -2,7 +2,7 @@ import type { SelectItem, SelectProps, SelectRef } from './types';
 import type { DropdownItem } from '../dropdown/types';
 import type { VirtualScrollOptimization } from '../virtual-scroll/types';
 
-import { useEvent, useEventCallback, useForkRef, useResize } from '@laser-ui/hooks';
+import { useEventCallback, useForkRef, useResize } from '@laser-ui/hooks';
 import { findNested, scrollIntoViewIfNeeded } from '@laser-ui/utils';
 import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
 import AddOutlined from '@material-design-icons/svg/outlined/add.svg?react';
@@ -19,12 +19,12 @@ import { Dropdown } from '../dropdown';
 import { Empty } from '../empty';
 import {
   useComponentProps,
+  useContainerScrolling,
   useControlled,
   useDesign,
   useFocusVisible,
   useJSS,
   useLayout,
-  useListenGlobalScrolling,
   useMaxIndex,
   useNamespace,
   useScopedProps,
@@ -94,7 +94,7 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
   const listId = `${namespace}-select-list-${uniqueId}`;
   const getItemId = (val: V) => `${namespace}-select-item-${val}-${uniqueId}`;
 
-  const { pageScrollRef, contentResizeRef } = useLayout();
+  const { contentResizeRef } = useLayout();
 
   const boxRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -320,8 +320,7 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
     }
   });
 
-  const listenGlobalScrolling = useListenGlobalScrolling(updatePosition, !visible);
-  useEvent(pageScrollRef, 'scroll', updatePosition, { passive: true }, !visible || listenGlobalScrolling);
+  useContainerScrolling(boxRef, updatePosition, !visible);
 
   useResize(boxRef, updatePosition, undefined, !visible);
   useResize(popupRef, updatePosition, undefined, !visible);

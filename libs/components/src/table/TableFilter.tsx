@@ -28,7 +28,6 @@ export function TableFilter(props: TableFilterProps): JSX.Element | null {
     modal = false,
     destroyAfterClose = true,
     zIndex,
-    scrolling,
     onVisibleChange,
     onSearch,
     onReset,
@@ -97,7 +96,6 @@ export function TableFilter(props: TableFilterProps): JSX.Element | null {
       modal={modal}
       destroyAfterClose={destroyAfterClose}
       zIndex={zIndex}
-      scrolling={scrolling}
       onVisibleChange={onVisibleChange}
       afterVisibleChange={afterVisibleChange}
     />

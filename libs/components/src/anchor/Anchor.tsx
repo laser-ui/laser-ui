@@ -6,7 +6,7 @@ import { isArray, isString, isUndefined } from 'lodash';
 import { Fragment, forwardRef, useImperativeHandle, useRef, useState } from 'react';
 
 import { CLASSES, DOT_INDICATOR, LINE_INDICATOR } from './vars';
-import { useComponentProps, useLayout, useListenGlobalScrolling, useStyled } from '../hooks';
+import { useComponentProps, useLayout, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
 function AnchorFC<T extends AnchorItem>(props: AnchorProps<T>, ref: React.ForwardedRef<AnchorRef>): JSX.Element | null {
@@ -76,8 +76,7 @@ function AnchorFC<T extends AnchorItem>(props: AnchorProps<T>, ref: React.Forwar
     updateAnchor();
   });
 
-  const listenGlobalScrolling = useListenGlobalScrolling(updateAnchor);
-  useEvent(pageRef, 'scroll', updateAnchor, { passive: true }, listenGlobalScrolling);
+  useEvent(pageRef, 'scroll', updateAnchor, { passive: true });
 
   useResize(contentResizeRef, updateAnchor);
 

@@ -80,7 +80,6 @@ export const DropdownSub = forwardRef<() => void, DropdownSubProps>((props, ref)
         fn: updatePosition,
         triggerRef,
         popupRef,
-        containerRefs: [],
       }}
       onVisibleChange={onVisibleChange}
     >
