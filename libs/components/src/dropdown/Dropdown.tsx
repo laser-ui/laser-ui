@@ -12,6 +12,7 @@ import { checkEnableItem, getSameLevelEnableItems } from './utils';
 import { CLASSES } from './vars';
 import {
   useComponentProps,
+  useContainerScrolling,
   useControlled,
   useFocusVisible,
   useJSS,
@@ -376,18 +377,16 @@ function DropdownFC<ID extends React.Key, T extends DropdownItem<ID>>(
     return getNodes(list, 0, []);
   })();
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      updatePosition: () => {
-        updatePosition();
-        for (const fn of dataRef.current.updatePosition.values()) {
-          fn();
-        }
-      },
-    }),
-    [updatePosition],
-  );
+  const updateAllPosition = useEventCallback(() => {
+    updatePosition();
+    for (const fn of dataRef.current.updatePosition.values()) {
+      fn();
+    }
+  });
+
+  useContainerScrolling(triggerRef, updateAllPosition, !visible);
+
+  useImperativeHandle(ref, () => ({ updatePosition: updateAllPosition }), [updateAllPosition]);
 
   return (
     <Popup

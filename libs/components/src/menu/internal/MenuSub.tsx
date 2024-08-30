@@ -82,7 +82,7 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): JSX.El
 
   const transformOrigin = useRef<string>();
   const updatePosition = useEventCallback(() => {
-    if (visible && popupRef.current && triggerRef.current) {
+    if (!(disabled || mode === 'vertical') && visible && popupRef.current && triggerRef.current) {
       const height = popupRef.current.offsetHeight;
 
       let width = popupRef.current.offsetWidth;
@@ -136,6 +136,7 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): JSX.El
           fn: updatePosition,
           triggerRef,
           popupRef,
+          scroll: false,
         }}
         onVisibleChange={onVisibleChange}
       >

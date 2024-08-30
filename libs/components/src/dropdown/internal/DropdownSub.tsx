@@ -47,7 +47,7 @@ export const DropdownSub = forwardRef<() => void, DropdownSubProps>((props, ref)
 
   const transformOrigin = useRef<string>();
   const updatePosition = useEventCallback(() => {
-    if (visible && popupRef.current && triggerRef.current) {
+    if (!disabled && visible && popupRef.current && triggerRef.current) {
       const [width, height] = [popupRef.current.offsetWidth, popupRef.current.offsetHeight];
       const position = getHorizontalSidePosition(
         triggerRef.current,
@@ -80,6 +80,7 @@ export const DropdownSub = forwardRef<() => void, DropdownSubProps>((props, ref)
         fn: updatePosition,
         triggerRef,
         popupRef,
+        scroll: false,
       }}
       onVisibleChange={onVisibleChange}
     >

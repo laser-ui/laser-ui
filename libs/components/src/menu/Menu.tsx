@@ -2,14 +2,22 @@ import type { MenuItem, MenuProps, MenuRef } from './types';
 
 import { findNested } from '@laser-ui/utils';
 import { isNull, isUndefined, nth } from 'lodash';
-import { Fragment, forwardRef, useId, useImperativeHandle, useRef, useState } from 'react';
+import { Fragment, forwardRef, useCallback, useId, useImperativeHandle, useRef, useState } from 'react';
 
 import { MenuGroup } from './internal/MenuGroup';
 import { MenuItem as MenuItemFC } from './internal/MenuItem';
 import { MenuSub } from './internal/MenuSub';
 import { checkEnableItem, getSameLevelEnableItems } from './utils';
 import { CLASSES } from './vars';
-import { useComponentProps, useControlled, useFocusVisible, useNamespace, useNestedPopup, useStyled } from '../hooks';
+import {
+  useComponentProps,
+  useContainerScrolling,
+  useControlled,
+  useFocusVisible,
+  useNamespace,
+  useNestedPopup,
+  useStyled,
+} from '../hooks';
 import { CollapseTransition } from '../internal/transition';
 import { mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
@@ -42,6 +50,8 @@ function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
 
   const uniqueId = useId();
   const getItemId = (id: ID) => `${namespace}-menu-item-${id}-${uniqueId}`;
+
+  const menuRef = useRef<HTMLElement>(null);
 
   const dataRef = useRef<{
     mousedown: boolean;
@@ -430,17 +440,15 @@ function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
     return getNodes(list, 0, [], true);
   })();
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      updatePosition: () => {
-        for (const fn of dataRef.current.updatePosition.values()) {
-          fn();
-        }
-      },
-    }),
-    [],
-  );
+  const updatePosition = useCallback(() => {
+    for (const fn of dataRef.current.updatePosition.values()) {
+      fn();
+    }
+  }, []);
+
+  useContainerScrolling(menuRef, updatePosition);
+
+  useImperativeHandle(ref, () => ({ updatePosition }), [updatePosition]);
 
   return (
     <CollapseTransition
@@ -461,7 +469,7 @@ function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
         },
       }}
     >
-      {(menuRef, collapseStyle) => {
+      {(collapseRef, collapseStyle) => {
         const preventBlur: React.MouseEventHandler<HTMLElement> = (e) => {
           if (document.activeElement === e.currentTarget && e.button === 0) {
             e.preventDefault();
@@ -480,7 +488,10 @@ function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
                 ...collapseStyle,
               },
             })}
-            ref={menuRef}
+            ref={(el) => {
+              (collapseRef as any).current = el;
+              (menuRef as any).current = el;
+            }}
             tabIndex={restProps.tabIndex ?? 0}
             role="menubar"
             aria-orientation={mode === 'horizontal' ? 'horizontal' : 'vertical'}

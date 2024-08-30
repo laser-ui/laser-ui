@@ -64,7 +64,7 @@ export function Popup(props: PopupProps): JSX.Element | null {
     }
   };
 
-  useContainerScrolling(updatePosition.triggerRef, updatePosition.fn, disabled || !visibleProp);
+  useContainerScrolling(updatePosition.triggerRef, updatePosition.fn, disabled || updatePosition.scroll === false || !visibleProp);
 
   useResize(updatePosition.triggerRef, updatePosition.fn, undefined, disabled || !visibleProp);
   useResize(updatePosition.popupRef, updatePosition.fn, undefined, disabled || !visibleProp);
