@@ -351,8 +351,8 @@ function DropdownFC<ID extends React.Key, T extends DropdownItem<ID>>(
                   isUndefined(zIndex)
                     ? zIndex
                     : isNumber(zIndex)
-                    ? zIndex + 1 + subParents.length
-                    : `calc(${zIndex} + ${1 + subParents.length})`
+                      ? zIndex + 1 + subParents.length
+                      : `calc(${zIndex} + ${1 + subParents.length})`
                 }
                 onVisibleChange={(visible) => {
                   if (visible) {

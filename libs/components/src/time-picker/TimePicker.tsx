@@ -118,7 +118,7 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
     (a, b) => deepCompareDate(a, b, format),
     formControl?.control,
   );
-  let [valueLeft, valueRight = null] = range ? (_value as [Date, Date] | null) ?? [null, null] : [_value as Date | null, null];
+  let [valueLeft, valueRight = null] = range ? ((_value as [Date, Date] | null) ?? [null, null]) : [_value as Date | null, null];
   if (range) {
     if (isNull(_value)) {
       [valueLeft, valueRight] = dataRef.current.rangeDate;
@@ -165,7 +165,7 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
   };
 
   const [placeholderLeft = t('TimePicker', range ? 'Start time' : 'Select time'), placeholderRight = t('TimePicker', 'End time')] = range
-    ? (placeholder as [string?, string?] | undefined) ?? []
+    ? ((placeholder as [string?, string?] | undefined) ?? [])
     : [placeholder as string | undefined];
 
   const { size, disabled } = useScopedProps({ size: sizeProp, disabled: disabledProp || formControl?.control.disabled });
