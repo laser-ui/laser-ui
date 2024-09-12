@@ -4,7 +4,7 @@ import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
 import CheckCircleFilled from '@material-design-icons/svg/filled/check_circle.svg?react';
 import ErrorFilled from '@material-design-icons/svg/filled/error.svg?react';
 import HelpOutlineOutlined from '@material-design-icons/svg/outlined/help_outline.svg?react';
-import { isBoolean, isFunction, isNull, isNumber, isString } from 'lodash';
+import { isBoolean, isFunction, isNull, isNumber, isString, isUndefined } from 'lodash';
 import { useContext, useId, useRef } from 'react';
 
 import { FormError } from './internal/FormError';
@@ -40,6 +40,7 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
     formControls,
     label,
     labelWidth: labelWidthProp,
+    labelWrap: labelWrapProp,
     labelExtra: labelExtraProp,
     labelFor,
     required: requiredProp,
@@ -60,6 +61,7 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
   const getErrorId = (controlName: string) => `${controlName}-error-${uniqueId}`;
 
   const labelWidth = labelWidthProp ?? formContext.labelWidth;
+  const labelWrap = isUndefined(labelWidth) ? false : (labelWrapProp ?? formContext.labelWrap);
 
   const formControlProviders = (() => {
     const obj = {} as { [N in keyof T]: FormControlProvider };
@@ -213,13 +215,13 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
         {labelWidth !== 0 && (
           <div
             {...mergeCS(styled('form__item-label-wrapper'), {
-              style: { width: formContext.vertical ? '100%' : labelWidth === 'auto' ? 'var(--label-width)' : labelWidth },
+              style: { width: formContext.vertical ? undefined : labelWidth === 'auto' ? 'var(--label-width)' : labelWidth },
             })}
           >
             {label && (
               <label
                 {...styled('form__item-label', {
-                  'form__item-label--auto': !formContext.vertical && labelWidth === 'auto',
+                  'form__item-label--wrap': labelWrap,
                   'form__item-label--required': formContext.requiredType === 'required' && required,
                   'form__item-label--colon': formContext.labelColon,
                 })}

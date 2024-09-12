@@ -21,6 +21,7 @@ export interface FormControlProvider {
 export interface FormContextData {
   vertical: boolean;
   labelWidth: number | string | undefined;
+  labelWrap: boolean;
   labelColon: boolean;
   requiredType: 'required' | 'optional' | 'hidden';
   feedbackIcon:
@@ -36,6 +37,7 @@ export interface FormContextData {
 export interface FormProps extends BaseProps<'form', typeof CLASSES>, React.FormHTMLAttributes<HTMLFormElement> {
   vertical?: boolean;
   labelWidth?: number | string;
+  labelWrap?: boolean;
   labelColon?: boolean;
   requiredType?: 'required' | 'optional' | 'hidden';
   feedbackIcon?:
@@ -56,6 +58,7 @@ export interface FormItemProps<T extends { [index: string]: FormErrors }>
   formControls?: T;
   label?: React.ReactNode;
   labelWidth?: number | string;
+  labelWrap?: boolean;
   labelExtra?: { title: string; icon?: React.ReactElement } | string;
   labelFor?: string;
   required?: boolean;

@@ -1,5 +1,6 @@
 import type { FormProps } from './types';
 
+import { isUndefined } from 'lodash';
 import { useEffect, useRef } from 'react';
 
 import { FormItem } from './FormItem';
@@ -18,6 +19,7 @@ export const Form: {
     styleProvider,
     vertical = false,
     labelWidth,
+    labelWrap = false,
     labelColon,
     requiredType = 'required',
     feedbackIcon = false,
@@ -67,6 +69,7 @@ export const Form: {
           value={{
             vertical,
             labelWidth: labelWidth ?? (vertical ? undefined : 'auto'),
+            labelWrap: isUndefined(labelWidth) ? false : labelWrap,
             labelColon: labelColon ?? !vertical,
             requiredType,
             feedbackIcon,

@@ -44,26 +44,23 @@
 
   @include mixins.e(item-label-wrapper) {
     position: relative;
-    display: inline-block;
+    display: inline-flex;
+    justify-content: flex-end;
     min-height: var(--size);
+    overflow: hidden;
     vertical-align: top;
   }
 
   @include mixins.e(item-label) {
     display: inline-flex;
-    flex-wrap: wrap;
     align-items: center;
-    justify-content: flex-end;
     min-height: var(--size);
     padding-right: 8px;
     font-size: var(--font-size);
-    overflow-wrap: break-word;
+    white-space: nowrap;
 
-    @include mixins.m(auto) {
-      position: absolute;
-      top: 0;
-      right: 0;
-      flex-wrap: nowrap;
+    @include mixins.m(wrap) {
+      white-space: unset;
     }
 
     @include mixins.m(required) {

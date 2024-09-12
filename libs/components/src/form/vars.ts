@@ -13,7 +13,7 @@ export const CLASSES = {
   'form__item-container': '^form__item-container',
   'form__item-label-wrapper': '^form__item-label-wrapper',
   'form__item-label': '^form__item-label',
-  'form__item-label--auto': '^form__item-label--auto',
+  'form__item-label--wrap': '^form__item-label--wrap',
   'form__item-label--required': '^form__item-label--required',
   'form__item-label--colon': '^form__item-label--colon',
   'form__item-label-extra': '^form__item-label-extra',
