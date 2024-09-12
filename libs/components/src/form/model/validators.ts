@@ -1,7 +1,7 @@
 import type { AbstractControl } from './abstract-control';
 import type { ValidationErrors, ValidatorFn } from './types';
 
-import { isArray, isNull, isNumber, isString } from 'lodash';
+import { isArray, isNumber, isString } from 'lodash';
 
 export class Validators {
   static min(min: number): ValidatorFn {
@@ -35,7 +35,7 @@ export class Validators {
   }
 
   static required(control: AbstractControl): ValidationErrors | null {
-    const isEmpty = isArray(control.value) || isString(control.value) ? control.value.length === 0 : isNull(control.value) ? true : false;
+    const isEmpty = control.value == null || ((isArray(control.value) || isString(control.value)) && control.value.length === 0);
     return isEmpty ? { required: true } : null;
   }
 
