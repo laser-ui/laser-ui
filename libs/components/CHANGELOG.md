@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/laser-ui/laser-ui/compare/v1.1.1...v1.2.0) (2024-09-12)
+
+### Features
+
+- **components:** form support `labelWrap` ([ffeb41a](https://github.com/laser-ui/laser-ui/commit/ffeb41afb4531e33b53343f245190dfa34872188))
+
+### Performance Improvements
+
+- **components:** optimize `Validators.required` ([39f452c](https://github.com/laser-ui/laser-ui/commit/39f452ce964b28fe3271c0016290a8a7667cdcf0))
+
 ## [1.1.1](https://github.com/laser-ui/laser-ui/compare/v1.1.0...v1.1.1) (2024-08-30)
 
 ### Bug Fixes
