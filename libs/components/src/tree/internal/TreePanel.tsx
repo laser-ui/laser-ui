@@ -322,7 +322,7 @@ function TreePanelFC<V extends React.Key, T extends TreeItem<V>>(
       itemFocused={itemFocused?.id}
       itemEmptyRender={() => (
         <li {...styled('tree__empty')}>
-          <div {...styled('tree__option-content')}>{t('No Data')}</div>
+          <div {...styled('tree__option-content')}>{t('No data')}</div>
         </li>
       )}
       itemInAriaSetsize={(item) => !item.children}

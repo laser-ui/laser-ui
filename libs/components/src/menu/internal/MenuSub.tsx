@@ -247,7 +247,7 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): JSX.El
                       >
                         <ul {...styled('menu__sub-list')} role="menu" aria-labelledby={id}>
                           {empty ? (
-                            <div {...mergeCS(styled('menu__empty'), { style: { paddingLeft: space + level * step } })}>{t('No Data')}</div>
+                            <div {...mergeCS(styled('menu__empty'), { style: { paddingLeft: space + level * step } })}>{t('No data')}</div>
                           ) : (
                             list
                           )}
@@ -294,7 +294,7 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): JSX.El
           const node = (
             <ul {...mergeCS(styled('menu__sub-list'), { style: collapseStyle })} ref={listRef} role="menu" aria-labelledby={id}>
               {empty ? (
-                <div {...mergeCS(styled('menu__empty'), { style: { paddingLeft: space + (level + 1) * step } })}>{t('No Data')}</div>
+                <div {...mergeCS(styled('menu__empty'), { style: { paddingLeft: space + (level + 1) * step } })}>{t('No data')}</div>
               ) : (
                 list
               )}

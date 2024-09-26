@@ -828,7 +828,7 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
                           itemFocused={itemFocused?.value}
                           itemEmptyRender={() => (
                             <li {...mergeCS(styled('select__empty'), { style: { paddingLeft: 12 + 8 } })}>
-                              <div {...styled('select__option-content')}>{t('No Data')}</div>
+                              <div {...styled('select__option-content')}>{t('No data')}</div>
                             </li>
                           )}
                           itemInAriaSetsize={(item) => !item.children}

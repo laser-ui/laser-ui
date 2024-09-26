@@ -23,7 +23,7 @@ export function DropdownGroup(props: DropdownGroupProps): JSX.Element | null {
       <li {...mergeCS(styled('dropdown__group-title'), { style: { paddingLeft: 12 + level * 16 } })} id={id} role="presentation">
         {children}
       </li>
-      {empty ? <div {...mergeCS(styled('dropdown__empty'), { style: { paddingLeft: 12 + (level + 1) * 16 } })}>{t('No Data')}</div> : list}
+      {empty ? <div {...mergeCS(styled('dropdown__empty'), { style: { paddingLeft: 12 + (level + 1) * 16 } })}>{t('No data')}</div> : list}
     </ul>
   );
 }

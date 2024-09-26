@@ -553,7 +553,7 @@ function DropdownFC<ID extends React.Key, T extends DropdownItem<ID>>(
                                 aria-labelledby={triggerId}
                                 aria-activedescendant={isUndefined(focusId) ? undefined : getItemId(focusId)}
                               >
-                                {list.length === 0 ? <div {...styled('dropdown__empty')}>{t('No Data')}</div> : nodes}
+                                {list.length === 0 ? <div {...styled('dropdown__empty')}>{t('No data')}</div> : nodes}
                               </ul>
                             );
                             return popupRender ? popupRender(el) : el;

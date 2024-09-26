@@ -25,7 +25,7 @@ export function MenuGroup(props: MenuGroupProps): JSX.Element | null {
       <li {...mergeCS(styled('menu__group-title'), { style: { paddingLeft: space + level * step } })} id={id} role="presentation">
         {children}
       </li>
-      {empty ? <div {...mergeCS(styled('menu__empty'), { style: { paddingLeft: space + (level + 1) * step } })}>{t('No Data')}</div> : list}
+      {empty ? <div {...mergeCS(styled('menu__empty'), { style: { paddingLeft: space + (level + 1) * step } })}>{t('No data')}</div> : list}
     </ul>
   );
 }

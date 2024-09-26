@@ -168,7 +168,7 @@ export const DropdownSub = forwardRef<() => void, DropdownSubProps>((props, ref)
                   >
                     <ul {...styled('dropdown__list')} role="menu" aria-labelledby={id}>
                       {empty ? (
-                        <div {...mergeCS(styled('dropdown__empty'), { style: { paddingLeft: 12 + level * 16 } })}>{t('No Data')}</div>
+                        <div {...mergeCS(styled('dropdown__empty'), { style: { paddingLeft: 12 + level * 16 } })}>{t('No data')}</div>
                       ) : (
                         list
                       )}

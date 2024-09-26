@@ -8,7 +8,7 @@
       "Create": "Create",
       "Clear": "Clear",
       "More": "More",
-      "No Data": "No Data"
+      "No data": "No data"
     },
     "Footer": {
       "Cancel": "Cancel",
@@ -71,11 +71,11 @@
       "Create": "创建",
       "Clear": "清除",
       "More": "更多",
-      "No Data": "无数据"
+      "No data": "无数据"
     },
     "Footer": {
-      "Cancel": "取 消",
-      "OK": "确 定"
+      "Cancel": "取消",
+      "OK": "确定"
     },
     "Input": {
       "Password is visible": "密码可见",

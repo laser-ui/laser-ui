@@ -89,7 +89,7 @@ export const Empty: {
         </div>
       )}
       {(isUndefined(description) || checkNodeExist(description)) && (
-        <div {...styled('empty__description')}>{isUndefined(description) ? t('No Data') : description}</div>
+        <div {...styled('empty__description')}>{isUndefined(description) ? t('No data') : description}</div>
       )}
       {checkNodeExist(children) && <div {...styled('empty__footer')}>{children}</div>}
     </div>
