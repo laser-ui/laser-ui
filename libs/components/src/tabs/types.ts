@@ -27,6 +27,7 @@ export interface TabsProps<ID extends React.Key, T extends TabsItem<ID>>
   center?: boolean;
   size?: Size;
   addible?: boolean;
+  lazyLoading?: boolean;
   onActiveChange?: (id: ID, origin: T) => void;
   onAddClick?: () => void;
   onClose?: (id: ID, origin: T) => void;

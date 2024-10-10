@@ -6,8 +6,8 @@ import { checkScrollEnd, findNested } from '@laser-ui/utils';
 import AddOutlined from '@material-design-icons/svg/outlined/add.svg?react';
 import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
 import MoreHorizOutlined from '@material-design-icons/svg/outlined/more_horiz.svg?react';
-import { isUndefined, nth } from 'lodash';
-import { forwardRef, useEffect, useId, useImperativeHandle, useRef, useState } from 'react';
+import { isNull, isUndefined, nth } from 'lodash';
+import { forwardRef, useEffect, useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
 
 import { CLASSES } from './vars';
 import { Dropdown } from '../dropdown';
@@ -24,12 +24,13 @@ function TabsFC<ID extends React.Key, T extends TabsItem<ID>>(
     styleProvider,
     list,
     active: activeProp,
-    defaultActive,
+    defaultActive: _defaultActive,
     pattern,
     placement = 'top',
     center = false,
     size = 'medium',
     addible = false,
+    lazyLoading = true,
     onActiveChange,
     onAddClick,
     onClose,
@@ -59,23 +60,50 @@ function TabsFC<ID extends React.Key, T extends TabsItem<ID>>(
   const iconSize = size === 'small' ? 16 : size === 'large' ? 20 : 18;
   const isHorizontal = placement === 'top' || placement === 'bottom';
 
-  const [active, changeActive] = useControlled<ID | null, ID>(
-    defaultActive ??
-      (() => {
-        for (const tab of list) {
-          if (!tab.disabled) {
-            return tab.id;
-          }
-        }
-        return null;
-      }),
-    activeProp,
-    (id) => {
-      if (onActiveChange) {
-        onActiveChange(id, findNested(list, (item) => item.id === id) as T);
+  const defaultActive = useMemo(() => {
+    if (!isUndefined(_defaultActive)) {
+      return _defaultActive;
+    }
+    for (const tab of list) {
+      if (!tab.disabled) {
+        return tab.id;
       }
-    },
-  );
+    }
+    return null;
+  }, []);
+  const [active, changeActive] = useControlled<ID | null, ID>(defaultActive, activeProp, (id) => {
+    panelLoaded.current.add(id);
+    if (onActiveChange) {
+      onActiveChange(id, findNested(list, (item) => item.id === id) as T);
+    }
+  });
+
+  const panelLoaded = useRef(new Set<ID>(isNull(defaultActive) ? [] : [defaultActive]));
+  const newPanelLoaded = new Set<ID>();
+  const panels = list.map((item) => {
+    const { id: itemId, panel: itemPanel } = item;
+
+    const hidden = itemId !== active;
+    const loaded = panelLoaded.current.has(itemId);
+    if (loaded) {
+      newPanelLoaded.add(itemId);
+    }
+
+    return (
+      <div
+        {...styled('tabs__tabpanel')}
+        key={itemId}
+        id={getPanelId(itemId)}
+        tabIndex={0}
+        hidden={hidden}
+        role="tabpanel"
+        aria-labelledby={getTabId(itemId)}
+      >
+        {lazyLoading && hidden && !loaded ? null : itemPanel}
+      </div>
+    );
+  });
+  panelLoaded.current = newPanelLoaded;
 
   const refreshTabs = () => {
     const tablistWrapperEl = tablistWrapperRef.current;
@@ -380,23 +408,7 @@ function TabsFC<ID extends React.Key, T extends TabsItem<ID>>(
           />
         </div>
       </div>
-      {list.map((item) => {
-        const { id: itemId, panel: itemPanel } = item;
-
-        return (
-          <div
-            {...styled('tabs__tabpanel')}
-            key={itemId}
-            id={getPanelId(itemId)}
-            tabIndex={0}
-            hidden={itemId !== active}
-            role="tabpanel"
-            aria-labelledby={getTabId(itemId)}
-          >
-            {itemPanel}
-          </div>
-        );
-      })}
+      {panels}
     </div>
   );
 }
