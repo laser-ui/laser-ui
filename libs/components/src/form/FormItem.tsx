@@ -1,5 +1,6 @@
 import type { FormControlProvider, FormErrors, FormItemProps } from './types';
 
+import { useForceUpdate } from '@laser-ui/hooks';
 import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
 import CheckCircleFilled from '@material-design-icons/svg/filled/check_circle.svg?react';
 import ErrorFilled from '@material-design-icons/svg/filled/error.svg?react';
@@ -51,6 +52,7 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
   const styled = useStyled(CLASSES, { form: styleProvider?.form }, styleOverrides);
 
   const { t } = useTranslation();
+  const forceUpdate = useForceUpdate();
 
   const formContext = useContext(FormContext);
   const formGroupContext = useContext(FormGroupContext);
@@ -70,6 +72,7 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
       if (isNull(formControl)) {
         throw new Error(`Cant find '${controlName as string}', please check if name exists!`);
       }
+      (formControl as any)._emitChange = forceUpdate;
       obj[controlName] = {
         control: formControl,
         invalid: false,

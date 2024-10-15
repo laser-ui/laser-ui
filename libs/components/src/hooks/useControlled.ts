@@ -28,7 +28,7 @@ export function useControlled<T, S = T>(
         if (formControl) {
           formControl.markAsDirty(true);
           formControl.setValue(newValue);
-          (formControl.root as any)._emitChange?.();
+          (formControl.root as any)._emitChange?.(formControl);
         }
       }
       return newValue;

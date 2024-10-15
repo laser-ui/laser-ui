@@ -359,7 +359,7 @@ export abstract class AbstractControl<V = any> {
           // necessary that we have updated the `_hasOwnPendingAsyncValidator` boolean flag first.
           this.setErrors(errors);
 
-          (this.root as any)._emitChange?.();
+          (this.root as any)._emitChange?.(this);
         }
       });
     }
