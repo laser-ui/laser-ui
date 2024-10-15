@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.5.0](https://github.com/laser-ui/laser-ui/compare/v1.4.0...v1.5.0) (2024-10-15)
+
+### Features
+
+- **components:** form support rendering dependencies ([cbd10ba](https://github.com/laser-ui/laser-ui/commit/cbd10ba42010ee4d58834e6540ff4f629c22fee7))
+
 # [1.4.0](https://github.com/laser-ui/laser-ui/compare/v1.3.0...v1.4.0) (2024-10-10)
 
 ### Features
