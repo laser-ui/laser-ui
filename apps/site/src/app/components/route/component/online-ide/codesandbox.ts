@@ -1,7 +1,7 @@
 import { getParameters } from 'codesandbox/lib/api/define';
 
 import { FILES } from './files';
-import sandboxConfigJson from './files/codesandbox/sandbox.config.json';
+import tasksJson from './files/codesandbox/tasks.json';
 import packageJson from './files/package.json';
 
 export function openCodeSandbox(name: string, tsxSource: string, scssSource?: string) {
@@ -36,8 +36,8 @@ export function openCodeSandbox(name: string, tsxSource: string, scssSource?: st
     'vite.config.ts': {
       content: FILES['vite.config.ts'],
     },
-    'sandbox.config.json': {
-      content: sandboxConfigJson,
+    '.codesandbox/tasks.json': {
+      content: tasksJson,
     },
   };
   if (scssSource) {
@@ -58,8 +58,12 @@ ${scssSource}`,
   const queryInput = document.createElement('input');
   queryInput.name = 'query';
   queryInput.value = 'module=/src/Demo.tsx';
+  const environmentInput = document.createElement('input');
+  environmentInput.name = 'environment';
+  environmentInput.value = 'server';
   form.appendChild(parametersInput);
   form.appendChild(queryInput);
+  form.appendChild(environmentInput);
   document.body.append(form);
   form.submit();
   document.body.removeChild(form);
