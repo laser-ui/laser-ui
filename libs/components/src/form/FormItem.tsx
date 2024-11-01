@@ -6,7 +6,7 @@ import CheckCircleFilled from '@material-design-icons/svg/filled/check_circle.sv
 import ErrorFilled from '@material-design-icons/svg/filled/error.svg?react';
 import HelpOutlineOutlined from '@material-design-icons/svg/outlined/help_outline.svg?react';
 import { isBoolean, isFunction, isNull, isNumber, isString, isUndefined } from 'lodash';
-import { useContext, useId, useRef } from 'react';
+import { useContext, useEffect, useId, useRef } from 'react';
 
 import { FormError } from './internal/FormError';
 import { Validators } from './model/validators';
@@ -72,7 +72,9 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
       if (isNull(formControl)) {
         throw new Error(`Cant find '${controlName as string}', please check if name exists!`);
       }
-      (formControl as any)._emitChange = forceUpdate;
+      (formControl as any)._emitChange = () => {
+        (formControl as any)._emitChange = true;
+      };
       obj[controlName] = {
         control: formControl,
         invalid: false,
@@ -83,6 +85,24 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
     });
     return obj;
   })();
+  useEffect(() => {
+    const clear: (() => void)[] = [];
+    for (const { control } of Object.values(formControlProviders)) {
+      if ((control as any)._emitChange === true) {
+        forceUpdate();
+      }
+      (control as any)._emitChange = forceUpdate;
+      clear.push(() => {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        (control as any)._emitChange = () => {};
+      });
+    }
+    return () => {
+      for (const cb of clear) {
+        cb();
+      }
+    };
+  }, []);
 
   const required = (() => {
     if (isBoolean(requiredProp)) {

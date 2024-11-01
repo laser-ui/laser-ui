@@ -3,7 +3,7 @@ import type { FormGroup } from './model/form-group';
 
 import { useEventCallback, useForceUpdate, useIsomorphicLayoutEffect } from '@laser-ui/hooks';
 import { isString } from 'lodash';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export function useForm<T extends { [K in keyof T]: AbstractControl } = any>(
   initForm: () => FormGroup<T>,
@@ -46,7 +46,9 @@ export function useForm<T extends { [K in keyof T]: AbstractControl } = any>(
 
   const [form, setForm] = useState(() => {
     const form = initForm();
-    (form as any)._emitChange = emitChange;
+    (form as any)._emitChange = () => {
+      (form as any)._emitChange = true;
+    };
     return form;
   });
   const previousDeps = useRef<any[]>([]);
@@ -63,6 +65,18 @@ export function useForm<T extends { [K in keyof T]: AbstractControl } = any>(
     }
     forceUpdate();
   });
+
+  useEffect(() => {
+    if ((form as any)._emitChange === true) {
+      forceUpdate();
+    }
+    (form as any)._emitChange = emitChange;
+
+    return () => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      (form as any)._emitChange = () => {};
+    };
+  }, []);
 
   return [form, updateForm] as const;
 }
