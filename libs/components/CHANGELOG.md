@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.1](https://github.com/laser-ui/laser-ui/compare/v1.5.0...v1.5.1) (2024-11-01)
+
+### Bug Fixes
+
+- **components:** fix form run async validator ([82010e8](https://github.com/laser-ui/laser-ui/commit/82010e83ad8c4de021a3bda9f1a552564ac06c54))
+
 # [1.5.0](https://github.com/laser-ui/laser-ui/compare/v1.4.0...v1.5.0) (2024-10-15)
 
 ### Features
