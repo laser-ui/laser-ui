@@ -108,7 +108,7 @@
     "yaml-front-matter": "^4.1.1"
   },
   "engines": {
-    "node": "16.x || 18.x || 20.x",
+    "node": "16.x || 18.x || 20.x || 22.x",
     "npm": "Please use pnpm instead of NPM to install dependencies",
     "pnpm": "9.x"
   },
