@@ -5,6 +5,7 @@ import { checkNodeExist } from '@laser-ui/utils';
 import { Children, useRef } from 'react';
 
 import { ImageAction } from './ImageAction';
+import { ImageLoader } from './ImageLoader';
 import { ImagePreview } from './ImagePreview';
 import { CLASSES } from './vars';
 import { useComponentProps, useStyled } from '../hooks';
@@ -12,6 +13,7 @@ import { mergeCS } from '../utils';
 
 export const Image: {
   (props: ImageProps): JSX.Element | null;
+  Loader: typeof ImageLoader;
   Action: typeof ImageAction;
   Preview: typeof ImagePreview;
 } = (props) => {
@@ -90,5 +92,6 @@ export const Image: {
   );
 };
 
+Image.Loader = ImageLoader;
 Image.Action = ImageAction;
 Image.Preview = ImagePreview;
