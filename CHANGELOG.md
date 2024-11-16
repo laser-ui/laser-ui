@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.6.0](https://github.com/laser-ui/laser-ui/compare/v1.5.1...v1.6.0) (2024-11-16)
+
+### Features
+
+- **components:** add `ImageLoader` ([e1f7fef](https://github.com/laser-ui/laser-ui/commit/e1f7fef8749872f9ba9769bdab3b2a0a20f41044))
+- **components:** image preview support more user-friendly gesture operation ([1993a3b](https://github.com/laser-ui/laser-ui/commit/1993a3b2d24a75270c4618114293fb33764e773f))
+
 ## [1.5.1](https://github.com/laser-ui/laser-ui/compare/v1.5.0...v1.5.1) (2024-11-01)
 
 ### Bug Fixes
