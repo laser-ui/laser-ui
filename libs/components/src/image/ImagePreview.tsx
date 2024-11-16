@@ -1,6 +1,6 @@
 import type { ImagePreviewProps } from './types';
 
-import { useEvent, useImmer, useRefExtra } from '@laser-ui/hooks';
+import { useEvent, useRefExtra } from '@laser-ui/hooks';
 import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
 import KeyboardArrowLeftOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_left.svg?react';
 import KeyboardArrowRightOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_right.svg?react';
@@ -46,21 +46,25 @@ export function ImagePreview(props: ImagePreviewProps): JSX.Element | null {
   const windowRef = useRefExtra(() => window);
 
   const dataRef = useRef<{
+    transform: Map<number, { top: number; left: number; scale: number; rotate: number }>;
+    initialScale: number;
     prevActiveEl: HTMLElement | null;
     eventData: {
-      initMove?: { x: number; y: number };
+      initialMove?: { x: number; y: number };
       currentMove?: { x: number; y: number };
-      initScale?: { x0: number; y0: number; x1: number; y1: number };
-      currentScale?: { x0: number; y0: number; x1: number; y1: number };
+      initialTouches?: { x0: number; y0: number; x1: number; y1: number };
+      currentTouches?: { x0: number; y0: number; x1: number; y1: number };
     };
+    mouse: { x: number; y: number };
   }>({
+    transform: new Map(),
+    initialScale: 1,
     prevActiveEl: null,
     eventData: {},
+    mouse: { x: 0, y: 0 },
   });
 
   const [active, changeActive] = useControlled<number>(defaultActive ?? 0, activeProp, onActiveChange);
-
-  const activeSrc = list[active].src as string;
 
   const [offset, setOffset] = useState(() => {
     if (ROOT_DATA.windowSize.width) {
@@ -85,48 +89,76 @@ export function ImagePreview(props: ImagePreviewProps): JSX.Element | null {
   const [isDragging, setIsDragging] = useState(false);
   const listenDragEvent = visible && isDragging;
 
-  const [position, setPosition] = useImmer(new Map<string, { top: number; left: number }>());
-  const activePosition = position.get(activeSrc) ?? { top: 0, left: 0 };
-
-  const [rotate, setRotate] = useImmer(new Map<string, number>());
-  const activeRotate = rotate.get(activeSrc) ?? 0;
-
-  const [scale, setScale] = useImmer(new Map<string, number>());
-  const activeScale = scale.get(activeSrc) ?? 1;
-
   const maxZIndex = useMaxIndex(visible);
   const zIndex = !isUndefined(zIndexProp) ? zIndexProp : `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
 
   useLockScroll(visible);
 
+  const setTransform = (
+    update: (transform: { top: number; left: number; scale: number; rotate: number }) => void,
+    scaleByClick = false,
+  ) => {
+    const transform = dataRef.current.transform.get(active) ?? { top: 0, left: 0, scale: 1, rotate: 0 };
+    const prevScale = transform.scale;
+    const prevRotate = transform.rotate;
+    update(transform);
+    dataRef.current.transform.set(active, transform);
+
+    if (previewRef.current) {
+      const img = document.querySelector(`[data-index="${active}"]`) as HTMLImageElement;
+      const imgWrapper = img.parentElement as HTMLDivElement;
+      const transform = dataRef.current.transform.get(active) ?? { top: 0, left: 0, scale: 1, rotate: 0 };
+      if (transform.rotate !== prevRotate) {
+        transform.top = 0;
+        transform.left = 0;
+        transform.scale = 1;
+      } else if (transform.scale !== prevScale) {
+        const rect = imgWrapper.getBoundingClientRect();
+        const offsetScale = transform.scale - prevScale;
+        const offsetWidth = ((scaleByClick ? window.innerWidth / 2 : dataRef.current.mouse.x) - rect.x) / prevScale;
+        const offsetHeight = ((scaleByClick ? window.innerHeight / 2 : dataRef.current.mouse.y) - rect.y) / prevScale;
+        transform.left = transform.left - offsetScale * offsetWidth;
+        transform.top = transform.top - offsetScale * offsetHeight;
+      }
+      imgWrapper.style.transform = `translate(${transform.left}px, ${transform.top}px) scale(${transform.scale})`;
+      img.style.transform = `rotate(${transform.rotate}deg)`;
+    }
+  };
+
   const handleMove = () => {
-    const { initMove, currentMove, initScale, currentScale } = dataRef.current.eventData;
-    if (initMove && currentMove) {
-      const movementX = currentMove.x - initMove.x;
-      const movementY = currentMove.y - initMove.y;
-      setPosition((draft) => {
-        const oldPosition = draft.get(activeSrc) ?? { top: 0, left: 0 };
-        draft.set(activeSrc, {
-          top: oldPosition.top + movementY,
-          left: oldPosition.left + movementX,
-        });
+    const { initialMove, currentMove, initialTouches, currentTouches } = dataRef.current.eventData;
+    const updates: any[] = [];
+    if (initialMove && currentMove) {
+      const movementX = currentMove.x - initialMove.x;
+      const movementY = currentMove.y - initialMove.y;
+      updates.push((transform: any) => {
+        transform.top = transform.top + movementY;
+        transform.left = transform.left + movementX;
       });
 
-      dataRef.current.eventData.initMove = currentMove;
+      dataRef.current.eventData.initialMove = currentMove;
       dataRef.current.eventData.currentMove = undefined;
     }
 
-    if (initScale && currentScale) {
-      const initLength = Math.sqrt(Math.pow(initScale.x0 - initScale.x1, 2) + Math.pow(initScale.y0 - initScale.y1, 2));
-      const currentLength = Math.sqrt(Math.pow(currentScale.x0 - currentScale.x1, 2) + Math.pow(currentScale.y0 - currentScale.y1, 2));
-      setScale((draft) => {
-        const oldScale = draft.get(activeSrc) ?? 1;
-        draft.set(activeSrc, Math.max(oldScale + (currentLength - initLength) / 100, 1));
+    if (initialTouches && currentTouches) {
+      const initialLength = Math.sqrt(
+        Math.pow(initialTouches.x0 - initialTouches.x1, 2) + Math.pow(initialTouches.y0 - initialTouches.y1, 2),
+      );
+      const currentLength = Math.sqrt(
+        Math.pow(currentTouches.x0 - currentTouches.x1, 2) + Math.pow(currentTouches.y0 - currentTouches.y1, 2),
+      );
+      updates.push((transform: any) => {
+        transform.scale = Math.max(dataRef.current.initialScale * (currentLength / initialLength), 1);
       });
 
-      dataRef.current.eventData.initScale = currentScale;
-      dataRef.current.eventData.currentScale = undefined;
+      dataRef.current.eventData.currentTouches = undefined;
     }
+
+    setTransform((transform) => {
+      for (const update of updates) {
+        update(transform);
+      }
+    });
   };
 
   useEvent<TouchEvent>(
@@ -136,28 +168,26 @@ export function ImagePreview(props: ImagePreviewProps): JSX.Element | null {
       e.preventDefault();
 
       if (e.touches.length === 2) {
-        dataRef.current.eventData.initMove = dataRef.current.eventData.currentMove = undefined;
+        dataRef.current.eventData.initialMove = dataRef.current.eventData.currentMove = undefined;
 
-        const newScale = {
+        const touches = {
           x0: e.touches[0].clientX,
           y0: e.touches[0].clientY,
           x1: e.touches[1].clientX,
           y1: e.touches[1].clientY,
         };
-        if (isUndefined(dataRef.current.eventData.initScale)) {
-          dataRef.current.eventData.initScale = newScale;
+        if (isUndefined(dataRef.current.eventData.initialTouches)) {
+          dataRef.current.eventData.initialTouches = touches;
         } else {
-          dataRef.current.eventData.currentScale = newScale;
+          dataRef.current.eventData.currentTouches = touches;
         }
       } else {
-        dataRef.current.eventData.initScale = dataRef.current.eventData.currentScale = undefined;
-
         const newMove = {
           x: e.touches[0].clientX,
           y: e.touches[0].clientY,
         };
-        if (isUndefined(dataRef.current.eventData.initMove)) {
-          dataRef.current.eventData.initMove = newMove;
+        if (isUndefined(dataRef.current.eventData.initialMove)) {
+          dataRef.current.eventData.initialMove = newMove;
         } else {
           dataRef.current.eventData.currentMove = newMove;
         }
@@ -169,27 +199,25 @@ export function ImagePreview(props: ImagePreviewProps): JSX.Element | null {
     !listenDragEvent,
   );
 
-  useEvent<MouseEvent>(
-    windowRef,
-    'mousemove',
-    (e) => {
+  useEvent<MouseEvent>(windowRef, 'mousemove', (e) => {
+    const newMove = {
+      x: e.clientX,
+      y: e.clientY,
+    };
+    dataRef.current.mouse = newMove;
+
+    if (isDragging) {
       e.preventDefault();
 
-      const newMove = {
-        x: e.clientX,
-        y: e.clientY,
-      };
-      if (isUndefined(dataRef.current.eventData.initMove)) {
-        dataRef.current.eventData.initMove = newMove;
+      if (isUndefined(dataRef.current.eventData.initialMove)) {
+        dataRef.current.eventData.initialMove = newMove;
       } else {
         dataRef.current.eventData.currentMove = newMove;
       }
 
       handleMove();
-    },
-    {},
-    !listenDragEvent,
-  );
+    }
+  });
 
   useEvent(
     windowRef,
@@ -332,9 +360,8 @@ export function ImagePreview(props: ImagePreviewProps): JSX.Element | null {
                       </Icon>
                     }
                     onClick={() => {
-                      setRotate((draft) => {
-                        const oldRotate = draft.get(activeSrc) ?? 0;
-                        draft.set(activeSrc, oldRotate + 90);
+                      setTransform((transform) => {
+                        transform.rotate = transform.rotate + 90;
                       });
                     }}
                   />
@@ -348,26 +375,9 @@ export function ImagePreview(props: ImagePreviewProps): JSX.Element | null {
                       </Icon>
                     }
                     onClick={() => {
-                      setScale((draft) => {
-                        const oldScale = draft.get(activeSrc) ?? 1;
-                        draft.set(activeSrc, Math.max(oldScale / 1.3, 1));
-                      });
-                    }}
-                  />
-                </li>
-                <li {...styled('image-preview__toolbar-zoom')}>
-                  <Input.Number
-                    {...styled('image-preview__toolbar-zoom-input')}
-                    model={Math.round(activeScale * 100)}
-                    min={100}
-                    step={10}
-                    integer
-                    onModelChange={(val) => {
-                      if (!isNull(val)) {
-                        setScale((draft) => {
-                          draft.set(activeSrc, val / 100);
-                        });
-                      }
+                      setTransform((transform) => {
+                        transform.scale = Math.max(transform.scale / 1.3, 1);
+                      }, true);
                     }}
                   />
                 </li>
@@ -380,10 +390,9 @@ export function ImagePreview(props: ImagePreviewProps): JSX.Element | null {
                       </Icon>
                     }
                     onClick={() => {
-                      setScale((draft) => {
-                        const oldScale = draft.get(activeSrc) ?? 1;
-                        draft.set(activeSrc, oldScale * 1.3);
-                      });
+                      setTransform((transform) => {
+                        transform.scale = transform.scale * 1.3;
+                      }, true);
                     }}
                   />
                 </li>
@@ -401,43 +410,63 @@ export function ImagePreview(props: ImagePreviewProps): JSX.Element | null {
                   />
                 </li>
               </ul>
-              <img
-                {...list[active]}
-                {...mergeCS(styled('image-preview__img'), {
-                  style: {
-                    transform: `translate(${activePosition.left}px, ${activePosition.top}px) rotate(${activeRotate}deg) scale(${activeScale})`,
-                  },
-                })}
-                tabIndex={-1}
-                onMouseDown={(e) => {
-                  if (e.button === 0) {
-                    e.preventDefault();
+              {list.map((img, index) => (
+                <div
+                  key={index}
+                  {...mergeCS(styled('image-preview__img-wrapper'), {
+                    style: {
+                      display: index === active ? undefined : 'none',
+                    },
+                  })}
+                >
+                  <img
+                    {...img}
+                    {...styled('image-preview__img')}
+                    tabIndex={-1}
+                    data-index={index}
+                    onMouseDown={(e) => {
+                      if (e.button === 0) {
+                        e.preventDefault();
 
-                    e.currentTarget.focus({ preventScroll: true });
-                    dataRef.current.eventData = {};
-                    setIsDragging(true);
-                  }
-                }}
-                onMouseUp={(e) => {
-                  if (e.button === 0) {
-                    e.preventDefault();
-                  }
-                }}
-                onTouchStart={(e) => {
-                  e.currentTarget.focus({ preventScroll: true });
-                  dataRef.current.eventData = {};
-                  setIsDragging(true);
-                }}
-                onTouchEnd={() => {
-                  setIsDragging(false);
-                }}
-                onWheel={(e) => {
-                  setScale((draft) => {
-                    const oldScale = draft.get(activeSrc) ?? 1;
-                    draft.set(activeSrc, e.deltaY < 0 ? oldScale + 0.1 : Math.max(oldScale - 0.1, 1));
-                  });
-                }}
-              />
+                        e.currentTarget.focus({ preventScroll: true });
+                        dataRef.current.eventData = {};
+                        setIsDragging(true);
+                      }
+                    }}
+                    onMouseUp={(e) => {
+                      if (e.button === 0) {
+                        e.preventDefault();
+                      }
+                    }}
+                    onTouchStart={(e) => {
+                      e.currentTarget.focus({ preventScroll: true });
+                      dataRef.current.eventData = {};
+                      if (e.touches.length === 1) {
+                        setIsDragging(true);
+                      } else if (e.touches.length === 2) {
+                        dataRef.current.initialScale = dataRef.current.transform.get(active)?.scale ?? 1;
+                        dataRef.current.mouse = {
+                          x: Math.min(e.touches[0].clientX, e.touches[1].clientX) + Math.abs(e.touches[0].clientX - e.touches[1].clientX),
+                          y: Math.min(e.touches[0].clientY, e.touches[1].clientY) + Math.abs(e.touches[0].clientY - e.touches[1].clientY),
+                        };
+                      }
+                    }}
+                    onTouchEnd={(e) => {
+                      if (e.touches.length === 1) {
+                        dataRef.current.eventData.initialTouches = dataRef.current.eventData.currentTouches = undefined;
+                      } else {
+                        setIsDragging(false);
+                      }
+                    }}
+                    onWheel={(e) => {
+                      setTransform((transform) => {
+                        transform.scale =
+                          e.deltaY < 0 ? transform.scale + transform.scale * 0.1 : Math.max(transform.scale - transform.scale * 0.1, 1);
+                      });
+                    }}
+                  />
+                </div>
+              ))}
               <ul {...styled('image-preview__thumbnail-list')}>
                 {list.map(
                   (imgProps, index) =>

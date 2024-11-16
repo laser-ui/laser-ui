@@ -148,17 +148,19 @@
       margin-right: 10px;
     }
 
-    @include mixins.e(toolbar-zoom-input) {
-      width: 80px;
-      margin: 0 4px;
-    }
-
     @include mixins.e(toolbar-close) {
       margin-left: 10px;
     }
 
-    @include mixins.e(img) {
+    @include mixins.e(img-wrapper) {
+      position: relative;
       z-index: 1;
+      width: 100%;
+      height: 100%;
+      transform-origin: top left;
+    }
+
+    @include mixins.e(img) {
       width: 100%;
       height: 100%;
       touch-action: none;
