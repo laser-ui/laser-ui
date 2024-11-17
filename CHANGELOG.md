@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.6.1](https://github.com/laser-ui/laser-ui/compare/v1.6.0...v1.6.1) (2024-11-17)
+
+### Bug Fixes
+
+- **components:** fix select img in image preview ([f4d206a](https://github.com/laser-ui/laser-ui/commit/f4d206afa30fcc20ddae19fefae2ef4ed49771bd))
+
 # [1.6.0](https://github.com/laser-ui/laser-ui/compare/v1.5.1...v1.6.0) (2024-11-16)
 
 ### Features
