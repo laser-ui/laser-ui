@@ -105,7 +105,7 @@ export function ImagePreview(props: ImagePreviewProps): JSX.Element | null {
     dataRef.current.transform.set(active, transform);
 
     if (previewRef.current) {
-      const img = document.querySelector(`[data-index="${active}"]`) as HTMLImageElement;
+      const img = previewRef.current.querySelector(`[data-index="${active}"]`) as HTMLImageElement;
       const imgWrapper = img.parentElement as HTMLDivElement;
       const transform = dataRef.current.transform.get(active) ?? { top: 0, left: 0, scale: 1, rotate: 0 };
       if (transform.rotate !== prevRotate) {
