@@ -32,6 +32,25 @@ class AsyncInstance {
 
     return clear;
   }
+
+  setAfterPainted(cb: () => void, clearFn?: () => void) {
+    let cancel = false;
+    const tid = requestAnimationFrame(() => {
+      queueMicrotask(() => {
+        if (!cancel) {
+          cb();
+        }
+      });
+    });
+    const clear = () => {
+      clearFn?.();
+      cancel = true;
+      cancelAnimationFrame(tid);
+    };
+    this.clearFns.add(clear);
+
+    return clear;
+  }
 }
 
 export class Async extends AsyncInstance {
