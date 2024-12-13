@@ -32,7 +32,7 @@ interface DropdownSubProps {
   onVisibleChange: (visible: boolean) => void;
 }
 
-export const DropdownSub = forwardRef<() => void, DropdownSubProps>((props, ref): JSX.Element | null => {
+export const DropdownSub = forwardRef<() => void, DropdownSubProps>((props, ref): React.ReactElement | null => {
   const { children, namespace, styled, id, level, icon, list, popupState, trigger, empty, focus, disabled, zIndex, onVisibleChange } =
     props;
 

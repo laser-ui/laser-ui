@@ -8,7 +8,7 @@ import { CLASSES } from './vars';
 import { useComponentProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-export function Avatar(props: AvatarProps): JSX.Element | null {
+export function Avatar(props: AvatarProps): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

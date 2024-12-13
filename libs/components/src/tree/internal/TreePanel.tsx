@@ -46,7 +46,7 @@ interface TreePanelProps<V extends React.Key, T extends TreeItem<V>> extends Omi
 function TreePanelFC<V extends React.Key, T extends TreeItem<V>>(
   props: TreePanelProps<V, T>,
   ref: React.ForwardedRef<any>,
-): JSX.Element | null {
+): React.ReactElement | null {
   const {
     namespace,
     styled,

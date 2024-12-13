@@ -35,7 +35,7 @@ interface CascaderPanelProps<V extends React.Key, T extends CascaderItem<V>> {
 function CascaderPanelFC<V extends React.Key, T extends CascaderItem<V>>(
   props: CascaderPanelProps<V, T>,
   ref: React.ForwardedRef<any>,
-): JSX.Element | null {
+): React.ReactElement | null {
   const {
     namespace,
     styled,

@@ -22,7 +22,7 @@ interface TimePickerPanelProps {
   onTimeChange: (time: Date) => void;
 }
 
-export const TimePickerPanel = forwardRef<(date: Date) => void, TimePickerPanelProps>((props, ref): JSX.Element | null => {
+export const TimePickerPanel = forwardRef<(date: Date) => void, TimePickerPanelProps>((props, ref): React.ReactElement | null => {
   const { styled, time: timeProp, format: formatProp, config, inDatePicker = false, onTimeChange } = props;
 
   const ulHRef = useRef<HTMLUListElement>(null);

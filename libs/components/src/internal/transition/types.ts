@@ -3,7 +3,7 @@ export {};
 export type TransitionState = 'enter' | 'entering' | 'entered' | 'leave' | 'leaving' | 'leaved';
 
 export interface TransitionProps {
-  children: (state: TransitionState) => JSX.Element | null;
+  children: (state: TransitionState) => React.ReactElement | null;
   enter: boolean | ((prev: boolean) => boolean);
   defaultEnter?: boolean;
   during: number | { enter: number; leave: number };
@@ -16,7 +16,7 @@ export interface TransitionProps {
 }
 
 export interface CollapseTransitionProps extends Omit<TransitionProps, 'children'> {
-  children: (ref: React.RefObject<any>, style: React.CSSProperties, state: TransitionState) => JSX.Element | null;
+  children: (ref: React.RefObject<any>, style: React.CSSProperties, state: TransitionState) => React.ReactElement | null;
   originalSize: {
     width?: string | number;
     height?: string | number;

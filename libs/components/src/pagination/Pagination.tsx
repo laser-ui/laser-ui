@@ -16,7 +16,7 @@ import { Input } from '../input';
 import { Select } from '../select';
 import { mergeCS } from '../utils';
 
-export function Pagination(props: PaginationProps): JSX.Element | null {
+export function Pagination(props: PaginationProps): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

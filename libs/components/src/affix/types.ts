@@ -9,7 +9,7 @@ export interface AffixRef {
 }
 
 export interface AffixProps {
-  children: React.ReactElement | ((render: CloneHTMLElement) => JSX.Element | null);
+  children: React.ReactElement | ((render: CloneHTMLElement) => React.ReactElement | null);
   top?: number | string;
   target?: RefExtra;
   zIndex?: number | string;

@@ -13,7 +13,7 @@ interface DropdownGroupProps {
   empty: boolean;
 }
 
-export function DropdownGroup(props: DropdownGroupProps): JSX.Element | null {
+export function DropdownGroup(props: DropdownGroupProps): React.ReactElement | null {
   const { children, styled, id, level, list, empty } = props;
 
   const { t } = useTranslation();

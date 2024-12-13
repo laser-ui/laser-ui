@@ -33,7 +33,7 @@ const ValidateState = {
   Pending: 4,
 };
 
-export function FormItem<T extends { [index: string]: FormErrors }>(props: FormItemProps<T>): JSX.Element | null {
+export function FormItem<T extends { [index: string]: FormErrors }>(props: FormItemProps<T>): React.ReactElement | null {
   const {
     children,
     styleOverrides,
@@ -286,7 +286,7 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
                   errorsMap.set(err.controlName, [err]);
                 }
               });
-              const nodes: JSX.Element[] = [];
+              const nodes: React.ReactElement[] = [];
               for (const [controlName, errors] of errorsMap) {
                 const id = getErrorId(controlName);
                 formControlProviders[controlName].inputAria['aria-describedby'] = id;

@@ -6,7 +6,7 @@ import { cloneElement, useId } from 'react';
 import { Radio } from './Radio';
 import { useComponentProps, useControlled, useScopedProps } from '../hooks';
 
-export function RadioGroup<V extends React.Key, T extends RadioGroupItem<V>>(props: RadioGroupProps<V, T>): JSX.Element | null {
+export function RadioGroup<V extends React.Key, T extends RadioGroupItem<V>>(props: RadioGroupProps<V, T>): React.ReactElement | null {
   const {
     children,
     formControl,

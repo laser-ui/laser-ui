@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 const IMGS = new Map<string, any>();
 
 export const ImageLoader: {
-  (props: ImageLoaderProps): JSX.Element | null;
+  (props: ImageLoaderProps): React.ReactElement | null;
   KEYS: (keyof HTMLImageElement)[];
 } = (props) => {
   const { src, keys = ImageLoader.KEYS, children } = props;

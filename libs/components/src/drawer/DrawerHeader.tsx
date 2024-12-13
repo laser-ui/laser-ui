@@ -10,7 +10,7 @@ import { useComponentProps, useControlled, useStyled, useTranslation } from '../
 import { Icon } from '../icon';
 import { mergeCS } from '../utils';
 
-export function DrawerHeader(props: DrawerHeaderProps): JSX.Element | null {
+export function DrawerHeader(props: DrawerHeaderProps): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

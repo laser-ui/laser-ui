@@ -9,7 +9,7 @@ import { CLASSES, DOT_INDICATOR, LINE_INDICATOR } from './vars';
 import { useComponentProps, useLayout, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-function AnchorFC<T extends AnchorItem>(props: AnchorProps<T>, ref: React.ForwardedRef<AnchorRef>): JSX.Element | null {
+function AnchorFC<T extends AnchorItem>(props: AnchorProps<T>, ref: React.ForwardedRef<AnchorRef>): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,
@@ -110,7 +110,7 @@ function AnchorFC<T extends AnchorItem>(props: AnchorProps<T>, ref: React.Forwar
     }
   };
   const linkNodes = (() => {
-    const getNodes = (arr: T[], level = 0): JSX.Element[] =>
+    const getNodes = (arr: T[], level = 0): React.ReactElement[] =>
       arr.map((link) => {
         const { title: linkTitle, href: linkHref, target: linkTarget, children } = link;
         return (

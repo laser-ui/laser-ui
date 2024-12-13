@@ -34,7 +34,7 @@ import { deepCompareDate, orderDate } from '../time-picker/utils';
 import { getVerticalSidePosition, mergeCS } from '../utils';
 import { TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../vars';
 
-export const DatePicker = forwardRef<DatePickerRef, DatePickerProps>((props, ref): JSX.Element | null => {
+export const DatePicker = forwardRef<DatePickerRef, DatePickerProps>((props, ref): React.ReactElement | null => {
   const {
     styleOverrides,
     styleProvider,

@@ -8,7 +8,7 @@ import { useComponentProps, useControlled, useScopedProps, useStyled } from '../
 import { mergeCS } from '../utils';
 
 export const Checkbox: {
-  (props: CheckboxProps): JSX.Element | null;
+  (props: CheckboxProps): React.ReactElement | null;
   Group: typeof CheckboxGroup;
 } = (props) => {
   const {

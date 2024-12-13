@@ -5,7 +5,7 @@ import { useRef } from 'react';
 
 import { Transition } from './Transition';
 
-export function CollapseTransition(props: CollapseTransitionProps): JSX.Element | null {
+export function CollapseTransition(props: CollapseTransitionProps): React.ReactElement | null {
   const {
     children,
     originalSize: originalSizeProp,

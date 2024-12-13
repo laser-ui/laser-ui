@@ -11,7 +11,7 @@ import { useComponentProps, useControlled, useNamespace, useStyled } from '../ho
 import { Icon } from '../icon';
 import { mergeCS } from '../utils';
 
-export function Slides<ID extends React.Key, T extends SlidesItem<ID>>(props: SlidesProps<ID, T>): JSX.Element | null {
+export function Slides<ID extends React.Key, T extends SlidesItem<ID>>(props: SlidesProps<ID, T>): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

@@ -22,7 +22,7 @@ interface RatingStarProps {
   onHoverChange: (value: number) => void;
 }
 
-export function RatingStar(props: RatingStarProps): JSX.Element | null {
+export function RatingStar(props: RatingStarProps): React.ReactElement | null {
   const { styled, value, hover, checked: checkedProp, icon, tooltip, name, half, disabled, inputProps, onCheck, onHoverChange } = props;
 
   const namespace = useNamespace();

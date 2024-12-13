@@ -7,7 +7,7 @@ import { CLASSES } from './vars';
 import { useNamespace, useStyled } from '../../hooks';
 import { mergeCS } from '../../utils';
 
-export const Wave = forwardRef<WaveRef, WaveProps>((props, ref): JSX.Element | null => {
+export const Wave = forwardRef<WaveRef, WaveProps>((props, ref): React.ReactElement | null => {
   const {
     color,
 
@@ -17,7 +17,7 @@ export const Wave = forwardRef<WaveRef, WaveProps>((props, ref): JSX.Element | n
   const namespace = useNamespace();
   const styled = useStyled(CLASSES, { wave: undefined });
 
-  const [node, setNode] = useState<JSX.Element | null>(null);
+  const [node, setNode] = useState<React.ReactElement | null>(null);
 
   const wave = useEventCallback(() => {
     setNode(

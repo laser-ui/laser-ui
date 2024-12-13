@@ -4,7 +4,7 @@ import { CLASSES } from './vars';
 import { useComponentProps, useDesign, useScopedProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-export function ComposeItem(props: ComposeItemProps): JSX.Element | null {
+export function ComposeItem(props: ComposeItemProps): React.ReactElement | null {
   const {
     children,
     styleOverrides,

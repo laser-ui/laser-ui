@@ -12,7 +12,7 @@ import { useComponentProps, useControlled, useDesign, useNamespace, useScopedPro
 import { Icon } from '../icon';
 import { mergeCS } from '../utils';
 
-export function Transfer<V extends React.Key, T extends TransferItem<V>>(props: TransferProps<V, T>): JSX.Element | null {
+export function Transfer<V extends React.Key, T extends TransferItem<V>>(props: TransferProps<V, T>): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

@@ -16,7 +16,7 @@ import { handleModalKeyDown, mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
 export const Drawer: {
-  (props: DrawerProps): JSX.Element | null;
+  (props: DrawerProps): React.ReactElement | null;
   Header: typeof DrawerHeader;
   Footer: typeof DrawerFooter;
 } = (props) => {

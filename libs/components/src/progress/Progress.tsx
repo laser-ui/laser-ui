@@ -15,7 +15,7 @@ import { useComponentProps, useNamespace, useStyled } from '../hooks';
 import { Icon } from '../icon';
 import { mergeCS } from '../utils';
 
-export function Progress(props: ProgressProps): JSX.Element | null {
+export function Progress(props: ProgressProps): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

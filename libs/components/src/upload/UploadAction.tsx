@@ -11,7 +11,7 @@ import { useComponentProps, useStyled, useTranslation } from '../hooks';
 import { Icon } from '../icon';
 import { mergeCS } from '../utils';
 
-export const UploadAction = forwardRef<HTMLDivElement, UploadActionProps>((props, ref): JSX.Element | null => {
+export const UploadAction = forwardRef<HTMLDivElement, UploadActionProps>((props, ref): React.ReactElement | null => {
   const {
     styleOverrides,
     styleProvider,

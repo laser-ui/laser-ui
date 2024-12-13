@@ -13,7 +13,7 @@ interface FormErrorProps {
   afterLeave: () => void;
 }
 
-export function FormError(props: FormErrorProps): JSX.Element | null {
+export function FormError(props: FormErrorProps): React.ReactElement | null {
   const { styled, visible, message, invalid, afterLeave } = props;
 
   return (

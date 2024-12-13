@@ -9,7 +9,7 @@ import { useComponentProps, useControlled, useDesign, useScopedProps, useStyled 
 import { Tooltip, type TooltipRef } from '../tooltip';
 import { mergeCS } from '../utils';
 
-export function Slider(props: SliderProps): JSX.Element | null {
+export function Slider(props: SliderProps): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

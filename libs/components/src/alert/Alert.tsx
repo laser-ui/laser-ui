@@ -15,7 +15,7 @@ import { CollapseTransition } from '../internal/transition';
 import { mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
-export function Alert(props: AlertProps): JSX.Element | null {
+export function Alert(props: AlertProps): React.ReactElement | null {
   const {
     children,
     styleOverrides,

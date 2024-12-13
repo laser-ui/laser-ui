@@ -5,7 +5,7 @@ import { useContext, useMemo } from 'react';
 import { LContextManager } from '../context';
 import { LContext } from '../context';
 
-export function ConfigProvider(props: ConfigProviderProps): JSX.Element | null {
+export function ConfigProvider(props: ConfigProviderProps): React.ReactElement | null {
   const { children, context: contextProp } = props;
 
   const parent = useContext(LContext);

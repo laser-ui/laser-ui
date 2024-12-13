@@ -12,7 +12,7 @@ import { Wave } from '../internal/wave';
 import { mergeCS } from '../utils';
 
 export const Radio: {
-  (props: RadioProps): JSX.Element | null;
+  (props: RadioProps): React.ReactElement | null;
   Group: typeof RadioGroup;
 } = (props) => {
   const {

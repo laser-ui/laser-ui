@@ -14,7 +14,7 @@ import { STORAGE } from '../../../configs/storage';
 
 import styles from './Sidebar.module.scss';
 
-export function Sidebar(props: SidebarProps): JSX.Element | null {
+export function Sidebar(props: SidebarProps): React.ReactElement | null {
   const { route, menuOpen, onMenuOpenChange } = props;
 
   const { t } = useTranslation();

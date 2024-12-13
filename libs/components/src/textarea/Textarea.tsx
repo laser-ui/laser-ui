@@ -8,7 +8,7 @@ import { CLASSES } from './vars';
 import { useComponentProps, useControlled, useDesign, useScopedProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>((props, ref): JSX.Element | null => {
+export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>((props, ref): React.ReactElement | null => {
   const {
     styleOverrides,
     styleProvider,

@@ -13,7 +13,7 @@ import { Portal } from '../internal/portal';
 import { Transition } from '../internal/transition';
 import { getPopupPosition, handleModalKeyDown, mergeCS } from '../utils';
 
-function PopoverFC(props: PopoverProps, ref: React.ForwardedRef<PopoverRef>): JSX.Element | null {
+function PopoverFC(props: PopoverProps, ref: React.ForwardedRef<PopoverRef>): React.ReactElement | null {
   const {
     children,
     styleOverrides,
@@ -294,7 +294,7 @@ function PopoverFC(props: PopoverProps, ref: React.ForwardedRef<PopoverRef>): JS
 }
 
 export const Popover: {
-  (props: PopoverProps & React.RefAttributes<PopoverRef>): JSX.Element | null;
+  (props: PopoverProps & React.RefAttributes<PopoverRef>): React.ReactElement | null;
   Header: typeof PopoverHeader;
   Footer: typeof PopoverFooter;
 } = forwardRef(PopoverFC) as any;

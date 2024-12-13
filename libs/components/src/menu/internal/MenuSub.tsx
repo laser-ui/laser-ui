@@ -39,7 +39,7 @@ interface MenuSubProps {
   onClick: React.MouseEventHandler<HTMLLIElement>;
 }
 
-export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): JSX.Element | null => {
+export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): React.ReactElement | null => {
   const {
     children,
     namespace,

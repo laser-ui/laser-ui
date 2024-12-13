@@ -20,7 +20,7 @@ export interface UploadFile {
 export interface UploadProps
   extends BaseProps<'upload' | 'upload-list', typeof CLASSES>,
     Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'list'> {
-  children: React.ReactElement | ((render: CloneHTMLElement) => JSX.Element | null);
+  children: React.ReactElement | ((render: CloneHTMLElement) => React.ReactElement | null);
   formControl?: FormControlProvider;
   model?: UploadFile[];
   defaultModel?: UploadFile[];

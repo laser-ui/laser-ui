@@ -8,7 +8,7 @@ import { Button } from '../button';
 import { useComponentProps, useControlled, useStyled, useTranslation } from '../hooks';
 import { mergeCS } from '../utils';
 
-export function ModalFooter(props: ModalFooterProps): JSX.Element | null {
+export function ModalFooter(props: ModalFooterProps): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

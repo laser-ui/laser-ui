@@ -15,7 +15,7 @@ interface MenuGroupProps {
   empty: boolean;
 }
 
-export function MenuGroup(props: MenuGroupProps): JSX.Element | null {
+export function MenuGroup(props: MenuGroupProps): React.ReactElement | null {
   const { children, styled, id, level, space, step, list, empty } = props;
 
   const { t } = useTranslation();

@@ -5,7 +5,9 @@ import { cloneElement } from 'react';
 import { Checkbox } from './Checkbox';
 import { useComponentProps, useControlled, useScopedProps } from '../hooks';
 
-export function CheckboxGroup<V extends React.Key, T extends CheckboxGroupItem<V>>(props: CheckboxGroupProps<V, T>): JSX.Element | null {
+export function CheckboxGroup<V extends React.Key, T extends CheckboxGroupItem<V>>(
+  props: CheckboxGroupProps<V, T>,
+): React.ReactElement | null {
   const {
     children,
     formControl,

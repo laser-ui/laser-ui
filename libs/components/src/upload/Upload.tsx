@@ -14,7 +14,7 @@ import { CLASSES, UploadContext } from './vars';
 import { useComponentProps, useControlled, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-function UploadFC(props: UploadProps, ref: React.ForwardedRef<HTMLInputElement>): JSX.Element | null {
+function UploadFC(props: UploadProps, ref: React.ForwardedRef<HTMLInputElement>): React.ReactElement | null {
   const {
     children,
     styleOverrides,

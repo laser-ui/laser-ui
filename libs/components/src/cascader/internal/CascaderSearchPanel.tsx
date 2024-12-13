@@ -33,7 +33,7 @@ interface CascaderSearchPanelProps<V extends React.Key, T extends CascaderItem<V
 function CascaderSearchPanelFC<V extends React.Key, T extends CascaderItem<V>>(
   props: CascaderSearchPanelProps<V, T>,
   ref: React.ForwardedRef<any>,
-): JSX.Element | null {
+): React.ReactElement | null {
   const { namespace, styled, id, list, customItem, itemId, itemFocused, multiple, onlyLeafSelectable, virtual, focusVisible, onClick } =
     props;
 

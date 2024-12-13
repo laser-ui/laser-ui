@@ -10,7 +10,7 @@ import { useComponentProps, useScopedProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
 export const Form: {
-  (props: FormProps): JSX.Element | null;
+  (props: FormProps): React.ReactElement | null;
   Item: typeof FormItem;
 } = (props) => {
   const {

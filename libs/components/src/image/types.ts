@@ -13,7 +13,7 @@ export interface ImageProps extends BaseProps<'image', typeof CLASSES>, Omit<Rea
 export interface ImageLoaderProps<K extends keyof HTMLImageElement = 'naturalWidth' | 'naturalHeight'> {
   src: string;
   keys?: K[];
-  children: (img: Pick<HTMLImageElement, K>) => JSX.Element | null;
+  children: (img: Pick<HTMLImageElement, K>) => React.ReactElement | null;
 }
 
 export interface ImageActionProps extends BaseProps<'image', typeof CLASSES>, React.ButtonHTMLAttributes<HTMLButtonElement> {}

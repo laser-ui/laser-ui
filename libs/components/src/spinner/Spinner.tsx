@@ -14,7 +14,7 @@ import { Transition } from '../internal/transition';
 import { mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
-export function Spinner(props: SpinnerProps): JSX.Element | null {
+export function Spinner(props: SpinnerProps): React.ReactElement | null {
   const {
     children,
     styleOverrides,

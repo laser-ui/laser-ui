@@ -10,7 +10,7 @@ import { useComponentProps, useControlled, useStyled, useTranslation } from '../
 import { Icon } from '../icon';
 import { mergeCS } from '../utils';
 
-export function ModalHeader(props: ModalHeaderProps): JSX.Element | null {
+export function ModalHeader(props: ModalHeaderProps): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

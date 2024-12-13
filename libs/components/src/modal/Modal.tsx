@@ -16,7 +16,7 @@ import { handleModalKeyDown, mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
 export const Modal: {
-  (props: ModalProps): JSX.Element | null;
+  (props: ModalProps): React.ReactElement | null;
   Header: typeof ModalHeader;
   Footer: typeof ModalFooter;
   Alert: typeof ModalAlert;

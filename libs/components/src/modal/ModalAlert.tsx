@@ -11,7 +11,7 @@ import { useComponentProps, useStyled } from '../hooks';
 import { Icon } from '../icon';
 import { mergeCS } from '../utils';
 
-export function ModalAlert(props: ModalAlertProps): JSX.Element | null {
+export function ModalAlert(props: ModalAlertProps): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

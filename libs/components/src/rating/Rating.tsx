@@ -11,7 +11,7 @@ import { useComponentProps, useControlled, useScopedProps, useStyled } from '../
 import { Icon } from '../icon';
 import { mergeCS } from '../utils';
 
-export function Rating(props: RatingProps): JSX.Element | null {
+export function Rating(props: RatingProps): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

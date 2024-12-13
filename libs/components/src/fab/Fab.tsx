@@ -9,7 +9,7 @@ import { useComponentProps, useControlled, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
 export const Fab: {
-  (props: FabProps): JSX.Element | null;
+  (props: FabProps): React.ReactElement | null;
   Button: typeof FabButton;
   Backtop: typeof FabBacktop;
 } = (props) => {

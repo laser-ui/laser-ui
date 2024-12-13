@@ -33,7 +33,7 @@ interface TreeSelectSearchPanelProps<V extends React.Key, T extends TreeItem<V>>
 function TreeSelectSearchPanelFC<V extends React.Key, T extends TreeItem<V>>(
   props: TreeSelectSearchPanelProps<V, T>,
   ref: React.ForwardedRef<any>,
-): JSX.Element | null {
+): React.ReactElement | null {
   const { namespace, styled, id, list, customItem, itemId, itemFocused, multiple, onlyLeafSelectable, virtual, focusVisible, onClick } =
     props;
 

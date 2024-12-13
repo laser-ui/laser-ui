@@ -15,7 +15,7 @@ import { useComponentProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
 export const Table: {
-  (props: TableProps): JSX.Element | null;
+  (props: TableProps): React.ReactElement | null;
   Th: typeof TableTh;
   ThAction: typeof TableThAction;
   Td: typeof TableTd;

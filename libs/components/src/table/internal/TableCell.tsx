@@ -30,7 +30,7 @@ interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
   ellipsis: boolean;
 }
 
-export function TableCell(props: TableCellProps): JSX.Element | null {
+export function TableCell(props: TableCellProps): React.ReactElement | null {
   const {
     children,
     namespace,

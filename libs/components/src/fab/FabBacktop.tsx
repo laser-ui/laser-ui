@@ -13,7 +13,7 @@ import { Icon } from '../icon';
 import { Transition } from '../internal/transition';
 import { TTANSITION_DURING_BASE } from '../vars';
 
-export function FabBacktop(props: FabBacktopProps): JSX.Element | null {
+export function FabBacktop(props: FabBacktopProps): React.ReactElement | null {
   const {
     children,
     page,

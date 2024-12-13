@@ -10,7 +10,7 @@ import { Icon } from '../icon';
 import { Input } from '../input';
 import { Popover } from '../popover';
 
-export function TableFilter(props: TableFilterProps): JSX.Element | null {
+export function TableFilter(props: TableFilterProps): React.ReactElement | null {
   const {
     children,
     styleOverrides,

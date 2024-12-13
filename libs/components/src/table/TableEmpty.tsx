@@ -9,7 +9,7 @@ import { Empty } from '../empty';
 import { useComponentProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-export function TableEmpty(props: TableEmptyProps): JSX.Element | null {
+export function TableEmpty(props: TableEmptyProps): React.ReactElement | null {
   const {
     children,
     styleOverrides,

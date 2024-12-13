@@ -6,7 +6,7 @@ import { createElement } from 'react';
 import { MdRoute } from './MdRoute';
 import { STORAGE } from '../../../configs/storage';
 
-export function Route(props: { 'en-US': MdRouteProps; 'zh-CN': MdRouteProps }): JSX.Element | null {
+export function Route(props: { 'en-US': MdRouteProps; 'zh-CN': MdRouteProps }): React.ReactElement | null {
   const languageStorage = useStorage(...STORAGE.language);
 
   return createElement(MdRoute, props[languageStorage.value]);

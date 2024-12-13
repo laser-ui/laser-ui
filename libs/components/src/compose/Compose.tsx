@@ -10,7 +10,7 @@ import { useComponentProps, useScopedProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
 export const Compose: {
-  (props: ComposeProps): JSX.Element | null;
+  (props: ComposeProps): React.ReactElement | null;
   Item: typeof ComposeItem;
 } = (props) => {
   const {

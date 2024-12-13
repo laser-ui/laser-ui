@@ -4,7 +4,7 @@ import { useAsync } from '@laser-ui/hooks';
 import { isArray, isBoolean, isNumber } from 'lodash';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-export function Transition(props: TransitionProps): JSX.Element | null {
+export function Transition(props: TransitionProps): React.ReactElement | null {
   const {
     children,
     enter: enterProp,

@@ -9,7 +9,7 @@ import { ROOT_DATA, RootContext, Store } from './vars';
 import dayjs from '../dayjs';
 import resources from '../resources.json';
 
-export function Root(props: RootProps): JSX.Element | null {
+export function Root(props: RootProps): React.ReactElement | null {
   const { context: contextProp, children } = props;
 
   const windowRef = useRefExtra(() => window);

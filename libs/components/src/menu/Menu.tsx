@@ -25,7 +25,7 @@ import { TTANSITION_DURING_BASE } from '../vars';
 function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
   props: MenuProps<ID, T>,
   ref: React.ForwardedRef<MenuRef>,
-): JSX.Element | null {
+): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,
@@ -162,7 +162,7 @@ function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
 
   let handleKeyDown: React.KeyboardEventHandler<HTMLElement> | undefined;
   const nodes = (() => {
-    const getNodes = (arr: T[], level: number, subParents: T[], inNav = false): JSX.Element[] => {
+    const getNodes = (arr: T[], level: number, subParents: T[], inNav = false): React.ReactElement[] => {
       const posinset = new Map<ID, [number, number]>();
       let noGroup: T[] = [];
       for (const item of arr) {

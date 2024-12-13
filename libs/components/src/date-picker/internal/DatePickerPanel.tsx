@@ -22,7 +22,7 @@ interface DatePickerPanelProps {
   onDateChange: (date: Date) => void;
 }
 
-export const DatePickerPanel = forwardRef<(date: Date) => void, DatePickerPanelProps>((props, ref): JSX.Element | null => {
+export const DatePickerPanel = forwardRef<(date: Date) => void, DatePickerPanelProps>((props, ref): React.ReactElement | null => {
   const { styled, currentSelected: currentSelectedProp, anotherSelected: anotherSelectedProp, config, range, onDateChange } = props;
 
   const dataRef = useRef<{

@@ -10,7 +10,7 @@ export interface TooltipRef {
 export interface TooltipProps
   extends BaseProps<'tooltip', typeof CLASSES>,
     Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'title'> {
-  children: React.ReactElement | ((render: CloneHTMLElement) => JSX.Element | null);
+  children: React.ReactElement | ((render: CloneHTMLElement) => React.ReactElement | null);
   title: React.ReactNode;
   visible?: boolean;
   defaultVisible?: boolean;

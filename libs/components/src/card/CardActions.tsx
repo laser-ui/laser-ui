@@ -7,7 +7,7 @@ import { useComponentProps, useStyled } from '../hooks';
 import { Separator } from '../separator';
 import { mergeCS } from '../utils';
 
-export function CardActions(props: CardActionsProps): JSX.Element | null {
+export function CardActions(props: CardActionsProps): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

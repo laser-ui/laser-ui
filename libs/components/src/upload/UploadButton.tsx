@@ -12,7 +12,7 @@ import { Icon } from '../icon';
 import { CircularProgress } from '../internal/circular-progress';
 import { mergeCS } from '../utils';
 
-export const UploadButton = forwardRef<HTMLDivElement, UploadButtonProps>((props, ref): JSX.Element | null => {
+export const UploadButton = forwardRef<HTMLDivElement, UploadButtonProps>((props, ref): React.ReactElement | null => {
   const {
     styleOverrides,
     styleProvider,

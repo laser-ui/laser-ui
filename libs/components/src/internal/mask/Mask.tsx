@@ -7,7 +7,7 @@ import { mergeCS } from '../../utils';
 import { TTANSITION_DURING_FAST } from '../../vars';
 import { Transition } from '../transition';
 
-export function Mask(props: MaskProps): JSX.Element | null {
+export function Mask(props: MaskProps): React.ReactElement | null {
   const {
     visible,
     onClose,

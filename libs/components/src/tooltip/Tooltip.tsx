@@ -11,7 +11,7 @@ import { Portal } from '../internal/portal';
 import { Transition } from '../internal/transition';
 import { getPopupPosition, mergeCS } from '../utils';
 
-export const Tooltip = forwardRef<TooltipRef, TooltipProps>((props, ref): JSX.Element | null => {
+export const Tooltip = forwardRef<TooltipRef, TooltipProps>((props, ref): React.ReactElement | null => {
   const {
     children,
     styleOverrides,

@@ -44,7 +44,7 @@ import { VirtualScroll, type VirtualScrollRef } from '../virtual-scroll';
 function SelectFC<V extends React.Key, T extends SelectItem<V>>(
   props: SelectProps<V, T>,
   ref: React.ForwardedRef<SelectRef>,
-): JSX.Element | null {
+): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

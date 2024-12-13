@@ -15,7 +15,7 @@ import { Progress } from '../progress';
 import { mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
-export function UploadPicture(props: UploadPictureProps): JSX.Element | null {
+export function UploadPicture(props: UploadPictureProps): React.ReactElement | null {
   const {
     children,
     styleOverrides,

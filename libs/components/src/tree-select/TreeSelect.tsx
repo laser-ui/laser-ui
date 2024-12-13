@@ -48,7 +48,7 @@ import { TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../vars';
 function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
   props: TreeSelectProps<V, T>,
   ref: React.ForwardedRef<TreeSelectRef>,
-): JSX.Element | null {
+): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

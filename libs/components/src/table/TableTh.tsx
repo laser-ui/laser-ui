@@ -9,7 +9,7 @@ import { useComponentProps, useControlled, useNamespace, useStyled } from '../ho
 import { Icon } from '../icon';
 import { mergeCS } from '../utils';
 
-export function TableTh(props: TableThProps): JSX.Element | null {
+export function TableTh(props: TableThProps): React.ReactElement | null {
   const {
     children,
     styleOverrides,

@@ -8,7 +8,7 @@ import { Button } from '../button';
 import { useComponentProps, useControlled, useStyled, useTranslation } from '../hooks';
 import { mergeCS } from '../utils';
 
-export function DrawerFooter(props: DrawerFooterProps): JSX.Element | null {
+export function DrawerFooter(props: DrawerFooterProps): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

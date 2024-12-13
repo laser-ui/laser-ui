@@ -6,7 +6,7 @@ import { Sidebar } from './sidebar/Sidebar';
 
 import styles from './Layout.module.scss';
 
-export function Layout(): JSX.Element | null {
+export function Layout(): React.ReactElement | null {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const location = useLocation();

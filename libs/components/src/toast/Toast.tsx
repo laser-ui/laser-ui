@@ -17,7 +17,7 @@ import { Portal } from '../internal/portal';
 import { Transition } from '../internal/transition';
 import { mergeCS } from '../utils';
 
-export function Toast(props: ToastProps): JSX.Element | null {
+export function Toast(props: ToastProps): React.ReactElement | null {
   const {
     children,
     styleOverrides,

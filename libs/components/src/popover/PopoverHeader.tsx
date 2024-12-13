@@ -10,7 +10,7 @@ import { useComponentProps, useControlled, useStyled, useTranslation } from '../
 import { Icon } from '../icon';
 import { mergeCS } from '../utils';
 
-export function PopoverHeader(props: PopoverHeaderProps): JSX.Element | null {
+export function PopoverHeader(props: PopoverHeaderProps): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

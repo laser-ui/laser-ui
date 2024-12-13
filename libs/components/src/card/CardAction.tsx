@@ -6,7 +6,7 @@ import { CLASSES } from './vars';
 import { useComponentProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-export const CardAction = forwardRef<HTMLDivElement, CardActionProps>((props, ref): JSX.Element | null => {
+export const CardAction = forwardRef<HTMLDivElement, CardActionProps>((props, ref): React.ReactElement | null => {
   const {
     styleOverrides,
     styleProvider,

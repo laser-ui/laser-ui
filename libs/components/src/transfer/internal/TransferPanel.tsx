@@ -33,7 +33,7 @@ export interface TransferPanelProps<V extends React.Key, T extends TransferItem<
   onScrollBottom: () => void;
 }
 
-export function TransferPanel<V extends React.Key, T extends TransferItem<V>>(props: TransferPanelProps<V, T>): JSX.Element | null {
+export function TransferPanel<V extends React.Key, T extends TransferItem<V>>(props: TransferPanelProps<V, T>): React.ReactElement | null {
   const {
     namespace,
     styled,

@@ -13,7 +13,7 @@ import { Wave } from '../internal/wave';
 import { mergeCS } from '../utils';
 import { TTANSITION_DURING_SLOW } from '../vars';
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref): JSX.Element | null => {
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref): React.ReactElement | null => {
   const {
     children,
     styleOverrides,

@@ -15,7 +15,7 @@ import { Icon } from '../icon';
 import { mergeCS } from '../utils';
 
 export const Input: {
-  (props: InputProps): JSX.Element | null;
+  (props: InputProps): React.ReactElement | null;
   Number: typeof InputNumber;
 } = (props) => {
   const {

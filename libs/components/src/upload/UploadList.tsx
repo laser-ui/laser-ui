@@ -15,7 +15,7 @@ import { Progress } from '../progress';
 import { mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
-export function UploadList(props: UploadListProps): JSX.Element | null {
+export function UploadList(props: UploadListProps): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

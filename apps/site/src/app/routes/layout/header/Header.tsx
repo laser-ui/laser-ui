@@ -13,7 +13,7 @@ import { STORAGE } from '../../../configs/storage';
 
 import styles from './Header.module.scss';
 
-export function Header(props: HeaderProps): JSX.Element | null {
+export function Header(props: HeaderProps): React.ReactElement | null {
   const { menuOpen, onMenuOpenChange } = props;
 
   const { i18n, t } = useTranslation();

@@ -7,7 +7,7 @@ import { CLASSES } from './vars';
 import { useComponentProps, useNamespace, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-export function Icon(props: IconProps): JSX.Element | null {
+export function Icon(props: IconProps): React.ReactElement | null {
   const {
     children,
     styleOverrides,

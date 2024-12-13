@@ -6,7 +6,7 @@ import { CLASSES } from './vars';
 import { useComponentProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-export function Separator(props: SeparatorProps): JSX.Element | null {
+export function Separator(props: SeparatorProps): React.ReactElement | null {
   const {
     children,
     styleOverrides,

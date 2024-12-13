@@ -9,7 +9,7 @@ import { Icon } from '../icon';
 import { mergeCS } from '../utils';
 
 export const Empty: {
-  (props: EmptyProps): JSX.Element | null;
+  (props: EmptyProps): React.ReactElement | null;
   SIMPLE_IMG: typeof SIMPLE_IMG;
 } = (props) => {
   const {

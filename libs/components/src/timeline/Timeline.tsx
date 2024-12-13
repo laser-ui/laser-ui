@@ -7,7 +7,7 @@ import { CLASSES } from './vars';
 import { useComponentProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-export function Timeline<T extends TimelineItem>(props: TimelineProps<T>): JSX.Element | null {
+export function Timeline<T extends TimelineItem>(props: TimelineProps<T>): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

@@ -11,7 +11,7 @@ import { SingleTreeNode } from './node/single-node';
 import { CLASSES } from './vars';
 import { useComponentProps, useControlled, useFocusVisible, useNamespace, useScopedProps, useStyled } from '../hooks';
 
-export function Tree<V extends React.Key, T extends TreeItem<V>>(props: TreeProps<V, T>): JSX.Element | null {
+export function Tree<V extends React.Key, T extends TreeItem<V>>(props: TreeProps<V, T>): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

@@ -33,7 +33,7 @@ import { ROOT_DATA } from '../root/vars';
 import { getVerticalSidePosition, mergeCS } from '../utils';
 import { TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../vars';
 
-export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref): JSX.Element | null => {
+export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref): React.ReactElement | null => {
   const {
     styleOverrides,
     styleProvider,

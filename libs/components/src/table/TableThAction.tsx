@@ -6,7 +6,7 @@ import { CLASSES } from './vars';
 import { useComponentProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-export const TableThAction = forwardRef<HTMLDivElement, TableThActionProps>((props, ref): JSX.Element | null => {
+export const TableThAction = forwardRef<HTMLDivElement, TableThActionProps>((props, ref): React.ReactElement | null => {
   const {
     styleOverrides,
     styleProvider,

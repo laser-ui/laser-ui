@@ -11,7 +11,7 @@ import { CollapseTransition } from '../internal/transition';
 import { mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
-export function Accordion<ID extends React.Key, T extends AccordionItem<ID>>(props: AccordionProps<ID, T>): JSX.Element | null {
+export function Accordion<ID extends React.Key, T extends AccordionItem<ID>>(props: AccordionProps<ID, T>): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

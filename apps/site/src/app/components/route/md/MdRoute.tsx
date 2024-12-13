@@ -17,7 +17,7 @@ export interface MdRouteProps {
   children?: React.ReactNode;
 }
 
-export function MdRoute(props: MdRouteProps): JSX.Element | null {
+export function MdRoute(props: MdRouteProps): React.ReactElement | null {
   const { html: htmlProp, links: linksProp, children } = props;
 
   const html = htmlProp ? marked(decode(htmlProp)) : undefined;

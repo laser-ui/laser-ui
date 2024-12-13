@@ -22,7 +22,7 @@ import { ROOT_DATA } from '../root/vars';
 import { mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
-export function ImagePreview(props: ImagePreviewProps): JSX.Element | null {
+export function ImagePreview(props: ImagePreviewProps): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

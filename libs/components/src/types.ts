@@ -26,3 +26,5 @@ export interface BaseProps<CR extends string, C extends { [index: string]: strin
   styleOverrides?: { [K in keyof C]?: { remove?: boolean; className?: string; style?: React.CSSProperties } };
   styleProvider?: { [K in CR]: string };
 }
+
+export type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType extends readonly (infer ElementType)[] ? ElementType : never;

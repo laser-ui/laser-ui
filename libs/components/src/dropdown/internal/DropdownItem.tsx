@@ -17,7 +17,7 @@ interface DropdownItemProps {
   onClick: () => void;
 }
 
-export function DropdownItem(props: DropdownItemProps): JSX.Element | null {
+export function DropdownItem(props: DropdownItemProps): React.ReactElement | null {
   const { children, namespace, styled, id, level, icon, focus, disabled, onClick } = props;
 
   return (

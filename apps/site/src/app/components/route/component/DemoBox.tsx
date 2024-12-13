@@ -21,7 +21,7 @@ interface DemoBoxProps {
   scssSource?: number[];
 }
 
-export function DemoBox(props: DemoBoxProps): JSX.Element | null {
+export function DemoBox(props: DemoBoxProps): React.ReactElement | null {
   const { id, renderer, title, description: descriptionProp, tsxSource: tsxSourceProp, scssSource: scssSourceProp } = props;
 
   const description = marked(decode(descriptionProp));

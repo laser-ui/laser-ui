@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 import styles from './Home.module.scss';
 
-export function HomeRoute(): JSX.Element | null {
+export function HomeRoute(): React.ReactElement | null {
   const { t } = useTranslation();
 
   useEffect(() => {

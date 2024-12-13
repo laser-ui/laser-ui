@@ -4,7 +4,7 @@ import { CLASSES } from './vars';
 import { useComponentProps, useScopedProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-export function Tag(props: TagProps): JSX.Element | null {
+export function Tag(props: TagProps): React.ReactElement | null {
   const {
     children,
     styleOverrides,

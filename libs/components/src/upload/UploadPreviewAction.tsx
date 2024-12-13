@@ -9,7 +9,7 @@ import { useComponentProps, useStyled, useTranslation } from '../hooks';
 import { Icon } from '../icon';
 import { mergeCS } from '../utils';
 
-export const UploadPreviewAction = forwardRef<HTMLAnchorElement, UploadPreviewActionProps>((props, ref): JSX.Element | null => {
+export const UploadPreviewAction = forwardRef<HTMLAnchorElement, UploadPreviewActionProps>((props, ref): React.ReactElement | null => {
   const {
     styleOverrides,
     styleProvider,

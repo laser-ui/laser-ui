@@ -8,7 +8,7 @@ import { Fragment, createElement, forwardRef, useImperativeHandle, useMemo, useR
 import { EMPTY } from './vars';
 import { useComponentProps } from '../hooks';
 
-function VirtualScrollFC<T>(props: VirtualScrollProps<T>, ref: React.ForwardedRef<VirtualScrollRef<T>>): JSX.Element | null {
+function VirtualScrollFC<T>(props: VirtualScrollProps<T>, ref: React.ForwardedRef<VirtualScrollRef<T>>): React.ReactElement | null {
   const {
     children,
     enable = true,

@@ -12,7 +12,7 @@ import { useComponentProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
 export const Image: {
-  (props: ImageProps): JSX.Element | null;
+  (props: ImageProps): React.ReactElement | null;
   Loader: typeof ImageLoader;
   Action: typeof ImageAction;
   Preview: typeof ImagePreview;

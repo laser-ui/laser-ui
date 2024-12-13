@@ -13,7 +13,7 @@ import { Progress } from '../progress';
 import { mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
-export function Stepper<T extends StepperItem>(props: StepperProps<T>): JSX.Element | null {
+export function Stepper<T extends StepperItem>(props: StepperProps<T>): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

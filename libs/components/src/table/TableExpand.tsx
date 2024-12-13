@@ -4,7 +4,7 @@ import { CLASSES } from './vars';
 import { useComponentProps, useControlled, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-export function TableExpand(props: TableExpandProps): JSX.Element | null {
+export function TableExpand(props: TableExpandProps): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

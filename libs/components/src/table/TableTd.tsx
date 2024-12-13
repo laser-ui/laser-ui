@@ -4,7 +4,7 @@ import { TableCell } from './internal/TableCell';
 import { CLASSES } from './vars';
 import { useComponentProps, useNamespace, useStyled } from '../hooks';
 
-export function TableTd(props: TableTdProps): JSX.Element | null {
+export function TableTd(props: TableTdProps): React.ReactElement | null {
   const {
     children,
     styleOverrides,

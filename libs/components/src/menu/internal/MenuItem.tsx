@@ -25,7 +25,7 @@ interface MenuItemProps {
   onClick: () => void;
 }
 
-export function MenuItem(props: MenuItemProps): JSX.Element | null {
+export function MenuItem(props: MenuItemProps): React.ReactElement | null {
   const { children, namespace, styled, id, level, space, step, icon, posinset, mode, inNav, active, focus, disabled, onClick } = props;
 
   const inHorizontalNav = mode === 'horizontal' && inNav;

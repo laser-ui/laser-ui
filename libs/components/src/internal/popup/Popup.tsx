@@ -6,7 +6,7 @@ import { cloneElement, useRef } from 'react';
 
 import { useContainerScrolling, useLayout } from '../../hooks';
 
-export function Popup(props: PopupProps): JSX.Element | null {
+export function Popup(props: PopupProps): React.ReactElement | null {
   const {
     children,
     visible: visibleProp,

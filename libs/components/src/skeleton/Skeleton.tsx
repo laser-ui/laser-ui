@@ -4,7 +4,7 @@ import { CLASSES } from './vars';
 import { useComponentProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-export function Skeleton(props: SkeletonProps): JSX.Element | null {
+export function Skeleton(props: SkeletonProps): React.ReactElement | null {
   const {
     children,
     styleOverrides,

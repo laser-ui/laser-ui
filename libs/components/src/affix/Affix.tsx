@@ -7,7 +7,7 @@ import { cloneElement, forwardRef, useId, useImperativeHandle, useState } from '
 
 import { useComponentProps, useContainerScrolling, useJSS, useLayout, useNamespace } from '../hooks';
 
-export const Affix = forwardRef<AffixRef, AffixProps>((props, ref): JSX.Element | null => {
+export const Affix = forwardRef<AffixRef, AffixProps>((props, ref): React.ReactElement | null => {
   const { children, top = 0, target, zIndex } = useComponentProps('Affix', props);
 
   const namespace = useNamespace();

@@ -32,7 +32,7 @@ import { TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../vars';
 function DropdownFC<ID extends React.Key, T extends DropdownItem<ID>>(
   props: DropdownProps<ID, T>,
   ref: React.ForwardedRef<DropdownRef>,
-): JSX.Element | null {
+): React.ReactElement | null {
   const {
     children,
     styleOverrides,
@@ -178,7 +178,7 @@ function DropdownFC<ID extends React.Key, T extends DropdownItem<ID>>(
 
   let handleKeyDown: React.KeyboardEventHandler<HTMLElement> | undefined;
   const nodes = (() => {
-    const getNodes = (arr: T[], level: number, subParents: T[]): JSX.Element[] =>
+    const getNodes = (arr: T[], level: number, subParents: T[]): React.ReactElement[] =>
       arr.map((item) => {
         const {
           id: itemId,

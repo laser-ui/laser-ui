@@ -18,7 +18,7 @@ import { mergeCS } from '../utils';
 function TabsFC<ID extends React.Key, T extends TabsItem<ID>>(
   props: TabsProps<ID, T>,
   ref: React.ForwardedRef<TabsRef>,
-): JSX.Element | null {
+): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

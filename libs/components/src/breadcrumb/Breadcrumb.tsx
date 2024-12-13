@@ -6,7 +6,7 @@ import { CLASSES } from './vars';
 import { useComponentProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-export function Breadcrumb<ID extends React.Key, T extends BreadcrumbItem<ID>>(props: BreadcrumbProps<ID, T>): JSX.Element | null {
+export function Breadcrumb<ID extends React.Key, T extends BreadcrumbItem<ID>>(props: BreadcrumbProps<ID, T>): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

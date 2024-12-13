@@ -9,7 +9,7 @@ import { useComponentProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
 export const Card: {
-  (props: CardProps): JSX.Element | null;
+  (props: CardProps): React.ReactElement | null;
   Header: typeof CardHeader;
   Content: typeof CardContent;
   Actions: typeof CardActions;

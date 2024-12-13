@@ -24,7 +24,7 @@ export interface ComponentRouteProps {
   links: { href: string; title: string }[];
 }
 
-export function ComponentRoute(props: ComponentRouteProps): JSX.Element | null {
+export function ComponentRoute(props: ComponentRouteProps): React.ReactElement | null {
   const { title, subtitle, description: descriptionProp, aria: ariaProp, compose, virtualScroll, api: apiProp, demos, links } = props;
 
   const description = marked(decode(descriptionProp));

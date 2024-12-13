@@ -17,7 +17,7 @@ import { Portal } from '../internal/portal';
 import { Transition } from '../internal/transition';
 import { mergeCS } from '../utils';
 
-export function Notification(props: NotificationProps): JSX.Element | null {
+export function Notification(props: NotificationProps): React.ReactElement | null {
   const {
     children,
     styleOverrides,

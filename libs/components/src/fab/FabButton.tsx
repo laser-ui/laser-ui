@@ -9,7 +9,7 @@ import { Icon } from '../icon';
 import { CircularProgress } from '../internal/circular-progress';
 import { mergeCS } from '../utils';
 
-export const FabButton = forwardRef<HTMLButtonElement, FabButtonProps>((props, ref): JSX.Element | null => {
+export const FabButton = forwardRef<HTMLButtonElement, FabButtonProps>((props, ref): React.ReactElement | null => {
   const {
     children,
     styleOverrides,

@@ -4,7 +4,7 @@ import { CLASSES } from './vars';
 import { useComponentProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-export function CardHeader(props: CardHeaderProps): JSX.Element | null {
+export function CardHeader(props: CardHeaderProps): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

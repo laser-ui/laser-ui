@@ -47,7 +47,7 @@ import { TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../vars';
 function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
   props: CascaderProps<V, T>,
   ref: React.ForwardedRef<CascaderRef>,
-): JSX.Element | null {
+): React.ReactElement | null {
   const {
     styleOverrides,
     styleProvider,

@@ -5,7 +5,7 @@ import { isString } from 'lodash';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-export const Portal = forwardRef<HTMLElement, PortalProps>((props, ref): JSX.Element | null => {
+export const Portal = forwardRef<HTMLElement, PortalProps>((props, ref): React.ReactElement | null => {
   const { children, selector } = props;
 
   const [container, setContainer] = useState<any>(null);
