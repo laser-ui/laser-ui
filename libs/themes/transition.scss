@@ -1,41 +1,71 @@
 @use 'variables';
 
+.#{variables.$prefix}fade-enter-active,
+.#{variables.$prefix}fade-leave-active {
+  transition: opacity var(--#{variables.$prefix}animation-duration-base) linear !important;
+}
+
+.#{variables.$prefix}fade-enter-from,
+.#{variables.$prefix}fade-leave-to {
+  opacity: 0 !important;
+}
+
 .#{variables.$prefix}collapse-horizontal-enter-active,
 .#{variables.$prefix}collapse-horizontal-leave-active {
-  overflow: hidden;
+  overflow: hidden !important;
   transition:
     width var(--#{variables.$prefix}animation-duration-slow) linear,
     padding var(--#{variables.$prefix}animation-duration-slow) linear,
-    margin var(--#{variables.$prefix}animation-duration-slow) linear;
+    margin var(--#{variables.$prefix}animation-duration-slow) linear !important;
+}
+
+.#{variables.$prefix}collapse-horizontal-enter-from,
+.#{variables.$prefix}collapse-horizontal-leave-from {
+  transition: none !important;
 }
 
 .#{variables.$prefix}collapse-horizontal-enter-to,
 .#{variables.$prefix}collapse-horizontal-leave-from {
-  width: var(--#{variables.$prefix}collapse-horizontal-from);
+  width: var(--#{variables.$prefix}collapse-horizontal-from) !important;
+  overflow: hidden !important;
 }
 
 .#{variables.$prefix}collapse-horizontal-enter-from,
 .#{variables.$prefix}collapse-horizontal-leave-to {
-  width: var(--#{variables.$prefix}collapse-horizontal-to);
-  padding-right: 0;
-  padding-left: 0;
-  margin-right: 0;
-  margin-left: 0;
+  width: var(--#{variables.$prefix}collapse-horizontal-to) !important;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  overflow: hidden !important;
 }
 
 .#{variables.$prefix}collapse-vertical-enter-active,
 .#{variables.$prefix}collapse-vertical-leave-active {
-  overflow: hidden;
+  overflow: hidden !important;
   transition:
     height var(--#{variables.$prefix}animation-duration-slow) linear,
     padding var(--#{variables.$prefix}animation-duration-slow) linear,
-    margin var(--#{variables.$prefix}animation-duration-slow) linear;
+    margin var(--#{variables.$prefix}animation-duration-slow) linear !important;
+}
+
+.#{variables.$prefix}collapse-vertical-enter-from,
+.#{variables.$prefix}collapse-vertical-leave-from {
+  transition: none !important;
+}
+
+.#{variables.$prefix}collapse-vertical-enter-to,
+.#{variables.$prefix}collapse-vertical-leave-from {
+  width: var(--#{variables.$prefix}collapse-vertical-from) !important;
+  overflow: hidden !important;
 }
 
 .#{variables.$prefix}collapse-vertical-enter-from,
 .#{variables.$prefix}collapse-vertical-leave-to {
-  padding-top: 0;
-  padding-bottom: 0;
-  margin-top: 0;
-  margin-bottom: 0;
+  width: var(--#{variables.$prefix}collapse-vertical-to) !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  overflow: hidden !important;
 }

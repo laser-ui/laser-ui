@@ -1,11 +1,10 @@
 import type { BadgeTextProps } from './types';
 
-import { useRef } from 'react';
-
 import { CLASSES } from './vars';
 import { useComponentProps, useNamespace, useStyled } from '../hooks';
 import { Transition } from '../transition';
 import { mergeCS } from '../utils';
+import { TTANSITION_DURING_BASE } from '../vars';
 
 export function BadgeText(props: BadgeTextProps) {
   const {
@@ -22,24 +21,9 @@ export function BadgeText(props: BadgeTextProps) {
   const namespace = useNamespace();
   const styled = useStyled(CLASSES, { badge: styleProvider?.badge }, styleOverrides);
 
-  const rootEl = useRef<HTMLDivElement>(null);
-
   return (
-    <Transition
-      enter={text.length > 0}
-      name={`${namespace}-badge`}
-      onBeforeEnter={() => {
-        if (rootEl.current && rootEl.current.style.display === 'none') {
-          rootEl.current.style.display = '';
-        }
-      }}
-      onAfterLeave={() => {
-        if (rootEl.current) {
-          rootEl.current.style.display = 'none';
-        }
-      }}
-    >
-      {(transitionRef) => (
+    <Transition enter={text.length > 0} name={`${namespace}-badge`} duration={TTANSITION_DURING_BASE}>
+      {(transitionRef, leaved) => (
         <div
           {...restProps}
           {...mergeCS(
@@ -51,18 +35,18 @@ export function BadgeText(props: BadgeTextProps) {
               style: {
                 ...restProps.style,
                 ...(alone ? undefined : { top: offset[0], left: offset[1] }),
+                ...(leaved ? { display: 'none' } : undefined),
               },
             },
           )}
-          ref={rootEl}
           title={restProps.title ?? text}
         >
           <div
             {...styled('badge__wrapper')}
-            ref={(el) => {
-              transitionRef.current = el;
+            ref={(instance) => {
+              transitionRef(instance);
               return () => {
-                transitionRef.current = null;
+                transitionRef(null);
               };
             }}
           >

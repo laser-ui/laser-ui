@@ -65,8 +65,8 @@ export const Badge: {
         >
           <div
             {...styled('badge__wrapper')}
-            ref={(el) => {
-              transitionRef(el);
+            ref={(instance) => {
+              transitionRef(instance);
               return () => {
                 transitionRef(null);
               };

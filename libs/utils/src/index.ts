@@ -9,5 +9,6 @@ export { isSimpleArrayEqual } from './isSimpleArrayEqual';
 export { saveFile } from './saveFile';
 export { scrollIntoViewIfNeeded } from './scrollIntoViewIfNeeded';
 export { scrollTo } from './scrollTo';
+export { setRef } from './setRef';
 export { TextWidth } from './TextWidth';
 export { toPx } from './toPx';

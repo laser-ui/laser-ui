@@ -1,16 +1,16 @@
-import type { FabBacktopProps, FabButtonProps } from './types';
-import type { TransitionState } from '../internal/transition/types';
+import type { FabBacktopProps } from './types';
 
-import { useEvent, useIsomorphicLayoutEffect, useRefExtra, useResize } from '@laser-ui/hooks';
+import { useEvent, useIsomorphicLayoutEffect, useRefExtra, useResize, useUnmount } from '@laser-ui/hooks';
 import { scrollTo, toPx } from '@laser-ui/utils';
 import VerticalAlignTopOutlined from '@material-design-icons/svg/outlined/vertical_align_top.svg?react';
 import { isString } from 'lodash';
-import { cloneElement, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { FabButton } from './FabButton';
-import { useComponentProps, useLayout } from '../hooks';
+import { FabBacktopContext } from './vars';
+import { useComponentProps, useLayout, useNamespace } from '../hooks';
 import { Icon } from '../icon';
-import { Transition } from '../internal/transition';
+import { Transition } from '../transition';
 import { TTANSITION_DURING_BASE } from '../vars';
 
 export function FabBacktop(props: FabBacktopProps): React.ReactElement | null {
@@ -23,27 +23,15 @@ export function FabBacktop(props: FabBacktopProps): React.ReactElement | null {
     ...restProps
   } = useComponentProps('FabBacktop', props);
 
+  const namespace = useNamespace();
   const { pageScrollRef, contentResizeRef } = useLayout();
 
   const pageRef = useRefExtra(page ?? (() => pageScrollRef.current));
 
-  const dataRef = useRef<{
-    clearTid?: () => void;
-  }>({});
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const clearTid = useRef(() => {});
 
   const [visible, setVisible] = useState(false);
-
-  const transitionStyles: Partial<Record<TransitionState, React.CSSProperties>> = {
-    enter: { opacity: 0 },
-    entering: {
-      transition: ['opacity'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms linear`).join(', '),
-    },
-    leaving: {
-      opacity: 0,
-      transition: ['opacity'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms linear`).join(', '),
-    },
-    leaved: { display: 'none' },
-  };
 
   const updateBackTop = () => {
     if (pageRef.current) {
@@ -60,37 +48,37 @@ export function FabBacktop(props: FabBacktopProps): React.ReactElement | null {
 
   useResize(contentResizeRef, updateBackTop);
 
-  const node = (
-    <FabButton {...restProps}>
-      {children ?? (
-        <Icon>
-          <VerticalAlignTopOutlined />
-        </Icon>
-      )}
-    </FabButton>
-  );
+  useUnmount(() => {
+    clearTid.current();
+  });
 
   return (
-    <Transition enter={visible} during={TTANSITION_DURING_BASE}>
-      {(state) =>
-        cloneElement<FabButtonProps>(node, {
-          style: {
-            ...node.props.style,
-            ...transitionStyles[state],
-          },
-          onClick: (e) => {
-            node.props.onClick?.(e);
-
-            if (pageRef.current) {
-              dataRef.current.clearTid?.();
-              dataRef.current.clearTid = scrollTo(pageRef.current, {
-                top: 0,
-                behavior: scrollBehavior,
-              });
-            }
-          },
-        })
-      }
+    <Transition enter={visible} name={`${namespace}-fade`} duration={TTANSITION_DURING_BASE}>
+      {(transitionRef, leaved) => (
+        <FabBacktopContext
+          value={{
+            ref: transitionRef,
+            leaved,
+            onClick: () => {
+              if (pageRef.current) {
+                clearTid.current();
+                clearTid.current = scrollTo(pageRef.current, {
+                  top: 0,
+                  behavior: scrollBehavior,
+                });
+              }
+            },
+          }}
+        >
+          <FabButton {...restProps}>
+            {children ?? (
+              <Icon>
+                <VerticalAlignTopOutlined />
+              </Icon>
+            )}
+          </FabButton>
+        </FabBacktopContext>
+      )}
     </Transition>
   );
 }

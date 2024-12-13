@@ -1,10 +1,10 @@
-import type { FabButtonProps, FabProps } from './types';
+import type { FabProps } from './types';
 
-import { Children, cloneElement } from 'react';
+import { has } from 'lodash';
 
 import { FabBacktop } from './FabBacktop';
 import { FabButton } from './FabButton';
-import { CLASSES } from './vars';
+import { CLASSES, FabContext, FabListContext } from './vars';
 import { useComponentProps, useControlled, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
@@ -37,34 +37,41 @@ export const Fab: {
         style: restProps.style,
       })}
     >
-      {cloneElement<FabButtonProps>(children, {
-        ...{ _expand: expand },
-        onClick: (e) => {
-          children.props.onClick?.(e);
-
-          if (list) {
-            changeExpand((draft) => !draft);
-          }
-        },
-      })}
+      <FabContext
+        value={{
+          expand,
+          onClick: () => {
+            if (list) {
+              changeExpand((prev) => !prev);
+            }
+          },
+        }}
+      >
+        {children}
+      </FabContext>
       {expand &&
         list &&
-        list.map(({ placement, actions }, key) => (
-          <div key={key} {...styled('fab__actions', `fab__actions--${placement}`)}>
-            {Children.map(actions, (action, index) =>
-              cloneElement<FabButtonProps>(action, {
-                ...{ _action: true },
-                style: {
-                  ...action.props.style,
-                  animationDelay: `${index * 33}ms`,
-                },
-                onClick: (e) => {
-                  action.props.onClick?.(e);
-
-                  changeExpand(false);
-                },
-              }),
-            )}
+        list.map(({ placement, actions }) => (
+          <div key={placement} {...styled('fab__actions', `fab__actions--${placement}`)}>
+            {actions.map((node, index) => {
+              const { id, action } = (has(node, ['id', 'action']) ? node : { id: index, action: node }) as {
+                id: React.Key;
+                action: React.ReactNode;
+              };
+              return (
+                <FabListContext
+                  key={id}
+                  value={{
+                    index,
+                    onClick: () => {
+                      changeExpand(false);
+                    },
+                  }}
+                >
+                  {action}
+                </FabListContext>
+              );
+            })}
           </div>
         ))}
     </div>

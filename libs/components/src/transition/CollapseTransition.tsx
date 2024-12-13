@@ -30,7 +30,6 @@ export function CollapseTransition(props: CollapseTransitionProps): React.ReactE
         el.style.setProperty(`--${namespace}-collapse-vertical-from`, el.offsetHeight + 'px');
         el.style.setProperty(`--${namespace}-collapse-vertical-to`, height + 'px');
       } else {
-        console.log(el.offsetWidth);
         el.style.setProperty(`--${namespace}-collapse-horizontal-from`, el.offsetWidth + 'px');
         el.style.setProperty(`--${namespace}-collapse-horizontal-to`, width + 'px');
       }

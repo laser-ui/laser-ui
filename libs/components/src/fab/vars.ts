@@ -1,3 +1,5 @@
+import { createContext } from 'react';
+
 export const CLASSES = {
   fab: '^fab',
   fab__actions: '^fab__actions',
@@ -27,3 +29,28 @@ export const BUTTON_CLASSES = {
   'fab-button__icon': '^fab-button__icon',
   'fab-button__content': '^fab-button__content',
 };
+
+export const FabContext = createContext<
+  | {
+      expand: boolean;
+      onClick: () => void;
+    }
+  | undefined
+>(undefined);
+
+export const FabListContext = createContext<
+  | {
+      index: number;
+      onClick: () => void;
+    }
+  | undefined
+>(undefined);
+
+export const FabBacktopContext = createContext<
+  | {
+      ref: React.RefCallback<HTMLElement | null>;
+      leaved: boolean;
+      onClick: () => void;
+    }
+  | undefined
+>(undefined);

@@ -6,13 +6,13 @@
 .#{variables.$prefix}badge-leave-active {
   transition:
     transform var(--#{variables.$prefix}animation-duration-base) ease-out,
-    opacity var(--#{variables.$prefix}animation-duration-base) ease-out;
+    opacity var(--#{variables.$prefix}animation-duration-base) ease-out !important;
 }
 
 .#{variables.$prefix}badge-enter-from,
 .#{variables.$prefix}badge-leave-to {
-  opacity: 0;
-  transform: scale(0);
+  opacity: 0 !important;
+  transform: scale(0) !important;
 }
 
 @include mixins.b(badge) {

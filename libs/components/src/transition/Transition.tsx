@@ -5,6 +5,7 @@ import type { ArrayElement } from '../types';
 import { useAsync, useForceUpdate, useIsomorphicLayoutEffect, useUnmount } from '@laser-ui/hooks';
 import { isNumber, isUndefined } from 'lodash';
 import { useRef } from 'react';
+import { flushSync } from 'react-dom';
 
 const CLASSES = ['enter-from', 'enter-active', 'enter-to', 'leave-from', 'leave-active', 'leave-to'] as const;
 
@@ -107,7 +108,9 @@ export function Transition(props: TransitionProps): React.ReactElement | null {
             removeClasses(['leave-active', 'leave-to']);
             onAfterLeave?.(el.current);
             leaved.current = true;
-            forceUpdate();
+            flushSync(() => {
+              forceUpdate();
+            });
           };
           if (isUndefined(duration)) {
             if (el.current) {
