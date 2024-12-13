@@ -2,6 +2,19 @@
 @use '../variables';
 @use '../mixins';
 
+.#{variables.$prefix}badge-enter-active,
+.#{variables.$prefix}badge-leave-active {
+  transition:
+    transform var(--#{variables.$prefix}animation-duration-base) ease-out,
+    opacity var(--#{variables.$prefix}animation-duration-base) ease-out;
+}
+
+.#{variables.$prefix}badge-enter-from,
+.#{variables.$prefix}badge-leave-to {
+  opacity: 0;
+  transform: scale(0);
+}
+
 @include mixins.b(badge) {
   position: absolute;
   z-index: 1;

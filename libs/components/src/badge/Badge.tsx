@@ -1,17 +1,16 @@
 import type { BadgeProps } from './types';
 
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { BadgeText } from './BadgeText';
 import { BadgeNumber } from './internal/BadgeNumber';
 import { CLASSES } from './vars';
-import { useComponentProps, useStyled } from '../hooks';
-import { Transition } from '../internal/transition';
+import { useComponentProps, useNamespace, useStyled } from '../hooks';
+import { Transition } from '../transition';
 import { mergeCS } from '../utils';
-import { TTANSITION_DURING_BASE } from '../vars';
 
 export const Badge: {
-  (props: BadgeProps): JSX.Element | null;
+  (props: BadgeProps): React.ReactElement | null;
   Text: typeof BadgeText;
 } = (props) => {
   const {
@@ -28,89 +27,79 @@ export const Badge: {
     ...restProps
   } = useComponentProps('Badge', props);
 
+  const namespace = useNamespace();
   const styled = useStyled(CLASSES, { badge: styleProvider?.badge }, styleOverrides);
 
-  const dataRef = useRef<{
-    saveValue?: number;
-    prevValue: number;
-    valueDown: boolean;
-  }>({
-    prevValue: valueProp,
-    valueDown: false,
-  });
+  const rootEl = useRef<HTMLDivElement>(null);
+
+  const valueSaved = useRef<number>(undefined);
 
   const show = showZero || valueProp > 0;
-  const value = show ? valueProp : (dataRef.current.saveValue ?? 0);
-  dataRef.current.saveValue = value;
+  const value = show ? valueProp : (valueSaved.current ?? 0);
 
-  const nums = (value > max ? max : value)
-    .toString()
-    .split('')
-    .map((n) => Number(n));
+  const num = value > max ? max : value;
 
-  if (value !== dataRef.current.prevValue) {
-    dataRef.current.valueDown = value < dataRef.current.prevValue;
-    dataRef.current.prevValue = value;
-  }
+  useEffect(() => {
+    valueSaved.current = value;
+  });
 
   return (
-    <Transition enter={show} during={TTANSITION_DURING_BASE}>
-      {(state) => {
-        let transitionStyle: React.CSSProperties = {};
-        switch (state) {
-          case 'enter':
-            transitionStyle = { transform: 'scale(0)', opacity: 0 };
-            break;
-
-          case 'entering':
-            transitionStyle = {
-              transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms ease-out`).join(', '),
-            };
-            break;
-
-          case 'leaving':
-            transitionStyle = {
-              transform: 'scale(0)',
-              opacity: 0,
-              transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms ease-in`).join(', '),
-            };
-            break;
-
-          default:
-            break;
+    <Transition
+      enter={show}
+      name={`${namespace}-badge`}
+      onBeforeEnter={() => {
+        if (rootEl.current && rootEl.current.style.display === 'none') {
+          rootEl.current.style.display = '';
         }
-
-        return state === 'leaved' ? null : (
-          <div
-            {...restProps}
-            {...mergeCS(
-              styled('badge', `badge.t-${theme}`, {
-                'badge--dot': dot,
-                'badge--alone': alone,
-              }),
-              {
-                className: restProps.className,
-                style: {
-                  ...restProps.style,
-                  ...(alone ? undefined : { top: offset[0], left: offset[1] }),
-                },
-              },
-            )}
-            title={restProps.title ?? (dot ? undefined : valueProp.toString())}
-          >
-            <div {...mergeCS(styled('badge__wrapper'), { style: transitionStyle })}>
-              {dot ? null : (
-                <>
-                  {nums.map((n, i) => (
-                    <BadgeNumber key={nums.length - i} styled={styled} value={n} valueDown={dataRef.current.valueDown} />
-                  ))}
-                  {value > max ? '+' : ''}
-                </>
-              )}
-            </div>
-          </div>
-        );
       }}
+      onAfterLeave={() => {
+        if (rootEl.current) {
+          rootEl.current.style.display = 'none';
+        }
+      }}
+    >
+      {(transitionRef) => (
+        <div
+          {...restProps}
+          {...mergeCS(
+            styled('badge', `badge.t-${theme}`, {
+              'badge--dot': dot,
+              'badge--alone': alone,
+            }),
+            {
+              className: restProps.className,
+              style: {
+                ...restProps.style,
+                ...(alone ? undefined : { top: offset[0], left: offset[1] }),
+              },
+            },
+          )}
+          ref={rootEl}
+          title={restProps.title ?? (dot ? undefined : valueProp.toString())}
+        >
+          <div
+            {...styled('badge__wrapper')}
+            ref={(el) => {
+              transitionRef.current = el;
+              return () => {
+                transitionRef.current = null;
+              };
+            }}
+          >
+            {dot ? null : (
+              <>
+                {num
+                  .toString()
+                  .split('')
+                  .map((n, i, arr) => (
+                    <BadgeNumber key={arr.length - i} styled={styled} value={Number(n)} num={num} />
+                  ))}
+                {value > max ? '+' : ''}
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </Transition>
   );
 };

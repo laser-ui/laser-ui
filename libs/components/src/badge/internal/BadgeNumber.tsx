@@ -1,52 +1,56 @@
 import type { Styled } from '../../hooks/useStyled';
 import type { CLASSES } from '../vars';
 
-import { useEffect, useRef, useState } from 'react';
+import { useAsync, useIsomorphicLayoutEffect } from '@laser-ui/hooks';
+import { useRef, useState } from 'react';
 
 interface BadgeNumberProps {
   styled: Styled<typeof CLASSES>;
   value: number;
-  valueDown: boolean;
+  num: number;
 }
 
-export function BadgeNumber(props: BadgeNumberProps): JSX.Element | null {
-  const { styled, value, valueDown } = props;
+export function BadgeNumber(props: BadgeNumberProps): React.ReactElement | null {
+  const { styled, value, num } = props;
+
+  const async = useAsync();
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const dataRef = useRef<{
-    prevValue: number;
-  }>({
-    prevValue: value,
-  });
+  const prevValue = useRef(value);
+  const prevNum = useRef(num);
 
   const [nums, setNums] = useState<number[]>([value]);
 
-  useEffect(() => {
-    if (containerRef.current && dataRef.current.prevValue !== value) {
-      let newNums: number[] = Array.from({ length: 10 }).map((_, i) => i);
-      if (valueDown) {
-        newNums = newNums.concat(Array.from({ length: dataRef.current.prevValue + 1 }).map((_, i) => i));
-        newNums = newNums.slice(newNums.length - 10, newNums.length);
+  useIsomorphicLayoutEffect(() => {
+    if (containerRef.current && num !== prevNum.current) {
+      let prevNums: number[] = Array.from({ length: 10 }).map((_, i) => i);
+      if (num < prevNum.current) {
+        prevNums = prevNums.concat(Array.from({ length: prevValue.current + 1 }).map((_, i) => i));
+        prevNums = prevNums.slice(prevNums.length - 10, prevNums.length);
         containerRef.current.style.cssText = 'transform:translateY(-900%);transition:none;';
       } else {
-        newNums = Array.from({ length: 10 - dataRef.current.prevValue })
-          .map((_, i) => dataRef.current.prevValue + i)
-          .concat(newNums);
-        newNums = newNums.slice(0, 10);
+        prevNums = Array.from({ length: 10 - prevValue.current })
+          .map((_, i) => prevValue.current + i)
+          .concat(prevNums);
+        prevNums = prevNums.slice(0, 10);
         containerRef.current.style.cssText = 'transform:translateY(0);transition:none;';
       }
-      dataRef.current.prevValue = value;
-      setNums(newNums);
+      async.setAfterPainted(() => {
+        if (containerRef.current) {
+          containerRef.current.style.cssText = `transform:translateY(-${prevNums.findIndex((n) => n === value) * 100}%); `;
+        }
+      });
+      setNums(prevNums);
     }
-  }, [value, valueDown]);
+    prevValue.current = value;
+    prevNum.current = num;
 
-  useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.style.cssText = `transform:translateY(-${nums.findIndex((n) => n === value) * 100}%); `;
-    }
+    return () => {
+      async.clearAll();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nums]);
+  }, [num]);
 
   return (
     <div {...styled('badge__number-container')} ref={containerRef}>
