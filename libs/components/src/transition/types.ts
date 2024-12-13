@@ -9,9 +9,11 @@ export interface TransitionProps {
   onBeforeEnter?: (el: HTMLElement | null) => void;
   onEnter?: (el: HTMLElement | null) => void;
   onAfterEnter?: (el: HTMLElement | null) => void;
+  onEnterCancelled?: (el: HTMLElement | null) => void;
   onBeforeLeave?: (el: HTMLElement | null) => void;
   onLeave?: (el: HTMLElement | null) => void;
   onAfterLeave?: (el: HTMLElement | null) => void;
+  onLeaveCancelled?: (el: HTMLElement | null) => void;
 }
 
 export interface CollapseTransitionProps extends TransitionProps {

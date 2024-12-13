@@ -19,15 +19,20 @@ export function Transition(props: TransitionProps): React.ReactElement | null {
     onBeforeEnter,
     onEnter,
     onAfterEnter,
+    onEnterCancelled,
     onBeforeLeave,
     onLeave,
     onAfterLeave,
+    onLeaveCancelled,
   } = props;
 
   const forceUpdate = useForceUpdate();
   const async = useAsync();
 
   const el = useRef<HTMLElement>(null);
+
+  const entering = useRef(false);
+  const leaving = useRef(false);
 
   const skipTransition = useRef(skipFirstTransition);
   const prevEnter = useRef(enter);
@@ -44,16 +49,25 @@ export function Transition(props: TransitionProps): React.ReactElement | null {
     }
     prevEnter.current = enter;
 
-    resetClasses.current();
-    resetClasses.current = () => {
-      if (el.current && name) {
-        for (const className of CLASSES) {
-          el.current.classList.toggle(`${name}-${className}`, false);
-        }
-      }
-    };
-
     if (!skipTransition.current) {
+      if (entering.current) {
+        entering.current = false;
+        onEnterCancelled?.(el.current);
+      }
+      if (leaving.current) {
+        leaving.current = false;
+        onLeaveCancelled?.(el.current);
+      }
+
+      resetClasses.current();
+      resetClasses.current = () => {
+        if (el.current && name) {
+          for (const className of CLASSES) {
+            el.current.classList.toggle(`${name}-${className}`, false);
+          }
+        }
+      };
+
       const addClasses = (classes: ArrayElement<typeof CLASSES>[]) => {
         if (el.current && name) {
           for (const className of classes) {
@@ -69,6 +83,7 @@ export function Transition(props: TransitionProps): React.ReactElement | null {
         }
       };
       if (enter) {
+        entering.current = true;
         onBeforeEnter?.(el.current);
         addClasses(['enter-from', 'enter-active']);
         async.setAfterPainted(() => {
@@ -76,6 +91,7 @@ export function Transition(props: TransitionProps): React.ReactElement | null {
           onEnter?.(el.current);
           addClasses(['enter-active', 'enter-to']);
           const handleAfterEnter = () => {
+            entering.current = false;
             clearTransitionEnd.current();
             removeClasses(['enter-active', 'enter-to']);
             onAfterEnter?.(el.current);
@@ -97,6 +113,7 @@ export function Transition(props: TransitionProps): React.ReactElement | null {
           }
         });
       } else {
+        leaving.current = true;
         onBeforeLeave?.(el.current);
         addClasses(['leave-from', 'leave-active']);
         async.setAfterPainted(() => {
@@ -104,6 +121,7 @@ export function Transition(props: TransitionProps): React.ReactElement | null {
           onLeave?.(el.current);
           addClasses(['leave-active', 'leave-to']);
           const handleAfterLeave = () => {
+            leaving.current = false;
             clearTransitionEnd.current();
             removeClasses(['leave-active', 'leave-to']);
             onAfterLeave?.(el.current);

@@ -82,10 +82,12 @@ export function Button(props: ButtonProps) {
         <CollapseTransition enter={loading} duration={TTANSITION_DURING_SLOW}>
           {(transitionRef, leaved) =>
             leaved ? null : (
-              <div {...styled('button__icon')} ref={transitionRef}>
-                <Icon>
-                  <CircularProgress />
-                </Icon>
+              <div ref={transitionRef} style={{ '--collapse-duration': TTANSITION_DURING_SLOW + 'ms' } as any}>
+                <div {...styled('button__icon')}>
+                  <Icon>
+                    <CircularProgress />
+                  </Icon>
+                </div>
               </div>
             )
           }

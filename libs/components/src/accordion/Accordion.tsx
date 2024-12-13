@@ -7,7 +7,7 @@ import { useId } from 'react';
 import { CLASSES } from './vars';
 import { useComponentProps, useControlled, useNamespace, useStyled } from '../hooks';
 import { Icon } from '../icon';
-import { CollapseTransition } from '../internal/transition';
+import { CollapseTransition } from '../transition';
 import { mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
@@ -187,47 +187,29 @@ export function Accordion<ID extends React.Key, T extends AccordionItem<ID>>(pro
               )}
             </div>
             <CollapseTransition
-              originalSize={{
-                height: 'auto',
-              }}
-              collapsedSize={{
-                height: 0,
-              }}
+              height={0}
               enter={isActive}
-              during={TTANSITION_DURING_BASE}
-              styles={{
-                enter: { opacity: 0 },
-                entering: {
-                  transition: ['height', 'padding', 'margin', 'opacity']
-                    .map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms ease-out`)
-                    .join(', '),
-                },
-                leaving: {
-                  opacity: 0,
-                  transition: ['height', 'padding', 'margin', 'opacity']
-                    .map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms ease-in`)
-                    .join(', '),
-                },
-                leaved: { display: 'none' },
-              }}
-              afterEnter={() => {
+              name={`${namespace}-accordion`}
+              duration={TTANSITION_DURING_BASE}
+              onAfterEnter={() => {
                 afterActiveChange?.(itemId, item, true);
               }}
-              afterLeave={() => {
+              onAfterLeave={() => {
                 afterActiveChange?.(itemId, item, false);
               }}
             >
-              {(regionRef, collapseStyle) => (
-                <div
-                  {...mergeCS(styled('accordion__item-region'), {
-                    style: collapseStyle,
-                  })}
-                  ref={regionRef}
-                  id={regionId}
-                  role="region"
-                  aria-labelledby={getButtonId(itemId)}
-                >
-                  {itemRegion}
+              {(transitionRef, leaved) => (
+                <div ref={transitionRef}>
+                  <div
+                    {...mergeCS(styled('accordion__item-region'), {
+                      style: { ...(leaved ? { display: 'none' } : undefined) },
+                    })}
+                    id={regionId}
+                    role="region"
+                    aria-labelledby={getButtonId(itemId)}
+                  >
+                    {itemRegion}
+                  </div>
                 </div>
               )}
             </CollapseTransition>

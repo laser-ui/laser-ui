@@ -12,8 +12,11 @@ export function CollapseTransition(props: CollapseTransitionProps): React.ReactE
     children,
     name,
     onBeforeEnter,
+    onEnter,
+    onEnterCancelled,
     onBeforeLeave,
-    onAfterLeave,
+    onLeave,
+    onLeaveCancelled,
     width = 0,
     height,
 
@@ -24,14 +27,23 @@ export function CollapseTransition(props: CollapseTransitionProps): React.ReactE
 
   const el = useRef<HTMLElement>(null);
 
-  const calculateSize = (el: HTMLElement | null) => {
+  const cancelled = useRef(false);
+  const offsetWidth = useRef(0);
+  const offsetHeight = useRef(0);
+
+  const saveSize = (el: HTMLElement | null) => {
+    if (el) {
+      offsetWidth.current = el.offsetWidth;
+      offsetHeight.current = el.offsetHeight;
+    }
+  };
+
+  const setSize = (el: HTMLElement | null, size: { width: number; height: number }) => {
     if (el) {
       if (isNumber(height)) {
-        el.style.setProperty(`--${namespace}-collapse-vertical-from`, el.offsetHeight + 'px');
-        el.style.setProperty(`--${namespace}-collapse-vertical-to`, height + 'px');
+        el.style.setProperty(`--${namespace}-collapse-vertical`, size.height + 'px');
       } else {
-        el.style.setProperty(`--${namespace}-collapse-horizontal-from`, el.offsetWidth + 'px');
-        el.style.setProperty(`--${namespace}-collapse-horizontal-to`, width + 'px');
+        el.style.setProperty(`--${namespace}-collapse-horizontal`, size.width + 'px');
       }
     }
   };
@@ -42,14 +54,45 @@ export function CollapseTransition(props: CollapseTransitionProps): React.ReactE
       name={name ?? (isNumber(height) ? `${namespace}-collapse-vertical` : `${namespace}-collapse-horizontal`)}
       onBeforeEnter={(el) => {
         onBeforeEnter?.(el);
-        calculateSize(el);
+
+        if (cancelled.current) {
+          setSize(el, { width: offsetWidth.current, height: offsetHeight.current });
+        } else {
+          setSize(el, { width, height: height ?? 0 });
+        }
+        cancelled.current = false;
+        saveSize(el);
+      }}
+      onEnter={(el) => {
+        onEnter?.(el);
+
+        setSize(el, { width: offsetWidth.current, height: offsetHeight.current });
+      }}
+      onEnterCancelled={(el) => {
+        onEnterCancelled?.(el);
+
+        cancelled.current = true;
+        saveSize(el);
       }}
       onBeforeLeave={(el) => {
         onBeforeLeave?.(el);
-        calculateSize(el);
+
+        if (!cancelled.current) {
+          saveSize(el);
+        }
+        setSize(el, { width: offsetWidth.current, height: offsetHeight.current });
+        cancelled.current = false;
       }}
-      onAfterLeave={(el) => {
-        onAfterLeave?.(el);
+      onLeave={(el) => {
+        onLeave?.(el);
+
+        setSize(el, { width, height: height ?? 0 });
+      }}
+      onLeaveCancelled={(el) => {
+        onLeaveCancelled?.(el);
+
+        cancelled.current = true;
+        saveSize(el);
       }}
     >
       {(ref, leaved) =>
