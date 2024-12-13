@@ -2,7 +2,7 @@
 import type { TransitionProps } from './types';
 import type { ArrayElement } from '../types';
 
-import { useAsync, useForceUpdate, useIsomorphicLayoutEffect, useMount, useUnmount } from '@laser-ui/hooks';
+import { useAsync, useForceUpdate, useIsomorphicLayoutEffect, useUnmount } from '@laser-ui/hooks';
 import { isNumber, isUndefined } from 'lodash';
 import { useRef } from 'react';
 
@@ -15,7 +15,6 @@ export function Transition(props: TransitionProps): React.ReactElement | null {
     name,
     duration,
     skipFirstTransition = true,
-    destroyWhenLeaved = false,
     onBeforeEnter,
     onEnter,
     onAfterEnter,
@@ -30,6 +29,7 @@ export function Transition(props: TransitionProps): React.ReactElement | null {
   const el = useRef<HTMLElement>(null);
 
   const skipTransition = useRef(skipFirstTransition);
+  const prevEnter = useRef(enter);
   const leaved = useRef(skipFirstTransition ? !enter : false);
   if (enter) {
     leaved.current = false;
@@ -38,6 +38,11 @@ export function Transition(props: TransitionProps): React.ReactElement | null {
   const resetClasses = useRef(() => {});
   const clearTransitionEnd = useRef(() => {});
   useIsomorphicLayoutEffect(() => {
+    if (enter !== prevEnter.current) {
+      skipTransition.current = false;
+    }
+    prevEnter.current = enter;
+
     resetClasses.current();
     resetClasses.current = () => {
       if (el.current && name) {
@@ -63,28 +68,16 @@ export function Transition(props: TransitionProps): React.ReactElement | null {
         }
       };
       if (enter) {
-        onBeforeEnter?.();
-        if (el.current && el.current.style.display === 'none') {
-          el.current.style.display = '';
-        }
+        onBeforeEnter?.(el.current);
         addClasses(['enter-from', 'enter-active']);
         async.setAfterPainted(() => {
           removeClasses(['enter-from', 'enter-active']);
-          onEnter?.();
+          onEnter?.(el.current);
           addClasses(['enter-active', 'enter-to']);
-          const handleAfterEnter = (e: any) => {
-            const enter = () => {
-              clearTransitionEnd.current();
-              removeClasses(['enter-active', 'enter-to']);
-              onAfterEnter?.();
-            };
-            if (e instanceof Event) {
-              if (e.target === e.currentTarget) {
-                enter();
-              }
-            } else {
-              enter();
-            }
+          const handleAfterEnter = () => {
+            clearTransitionEnd.current();
+            removeClasses(['enter-active', 'enter-to']);
+            onAfterEnter?.(el.current);
           };
           if (isUndefined(duration)) {
             if (el.current) {
@@ -103,32 +96,18 @@ export function Transition(props: TransitionProps): React.ReactElement | null {
           }
         });
       } else {
-        onBeforeLeave?.();
+        onBeforeLeave?.(el.current);
         addClasses(['leave-from', 'leave-active']);
         async.setAfterPainted(() => {
           removeClasses(['leave-from', 'leave-active']);
-          onLeave?.();
+          onLeave?.(el.current);
           addClasses(['leave-active', 'leave-to']);
-          const handleAfterLeave = (e: any) => {
-            const leave = () => {
-              clearTransitionEnd.current();
-              removeClasses(['leave-active', 'leave-to']);
-              onAfterLeave?.();
-              if (el.current) {
-                el.current.style.display = 'none';
-              }
-              leaved.current = true;
-              if (destroyWhenLeaved) {
-                forceUpdate();
-              }
-            };
-            if (e instanceof Event) {
-              if (e.target === e.currentTarget) {
-                leave();
-              }
-            } else {
-              leave();
-            }
+          const handleAfterLeave = () => {
+            clearTransitionEnd.current();
+            removeClasses(['leave-active', 'leave-to']);
+            onAfterLeave?.(el.current);
+            leaved.current = true;
+            forceUpdate();
           };
           if (isUndefined(duration)) {
             if (el.current) {
@@ -155,14 +134,13 @@ export function Transition(props: TransitionProps): React.ReactElement | null {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enter]);
 
-  useMount(() => {
-    skipTransition.current = false;
-  });
-
   useUnmount(() => {
+    async.clearAll();
     clearTransitionEnd.current();
     resetClasses.current();
   });
 
-  return destroyWhenLeaved && leaved.current ? null : children(el);
+  return children((instance) => {
+    el.current = instance;
+  }, leaved.current);
 }

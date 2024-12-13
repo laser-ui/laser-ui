@@ -4,6 +4,7 @@ import type { BaseProps, Size } from '../types';
 export {};
 
 export interface ButtonProps extends BaseProps<'button', typeof CLASSES>, React.ButtonHTMLAttributes<HTMLButtonElement> {
+  ref: React.Ref<HTMLButtonElement>;
   pattern?: 'primary' | 'secondary' | 'outline' | 'dashed' | 'text' | 'link';
   theme?: 'primary' | 'success' | 'warning' | 'danger';
   loading?: boolean;

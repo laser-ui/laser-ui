@@ -2,19 +2,20 @@ import type { ButtonProps } from './types';
 import type { WaveRef } from '../internal/wave';
 
 import { checkNodeExist } from '@laser-ui/utils';
-import { forwardRef, useRef } from 'react';
+import { useRef } from 'react';
 
 import { CLASSES } from './vars';
 import { useComponentProps, useDesign, useScopedProps, useStyled } from '../hooks';
 import { Icon } from '../icon';
 import { CircularProgress } from '../internal/circular-progress';
-import { CollapseTransition } from '../internal/transition';
 import { Wave } from '../internal/wave';
+import { CollapseTransition } from '../transition';
 import { mergeCS } from '../utils';
 import { TTANSITION_DURING_SLOW } from '../vars';
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref): React.ReactElement | null => {
+export function Button(props: ButtonProps) {
   const {
+    ref,
     children,
     styleOverrides,
     styleProvider,
@@ -78,41 +79,21 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref): R
           )}
         </div>
       ) : (
-        <CollapseTransition
-          originalSize={{
-            width: '',
-          }}
-          collapsedSize={{
-            width: 0,
-          }}
-          enter={loading}
-          during={TTANSITION_DURING_SLOW}
-          styles={{
-            entering: {
-              transition: ['width', 'padding', 'margin'].map((attr) => `${attr} ${TTANSITION_DURING_SLOW}ms linear`).join(', '),
-            },
-            leaving: {
-              transition: ['width', 'padding', 'margin'].map((attr) => `${attr} ${TTANSITION_DURING_SLOW}ms linear`).join(', '),
-            },
-            leaved: { display: 'none' },
-          }}
-          destroyWhenLeaved
-        >
-          {(loadingRef, collapseStyle) => (
-            <div
-              {...mergeCS(styled('button__icon'), {
-                style: collapseStyle,
-              })}
-              ref={loadingRef}
-            >
-              <Icon>
-                <CircularProgress />
-              </Icon>
-            </div>
-          )}
+        <CollapseTransition enter={loading} duration={TTANSITION_DURING_SLOW}>
+          {(transitionRef, leaved) =>
+            leaved ? null : (
+              <div ref={transitionRef}>
+                <div {...styled('button__icon')}>
+                  <Icon>
+                    <CircularProgress />
+                  </Icon>
+                </div>
+              </div>
+            )
+          }
         </CollapseTransition>
       )}
       <div>{children}</div>
     </button>
   );
-});
+}

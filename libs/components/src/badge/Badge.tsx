@@ -8,6 +8,7 @@ import { CLASSES } from './vars';
 import { useComponentProps, useNamespace, useStyled } from '../hooks';
 import { Transition } from '../transition';
 import { mergeCS } from '../utils';
+import { TTANSITION_DURING_BASE } from '../vars';
 
 export const Badge: {
   (props: BadgeProps): React.ReactElement | null;
@@ -30,8 +31,6 @@ export const Badge: {
   const namespace = useNamespace();
   const styled = useStyled(CLASSES, { badge: styleProvider?.badge }, styleOverrides);
 
-  const rootEl = useRef<HTMLDivElement>(null);
-
   const valueSaved = useRef<number>(undefined);
 
   const show = showZero || valueProp > 0;
@@ -44,21 +43,8 @@ export const Badge: {
   });
 
   return (
-    <Transition
-      enter={show}
-      name={`${namespace}-badge`}
-      onBeforeEnter={() => {
-        if (rootEl.current && rootEl.current.style.display === 'none') {
-          rootEl.current.style.display = '';
-        }
-      }}
-      onAfterLeave={() => {
-        if (rootEl.current) {
-          rootEl.current.style.display = 'none';
-        }
-      }}
-    >
-      {(transitionRef) => (
+    <Transition enter={show} name={`${namespace}-badge`} duration={TTANSITION_DURING_BASE}>
+      {(transitionRef, leaved) => (
         <div
           {...restProps}
           {...mergeCS(
@@ -71,18 +57,18 @@ export const Badge: {
               style: {
                 ...restProps.style,
                 ...(alone ? undefined : { top: offset[0], left: offset[1] }),
+                ...(leaved ? { display: 'none' } : undefined),
               },
             },
           )}
-          ref={rootEl}
           title={restProps.title ?? (dot ? undefined : valueProp.toString())}
         >
           <div
             {...styled('badge__wrapper')}
             ref={(el) => {
-              transitionRef.current = el;
+              transitionRef(el);
               return () => {
-                transitionRef.current = null;
+                transitionRef(null);
               };
             }}
           >

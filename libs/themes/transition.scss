@@ -1,0 +1,41 @@
+@use 'variables';
+
+.#{variables.$prefix}collapse-horizontal-enter-active,
+.#{variables.$prefix}collapse-horizontal-leave-active {
+  overflow: hidden;
+  transition:
+    width var(--#{variables.$prefix}animation-duration-slow) linear,
+    padding var(--#{variables.$prefix}animation-duration-slow) linear,
+    margin var(--#{variables.$prefix}animation-duration-slow) linear;
+}
+
+.#{variables.$prefix}collapse-horizontal-enter-to,
+.#{variables.$prefix}collapse-horizontal-leave-from {
+  width: var(--#{variables.$prefix}collapse-horizontal-from);
+}
+
+.#{variables.$prefix}collapse-horizontal-enter-from,
+.#{variables.$prefix}collapse-horizontal-leave-to {
+  width: var(--#{variables.$prefix}collapse-horizontal-to);
+  padding-right: 0;
+  padding-left: 0;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.#{variables.$prefix}collapse-vertical-enter-active,
+.#{variables.$prefix}collapse-vertical-leave-active {
+  overflow: hidden;
+  transition:
+    height var(--#{variables.$prefix}animation-duration-slow) linear,
+    padding var(--#{variables.$prefix}animation-duration-slow) linear,
+    margin var(--#{variables.$prefix}animation-duration-slow) linear;
+}
+
+.#{variables.$prefix}collapse-vertical-enter-from,
+.#{variables.$prefix}collapse-vertical-leave-to {
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
