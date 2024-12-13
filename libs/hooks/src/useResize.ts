@@ -1,6 +1,5 @@
 import { isUndefined } from 'lodash';
 import { useEffect, useRef } from 'react';
-import { flushSync } from 'react-dom';
 
 let checkResize = (cb1: () => void, cb2: () => void, entry: any) => {
   if ('borderBoxSize' in entry) {
@@ -42,7 +41,7 @@ export function useResize(
               (dataRef.current.prevContentRect.width !== entry.borderBoxSize[0].inlineSize ||
                 dataRef.current.prevContentRect.height !== entry.borderBoxSize[0].blockSize)
             ) {
-              flushSync(() => cb?.(entries, observer));
+              cb?.(entries, observer);
             }
             dataRef.current.prevContentRect = { width: entry.borderBoxSize[0].inlineSize, height: entry.borderBoxSize[0].blockSize };
           },
@@ -53,7 +52,7 @@ export function useResize(
               (dataRef.current.prevContentRect.width !== entry.contentRect.width ||
                 dataRef.current.prevContentRect.height !== entry.contentRect.height)
             ) {
-              flushSync(() => cb?.(entries, observer));
+              cb?.(entries, observer);
             }
             dataRef.current.prevContentRect = { width: entry.contentRect.width, height: entry.contentRect.height };
           },
