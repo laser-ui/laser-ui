@@ -7,6 +7,7 @@ import { useId } from 'react';
 import { CLASSES } from './vars';
 import { useComponentProps, useControlled, useNamespace, useStyled } from '../hooks';
 import { Icon } from '../icon';
+import { LazyLoading } from '../internal/lazy-loading';
 import { CollapseTransition } from '../transition';
 import { mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
@@ -20,6 +21,7 @@ export function Accordion<ID extends React.Key, T extends AccordionItem<ID>>(pro
     defaultActive,
     activeOne,
     arrow = 'right',
+    lazyLoading = true,
     onActiveChange,
     afterActiveChange,
 
@@ -199,18 +201,20 @@ export function Accordion<ID extends React.Key, T extends AccordionItem<ID>>(pro
               }}
             >
               {(transitionRef, leaved) => (
-                <div ref={transitionRef}>
-                  <div
-                    {...mergeCS(styled('accordion__item-region'), {
-                      style: { ...(leaved ? { display: 'none' } : undefined) },
-                    })}
-                    id={regionId}
-                    role="region"
-                    aria-labelledby={getButtonId(itemId)}
-                  >
-                    {itemRegion}
+                <LazyLoading hidden={leaved} disabled={!lazyLoading}>
+                  <div ref={transitionRef}>
+                    <div
+                      {...mergeCS(styled('accordion__item-region'), {
+                        style: { ...(leaved ? { display: 'none' } : undefined) },
+                      })}
+                      id={regionId}
+                      role="region"
+                      aria-labelledby={getButtonId(itemId)}
+                    >
+                      {itemRegion}
+                    </div>
                   </div>
-                </div>
+                </LazyLoading>
               )}
             </CollapseTransition>
           </div>

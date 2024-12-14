@@ -19,6 +19,7 @@ export interface AccordionProps<ID extends React.Key, T extends AccordionItem<ID
   defaultActive?: ID | null | ID[];
   activeOne?: boolean;
   arrow?: 'left' | 'right' | false;
+  lazyLoading?: boolean;
   onActiveChange?: (id: any, origin: any) => void;
   afterActiveChange?: (id: ID, origin: T, active: boolean) => void;
 }
