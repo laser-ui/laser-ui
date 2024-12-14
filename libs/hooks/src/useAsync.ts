@@ -34,18 +34,26 @@ class AsyncInstance {
   }
 
   setAfterPainted(cb: () => void, clearFn?: () => void) {
-    let cancel = false;
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    let close = () => {};
     const tid = requestAnimationFrame(() => {
-      queueMicrotask(() => {
-        if (!cancel) {
-          cb();
-        }
-      });
+      const messageChannel = new MessageChannel();
+      close = () => {
+        messageChannel.port1.close();
+        messageChannel.port2.close();
+      };
+
+      messageChannel.port1.onmessage = () => {
+        close();
+        cb();
+      };
+
+      messageChannel.port2.postMessage(undefined);
     });
     const clear = () => {
       clearFn?.();
-      cancel = true;
       cancelAnimationFrame(tid);
+      close();
     };
     this.clearFns.add(clear);
 
