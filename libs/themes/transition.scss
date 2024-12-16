@@ -33,7 +33,7 @@
 .#{variables.$prefix}popup-down-enter-from,
 .#{variables.$prefix}popup-down-leave-to {
   opacity: 0 !important;
-  transform: scaleY(0.7) !important;
+  transform: scaleY(var(--popup-down-scale, 0.7)) !important;
 }
 
 .#{variables.$prefix}popup-down-enter-to {

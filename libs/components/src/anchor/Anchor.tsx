@@ -1,16 +1,21 @@
-import type { AnchorItem, AnchorProps, AnchorRef } from './types';
+import type { AnchorItem, AnchorProps } from './types';
 
-import { useEvent, useEventCallback, useMount, useRefExtra, useResize } from '@laser-ui/hooks';
+import { useEvent, useEventCallback, useIsomorphicLayoutEffect, useRefExtra, useResize } from '@laser-ui/hooks';
 import { getOffsetToRoot, scrollTo, toPx } from '@laser-ui/utils';
 import { isArray, isString, isUndefined } from 'lodash';
-import { Fragment, forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { Fragment, useImperativeHandle, useRef, useState } from 'react';
 
 import { CLASSES, DOT_INDICATOR, LINE_INDICATOR } from './vars';
 import { useComponentProps, useLayout, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-function AnchorFC<T extends AnchorItem>(props: AnchorProps<T>, ref: React.ForwardedRef<AnchorRef>): React.ReactElement | null {
+export const Anchor: {
+  <T extends AnchorItem>(props: AnchorProps<T>): React.ReactElement | null;
+  DOT_INDICATOR: typeof DOT_INDICATOR;
+  LINE_INDICATOR: typeof LINE_INDICATOR;
+} = <T extends AnchorItem>(props: AnchorProps<T>) => {
   const {
+    ref,
     styleOverrides,
     styleProvider,
     list,
@@ -30,9 +35,8 @@ function AnchorFC<T extends AnchorItem>(props: AnchorProps<T>, ref: React.Forwar
   const anchorRef = useRef<HTMLUListElement>(null);
   const indicatorRef = useRef<HTMLDivElement>(null);
 
-  const dataRef = useRef<{
-    clearTid?: () => void;
-  }>({});
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const clearTid = useRef(() => {});
 
   const [active, setActive] = useState<string | null>(null);
 
@@ -72,9 +76,9 @@ function AnchorFC<T extends AnchorItem>(props: AnchorProps<T>, ref: React.Forwar
       }
     }
   });
-  useMount(() => {
+  useIsomorphicLayoutEffect(() => {
     updateAnchor();
-  });
+  }, []);
 
   useEvent(pageRef, 'scroll', updateAnchor, { passive: true });
 
@@ -101,47 +105,14 @@ function AnchorFC<T extends AnchorItem>(props: AnchorProps<T>, ref: React.Forwar
       if (el) {
         const top = getOffsetToRoot(el);
         const distance = isString(distanceProp) ? toPx(distanceProp, true) : distanceProp;
-        dataRef.current.clearTid?.();
-        dataRef.current.clearTid = scrollTo(pageRef.current, {
+        clearTid.current();
+        clearTid.current = scrollTo(pageRef.current, {
           top: top - pageTop - distance,
           behavior: scrollBehavior,
         });
       }
     }
   };
-  const linkNodes = (() => {
-    const getNodes = (arr: T[], level = 0): React.ReactElement[] =>
-      arr.map((link) => {
-        const { title: linkTitle, href: linkHref, target: linkTarget, children } = link;
-        return (
-          <Fragment key={`${linkHref}-${level}`}>
-            <li
-              {...styled('anchor__link', {
-                'anchor__link.is-active': linkHref === active,
-              })}
-              data-l-href={linkHref}
-            >
-              <a
-                style={{ paddingLeft: 16 + level * 16 }}
-                href={`#${linkHref}`}
-                target={linkTarget}
-                onClick={(e) => {
-                  e.preventDefault();
-
-                  handleLinkClick(linkHref);
-                  onClick?.(linkHref, link);
-                }}
-              >
-                {linkTitle ?? linkHref}
-              </a>
-            </li>
-            {children && getNodes(children as T[], level + 1)}
-          </Fragment>
-        );
-      });
-
-    return getNodes(list);
-  })();
 
   return (
     <ul
@@ -163,16 +134,42 @@ function AnchorFC<T extends AnchorItem>(props: AnchorProps<T>, ref: React.Forwar
           )}
         </div>
       </div>
-      {linkNodes}
+      {(() => {
+        const getNodes = (arr: T[], level = 0): React.ReactElement[] =>
+          arr.map((link) => {
+            const { title: linkTitle, href: linkHref, target: linkTarget, children } = link;
+            return (
+              <Fragment key={`${linkHref}-${level}`}>
+                <li
+                  {...styled('anchor__link', {
+                    'anchor__link.is-active': linkHref === active,
+                  })}
+                  data-l-href={linkHref}
+                >
+                  <a
+                    style={{ paddingLeft: 16 + level * 16 }}
+                    href={`#${linkHref}`}
+                    target={linkTarget}
+                    onClick={(e) => {
+                      e.preventDefault();
+
+                      handleLinkClick(linkHref);
+                      onClick?.(linkHref, link);
+                    }}
+                  >
+                    {linkTitle ?? linkHref}
+                  </a>
+                </li>
+                {children && getNodes(children as T[], level + 1)}
+              </Fragment>
+            );
+          });
+
+        return getNodes(list);
+      })()}
     </ul>
   );
-}
-
-export const Anchor: {
-  <T extends AnchorItem>(props: AnchorProps<T> & React.RefAttributes<AnchorRef>): ReturnType<typeof AnchorFC>;
-  DOT_INDICATOR: typeof DOT_INDICATOR;
-  LINE_INDICATOR: typeof LINE_INDICATOR;
-} = forwardRef(AnchorFC) as any;
+};
 
 Anchor.DOT_INDICATOR = DOT_INDICATOR;
 Anchor.LINE_INDICATOR = LINE_INDICATOR;

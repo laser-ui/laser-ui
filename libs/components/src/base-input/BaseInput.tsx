@@ -1,10 +1,11 @@
 import type { BaseInputProps } from './types';
 
 import { isString } from 'lodash';
-import { forwardRef, useState } from 'react';
+import { useState } from 'react';
 
-export const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, ref) => {
+export function BaseInput(props: BaseInputProps) {
   const {
+    ref,
     value,
     onValueChange,
 
@@ -40,4 +41,4 @@ export const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>((props, re
       }}
     />
   );
-});
+}

@@ -205,7 +205,7 @@ export function MenuSub(props: MenuSubProps): React.ReactElement | null {
                       {...mergeCS(styled('menu-popup'), {
                         style: {
                           zIndex: `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`,
-                          ...(inHorizontalNav ? undefined : { minWidth: 160 }),
+                          ...(inHorizontalNav ? undefined : { '--popup-down-scale': 0.01, minWidth: 160 }),
                           ...(leaved ? { display: 'none' } : undefined),
                         },
                       })}

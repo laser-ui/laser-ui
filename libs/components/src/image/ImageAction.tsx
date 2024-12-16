@@ -1,13 +1,12 @@
 import type { ImageActionProps } from './types';
 
-import { forwardRef } from 'react';
-
 import { CLASSES } from './vars';
 import { useComponentProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-export const ImageAction = forwardRef<HTMLButtonElement, ImageActionProps>((props, ref): React.ReactElement | null => {
+export function ImageAction(props: ImageActionProps): React.ReactElement | null {
   const {
+    ref,
     children,
     styleOverrides,
     styleProvider,
@@ -30,4 +29,4 @@ export const ImageAction = forwardRef<HTMLButtonElement, ImageActionProps>((prop
       {children}
     </button>
   );
-});
+}

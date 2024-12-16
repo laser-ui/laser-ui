@@ -1,8 +1,9 @@
 import type { TableEmptyProps } from './types';
 
+import { useIsomorphicLayoutEffect } from '@laser-ui/hooks';
 import { checkNodeExist } from '@laser-ui/utils';
 import { isUndefined } from 'lodash';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 
 import { CLASSES } from './vars';
 import { Empty } from '../empty';
@@ -23,7 +24,7 @@ export function TableEmpty(props: TableEmptyProps): React.ReactElement | null {
 
   const tdRef = useRef<HTMLTableCellElement>(null);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (isUndefined(colSpan) && tdRef.current) {
       let tableEl = tdRef.current.parentElement;
       while (tableEl && tableEl.tagName.toLowerCase() !== 'table') {

@@ -14,7 +14,7 @@ export interface CardHeaderProps extends BaseProps<'card', typeof CLASSES>, Reac
 export interface CardContentProps extends BaseProps<'card', typeof CLASSES>, React.HTMLAttributes<HTMLDivElement> {}
 
 export interface CardActionsProps extends BaseProps<'card', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
-  actions: React.ReactNode[];
+  actions: (React.ReactNode | { id: React.Key; action: React.ReactNode })[];
 }
 
 export interface CardActionProps extends BaseProps<'card', typeof CLASSES>, React.HTMLAttributes<HTMLDivElement> {

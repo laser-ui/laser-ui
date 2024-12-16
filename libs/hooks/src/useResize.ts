@@ -21,12 +21,10 @@ export function useResize(
 ): void {
   const { skipEmpty = true } = options ?? {};
 
-  const dataRef = useRef<{
-    prevContentRect?: { width: number; height: number };
-  }>({});
+  const prevContentRect = useRef<{ width: number; height: number }>(undefined);
 
   if (disabled) {
-    dataRef.current.prevContentRect = undefined;
+    prevContentRect.current = undefined;
   }
 
   useEffect(() => {
@@ -36,25 +34,24 @@ export function useResize(
         checkResize(
           () => {
             if (
-              !isUndefined(dataRef.current.prevContentRect) &&
+              !isUndefined(prevContentRect.current) &&
               !(skipEmpty && entry.borderBoxSize[0].blockSize === 0 && entry.borderBoxSize[0].inlineSize === 0) &&
-              (dataRef.current.prevContentRect.width !== entry.borderBoxSize[0].inlineSize ||
-                dataRef.current.prevContentRect.height !== entry.borderBoxSize[0].blockSize)
+              (prevContentRect.current.width !== entry.borderBoxSize[0].inlineSize ||
+                prevContentRect.current.height !== entry.borderBoxSize[0].blockSize)
             ) {
               cb?.(entries, observer);
             }
-            dataRef.current.prevContentRect = { width: entry.borderBoxSize[0].inlineSize, height: entry.borderBoxSize[0].blockSize };
+            prevContentRect.current = { width: entry.borderBoxSize[0].inlineSize, height: entry.borderBoxSize[0].blockSize };
           },
           () => {
             if (
-              !isUndefined(dataRef.current.prevContentRect) &&
+              !isUndefined(prevContentRect.current) &&
               !(skipEmpty && entry.contentRect.width === 0 && entry.contentRect.height === 0) &&
-              (dataRef.current.prevContentRect.width !== entry.contentRect.width ||
-                dataRef.current.prevContentRect.height !== entry.contentRect.height)
+              (prevContentRect.current.width !== entry.contentRect.width || prevContentRect.current.height !== entry.contentRect.height)
             ) {
               cb?.(entries, observer);
             }
-            dataRef.current.prevContentRect = { width: entry.contentRect.width, height: entry.contentRect.height };
+            prevContentRect.current = { width: entry.contentRect.width, height: entry.contentRect.height };
           },
           entry,
         );

@@ -1,7 +1,8 @@
 import type { Styled } from '../../hooks/useStyled';
 
+import { useIsomorphicLayoutEffect } from '@laser-ui/hooks';
 import { isNumber, isUndefined } from 'lodash';
-import { createElement, useContext, useEffect, useRef } from 'react';
+import { use, useRef } from 'react';
 
 import { mergeCS } from '../../utils';
 import { TableContext, type CLASSES } from '../vars';
@@ -44,7 +45,7 @@ export function TableCell(props: TableCellProps): React.ReactElement | null {
     ...restProps
   } = props;
 
-  const tableContext = useContext(TableContext);
+  const tableContext = use(TableContext);
 
   const cellRef = useRef<HTMLTableCellElement>(null);
 
@@ -70,7 +71,7 @@ export function TableCell(props: TableCellProps): React.ReactElement | null {
     }
   }
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (cellRef.current && cellRef.current.parentElement) {
       let showShadow = false;
       if (fixedLeft && tableContext.fixed.includes('left')) {
@@ -91,27 +92,26 @@ export function TableCell(props: TableCellProps): React.ReactElement | null {
     }
   });
 
-  return createElement(
-    tag,
-    {
-      ...restProps,
-      ...mergeCS(
-        styled('table__cell', `table__cell--${align}`, {
-          'table__cell--fixed-left': fixedLeft,
-          'table__cell--fixed-right': fixedRight,
-          'table__cell--ellipsis': ellipsis,
-        }),
-        {
-          className: restProps.className,
-          style: {
-            ...restProps.style,
-            ...fixedStyle,
-            width: isUndefined(width) ? undefined : width,
-          },
+  const nodeProps = {
+    ...restProps,
+    ...mergeCS(
+      styled('table__cell', `table__cell--${align}`, {
+        'table__cell--fixed-left': fixedLeft,
+        'table__cell--fixed-right': fixedRight,
+        'table__cell--ellipsis': ellipsis,
+      }),
+      {
+        className: restProps.className,
+        style: {
+          ...restProps.style,
+          ...fixedStyle,
+          width: isUndefined(width) ? undefined : width,
         },
-      ),
-      ref: cellRef,
-    },
+      },
+    ),
+    ref: cellRef,
+  };
+  const child = (
     <div
       {...mergeCS(styled('table__cell-content'), {
         style: {
@@ -120,6 +120,8 @@ export function TableCell(props: TableCellProps): React.ReactElement | null {
       })}
     >
       {children}
-    </div>,
+    </div>
   );
+
+  return tag === 'th' ? <th {...nodeProps}>{child}</th> : <td {...nodeProps}>{child}</td>;
 }

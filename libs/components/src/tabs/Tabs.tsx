@@ -1,4 +1,4 @@
-import type { TabsItem, TabsProps, TabsRef } from './types';
+import type { TabsItem, TabsProps } from './types';
 import type { DropdownItem } from '../dropdown/types';
 
 import { useEventCallback, useIsomorphicLayoutEffect, useResize } from '@laser-ui/hooks';
@@ -7,7 +7,7 @@ import AddOutlined from '@material-design-icons/svg/outlined/add.svg?react';
 import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
 import MoreHorizOutlined from '@material-design-icons/svg/outlined/more_horiz.svg?react';
 import { isUndefined, nth } from 'lodash';
-import { forwardRef, useEffect, useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
 
 import { CLASSES } from './vars';
 import { Dropdown } from '../dropdown';
@@ -16,11 +16,9 @@ import { Icon } from '../icon';
 import { LazyLoading } from '../internal/lazy-loading';
 import { mergeCS } from '../utils';
 
-function TabsFC<ID extends React.Key, T extends TabsItem<ID>>(
-  props: TabsProps<ID, T>,
-  ref: React.ForwardedRef<TabsRef>,
-): React.ReactElement | null {
+export function Tabs<ID extends React.Key, T extends TabsItem<ID>>(props: TabsProps<ID, T>): React.ReactElement | null {
   const {
+    ref,
     styleOverrides,
     styleProvider,
     list,
@@ -118,7 +116,6 @@ function TabsFC<ID extends React.Key, T extends TabsItem<ID>>(
   };
   useIsomorphicLayoutEffect(() => {
     refreshTabs();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useResize(tablistWrapperRef, refreshTabs);
@@ -408,7 +405,3 @@ function TabsFC<ID extends React.Key, T extends TabsItem<ID>>(
     </div>
   );
 }
-
-export const Tabs: <ID extends React.Key, T extends TabsItem<ID>>(
-  props: TabsProps<ID, T> & React.RefAttributes<TabsRef>,
-) => ReturnType<typeof TabsFC> = forwardRef(TabsFC) as any;

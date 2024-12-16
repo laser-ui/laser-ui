@@ -1,16 +1,18 @@
-import type { SelectItem, SelectProps, SelectRef } from './types';
+/* eslint-disable @typescript-eslint/no-empty-function */
+import type { SelectItem, SelectProps } from './types';
+import type { BaseInputProps } from '../base-input';
 import type { DropdownItem } from '../dropdown/types';
 import type { VirtualScrollOptimization } from '../virtual-scroll/types';
 
-import { useEventCallback, useForkRef, useResize } from '@laser-ui/hooks';
-import { findNested, scrollIntoViewIfNeeded } from '@laser-ui/utils';
+import { useEventCallback, useResize } from '@laser-ui/hooks';
+import { findNested, scrollIntoViewIfNeeded, setRef } from '@laser-ui/utils';
 import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
 import AddOutlined from '@material-design-icons/svg/outlined/add.svg?react';
 import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
 import KeyboardArrowDownOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_down.svg?react';
 import SearchOutlined from '@material-design-icons/svg/outlined/search.svg?react';
 import { isNull, isNumber, isUndefined } from 'lodash';
-import { createElement, forwardRef, useCallback, useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { useCallback, useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
 
 import { CLASSES, IS_CREATED } from './vars';
 import { BaseInput } from '../base-input';
@@ -23,7 +25,6 @@ import {
   useControlled,
   useDesign,
   useFocusVisible,
-  useJSS,
   useLayout,
   useMaxIndex,
   useNamespace,
@@ -34,18 +35,16 @@ import {
 import { Icon } from '../icon';
 import { CircularProgress } from '../internal/circular-progress';
 import { Portal } from '../internal/portal';
-import { Transition } from '../internal/transition';
 import { ROOT_DATA } from '../root/vars';
 import { Tag } from '../tag';
+import { Transition } from '../transition';
 import { getVerticalSidePosition, isPrintableCharacter, mergeCS } from '../utils';
 import { TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../vars';
 import { VirtualScroll, type VirtualScrollRef } from '../virtual-scroll';
 
-function SelectFC<V extends React.Key, T extends SelectItem<V>>(
-  props: SelectProps<V, T>,
-  ref: React.ForwardedRef<SelectRef>,
-): React.ReactElement | null {
+export function Select<V extends React.Key, T extends SelectItem<V>>(props: SelectProps<V, T>): React.ReactElement | null {
   const {
+    ref,
     styleOverrides,
     styleProvider,
     formControl,
@@ -70,8 +69,7 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
     customSelected,
     customSearch,
     createItem,
-    inputRef: inputRefProp,
-    inputRender,
+    inputProps,
     popupRender,
     onModelChange,
     onVisibleChange,
@@ -86,7 +84,6 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
 
   const namespace = useNamespace();
   const styled = useStyled(CLASSES, { select: styleProvider?.select, 'select-popup': styleProvider?.['select-popup'] }, styleOverrides);
-  const sheet = useJSS<'position'>();
 
   const { t } = useTranslation();
 
@@ -100,7 +97,6 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
   const popupRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const combineInputRef = useForkRef(inputRef, inputRefProp);
   const vsRef = useRef<VirtualScrollRef<T>>(null);
 
   const itemsMap = useMemo(() => {
@@ -216,7 +212,7 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
   })();
   const list = hasSearch ? searchList : listProp;
 
-  const [focusVisible, focusVisibleWrapper] = useFocusVisible(
+  const [focusVisible, focusVisibleProps] = useFocusVisible(
     (code) => code.startsWith('Arrow') || ['Home', 'End', 'Enter', 'Space'].includes(code),
   );
   const [_itemFocusedWithoutSearch, setItemFocusedWithoutSearch] = useState<T | undefined>();
@@ -268,7 +264,6 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
   const maxZIndex = useMaxIndex(visible);
   const zIndex = `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
 
-  const transformOrigin = useRef<string>();
   const updatePosition = useEventCallback(() => {
     if (visible && boxRef.current && popupRef.current) {
       if (monospaced) {
@@ -282,16 +277,12 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
             inWindow: WINDOW_SPACE,
           },
         );
-        transformOrigin.current = position.transformOrigin;
-        if (sheet.classes.position) {
-          popupRef.current.classList.toggle(sheet.classes.position, false);
-        }
-        sheet.replaceRule('position', {
-          top: position.top,
-          left: position.left,
-          width,
-        });
-        popupRef.current.classList.toggle(sheet.classes.position, true);
+        popupRef.current.style.setProperty(`--popup-down-transform-origin`, position.transformOrigin);
+        popupRef.current.style.top = position.top + 'px';
+        popupRef.current.style.left = position.left + 'px';
+        popupRef.current.style.width = width + 'px';
+        popupRef.current.style.minWidth = '';
+        popupRef.current.style.maxWidth = '';
       } else {
         const boxWidth = boxRef.current.offsetWidth;
         const height = popupRef.current.offsetHeight;
@@ -305,17 +296,12 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
             inWindow: WINDOW_SPACE,
           },
         );
-        transformOrigin.current = position.transformOrigin;
-        if (sheet.classes.position) {
-          popupRef.current.classList.toggle(sheet.classes.position, false);
-        }
-        sheet.replaceRule('position', {
-          top: position.top,
-          left: position.left,
-          minWidth: Math.min(boxWidth, maxWidth),
-          maxWidth,
-        });
-        popupRef.current.classList.toggle(sheet.classes.position, true);
+        popupRef.current.style.setProperty(`--popup-down-transform-origin`, position.transformOrigin);
+        popupRef.current.style.top = position.top + 'px';
+        popupRef.current.style.left = position.left + 'px';
+        popupRef.current.style.width = '';
+        popupRef.current.style.minWidth = Math.min(boxWidth, maxWidth) + 'px';
+        popupRef.current.style.maxWidth = maxWidth + 'px';
       }
     }
   });
@@ -340,167 +326,9 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
     }
   };
 
-  const scrollCallback = useRef<() => void>();
+  const scrollCallback = useRef(() => {});
   const inputable = searchable && visible;
   const clearable = clearableProp && hasSelected && !visible && !loading && !disabled;
-  const inputNode = focusVisibleWrapper(
-    createElement<any>(
-      searchable ? BaseInput : 'div',
-      Object.assign(
-        {
-          ...mergeCS(styled('select__search'), {
-            style: {
-              opacity: inputable ? undefined : 0,
-              zIndex: inputable ? undefined : -1,
-            },
-          }),
-          ...formControl?.inputAria,
-          ref: combineInputRef,
-          tabIndex: disabled ? -1 : 0,
-          role: 'combobox',
-          'aria-haspopup': 'listbox',
-          'aria-expanded': visible,
-          'aria-controls': listId,
-          onBlur: () => {
-            changeVisible(false);
-          },
-          onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
-            if (e.code === 'Escape') {
-              if (visible && escClosable) {
-                e.stopPropagation();
-                e.preventDefault();
-                changeVisible(false);
-              }
-            } else {
-              const focusItem = (code: 'next' | 'prev' | 'first' | 'last') => {
-                if (listRef.current) {
-                  let item: T | undefined;
-                  switch (code) {
-                    case 'next':
-                      item = vsRef.current?.scrollToStep(listRef.current, 1);
-                      break;
-
-                    case 'prev':
-                      item = vsRef.current?.scrollToStep(listRef.current, -1);
-                      break;
-
-                    case 'first':
-                      item = vsRef.current?.scrollToStart(listRef.current);
-                      break;
-
-                    case 'last':
-                      item = vsRef.current?.scrollToEnd(listRef.current);
-                      break;
-
-                    default:
-                      break;
-                  }
-                  if (item) {
-                    changeItemFocused(item);
-                    if (virtual === false) {
-                      scrollCallback.current = () => {
-                        const el = document.getElementById(getItemId((item as T).value));
-                        if (el) {
-                          scrollIntoViewIfNeeded(el, listRef.current as HTMLUListElement);
-                        }
-                      };
-                      if (visible) {
-                        scrollCallback.current();
-                        scrollCallback.current = undefined;
-                      }
-                    }
-                  }
-                }
-              };
-              if (visible) {
-                switch (e.code) {
-                  case 'ArrowUp': {
-                    e.preventDefault();
-                    focusItem('prev');
-                    break;
-                  }
-
-                  case 'ArrowDown': {
-                    e.preventDefault();
-                    focusItem('next');
-                    break;
-                  }
-
-                  case 'Home': {
-                    e.preventDefault();
-                    focusItem('first');
-                    break;
-                  }
-
-                  case 'End': {
-                    e.preventDefault();
-                    focusItem('last');
-                    break;
-                  }
-
-                  default: {
-                    if (e.code === 'Enter' || (e.code === 'Space' && !searchable)) {
-                      e.preventDefault();
-                      if (itemFocused) {
-                        if ((itemFocused as any)[IS_CREATED]) {
-                          handleCreateItem(itemFocused);
-                        }
-                        changeSelectedByClick(itemFocused.value);
-                      }
-                    }
-                    break;
-                  }
-                }
-              } else if (!(searchable && ['Home', 'End', 'Enter', 'Space'].includes(e.code))) {
-                switch (e.code) {
-                  case 'End':
-                  case 'ArrowUp': {
-                    e.preventDefault();
-                    changeVisible(true);
-                    focusItem('last');
-                    break;
-                  }
-
-                  case 'Home':
-                  case 'ArrowDown': {
-                    e.preventDefault();
-                    changeVisible(true);
-                    focusItem('first');
-                    break;
-                  }
-
-                  case 'Enter':
-                  case 'Space': {
-                    e.preventDefault();
-                    changeVisible(true);
-                    break;
-                  }
-
-                  default: {
-                    if (isPrintableCharacter(e.key)) {
-                      changeVisible(true);
-                    }
-                    break;
-                  }
-                }
-              }
-            }
-          },
-        },
-        searchable
-          ? {
-              type: 'text',
-              value: searchValue,
-              autoComplete: 'off',
-              disabled,
-              onValueChange: (val: string) => {
-                changeSearchValue(val);
-              },
-            }
-          : {},
-      ),
-    ),
-  );
 
   const [selectedNode, suffixNode, selectedLabel] = (() => {
     let selectedNode: React.ReactNode = null;
@@ -614,7 +442,180 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
         }}
       >
         <div {...styled('select__container')} title={selectedLabel}>
-          {inputRender ? inputRender(inputNode) : inputNode}
+          {(() => {
+            const nodeProps: any = Object.assign(
+              {
+                ...inputProps,
+                ...mergeCS(styled('select__search'), {
+                  style: {
+                    opacity: inputable ? undefined : 0,
+                    zIndex: inputable ? undefined : -1,
+                  },
+                }),
+                ...formControl?.inputAria,
+                ref: (instance) => {
+                  inputRef.current = instance;
+                  const ret = setRef(inputProps?.ref, instance);
+                  return () => {
+                    inputRef.current = null;
+                    ret();
+                  };
+                },
+                tabIndex: disabled ? -1 : 0,
+                role: 'combobox',
+                'aria-haspopup': 'listbox',
+                'aria-expanded': visible,
+                'aria-controls': listId,
+                onFocus: (e) => {
+                  inputProps?.onFocus?.(e);
+                  focusVisibleProps.onFocus(e);
+                },
+                onBlur: (e) => {
+                  inputProps?.onBlur?.(e);
+                  focusVisibleProps.onBlur(e);
+
+                  changeVisible(false);
+                },
+                onKeyDown: (e) => {
+                  inputProps?.onKeyDown?.(e);
+                  focusVisibleProps.onKeyDown(e);
+
+                  if (e.code === 'Escape') {
+                    if (visible && escClosable) {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      changeVisible(false);
+                    }
+                  } else {
+                    const focusItem = (code: 'next' | 'prev' | 'first' | 'last') => {
+                      if (listRef.current) {
+                        let item: T | undefined;
+                        switch (code) {
+                          case 'next':
+                            item = vsRef.current?.scrollToStep(listRef.current, 1);
+                            break;
+
+                          case 'prev':
+                            item = vsRef.current?.scrollToStep(listRef.current, -1);
+                            break;
+
+                          case 'first':
+                            item = vsRef.current?.scrollToStart(listRef.current);
+                            break;
+
+                          case 'last':
+                            item = vsRef.current?.scrollToEnd(listRef.current);
+                            break;
+
+                          default:
+                            break;
+                        }
+                        if (item) {
+                          changeItemFocused(item);
+                          if (virtual === false) {
+                            scrollCallback.current = () => {
+                              scrollCallback.current = () => {};
+                              const el = document.getElementById(getItemId((item as T).value));
+                              if (el) {
+                                scrollIntoViewIfNeeded(el, listRef.current as HTMLUListElement);
+                              }
+                            };
+                            if (visible) {
+                              scrollCallback.current();
+                            }
+                          }
+                        }
+                      }
+                    };
+                    if (visible) {
+                      switch (e.code) {
+                        case 'ArrowUp': {
+                          e.preventDefault();
+                          focusItem('prev');
+                          break;
+                        }
+
+                        case 'ArrowDown': {
+                          e.preventDefault();
+                          focusItem('next');
+                          break;
+                        }
+
+                        case 'Home': {
+                          e.preventDefault();
+                          focusItem('first');
+                          break;
+                        }
+
+                        case 'End': {
+                          e.preventDefault();
+                          focusItem('last');
+                          break;
+                        }
+
+                        default: {
+                          if (e.code === 'Enter' || (e.code === 'Space' && !searchable)) {
+                            e.preventDefault();
+                            if (itemFocused) {
+                              if ((itemFocused as any)[IS_CREATED]) {
+                                handleCreateItem(itemFocused);
+                              }
+                              changeSelectedByClick(itemFocused.value);
+                            }
+                          }
+                          break;
+                        }
+                      }
+                    } else if (!(searchable && ['Home', 'End', 'Enter', 'Space'].includes(e.code))) {
+                      switch (e.code) {
+                        case 'End':
+                        case 'ArrowUp': {
+                          e.preventDefault();
+                          changeVisible(true);
+                          focusItem('last');
+                          break;
+                        }
+
+                        case 'Home':
+                        case 'ArrowDown': {
+                          e.preventDefault();
+                          changeVisible(true);
+                          focusItem('first');
+                          break;
+                        }
+
+                        case 'Enter':
+                        case 'Space': {
+                          e.preventDefault();
+                          changeVisible(true);
+                          break;
+                        }
+
+                        default: {
+                          if (isPrintableCharacter(e.key)) {
+                            changeVisible(true);
+                          }
+                          break;
+                        }
+                      }
+                    }
+                  }
+                },
+              } as React.ComponentPropsWithRef<'input'>,
+              searchable
+                ? ({
+                    type: 'text',
+                    value: searchValue,
+                    autoComplete: 'off',
+                    disabled,
+                    onValueChange: (val) => {
+                      changeSearchValue(val);
+                    },
+                  } as BaseInputProps)
+                : {},
+            );
+            return searchable ? <BaseInput {...nodeProps} /> : <div {...nodeProps} />;
+          })()}
           {!inputable &&
             (hasSelected ? (
               <div {...styled('select__content')}>{selectedNode}</div>
@@ -678,194 +679,164 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
       >
         <Transition
           enter={visible}
-          during={TTANSITION_DURING_POPUP}
-          afterRender={() => {
+          name={`${namespace}-popup-down`}
+          duration={TTANSITION_DURING_POPUP}
+          onSkipEnter={() => {
             updatePosition();
-            scrollCallback.current?.();
-            scrollCallback.current = undefined;
+            scrollCallback.current();
           }}
-          afterEnter={() => {
+          onBeforeEnter={() => {
+            updatePosition();
+            scrollCallback.current();
+          }}
+          onAfterEnter={() => {
             afterVisibleChange?.(true);
           }}
-          afterLeave={() => {
+          onAfterLeave={() => {
             afterVisibleChange?.(false);
           }}
         >
-          {(state) => {
-            let transitionStyle: React.CSSProperties = {};
-            switch (state) {
-              case 'enter':
-                transitionStyle = { transform: 'scaleY(0.7)', opacity: 0 };
-                break;
-
-              case 'entering':
-                transitionStyle = {
-                  transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-out`).join(', '),
-                  transformOrigin: transformOrigin.current,
+          {(transitionRef, leaved) => (
+            <div
+              {...mergeCS(styled('select-popup'), {
+                style: {
+                  zIndex,
+                  ...(leaved ? { display: 'none' } : undefined),
+                },
+              })}
+              ref={(instance) => {
+                popupRef.current = instance;
+                transitionRef(instance);
+                return () => {
+                  popupRef.current = null;
+                  transitionRef(null);
                 };
-                break;
+              }}
+              onMouseDown={(e) => {
+                preventBlur(e);
+              }}
+              onMouseUp={(e) => {
+                preventBlur(e);
+              }}
+            >
+              {(() => {
+                const el = (
+                  <div {...styled('select-popup__content')}>
+                    {loading && (
+                      <div
+                        {...styled('select-popup__loading', {
+                          'select-popup__loading--empty': list.length === 0,
+                        })}
+                      >
+                        <Icon>
+                          <CircularProgress />
+                        </Icon>
+                      </div>
+                    )}
+                    {loading && list.length === 0 ? null : (
+                      <VirtualScroll
+                        {...vsProps}
+                        ref={vsRef}
+                        enable={virtual !== false}
+                        listSize={264}
+                        listPadding={4}
+                        itemRender={(item, index, props, ancestry, children) => {
+                          const { label: itemLabel, value: itemValue, disabled: itemDisabled } = item;
 
-              case 'leaving':
-                transitionStyle = {
-                  transform: 'scaleY(0.7)',
-                  opacity: 0,
-                  transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-in`).join(', '),
-                  transformOrigin: transformOrigin.current,
-                };
-                break;
+                          const node = customItem ? customItem(item) : itemLabel;
 
-              case 'leaved':
-                transitionStyle = { display: 'none' };
-                break;
-
-              default:
-                break;
-            }
-
-            return (
-              <div
-                {...mergeCS(styled('select-popup'), {
-                  style: {
-                    zIndex,
-                    ...transitionStyle,
-                  },
-                })}
-                ref={popupRef}
-                onMouseDown={(e) => {
-                  preventBlur(e);
-                }}
-                onMouseUp={(e) => {
-                  preventBlur(e);
-                }}
-              >
-                {(() => {
-                  const el = (
-                    <div {...styled('select-popup__content')}>
-                      {loading && (
-                        <div
-                          {...styled('select-popup__loading', {
-                            'select-popup__loading--empty': list.length === 0,
-                          })}
-                        >
-                          <Icon>
-                            <CircularProgress />
-                          </Icon>
-                        </div>
-                      )}
-                      {loading && list.length === 0 ? null : (
-                        <VirtualScroll
-                          {...vsProps}
-                          ref={vsRef}
-                          enable={virtual !== false}
-                          listSize={264}
-                          listPadding={4}
-                          itemRender={(item, index, props, ancestry, children) => {
-                            const { label: itemLabel, value: itemValue, disabled: itemDisabled } = item;
-
-                            const node = customItem ? customItem(item) : itemLabel;
-
-                            if (children) {
-                              return (
-                                <ul {...styled('select__option-group')} key={itemValue} role="group" aria-labelledby={getItemId(itemValue)}>
-                                  <li
-                                    {...styled('select__option-group-label')}
-                                    key={itemValue}
-                                    id={getItemId(itemValue)}
-                                    role="presentation"
-                                  >
-                                    <div {...styled('select__option-content')}>{node}</div>
-                                  </li>
-                                  {children}
-                                </ul>
-                              );
-                            }
-
-                            let isSelected = false;
-                            if (multiple) {
-                              isSelected = (selected as Set<V>).has(itemValue);
-                            } else {
-                              isSelected = (selected as V | null) === itemValue;
-                            }
-
+                          if (children) {
                             return (
-                              <li
-                                {...mergeCS(
-                                  styled('select__option', {
-                                    'select__option.is-selected': !multiple && isSelected,
-                                    'select__option.is-disabled': itemDisabled,
-                                  }),
-                                  { style: { paddingLeft: ancestry.length === 0 ? undefined : 12 + 8 } },
-                                )}
-                                {...props}
-                                key={itemValue}
-                                id={getItemId(itemValue)}
-                                title={((item as any)[IS_CREATED] ? t('Create') + ' ' : '') + itemLabel}
-                                role="option"
-                                aria-selected={isSelected}
-                                aria-disabled={itemDisabled}
-                                onClick={() => {
-                                  if ((item as any)[IS_CREATED]) {
-                                    handleCreateItem(item);
-                                  }
-                                  changeItemFocused(item);
-                                  changeSelectedByClick(itemValue);
-                                }}
-                              >
-                                {focusVisible && itemFocused?.value === itemValue && <div className={`${namespace}-focus-outline`} />}
-                                {(item as any)[IS_CREATED] ? (
-                                  <div {...styled('select__option-prefix')}>
-                                    <Icon theme="primary">
-                                      <AddOutlined />
-                                    </Icon>
-                                  </div>
-                                ) : multiple ? (
-                                  <div {...styled('select__option-prefix')}>
-                                    <Checkbox model={isSelected} disabled={itemDisabled} />
-                                  </div>
-                                ) : null}
-                                <div {...styled('select__option-content')}>{node}</div>
-                              </li>
+                              <ul {...styled('select__option-group')} key={itemValue} role="group" aria-labelledby={getItemId(itemValue)}>
+                                <li {...styled('select__option-group-label')} key={itemValue} id={getItemId(itemValue)} role="presentation">
+                                  <div {...styled('select__option-content')}>{node}</div>
+                                </li>
+                                {children}
+                              </ul>
                             );
-                          }}
-                          itemFocused={itemFocused?.value}
-                          itemEmptyRender={() => (
-                            <li {...mergeCS(styled('select__empty'), { style: { paddingLeft: 12 + 8 } })}>
-                              <div {...styled('select__option-content')}>{t('No data')}</div>
-                            </li>
-                          )}
-                          itemInAriaSetsize={(item) => !item.children}
-                          placeholder="li"
-                          onScrollEnd={onScrollBottom}
-                        >
-                          {(vsList, onScroll) => (
-                            <ul
-                              {...styled('select__list')}
-                              ref={listRef}
-                              id={listId}
-                              tabIndex={-1}
-                              role="listbox"
-                              aria-multiselectable={multiple}
-                              aria-activedescendant={isUndefined(itemFocused) ? undefined : getItemId(itemFocused.value)}
-                              onScroll={onScroll}
+                          }
+
+                          let isSelected = false;
+                          if (multiple) {
+                            isSelected = (selected as Set<V>).has(itemValue);
+                          } else {
+                            isSelected = (selected as V | null) === itemValue;
+                          }
+
+                          return (
+                            <li
+                              {...mergeCS(
+                                styled('select__option', {
+                                  'select__option.is-selected': !multiple && isSelected,
+                                  'select__option.is-disabled': itemDisabled,
+                                }),
+                                { style: { paddingLeft: ancestry.length === 0 ? undefined : 12 + 8 } },
+                              )}
+                              {...props}
+                              key={itemValue}
+                              id={getItemId(itemValue)}
+                              title={((item as any)[IS_CREATED] ? t('Create') + ' ' : '') + itemLabel}
+                              role="option"
+                              aria-selected={isSelected}
+                              aria-disabled={itemDisabled}
+                              onClick={() => {
+                                if ((item as any)[IS_CREATED]) {
+                                  handleCreateItem(item);
+                                }
+                                changeItemFocused(item);
+                                changeSelectedByClick(itemValue);
+                              }}
                             >
-                              {list.length === 0 ? <Empty style={{ padding: '12px 0' }} image={Empty.SIMPLE_IMG} /> : vsList}
-                            </ul>
-                          )}
-                        </VirtualScroll>
-                      )}
-                    </div>
-                  );
-                  return popupRender ? popupRender(el) : el;
-                })()}
-              </div>
-            );
-          }}
+                              {focusVisible && itemFocused?.value === itemValue && <div className={`${namespace}-focus-outline`} />}
+                              {(item as any)[IS_CREATED] ? (
+                                <div {...styled('select__option-prefix')}>
+                                  <Icon theme="primary">
+                                    <AddOutlined />
+                                  </Icon>
+                                </div>
+                              ) : multiple ? (
+                                <div {...styled('select__option-prefix')}>
+                                  <Checkbox model={isSelected} disabled={itemDisabled} />
+                                </div>
+                              ) : null}
+                              <div {...styled('select__option-content')}>{node}</div>
+                            </li>
+                          );
+                        }}
+                        itemFocused={itemFocused?.value}
+                        itemEmptyRender={() => (
+                          <li {...mergeCS(styled('select__empty'), { style: { paddingLeft: 12 + 8 } })}>
+                            <div {...styled('select__option-content')}>{t('No data')}</div>
+                          </li>
+                        )}
+                        itemInAriaSetsize={(item) => !item.children}
+                        placeholder="li"
+                        onScrollEnd={onScrollBottom}
+                      >
+                        {(vsList, onScroll) => (
+                          <ul
+                            {...styled('select__list')}
+                            ref={listRef}
+                            id={listId}
+                            tabIndex={-1}
+                            role="listbox"
+                            aria-multiselectable={multiple}
+                            aria-activedescendant={isUndefined(itemFocused) ? undefined : getItemId(itemFocused.value)}
+                            onScroll={onScroll}
+                          >
+                            {list.length === 0 ? <Empty style={{ padding: '12px 0' }} image={Empty.SIMPLE_IMG} /> : vsList}
+                          </ul>
+                        )}
+                      </VirtualScroll>
+                    )}
+                  </div>
+                );
+                return popupRender ? popupRender(el) : el;
+              })()}
+            </div>
+          )}
         </Transition>
       </Portal>
     </>
   );
 }
-
-export const Select: <V extends React.Key, T extends SelectItem<V>>(
-  props: SelectProps<V, T> & React.RefAttributes<SelectRef>,
-) => ReturnType<typeof SelectFC> = forwardRef(SelectFC) as any;

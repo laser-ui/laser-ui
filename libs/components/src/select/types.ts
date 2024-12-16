@@ -1,6 +1,6 @@
 import type { CLASSES } from './vars';
 import type { FormControlProvider } from '../form/types';
-import type { BaseProps, CloneHTMLElement, Size } from '../types';
+import type { BaseProps, Size } from '../types';
 
 export {};
 
@@ -18,6 +18,7 @@ export interface SelectItem<V extends React.Key> {
 export interface SelectProps<V extends React.Key, T extends SelectItem<V>>
   extends BaseProps<'select' | 'select-popup', typeof CLASSES>,
     Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+  ref?: React.Ref<SelectRef>;
   formControl?: FormControlProvider;
   list: T[];
   model?: V | null | V[];
@@ -43,8 +44,7 @@ export interface SelectProps<V extends React.Key, T extends SelectItem<V>>
     sort?: (a: T, b: T) => number;
   };
   createItem?: (value: string) => T | undefined;
-  inputRef?: React.ForwardedRef<HTMLInputElement>;
-  inputRender?: CloneHTMLElement;
+  inputProps?: React.ComponentPropsWithRef<'input'>;
   popupRender?: (el: React.ReactElement) => React.ReactNode;
   onModelChange?: (value: any, origin: any) => void;
   onVisibleChange?: (visible: boolean) => void;

@@ -103,11 +103,7 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
   );
   const sheet = useJSS<'position'>();
 
-  const dataRef = useRef<{
-    expands: Set<V>;
-  }>({
-    expands: new Set(),
-  });
+  const expandSaved = useRef(new Set<V>());
 
   const { t } = useTranslation();
 
@@ -361,8 +357,8 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
           );
         });
       } else {
-        if (!dataRef.current.expands.has(node.id)) {
-          dataRef.current.expands.add(node.id);
+        if (!expandSaved.current.has(node.id)) {
+          expandSaved.current.add(node.id);
           onFirstExpand?.(node.id, node.origin);
         }
         changeExpands((draft) => {

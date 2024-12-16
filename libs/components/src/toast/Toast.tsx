@@ -45,16 +45,15 @@ export function Toast(props: ToastProps): React.ReactElement | null {
 
   const toastRef = useRef<HTMLDivElement>(null);
 
-  const dataRef = useRef<{
-    clearTid?: () => void;
-  }>({});
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const clearTid = useRef(() => {});
 
   const uniqueId = useId();
   const messageId = `${namespace}-toast-content-${uniqueId}`;
 
   useMount(() => {
     if (duration > 0) {
-      dataRef.current.clearTid = async.setTimeout(() => {
+      clearTid.current = async.setTimeout(() => {
         onClose?.();
       }, duration * 1000);
     }
@@ -161,13 +160,13 @@ export function Toast(props: ToastProps): React.ReactElement | null {
               onMouseEnter={(e) => {
                 restProps.onMouseEnter?.(e);
 
-                dataRef.current.clearTid?.();
+                clearTid.current();
               }}
               onMouseLeave={(e) => {
                 restProps.onMouseLeave?.(e);
 
                 if (duration > 0) {
-                  dataRef.current.clearTid = async.setTimeout(() => {
+                  clearTid.current = async.setTimeout(() => {
                     onClose?.();
                   }, duration * 1000);
                 }
@@ -178,7 +177,7 @@ export function Toast(props: ToastProps): React.ReactElement | null {
                 if (visible && escClosable && e.code === 'Escape') {
                   e.stopPropagation();
                   e.preventDefault();
-                  dataRef.current.clearTid?.();
+                  clearTid.current();
                   onClose?.();
                 }
               }}

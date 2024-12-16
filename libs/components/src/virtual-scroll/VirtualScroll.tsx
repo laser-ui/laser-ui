@@ -1,15 +1,16 @@
-import type { VirtualScrollProps, VirtualScrollRef } from './types';
+import type { VirtualScrollProps } from './types';
 
 import { useEventCallback } from '@laser-ui/hooks';
 import { checkScrollEnd } from '@laser-ui/utils';
 import { isBoolean, isNumber, isUndefined, nth } from 'lodash';
-import { Fragment, createElement, forwardRef, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { Fragment, createElement, useImperativeHandle, useMemo, useRef, useState } from 'react';
 
 import { EMPTY } from './vars';
 import { useComponentProps } from '../hooks';
 
-function VirtualScrollFC<T>(props: VirtualScrollProps<T>, ref: React.ForwardedRef<VirtualScrollRef<T>>): React.ReactElement | null {
+export function VirtualScroll<T>(props: VirtualScrollProps<T>): React.ReactElement | null {
   const {
+    ref,
     children,
     enable = true,
     list,
@@ -32,11 +33,7 @@ function VirtualScrollFC<T>(props: VirtualScrollProps<T>, ref: React.ForwardedRe
 
   const listPadding = isNumber(listPaddingProp) ? [listPaddingProp, listPaddingProp] : listPaddingProp;
 
-  const dataRef = useRef<{
-    listCache: Map<React.Key, React.ReactNode[]>;
-  }>({
-    listCache: new Map(),
-  });
+  const listSaved = useRef(new Map<React.Key, React.ReactNode[]>());
 
   const [_scrollPosition, setScrollPosition] = useState(0);
   const itemSize = useMemo(() => (isNumber(itemSizeProp) ? () => itemSizeProp : itemSizeProp), [itemSizeProp]);
@@ -179,10 +176,10 @@ function VirtualScrollFC<T>(props: VirtualScrollProps<T>, ref: React.ForwardedRe
               if (isUndefined(expand)) {
                 childrenList = getList(nestedData.length === 0 ? [EMPTY] : nestedData, ancestry.concat([item as T]));
               } else {
-                childrenList = dataRef.current.listCache.get(key) ?? [];
+                childrenList = listSaved.current.get(key) ?? [];
                 if (expand) {
                   childrenList = getList(nestedData.length === 0 ? [EMPTY] : nestedData, ancestry.concat([item as T]));
-                  dataRef.current.listCache.set(key, childrenList);
+                  listSaved.current.set(key, childrenList);
                 }
               }
 
@@ -311,10 +308,10 @@ function VirtualScrollFC<T>(props: VirtualScrollProps<T>, ref: React.ForwardedRe
             if (isUndefined(expand)) {
               childrenList = getList(nestedData.length === 0 ? [EMPTY] : nestedData, ancestry.concat([item as T]));
             } else {
-              childrenList = dataRef.current.listCache.get(key) ?? [];
+              childrenList = listSaved.current.get(key) ?? [];
               if (expand) {
                 childrenList = getList(nestedData.length === 0 ? [EMPTY] : nestedData, ancestry.concat([item as T]));
-                dataRef.current.listCache.set(key, childrenList);
+                listSaved.current.set(key, childrenList);
               }
             }
 
@@ -526,7 +523,3 @@ function VirtualScrollFC<T>(props: VirtualScrollProps<T>, ref: React.ForwardedRe
     }
   });
 }
-
-export const VirtualScroll: <T>(
-  props: VirtualScrollProps<T> & React.RefAttributes<VirtualScrollRef<T>>,
-) => ReturnType<typeof VirtualScrollFC> = forwardRef(VirtualScrollFC) as any;

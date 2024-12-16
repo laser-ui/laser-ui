@@ -1,4 +1,3 @@
-import type { CloneHTMLElement } from '../types';
 import type { RefExtra } from '@laser-ui/hooks/useRefExtra';
 
 export {};
@@ -9,7 +8,13 @@ export interface AffixRef {
 }
 
 export interface AffixProps {
-  children: React.ReactElement | ((render: CloneHTMLElement) => React.ReactElement | null);
+  ref?: React.Ref<AffixRef>;
+  children: (props: {
+    style?: React.CSSProperties;
+    'aria-hidden'?: true;
+    'data-l-affix-placeholder'?: string;
+    'data-l-affix'?: string;
+  }) => React.ReactElement | null;
   top?: number | string;
   target?: RefExtra;
   zIndex?: number | string;

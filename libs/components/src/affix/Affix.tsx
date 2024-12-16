@@ -1,17 +1,16 @@
-import type { AffixProps, AffixRef } from './types';
+import type { AffixProps } from './types';
 
-import { useEventCallback, useMount, useRefExtra, useResize } from '@laser-ui/hooks';
+import { useEventCallback, useIsomorphicLayoutEffect, useRefExtra, useResize } from '@laser-ui/hooks';
 import { getOffsetToRoot, toPx } from '@laser-ui/utils';
-import { isFunction, isString, isUndefined } from 'lodash';
-import { cloneElement, forwardRef, useId, useImperativeHandle, useState } from 'react';
+import { isString, isUndefined } from 'lodash';
+import { useId, useImperativeHandle, useState } from 'react';
 
-import { useComponentProps, useContainerScrolling, useJSS, useLayout, useNamespace } from '../hooks';
+import { useComponentProps, useContainerScrolling, useLayout, useNamespace } from '../hooks';
 
-export const Affix = forwardRef<AffixRef, AffixProps>((props, ref): React.ReactElement | null => {
-  const { children, top = 0, target, zIndex } = useComponentProps('Affix', props);
+export function Affix(props: AffixProps): React.ReactElement | null {
+  const { ref, children, top = 0, target, zIndex } = useComponentProps('Affix', props);
 
   const namespace = useNamespace();
-  const sheet = useJSS<'position'>();
 
   const { pageScrollRef, contentResizeRef } = useLayout();
 
@@ -31,31 +30,30 @@ export const Affix = forwardRef<AffixRef, AffixProps>((props, ref): React.ReactE
       const targetTop = getOffsetToRoot(targetRef.current);
       const distance = isString(top) ? toPx(top, true) : top;
 
-      const newSticky = Math.ceil(targetRef.current.scrollTop) + distance >= getOffsetToRoot(offsetEl as HTMLElement) - targetTop;
-      setSticky(newSticky);
-      if (sheet.classes.position) {
-        affixRef.current.classList.toggle(sheet.classes.position, false);
-      }
-      if (newSticky) {
-        sheet.replaceRule('position', {
-          width: offsetRect.width,
-          height: offsetRect.height,
-          position: 'fixed',
-          top: (isUndefined(target) ? targetTop : targetRef.current.getBoundingClientRect().top) + distance,
-          left: offsetRect.left,
-          zIndex: zIndex ?? `var(--${namespace}-zindex-sticky)`,
-        });
-        affixRef.current.classList.toggle(sheet.classes.position, true);
+      const s = Math.ceil(targetRef.current.scrollTop) + distance >= getOffsetToRoot(offsetEl as HTMLElement) - targetTop;
+      setSticky(s);
+      if (s) {
+        affixRef.current.style.position = 'fixed';
+        affixRef.current.style.top = (isUndefined(target) ? targetTop : targetRef.current.getBoundingClientRect().top) + distance + 'px';
+        affixRef.current.style.left = offsetRect.left + 'px';
+        affixRef.current.style.width = offsetRect.width + 'px';
+        affixRef.current.style.height = offsetRect.height + 'px';
+        affixRef.current.style.zIndex = zIndex ? String(zIndex) : `var(--${namespace}-zindex-sticky)`;
         placeholderRef.current.style.display = '';
       } else {
-        sheet.deleteRule('position');
+        affixRef.current.style.position = '';
+        affixRef.current.style.top = '';
+        affixRef.current.style.left = '';
+        affixRef.current.style.width = '';
+        affixRef.current.style.height = '';
+        affixRef.current.style.zIndex = '';
         placeholderRef.current.style.display = 'none';
       }
     }
   });
-  useMount(() => {
+  useIsomorphicLayoutEffect(() => {
     updatePosition();
-  });
+  }, []);
 
   useContainerScrolling(affixRef, updatePosition);
 
@@ -71,21 +69,14 @@ export const Affix = forwardRef<AffixRef, AffixProps>((props, ref): React.ReactE
     [sticky, updatePosition],
   );
 
-  const render = (el: React.ReactElement) => (
+  return (
     <>
-      {cloneElement(el, {
-        style: {
-          ...el.props.style,
-          visibility: 'hidden',
-        },
+      {children({
+        style: { visibility: 'hidden' },
         'aria-hidden': true,
         'data-l-affix-placeholder': uniqueId,
       })}
-      {cloneElement(el, {
-        'data-l-affix': uniqueId,
-      })}
+      {children({ 'data-l-affix': uniqueId })}
     </>
   );
-
-  return isFunction(children) ? children(render) : render(children);
-});
+}

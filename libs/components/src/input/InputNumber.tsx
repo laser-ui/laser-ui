@@ -1,7 +1,7 @@
 import type { InputNumberProps } from './types';
 
-import { useAsync, useEvent, useForceUpdate, useForkRef, useRefExtra } from '@laser-ui/hooks';
-import { checkNodeExist } from '@laser-ui/utils';
+import { useAsync, useEvent, useForceUpdate, useRefExtra } from '@laser-ui/hooks';
+import { checkNodeExist, setRef } from '@laser-ui/utils';
 import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
 import KeyboardArrowDownOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_down.svg?react';
 import KeyboardArrowUpOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_up.svg?react';
@@ -32,8 +32,7 @@ export function InputNumber(props: InputNumberProps) {
     size: sizeProp,
     numberButton = true,
     disabled: disabledProp = false,
-    inputRef: inputRefProp,
-    inputRender,
+    inputProps,
     onModelChange,
     onClear,
 
@@ -55,9 +54,8 @@ export function InputNumber(props: InputNumberProps) {
     inputFocused: false,
   });
 
-  const inputRef = useRef<HTMLInputElement>(null);
-  const combineInputRef = useForkRef(inputRef, inputRefProp);
   const windowRef = useRefExtra(() => window);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [value, _changeValue] = useControlled<number | null>(defaultModel ?? null, model, onModelChange, undefined, formControl?.control);
   const inputValue =
@@ -118,57 +116,6 @@ export function InputNumber(props: InputNumberProps) {
 
   const designProps = useDesign({ compose: { disabled }, form: formControl });
 
-  const inputNode = (
-    <BaseInput
-      {...styled('input__input')}
-      {...formControl?.inputAria}
-      ref={combineInputRef}
-      value={inputValue}
-      max={max}
-      min={min}
-      step={step}
-      type="number"
-      placeholder={placeholder}
-      disabled={disabled}
-      onValueChange={(val) => {
-        forceUpdate();
-        dataRef.current.inputValue = val;
-
-        if (val.length === 0) {
-          changeValue(null);
-        } else {
-          const num = Number(val);
-          if ((isUndefined(max) || num <= max) && (isUndefined(min) || num >= min) && (!integer || Number.isInteger(num))) {
-            changeValue(num);
-          }
-        }
-      }}
-      onFocus={() => {
-        dataRef.current.inputFocused = true;
-        dataRef.current.inputValue = undefined;
-      }}
-      onBlur={() => {
-        dataRef.current.inputFocused = false;
-
-        if (inputValue.length === 0) {
-          changeValue(null);
-        } else {
-          let num = Number(inputValue);
-          if (!isUndefined(max) && num > max) {
-            num = max;
-          }
-          if (!isUndefined(min) && num < min) {
-            num = min;
-          }
-          if (integer && !Number.isInteger(num)) {
-            num = Math.round(num);
-          }
-          changeValue(num);
-        }
-      }}
-    />
-  );
-
   return (
     <div
       {...restProps}
@@ -202,7 +149,66 @@ export function InputNumber(props: InputNumberProps) {
       }}
     >
       {checkNodeExist(prefix) && <div {...styled('input__prefix')}>{prefix}</div>}
-      {inputRender ? inputRender(inputNode) : inputNode}
+      <BaseInput
+        {...inputProps}
+        {...styled('input__input')}
+        {...formControl?.inputAria}
+        ref={(instance) => {
+          inputRef.current = instance;
+          const ret = setRef(inputProps?.ref, instance);
+          return () => {
+            inputRef.current = null;
+            ret();
+          };
+        }}
+        value={inputValue}
+        max={max}
+        min={min}
+        step={step}
+        type="number"
+        placeholder={placeholder}
+        disabled={disabled}
+        onValueChange={(val) => {
+          forceUpdate();
+          dataRef.current.inputValue = val;
+
+          if (val.length === 0) {
+            changeValue(null);
+          } else {
+            const num = Number(val);
+            if ((isUndefined(max) || num <= max) && (isUndefined(min) || num >= min) && (!integer || Number.isInteger(num))) {
+              changeValue(num);
+            }
+          }
+        }}
+        onFocus={(e) => {
+          inputProps?.onFocus?.(e);
+
+          dataRef.current.inputFocused = true;
+          dataRef.current.inputValue = undefined;
+        }}
+        onBlur={(e) => {
+          inputProps?.onBlur?.(e);
+
+          dataRef.current.inputFocused = false;
+
+          if (inputValue.length === 0) {
+            changeValue(null);
+          } else {
+            let num = Number(inputValue);
+            if (!isUndefined(max) && num > max) {
+              num = max;
+            }
+            if (!isUndefined(min) && num < min) {
+              num = min;
+            }
+            if (integer && !Number.isInteger(num)) {
+              num = Math.round(num);
+            }
+            changeValue(num);
+          }
+        }}
+      />
       {clearable && !disabled && (
         <div
           {...mergeCS(styled('input__clear'), { style: { opacity: inputValue.length > 0 ? 1 : 0 } })}

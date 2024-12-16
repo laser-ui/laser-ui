@@ -16,7 +16,9 @@ export interface ImageLoaderProps<K extends keyof HTMLImageElement = 'naturalWid
   children: (img: Pick<HTMLImageElement, K>) => React.ReactElement | null;
 }
 
-export interface ImageActionProps extends BaseProps<'image', typeof CLASSES>, React.ButtonHTMLAttributes<HTMLButtonElement> {}
+export interface ImageActionProps extends BaseProps<'image', typeof CLASSES>, React.ButtonHTMLAttributes<HTMLButtonElement> {
+  ref?: React.Ref<HTMLButtonElement>;
+}
 
 export interface ImagePreviewProps
   extends BaseProps<'image-preview', typeof PREVIEW_CLASSES>,

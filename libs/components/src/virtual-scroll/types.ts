@@ -14,6 +14,7 @@ export interface VirtualScrollRef<T> {
 }
 
 export interface VirtualScrollProps<T> {
+  ref?: React.Ref<VirtualScrollRef<T>>;
   children: (vsList: React.ReactNode, onScroll: React.UIEventHandler<HTMLElement>) => React.ReactElement | null;
   enable?: boolean;
   list: T[];

@@ -1,8 +1,9 @@
 import type { AvatarProps } from './types';
 
+import { useIsomorphicLayoutEffect } from '@laser-ui/hooks';
 import { toPx } from '@laser-ui/utils';
 import { isNumber } from 'lodash';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { CLASSES } from './vars';
 import { useComponentProps, useStyled } from '../hooks';
@@ -28,7 +29,7 @@ export function Avatar(props: AvatarProps): React.ReactElement | null {
   const [imgError, setImgError] = useState(false);
   const type: 'img' | 'icon' | 'text' = img && !imgError ? 'img' : icon ? 'icon' : text ? 'text' : 'img';
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (textRef.current) {
       const maxWidth =
         Math.sqrt(Math.pow((isNumber(size) ? size : toPx(size, true)) / 2, 2) - Math.pow(textRef.current.scrollHeight / 2, 2)) * 2;

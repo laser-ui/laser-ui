@@ -1,13 +1,12 @@
 import type { TableThActionProps } from './types';
 
-import { forwardRef } from 'react';
-
 import { CLASSES } from './vars';
 import { useComponentProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-export const TableThAction = forwardRef<HTMLDivElement, TableThActionProps>((props, ref): React.ReactElement | null => {
+export function TableThAction(props: TableThActionProps): React.ReactElement | null {
   const {
+    ref,
     styleOverrides,
     styleProvider,
     children,
@@ -39,4 +38,4 @@ export const TableThAction = forwardRef<HTMLDivElement, TableThActionProps>((pro
       {children}
     </div>
   );
-});
+}

@@ -1,7 +1,6 @@
 import type { InputProps } from './types';
 
-import { useForkRef } from '@laser-ui/hooks';
-import { checkNodeExist } from '@laser-ui/utils';
+import { checkNodeExist, setRef } from '@laser-ui/utils';
 import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
 import VisibilityOutlined from '@material-design-icons/svg/outlined/visibility.svg?react';
 import VisibilityOffOutlined from '@material-design-icons/svg/outlined/visibility_off.svg?react';
@@ -33,8 +32,7 @@ export const Input: {
     placeholder,
     size: sizeProp,
     disabled: disabledProp = false,
-    inputRef: inputRefProp,
-    inputRender,
+    inputProps,
     onModelChange,
     onClear,
     onPasswordChange,
@@ -47,7 +45,6 @@ export const Input: {
   const { t } = useTranslation();
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const combineInputRef = useForkRef(inputRef, inputRefProp);
 
   const [value, changeValue] = useControlled<string>(defaultModel ?? '', model, onModelChange, undefined, formControl?.control);
   const [password, changePassword] = useControlled<boolean>(defaultPassword ?? true, passwordProp, onPasswordChange);
@@ -61,21 +58,6 @@ export const Input: {
   };
 
   const designProps = useDesign({ compose: { disabled }, form: formControl });
-
-  const inputNode = (
-    <BaseInput
-      {...styled('input__input')}
-      {...formControl?.inputAria}
-      ref={combineInputRef}
-      value={value}
-      type={type === 'password' ? (password ? 'password' : 'text') : type}
-      placeholder={placeholder}
-      disabled={disabled}
-      onValueChange={(val) => {
-        changeValue(val);
-      }}
-    />
-  );
 
   return (
     <div
@@ -107,7 +89,26 @@ export const Input: {
       }}
     >
       {checkNodeExist(prefix) && <div {...styled('input__prefix')}>{prefix}</div>}
-      {inputRender ? inputRender(inputNode) : inputNode}
+      <BaseInput
+        {...inputProps}
+        {...styled('input__input')}
+        {...formControl?.inputAria}
+        ref={(instance) => {
+          inputRef.current = instance;
+          const ret = setRef(inputProps?.ref, instance);
+          return () => {
+            inputRef.current = null;
+            ret();
+          };
+        }}
+        value={value}
+        type={type === 'password' ? (password ? 'password' : 'text') : type}
+        placeholder={placeholder}
+        disabled={disabled}
+        onValueChange={(val) => {
+          changeValue(val);
+        }}
+      />
       {clearable && !disabled && (
         <div
           {...mergeCS(styled('input__clear'), { style: { opacity: value.length > 0 ? 1 : 0 } })}

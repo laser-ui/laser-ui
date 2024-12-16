@@ -38,16 +38,12 @@ function UploadFC(props: UploadProps, ref: React.ForwardedRef<HTMLInputElement>)
   const inputRef = useRef<HTMLInputElement>(null);
   const combineInputRef = useForkRef(inputRef, ref);
 
-  const dataRef = useRef<{
-    fileURLs: string[];
-  }>({
-    fileURLs: [],
-  });
+  const fileURLs = useRef([] as string[]);
 
   const [files, changeFiles] = useControlled<UploadFile[]>(defaultModel ?? [], model, undefined, undefined, formControl?.control);
 
   useUnmount(() => {
-    dataRef.current.fileURLs.forEach((fileURL) => {
+    fileURLs.current.forEach((fileURL) => {
       URL.revokeObjectURL(fileURL);
     });
   });
@@ -66,7 +62,7 @@ function UploadFC(props: UploadProps, ref: React.ForwardedRef<HTMLInputElement>)
           let uid: React.Key = ++n;
           const add = (obj: any) => {
             const fileURL = URL.createObjectURL(file);
-            dataRef.current.fileURLs.push(fileURL);
+            fileURLs.current.push(fileURL);
             const fileAdded = {
               uid,
               name: file.name,

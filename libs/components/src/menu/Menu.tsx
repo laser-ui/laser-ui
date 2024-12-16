@@ -1,8 +1,9 @@
 import type { MenuItem, MenuProps } from './types';
 
+import { useEventCallback } from '@laser-ui/hooks';
 import { findNested } from '@laser-ui/utils';
 import { isNull, isUndefined, nth } from 'lodash';
-import { Fragment, useCallback, useId, useImperativeHandle, useRef, useState } from 'react';
+import { Fragment, useId, useImperativeHandle, useRef, useState } from 'react';
 
 import { MenuGroup } from './internal/MenuGroup';
 import { MenuItem as MenuItemFC } from './internal/MenuItem';
@@ -52,7 +53,7 @@ export function Menu<ID extends React.Key, T extends MenuItem<ID>>(props: MenuPr
   const menuRef = useRef<HTMLElement>(null);
 
   const mousedown = useRef(false);
-  const updateSubPosition = useRef(new Set<() => void>());
+  const updateSubPosition = useRef(new Map<ID, () => void>());
 
   const [focusVisible, focusVisibleProps] = useFocusVisible(
     (code) => code.startsWith('Arrow') || ['Home', 'End', 'Enter', 'Space'].includes(code),
@@ -376,9 +377,9 @@ export function Menu<ID extends React.Key, T extends MenuItem<ID>>(props: MenuPr
                 ref={(instance) => {
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   const fn = instance!;
-                  updateSubPosition.current.add(fn);
+                  updateSubPosition.current.set(itemId, fn);
                   return () => {
-                    updateSubPosition.current.delete(fn);
+                    updateSubPosition.current.delete(itemId);
                   };
                 }}
                 namespace={namespace}
@@ -434,11 +435,11 @@ export function Menu<ID extends React.Key, T extends MenuItem<ID>>(props: MenuPr
     return getNodes(list, 0, [], true);
   })();
 
-  const updatePosition = useCallback(() => {
-    for (const fn of updateSubPosition.current) {
-      fn();
+  const updatePosition = useEventCallback(() => {
+    for (const { id } of popupIds) {
+      updateSubPosition.current.get(id)?.();
     }
-  }, []);
+  });
 
   useContainerScrolling(menuRef, updatePosition);
 
@@ -462,7 +463,7 @@ export function Menu<ID extends React.Key, T extends MenuItem<ID>>(props: MenuPr
               style: {
                 ...restProps.style,
                 width,
-                ...(leaved ? { display: 'none' } : undefined),
+                ...(leaved ? { width: 64 } : undefined),
               },
             })}
             ref={(instance) => {

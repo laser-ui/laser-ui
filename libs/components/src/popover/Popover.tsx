@@ -63,11 +63,7 @@ export const Popover: {
   const popoverRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
 
-  const dataRef = useRef<{
-    prevActiveEl: HTMLElement | null;
-  }>({
-    prevActiveEl: null,
-  });
+  const prevActiveEl = useRef<HTMLElement>(null);
 
   const [visible, changeVisible] = useControlled<boolean>(defaultVisible ?? false, visibleProp, onVisibleChange);
 
@@ -162,7 +158,7 @@ export const Popover: {
                 afterVisibleChange?.(true);
 
                 if (modal) {
-                  dataRef.current.prevActiveEl = document.activeElement as HTMLElement | null;
+                  prevActiveEl.current = document.activeElement as HTMLElement | null;
                   if (popoverRef.current) {
                     popoverRef.current.focus({ preventScroll: true });
                   }
@@ -177,8 +173,8 @@ export const Popover: {
                 afterVisibleChange?.(false);
 
                 if (modal) {
-                  if (dataRef.current.prevActiveEl) {
-                    dataRef.current.prevActiveEl.focus({ preventScroll: true });
+                  if (prevActiveEl.current) {
+                    prevActiveEl.current.focus({ preventScroll: true });
                   }
                 }
               }}

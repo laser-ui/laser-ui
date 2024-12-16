@@ -107,11 +107,7 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
   const combineInputRef = useForkRef(inputRef, inputRefProp);
   const focusRef = useRef<any>(null);
 
-  const dataRef = useRef<{
-    itemFocused: Set<V>;
-  }>({
-    itemFocused: new Set(),
-  });
+  const itemFocused = useRef(new Set<V>());
 
   const [nodes, nodesMap] = useMemo(() => {
     const nodes = list.map((item) =>
@@ -238,8 +234,8 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
   );
   const [_itemFocusedWithoutSearch, setItemFocusedWithoutSearch] = useState<AbstractTreeNode<V, T> | undefined>();
   const changeItemFocusedWithoutSearch = (node: AbstractTreeNode<V, T>) => {
-    if (!dataRef.current.itemFocused.has(node.id)) {
-      dataRef.current.itemFocused.add(node.id);
+    if (!itemFocused.current.has(node.id)) {
+      itemFocused.current.add(node.id);
       onFirstFocus?.(node.id, node.origin);
     }
 
@@ -259,8 +255,8 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
   })();
   const [_itemFocusedWithSearch, setItemFocusedWithSearch] = useState<CascaderSearchPanelItem<V, T> | undefined>();
   const changeItemFocusedWithSearch = (item: CascaderSearchPanelItem<V, T>) => {
-    if (!dataRef.current.itemFocused.has(item.value)) {
-      dataRef.current.itemFocused.add(item.value);
+    if (!itemFocused.current.has(item.value)) {
+      itemFocused.current.add(item.value);
       onFirstFocus?.(item.value, item[TREE_NODE_KEY].origin);
     }
 

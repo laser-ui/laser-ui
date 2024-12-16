@@ -6,7 +6,7 @@ import KeyboardDoubleArrowLeftOutlined from '@material-design-icons/svg/outlined
 import KeyboardDoubleArrowRightOutlined from '@material-design-icons/svg/outlined/keyboard_double_arrow_right.svg?react';
 import MoreHorizOutlined from '@material-design-icons/svg/outlined/more_horiz.svg?react';
 import { isNull, isNumber } from 'lodash';
-import { Fragment, cloneElement, useRef, useState } from 'react';
+import { Fragment, useRef, useState } from 'react';
 
 import { buttonProps } from './utils';
 import { CLASSES } from './vars';
@@ -317,21 +317,17 @@ export function Pagination(props: PaginationProps): React.ReactElement | null {
                   step={1}
                   size={mini ? 'small' : undefined}
                   numberButton={!mini}
-                  inputRender={(el) =>
-                    cloneElement<React.HTMLAttributes<HTMLElement>>(el, {
-                      onKeyDown: (e) => {
-                        el.props.onKeyDown?.(e);
+                  inputProps={{
+                    onKeyDown: (e) => {
+                      if (e.code === 'Enter') {
+                        e.preventDefault();
 
-                        if (e.code === 'Enter') {
-                          e.preventDefault();
-
-                          if (isNumber(jumpValue)) {
-                            changeActive(jumpValue);
-                          }
+                        if (isNumber(jumpValue)) {
+                          changeActive(jumpValue);
                         }
-                      },
-                    })
-                  }
+                      }
+                    },
+                  }}
                   onModelChange={setJumpValue}
                 />
               );

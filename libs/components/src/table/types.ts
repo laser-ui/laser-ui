@@ -74,6 +74,7 @@ export interface TableFilterProps
 }
 
 export interface TableThActionProps extends BaseProps<'table', typeof CLASSES>, React.HTMLAttributes<HTMLDivElement> {
+  ref?: React.Ref<HTMLDivElement>;
   active?: boolean;
   disabled?: boolean;
 }

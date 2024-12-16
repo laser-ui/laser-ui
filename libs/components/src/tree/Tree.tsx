@@ -40,11 +40,7 @@ export function Tree<V extends React.Key, T extends TreeItem<V>>(props: TreeProp
 
   const focusRef = useRef<any>(null);
 
-  const dataRef = useRef<{
-    expands: Set<V>;
-  }>({
-    expands: new Set(),
-  });
+  const expandSaved = useRef(new Set<V>());
 
   const uniqueId = useId();
   const getItemId = (val: V) => `${namespace}-tree-item-${val}-${uniqueId}`;
@@ -148,8 +144,8 @@ export function Tree<V extends React.Key, T extends TreeItem<V>>(props: TreeProp
           );
         });
       } else {
-        if (!dataRef.current.expands.has(node.id)) {
-          dataRef.current.expands.add(node.id);
+        if (!expandSaved.current.has(node.id)) {
+          expandSaved.current.add(node.id);
           onFirstExpand?.(node.id, node.origin);
         }
         changeExpands((draft) => {

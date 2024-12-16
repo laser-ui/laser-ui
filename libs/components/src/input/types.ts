@@ -1,6 +1,6 @@
 import type { CLASSES } from './vars';
 import type { FormControlProvider } from '../form/types';
-import type { BaseProps, CloneHTMLElement, Size } from '../types';
+import type { BaseProps, Size } from '../types';
 
 export {};
 
@@ -17,8 +17,7 @@ export interface InputProps extends BaseProps<'input', typeof CLASSES>, Omit<Rea
   placeholder?: string;
   size?: Size;
   disabled?: boolean;
-  inputRef?: React.ForwardedRef<HTMLInputElement>;
-  inputRender?: CloneHTMLElement;
+  inputProps?: React.ComponentPropsWithRef<'input'>;
   onModelChange?: (value: string) => void;
   onClear?: () => void;
   onPasswordChange?: (value: boolean) => void;
@@ -41,8 +40,7 @@ export interface InputNumberProps
   size?: Size;
   numberButton?: boolean;
   disabled?: boolean;
-  inputRef?: React.ForwardedRef<HTMLInputElement>;
-  inputRender?: CloneHTMLElement;
+  inputProps?: React.ComponentPropsWithRef<'input'>;
   onModelChange?: (value: number | null) => void;
   onClear?: () => void;
 }

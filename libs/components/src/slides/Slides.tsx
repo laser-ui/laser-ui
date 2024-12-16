@@ -1,6 +1,6 @@
 import type { SlidesAutoplayOptions, SlidesItem, SlidesPaginationOptions, SlidesProps } from './types';
 
-import { useAsync, useEvent, useRefExtra } from '@laser-ui/hooks';
+import { useAsync, useEvent, useIsomorphicLayoutEffect, useRefExtra } from '@laser-ui/hooks';
 import KeyboardArrowLeftOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_left.svg?react';
 import KeyboardArrowRightOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_right.svg?react';
 import { isBoolean, isNumber, isUndefined, nth } from 'lodash';
@@ -186,7 +186,7 @@ export function Slides<ID extends React.Key, T extends SlidesItem<ID>>(props: Sl
     setDragOpacity(undefined);
   };
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (slidesRef.current) {
       let size = 0;
       const slideEls = slidesRef.current.querySelectorAll(`.${namespace}-slides__slide`);

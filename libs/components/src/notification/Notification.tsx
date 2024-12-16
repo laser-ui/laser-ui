@@ -46,9 +46,8 @@ export function Notification(props: NotificationProps): React.ReactElement | nul
 
   const notificationRef = useRef<HTMLDivElement>(null);
 
-  const dataRef = useRef<{
-    clearTid?: () => void;
-  }>({});
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const clearTid = useRef(() => {});
 
   const uniqueId = useId();
   const titleId = `${namespace}-notification-title-${uniqueId}`;
@@ -56,7 +55,7 @@ export function Notification(props: NotificationProps): React.ReactElement | nul
 
   useMount(() => {
     if (duration > 0) {
-      dataRef.current.clearTid = async.setTimeout(() => {
+      clearTid.current = async.setTimeout(() => {
         onClose?.();
       }, duration * 1000);
     }
@@ -170,13 +169,13 @@ export function Notification(props: NotificationProps): React.ReactElement | nul
               onMouseEnter={(e) => {
                 restProps.onMouseEnter?.(e);
 
-                dataRef.current.clearTid?.();
+                clearTid.current();
               }}
               onMouseLeave={(e) => {
                 restProps.onMouseLeave?.(e);
 
                 if (duration > 0) {
-                  dataRef.current.clearTid = async.setTimeout(() => {
+                  clearTid.current = async.setTimeout(() => {
                     onClose?.();
                   }, duration * 1000);
                 }
@@ -187,7 +186,7 @@ export function Notification(props: NotificationProps): React.ReactElement | nul
                 if (visible && escClosable && e.code === 'Escape') {
                   e.stopPropagation();
                   e.preventDefault();
-                  dataRef.current.clearTid?.();
+                  clearTid.current();
                   onClose?.();
                 }
               }}

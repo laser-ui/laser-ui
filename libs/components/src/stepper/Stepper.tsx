@@ -8,8 +8,8 @@ import { isNumber, isUndefined } from 'lodash';
 import { CLASSES } from './vars';
 import { useComponentProps, useStyled } from '../hooks';
 import { Icon } from '../icon';
-import { CollapseTransition } from '../internal/transition';
 import { Progress } from '../progress';
+import { CollapseTransition } from '../transition';
 import { mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
@@ -164,33 +164,16 @@ export function Stepper<T extends StepperItem>(props: StepperProps<T>): React.Re
             {labelBottom && titleNode}
             {vertical && separatoreNode}
             {checkNodeExist(itemDescription) && (
-              <CollapseTransition
-                originalSize={{
-                  height: 'auto',
-                }}
-                collapsedSize={{
-                  height: 0,
-                }}
-                enter={!vertical || isActive}
-                during={TTANSITION_DURING_BASE}
-                styles={{
-                  entering: {
-                    transition: ['height', 'padding', 'margin'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms ease-out`).join(', '),
-                  },
-                  leaving: {
-                    transition: ['height', 'padding', 'margin'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms ease-in`).join(', '),
-                  },
-                  leaved: { display: 'none' },
-                }}
-              >
-                {(descriptionRef, collapseStyle) => (
-                  <div
-                    {...mergeCS(styled('stepper__step-description'), {
-                      style: { marginLeft: labelBottom ? undefined : `calc(${dotSize}px + 8px)`, ...collapseStyle },
-                    })}
-                    ref={descriptionRef}
-                  >
-                    {itemDescription}
+              <CollapseTransition height={0} enter={!vertical || isActive} duration={TTANSITION_DURING_BASE}>
+                {(transitionRef, leaved) => (
+                  <div ref={transitionRef} style={{ display: leaved ? 'none' : undefined }}>
+                    <div
+                      {...mergeCS(styled('stepper__step-description'), {
+                        style: { marginLeft: labelBottom ? undefined : `calc(${dotSize}px + 8px)` },
+                      })}
+                    >
+                      {itemDescription}
+                    </div>
                   </div>
                 )}
               </CollapseTransition>

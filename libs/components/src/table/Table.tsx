@@ -1,6 +1,6 @@
 import type { TableContextData, TableProps } from './types';
 
-import { useAsync, useMount, useResize } from '@laser-ui/hooks';
+import { useAsync, useIsomorphicLayoutEffect, useResize } from '@laser-ui/hooks';
 import { isSimpleArrayEqual } from '@laser-ui/utils';
 import { useMemo, useRef, useState } from 'react';
 
@@ -39,9 +39,8 @@ export const Table: {
 
   const divRef = useRef<HTMLDivElement>(null);
 
-  const dataRef = useRef<{
-    clearTid?: () => void;
-  }>({});
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const clearTid = useRef(() => {});
 
   const [fixed, setFixed] = useState<('left' | 'right')[]>([]);
 
@@ -66,14 +65,13 @@ export const Table: {
     }
   };
 
-  useMount(() => {
+  useIsomorphicLayoutEffect(() => {
     handleFixed();
-  });
+  }, []);
 
   useResize(divRef, () => {
-    dataRef.current.clearTid?.();
-    dataRef.current.clearTid = async.setTimeout(() => {
-      dataRef.current.clearTid = undefined;
+    clearTid.current();
+    clearTid.current = async.setTimeout(() => {
       handleFixed();
     }, 100);
   });

@@ -69,7 +69,7 @@ export function Dropdown<ID extends React.Key, T extends DropdownItem<ID>>(props
   const ulRef = useRef<HTMLUListElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const updateSubPosition = useRef(new Set<() => void>());
+  const updateSubPosition = useRef(new Map<ID, () => void>());
 
   const [focusVisible, focusVisibleProps] = useFocusVisible(
     (code) => code.startsWith('Arrow') || ['Home', 'End', 'Enter', 'Space'].includes(code),
@@ -319,9 +319,9 @@ export function Dropdown<ID extends React.Key, T extends DropdownItem<ID>>(props
                 ref={(instance) => {
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   const fn = instance!;
-                  updateSubPosition.current.add(fn);
+                  updateSubPosition.current.set(itemId, fn);
                   return () => {
-                    updateSubPosition.current.delete(fn);
+                    updateSubPosition.current.delete(itemId);
                   };
                 }}
                 namespace={namespace}
@@ -366,8 +366,8 @@ export function Dropdown<ID extends React.Key, T extends DropdownItem<ID>>(props
 
   const updateAllPosition = useEventCallback(() => {
     updatePosition();
-    for (const fn of updateSubPosition.current) {
-      fn();
+    for (const { id } of popupIds) {
+      updateSubPosition.current.get(id)?.();
     }
   });
 

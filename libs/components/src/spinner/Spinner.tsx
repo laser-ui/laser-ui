@@ -37,21 +37,17 @@ export function Spinner(props: SpinnerProps): React.ReactElement | null {
   const spinnerRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const dataRef = useRef<{
-    delayVisible: boolean;
-  }>({
-    delayVisible: false,
-  });
+  const delayVisible = useRef(false);
 
   if (visibleProp === false) {
-    dataRef.current.delayVisible = false;
+    delayVisible.current = false;
   }
-  const visible = isUndefined(delay) ? visibleProp : dataRef.current.delayVisible;
+  const visible = isUndefined(delay) ? visibleProp : delayVisible.current;
 
   useEffect(() => {
     if (isNumber(delay) && visibleProp) {
       const clearTid = async.setTimeout(() => {
-        dataRef.current.delayVisible = true;
+        delayVisible.current = true;
         forceUpdate();
       }, delay);
 

@@ -19,6 +19,7 @@ export interface TabsItem<ID extends React.Key> {
 export interface TabsProps<ID extends React.Key, T extends TabsItem<ID>>
   extends BaseProps<'tabs', typeof CLASSES>,
     Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+  ref?: React.Ref<TabsRef>;
   list: T[];
   active?: ID;
   defaultActive?: ID;
