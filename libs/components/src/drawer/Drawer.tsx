@@ -35,7 +35,7 @@ export const Drawer: {
     escClosable = true,
     container,
     skipFirstTransition = true,
-    destroyAfterClose = true,
+    destroyAfterClose = false,
     zIndex: zIndexProp,
     onClose,
     afterVisibleChange,

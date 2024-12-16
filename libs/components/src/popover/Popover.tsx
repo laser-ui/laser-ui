@@ -34,7 +34,7 @@ function PopoverFC(props: PopoverProps, ref: React.ForwardedRef<PopoverRef>): Re
     mouseLeaveDelay = 200,
     modal = false,
     skipFirstTransition = true,
-    destroyAfterClose = true,
+    destroyAfterClose = false,
     zIndex: zIndexProp,
     onVisibleChange,
     afterVisibleChange,

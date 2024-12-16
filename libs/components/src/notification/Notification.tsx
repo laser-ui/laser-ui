@@ -31,7 +31,7 @@ export function Notification(props: NotificationProps): React.ReactElement | nul
     closable = true,
     escClosable = true,
     skipFirstTransition = true,
-    destroyAfterClose = true,
+    destroyAfterClose = false,
     onClose,
     afterVisibleChange,
 

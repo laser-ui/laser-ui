@@ -30,7 +30,7 @@ export function Toast(props: ToastProps): React.ReactElement | null {
     closable = false,
     escClosable = true,
     skipFirstTransition = true,
-    destroyAfterClose = true,
+    destroyAfterClose = false,
     onClose,
     afterVisibleChange,
 

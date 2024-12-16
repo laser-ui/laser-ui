@@ -32,6 +32,7 @@ export interface TooltipProps
   mouseLeaveDelay?: number;
   skipFirstTransition?: boolean;
   destroyAfterClose?: boolean;
+  lazyLoading?: boolean;
   zIndex?: number | string;
   onVisibleChange?: (visible: boolean) => void;
   afterVisibleChange?: (visible: boolean) => void;

@@ -26,7 +26,7 @@ export function TableFilter(props: TableFilterProps): React.ReactElement | null 
     searchable = false,
     searchValue,
     modal = false,
-    destroyAfterClose = true,
+    destroyAfterClose = false,
     zIndex,
     onVisibleChange,
     onSearch,

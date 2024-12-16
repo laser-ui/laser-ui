@@ -35,7 +35,7 @@ export const Modal: {
     maskClosable = true,
     escClosable = true,
     skipFirstTransition = true,
-    destroyAfterClose = true,
+    destroyAfterClose = false,
     zIndex: zIndexProp,
     onClose,
     afterVisibleChange,

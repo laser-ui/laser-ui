@@ -6,6 +6,7 @@ import { useId, useImperativeHandle, useRef } from 'react';
 
 import { CLASSES, TTANSITION_DURING } from './vars';
 import { useComponentProps, useControlled, useMaxIndex, useNamespace, useStyled } from '../hooks';
+import { LazyLoading } from '../internal/lazy-loading';
 import { Popup } from '../internal/popup';
 import { Portal } from '../internal/portal';
 import { Transition } from '../transition';
@@ -30,7 +31,8 @@ export function Tooltip(props: TooltipProps): React.ReactElement | null {
     mouseEnterDelay = 150,
     mouseLeaveDelay = 200,
     skipFirstTransition = true,
-    destroyAfterClose = true,
+    destroyAfterClose = false,
+    lazyLoading = true,
     zIndex: zIndexProp,
     onVisibleChange,
     afterVisibleChange,
@@ -133,36 +135,38 @@ export function Tooltip(props: TooltipProps): React.ReactElement | null {
                 afterVisibleChange?.(false);
               }}
             >
-              {(transitionRef, leaved) =>
-                leaved && destroyAfterClose ? null : (
-                  <div
-                    {...restProps}
-                    {...mergeCS(styled('tooltip'), {
-                      className: restProps.className,
-                      style: {
-                        ...restProps.style,
-                        ...{ '--popup-scale': 0.3 },
-                        zIndex,
-                        ...(leaved ? { display: 'none' } : undefined),
-                      },
-                    })}
-                    ref={(instance) => {
-                      tooltipRef.current = instance;
-                      transitionRef(instance);
-                      return () => {
-                        tooltipRef.current = null;
-                        transitionRef(null);
-                      };
-                    }}
-                    id={id}
-                    role="tooltip"
-                    {...popupProps.popup}
-                  >
-                    {arrow && <div {...styled('tooltip__arrow')} />}
-                    {title}
-                  </div>
-                )
-              }
+              {(transitionRef, leaved) => (
+                <LazyLoading hidden={leaved} disabled={!lazyLoading}>
+                  {leaved && destroyAfterClose ? null : (
+                    <div
+                      {...restProps}
+                      {...mergeCS(styled('tooltip'), {
+                        className: restProps.className,
+                        style: {
+                          ...restProps.style,
+                          ...{ '--popup-scale': 0.3 },
+                          zIndex,
+                          ...(leaved ? { display: 'none' } : undefined),
+                        },
+                      })}
+                      ref={(instance) => {
+                        tooltipRef.current = instance;
+                        transitionRef(instance);
+                        return () => {
+                          tooltipRef.current = null;
+                          transitionRef(null);
+                        };
+                      }}
+                      id={id}
+                      role="tooltip"
+                      {...popupProps.popup}
+                    >
+                      {arrow && <div {...styled('tooltip__arrow')} />}
+                      {title}
+                    </div>
+                  )}
+                </LazyLoading>
+              )}
             </Transition>
           </Portal>
         </>
