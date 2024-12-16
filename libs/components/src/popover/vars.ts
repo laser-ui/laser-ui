@@ -1,3 +1,5 @@
+import { createContext } from 'react';
+
 export const CLASSES = {
   popover: '^popover',
   'popover--top': '^popover--top',
@@ -26,3 +28,11 @@ export const CLASSES = {
 };
 
 export const TTANSITION_DURING = { enter: 86, leave: 100 };
+
+export const PopoverContext = createContext<
+  | {
+      id: string;
+      onClose: () => void;
+    }
+  | undefined
+>(undefined);

@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import type { PopupProps } from './types';
 
 import { useAsync, useEvent, useRefExtra, useResize } from '@laser-ui/hooks';
 import { isUndefined } from 'lodash';
-import { cloneElement, useRef } from 'react';
+import { useRef } from 'react';
 
 import { useContainerScrolling, useLayout } from '../../hooks';
 
@@ -22,15 +23,13 @@ export function Popup(props: PopupProps): React.ReactElement | null {
 
   const windowRef = useRefExtra(() => window);
 
-  const dataRef = useRef<{
-    clearTid?: () => void;
-    clearClickOut?: () => void;
-  }>({});
+  const clearTid = useRef(() => {});
+  const clearClickOut = useRef(() => {});
 
   const async = useAsync();
 
   const handleTrigger = (visible?: boolean, behavior?: 'hover' | 'popup-hover') => {
-    dataRef.current.clearTid?.();
+    clearTid.current();
 
     const changeVisible = () => {
       if (isUndefined(visible)) {
@@ -44,15 +43,15 @@ export function Popup(props: PopupProps): React.ReactElement | null {
       switch (behavior) {
         case 'hover':
           if (visible) {
-            dataRef.current.clearTid = async.setTimeout(() => changeVisible(), mouseEnterDelay);
+            clearTid.current = async.setTimeout(() => changeVisible(), mouseEnterDelay);
           } else {
-            dataRef.current.clearTid = async.setTimeout(() => changeVisible(), mouseLeaveDelay);
+            clearTid.current = async.setTimeout(() => changeVisible(), mouseLeaveDelay);
           }
           break;
 
         case 'popup-hover':
           if (!visible) {
-            dataRef.current.clearTid = async.setTimeout(() => changeVisible(), mouseLeaveDelay);
+            clearTid.current = async.setTimeout(() => changeVisible(), mouseLeaveDelay);
           }
           break;
 
@@ -74,7 +73,7 @@ export function Popup(props: PopupProps): React.ReactElement | null {
     windowRef,
     'click',
     () => {
-      dataRef.current.clearClickOut = async.requestAnimationFrame(() => {
+      clearClickOut.current = async.requestAnimationFrame(() => {
         handleTrigger(false);
       });
     },
@@ -83,76 +82,40 @@ export function Popup(props: PopupProps): React.ReactElement | null {
   );
 
   return children({
-    renderTrigger: (el) => {
-      if (disabled) {
-        return el;
-      }
-
-      const triggerProps: React.HTMLAttributes<HTMLElement> = {};
-      switch (trigger) {
-        case 'hover':
-          triggerProps.onMouseEnter = (e) => {
-            el.props.onMouseEnter?.(e);
-
-            handleTrigger(true, 'hover');
-          };
-          triggerProps.onMouseLeave = (e) => {
-            el.props.onMouseLeave?.(e);
-
-            handleTrigger(false, 'hover');
-          };
-          break;
-
-        case 'click':
-          triggerProps.onClick = (e) => {
-            el.props.onClick?.(e);
-
-            dataRef.current.clearClickOut?.();
-            handleTrigger();
-          };
-          break;
-
-        default:
-          break;
-      }
-
-      return cloneElement(el, triggerProps);
-    },
-    renderPopup: (el) => {
-      if (disabled) {
-        return el;
-      }
-
-      const popupProps: React.HTMLAttributes<HTMLElement> = {};
-      if (visibleProp) {
-        switch (trigger) {
-          case 'hover':
-            popupProps.onMouseEnter = (e) => {
-              el.props.onMouseEnter?.(e);
-
-              handleTrigger(true, 'popup-hover');
-            };
-            popupProps.onMouseLeave = (e) => {
-              el.props.onMouseLeave?.(e);
-
-              handleTrigger(false, 'popup-hover');
-            };
-            break;
-
-          case 'click':
-            popupProps.onClick = (e) => {
-              el.props.onClick?.(e);
-
-              dataRef.current.clearClickOut?.();
-            };
-            break;
-
-          default:
-            break;
+    trigger: {
+      onClick: () => {
+        if (!disabled && trigger === 'click') {
+          clearClickOut.current();
+          handleTrigger();
         }
-      }
-
-      return cloneElement(el, popupProps);
+      },
+      onMouseEnter: () => {
+        if (!disabled && trigger === 'hover') {
+          handleTrigger(true, 'hover');
+        }
+      },
+      onMouseLeave: () => {
+        if (!disabled && trigger === 'hover') {
+          handleTrigger(false, 'hover');
+        }
+      },
+    },
+    popup: {
+      onClick: () => {
+        if (!disabled && visibleProp && trigger === 'click') {
+          clearClickOut.current();
+        }
+      },
+      onMouseEnter: () => {
+        if (!disabled && visibleProp && trigger === 'hover') {
+          handleTrigger(true, 'popup-hover');
+        }
+      },
+      onMouseLeave: () => {
+        if (!disabled && visibleProp && trigger === 'hover') {
+          handleTrigger(false, 'popup-hover');
+        }
+      },
     },
   });
 }

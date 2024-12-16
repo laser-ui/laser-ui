@@ -1,9 +1,18 @@
-import type { CloneHTMLElement } from '../../types';
-
 export {};
 
 export interface PopupProps {
-  children: (props: { renderTrigger: CloneHTMLElement; renderPopup: CloneHTMLElement }) => React.ReactElement | null;
+  children: (props: {
+    trigger: {
+      onClick: React.MouseEventHandler<HTMLElement>;
+      onMouseEnter: React.MouseEventHandler<HTMLElement>;
+      onMouseLeave: React.MouseEventHandler<HTMLElement>;
+    };
+    popup: {
+      onClick: React.MouseEventHandler<HTMLElement>;
+      onMouseEnter: React.MouseEventHandler<HTMLElement>;
+      onMouseLeave: React.MouseEventHandler<HTMLElement>;
+    };
+  }) => React.ReactElement | null;
   visible: boolean;
   trigger: 'hover' | 'click';
   disabled?: boolean;
@@ -11,8 +20,8 @@ export interface PopupProps {
   mouseLeaveDelay?: number;
   updatePosition: {
     fn: () => void;
-    triggerRef: React.RefObject<HTMLElement>;
-    popupRef: React.RefObject<HTMLElement>;
+    triggerRef: React.RefObject<HTMLElement | null>;
+    popupRef: React.RefObject<HTMLElement | null>;
     scroll?: boolean;
   };
   onVisibleChange: (visible: boolean) => void;

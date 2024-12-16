@@ -1,9 +1,14 @@
-import type { CloneHTMLElement } from '../types';
-
 import { useAsync, useEvent, useRefExtra } from '@laser-ui/hooks';
-import { cloneElement, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
-export function useFocusVisible(isValidCode: (code: string) => boolean): [boolean, CloneHTMLElement] {
+export function useFocusVisible(isValidCode: (code: string) => boolean): [
+  boolean,
+  {
+    onFocus: React.FocusEventHandler<HTMLElement>;
+    onBlur: React.FocusEventHandler<HTMLElement>;
+    onKeyDown: React.KeyboardEventHandler<HTMLElement>;
+  },
+] {
   const windowRef = useRefExtra(() => window);
 
   const async = useAsync();
@@ -21,27 +26,20 @@ export function useFocusVisible(isValidCode: (code: string) => boolean): [boolea
 
   return [
     focusVisible,
-    (el) =>
-      cloneElement<React.HTMLAttributes<HTMLElement>>(el, {
-        onFocus: (e) => {
-          el.props.onFocus?.(e);
-
-          if (hadKeyboardEvent.current) {
-            setFocusVisible(true);
-          }
-        },
-        onBlur: (e) => {
-          el.props.onBlur?.(e);
-
-          setFocusVisible(false);
-        },
-        onKeyDown: (e) => {
-          el.props.onKeyDown?.(e);
-
-          if (isValidCode(e.code)) {
-            setFocusVisible(true);
-          }
-        },
-      }),
+    {
+      onFocus: () => {
+        if (hadKeyboardEvent.current) {
+          setFocusVisible(true);
+        }
+      },
+      onBlur: () => {
+        setFocusVisible(false);
+      },
+      onKeyDown: (e) => {
+        if (isValidCode(e.code)) {
+          setFocusVisible(true);
+        }
+      },
+    },
   ];
 }

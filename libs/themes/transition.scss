@@ -1,3 +1,4 @@
+/* stylelint-disable declaration-property-value-disallowed-list */
 @use 'variables';
 
 .#{variables.$prefix}fade-enter-active,
@@ -8,6 +9,44 @@
 .#{variables.$prefix}fade-enter-from,
 .#{variables.$prefix}fade-leave-to {
   opacity: 0 !important;
+}
+
+.#{variables.$prefix}popup-enter-active {
+  transition:
+    transform var(--popup-duration, '116ms') ease-out,
+    opacity var(--popup-duration, '116ms') ease-out !important;
+  transform-origin: var(--popup-transform-origin);
+}
+.#{variables.$prefix}popup-leave-active {
+  transition:
+    transform var(--popup-duration, '116ms') ease-in,
+    opacity var(--popup-duration, '116ms') ease-in !important;
+  transform-origin: var(--popup-transform-origin);
+}
+
+.#{variables.$prefix}popup-enter-from,
+.#{variables.$prefix}popup-leave-to {
+  opacity: 0 !important;
+  transform: scale(0) !important;
+}
+
+.#{variables.$prefix}popup-down-enter-active {
+  transition:
+    transform var(--popup-down-duration, '116ms') ease-out,
+    opacity var(--popup-down-duration, '116ms') ease-out !important;
+  transform-origin: var(--popup-down-transform-origin);
+}
+.#{variables.$prefix}popup-down-leave-active {
+  transition:
+    transform var(--popup-down-duration, '116ms') ease-in,
+    opacity var(--popup-down-duration, '116ms') ease-in !important;
+  transform-origin: var(--popup-down-transform-origin);
+}
+
+.#{variables.$prefix}popup-down-enter-from,
+.#{variables.$prefix}popup-down-leave-to {
+  opacity: 0 !important;
+  transform: scaleY(0.7) !important;
 }
 
 .#{variables.$prefix}collapse-horizontal-enter-active,
