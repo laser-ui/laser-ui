@@ -1,5 +1,5 @@
 import type { CLASSES } from './vars';
-import type { BaseProps, CloneHTMLElement, PopupPlacement } from '../types';
+import type { BaseProps, PopupPlacement } from '../types';
 
 export {};
 
@@ -10,7 +10,14 @@ export interface TooltipRef {
 export interface TooltipProps
   extends BaseProps<'tooltip', typeof CLASSES>,
     Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'title'> {
-  children: React.ReactElement | ((render: CloneHTMLElement) => React.ReactElement | null);
+  ref?: React.Ref<TooltipRef>;
+  children: (props: {
+    'aria-describedby': string;
+    onClick: React.MouseEventHandler<HTMLElement>;
+    onMouseEnter: React.MouseEventHandler<HTMLElement>;
+    onMouseLeave: React.MouseEventHandler<HTMLElement>;
+    onKeyDown: React.KeyboardEventHandler<HTMLElement>;
+  }) => React.ReactNode;
   title: React.ReactNode;
   visible?: boolean;
   defaultVisible?: boolean;

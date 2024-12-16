@@ -14,7 +14,7 @@
 .#{variables.$prefix}popup-enter-from,
 .#{variables.$prefix}popup-leave-to {
   opacity: 0 !important;
-  transform: scale(0) !important;
+  transform: scale(var(--popup-scale, 0)) !important;
 }
 
 .#{variables.$prefix}popup-enter-to {
