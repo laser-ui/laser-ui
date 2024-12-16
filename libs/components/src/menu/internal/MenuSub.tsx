@@ -5,16 +5,17 @@ import type { CLASSES } from '../vars';
 import { useEventCallback } from '@laser-ui/hooks';
 import { checkNodeExist } from '@laser-ui/utils';
 import { isUndefined } from 'lodash';
-import { cloneElement, forwardRef, useImperativeHandle, useRef } from 'react';
+import { useImperativeHandle, useRef } from 'react';
 
-import { useJSS, useMaxIndex, useTranslation } from '../../hooks';
+import { useMaxIndex, useTranslation } from '../../hooks';
 import { Popup } from '../../internal/popup';
 import { Portal } from '../../internal/portal';
-import { CollapseTransition, Transition } from '../../internal/transition';
+import { CollapseTransition, Transition } from '../../transition';
 import { getHorizontalSidePosition, getVerticalSidePosition, mergeCS } from '../../utils';
 import { TTANSITION_DURING_BASE, TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../../vars';
 
 interface MenuSubProps {
+  ref: React.RefCallback<() => void>;
   children: React.ReactNode;
   namespace: string;
   styled: Styled<typeof CLASSES>;
@@ -39,8 +40,9 @@ interface MenuSubProps {
   onClick: React.MouseEventHandler<HTMLLIElement>;
 }
 
-export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): React.ReactElement | null => {
+export function MenuSub(props: MenuSubProps): React.ReactElement | null {
   const {
+    ref,
     children,
     namespace,
     styled,
@@ -65,14 +67,10 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): React.
     onClick,
   } = props;
 
-  const sheet = useJSS<'position'>();
-
   const triggerRef = useRef<HTMLLIElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
 
-  const dataRef = useRef<{
-    nodeCache?: React.ReactElement;
-  }>({});
+  const nodeSaved = useRef<React.ReactElement>(null);
 
   const { t } = useTranslation();
 
@@ -80,7 +78,6 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): React.
   const inHorizontalNav = mode === 'horizontal' && inNav;
   const iconMode = mode === 'icon' && inNav;
 
-  const transformOrigin = useRef<string>();
   const updatePosition = useEventCallback(() => {
     if (!(disabled || mode === 'vertical') && visible && popupRef.current && triggerRef.current) {
       const height = popupRef.current.offsetHeight;
@@ -109,16 +106,10 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): React.
               inWindow: WINDOW_SPACE,
             },
           );
-      transformOrigin.current = position.transformOrigin;
-      if (sheet.classes.position) {
-        popupRef.current.classList.toggle(sheet.classes.position, false);
-      }
-      sheet.replaceRule('position', {
-        top: position.top,
-        left: position.left,
-        width: inHorizontalNav ? width : undefined,
-      });
-      popupRef.current.classList.toggle(sheet.classes.position, true);
+      popupRef.current.style.setProperty(`--popup-down-transform-origin`, position.transformOrigin);
+      popupRef.current.style.top = position.top + 'px';
+      popupRef.current.style.left = position.left + 'px';
+      popupRef.current.style.width = inHorizontalNav ? width + 'px' : '';
     }
   });
 
@@ -140,56 +131,56 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): React.
         }}
         onVisibleChange={onVisibleChange}
       >
-        {({ renderTrigger, renderPopup }) => (
+        {(popupProps) => (
           <>
-            {renderTrigger(
-              <li
-                {...mergeCS(
-                  styled('menu__item', 'menu__item--sub', {
-                    'menu__item--horizontal': inHorizontalNav,
-                    'menu__item--icon': iconMode,
-                    'menu__item.is-active': active,
-                    'menu__item.is-expand': mode === 'vertical' ? expand && includeActive : visible,
-                    'menu__item.is-disabled': disabled,
-                  }),
-                  { style: { paddingLeft: space + level * step } },
-                )}
-                ref={triggerRef}
-                id={id}
-                role="menuitem"
-                aria-haspopup
-                aria-expanded={mode === 'vertical' ? expand : visible}
-                aria-disabled={disabled}
-                onClick={(e) => {
-                  onClick(e);
-                }}
+            <li
+              {...mergeCS(
+                styled('menu__item', 'menu__item--sub', {
+                  'menu__item--horizontal': inHorizontalNav,
+                  'menu__item--icon': iconMode,
+                  'menu__item.is-active': active,
+                  'menu__item.is-expand': mode === 'vertical' ? expand && includeActive : visible,
+                  'menu__item.is-disabled': disabled,
+                }),
+                { style: { paddingLeft: space + level * step } },
+              )}
+              ref={triggerRef}
+              id={id}
+              role="menuitem"
+              aria-haspopup
+              aria-expanded={mode === 'vertical' ? expand : visible}
+              aria-disabled={disabled}
+              {...popupProps.trigger}
+              onClick={(e) => {
+                popupProps.trigger.onClick(e);
+                onClick(e);
+              }}
+            >
+              {focus && <div className={`${namespace}-focus-outline`} />}
+              <div
+                {...styled('menu__indicator', {
+                  'menu__indicator--first': posinset[0] === 0 && posinset[1] > 1,
+                  'menu__indicator--last': posinset[0] === posinset[1] - 1 && posinset[1] > 1,
+                })}
               >
-                {focus && <div className={`${namespace}-focus-outline`} />}
+                <div {...styled('menu__indicator-track', { 'menu__indicator-track--hidden': level === 0 })} />
+                <div {...styled('menu__indicator-thumb')} />
+              </div>
+              {checkNodeExist(icon) && <div {...styled('menu__item-icon')}>{icon}</div>}
+              <div {...styled('menu__item-content')}>{children}</div>
+              {!inHorizontalNav && (
                 <div
-                  {...styled('menu__indicator', {
-                    'menu__indicator--first': posinset[0] === 0 && posinset[1] > 1,
-                    'menu__indicator--last': posinset[0] === posinset[1] - 1 && posinset[1] > 1,
+                  {...styled('menu__sub-arrow', {
+                    'menu__sub-arrow--horizontal': mode !== 'vertical' && !inHorizontalNav,
+                    'menu__sub-arrow.is-expand': mode === 'vertical' && expand,
                   })}
+                  aria-hidden
                 >
-                  <div {...styled('menu__indicator-track', { 'menu__indicator-track--hidden': level === 0 })} />
-                  <div {...styled('menu__indicator-thumb')} />
+                  <div />
+                  <div />
                 </div>
-                {checkNodeExist(icon) && <div {...styled('menu__item-icon')}>{icon}</div>}
-                <div {...styled('menu__item-content')}>{children}</div>
-                {!inHorizontalNav && (
-                  <div
-                    {...styled('menu__sub-arrow', {
-                      'menu__sub-arrow--horizontal': mode !== 'vertical' && !inHorizontalNav,
-                      'menu__sub-arrow.is-expand': mode === 'vertical' && expand,
-                    })}
-                    aria-hidden
-                  >
-                    <div />
-                    <div />
-                  </div>
-                )}
-              </li>,
-            )}
+              )}
+            </li>
             {mode !== 'vertical' && (
               <Portal
                 selector={() => {
@@ -202,97 +193,64 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): React.
                   return el;
                 }}
               >
-                <Transition enter={visible} during={TTANSITION_DURING_POPUP} afterRender={updatePosition}>
-                  {(state) => {
-                    let transitionStyle: React.CSSProperties = {};
-                    switch (state) {
-                      case 'enter':
-                        transitionStyle = { transform: inHorizontalNav ? 'scaleY(0.7)' : 'scale(0)', opacity: 0 };
-                        break;
-
-                      case 'entering':
-                        transitionStyle = {
-                          transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-out`).join(', '),
-                          transformOrigin: transformOrigin.current,
+                <Transition
+                  enter={visible}
+                  name={`${namespace}-popup-down`}
+                  duration={TTANSITION_DURING_POPUP}
+                  onBeforeEnter={updatePosition}
+                >
+                  {(transitionRef, leaved) => (
+                    <div
+                      {...mergeCS(styled('menu-popup'), {
+                        style: {
+                          zIndex: `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`,
+                          ...(inHorizontalNav ? undefined : { minWidth: 160 }),
+                          ...(leaved ? { display: 'none' } : undefined),
+                        },
+                      })}
+                      ref={(instance) => {
+                        popupRef.current = instance;
+                        transitionRef(instance);
+                        return () => {
+                          popupRef.current = null;
+                          transitionRef(null);
                         };
-                        break;
-
-                      case 'leaving':
-                        transitionStyle = {
-                          transform: inHorizontalNav ? 'scaleY(0.7)' : 'scale(0)',
-                          opacity: 0,
-                          transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-in`).join(', '),
-                          transformOrigin: transformOrigin.current,
-                        };
-                        break;
-
-                      case 'leaved':
-                        transitionStyle = { display: 'none' };
-                        break;
-
-                      default:
-                        break;
-                    }
-
-                    return renderPopup(
-                      <div
-                        {...mergeCS(styled('menu-popup'), {
-                          style: {
-                            minWidth: inHorizontalNav ? undefined : 160,
-                            zIndex: `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`,
-                            ...transitionStyle,
-                          },
-                        })}
-                        ref={popupRef}
-                      >
-                        <ul {...styled('menu__sub-list')} role="menu" aria-labelledby={id}>
-                          {empty ? (
-                            <div {...mergeCS(styled('menu__empty'), { style: { paddingLeft: space + level * step } })}>{t('No data')}</div>
-                          ) : (
-                            list
-                          )}
-                        </ul>
-                      </div>,
-                    );
-                  }}
+                      }}
+                      {...popupProps.popup}
+                    >
+                      <ul {...styled('menu__sub-list')} role="menu" aria-labelledby={id}>
+                        {empty ? (
+                          <div {...mergeCS(styled('menu__empty'), { style: { paddingLeft: space + level * step } })}>{t('No data')}</div>
+                        ) : (
+                          list
+                        )}
+                      </ul>
+                    </div>
+                  )}
                 </Transition>
               </Portal>
             )}
           </>
         )}
       </Popup>
-      <CollapseTransition
-        originalSize={{
-          height: 'auto',
-        }}
-        collapsedSize={{
-          height: 0,
-        }}
-        enter={mode === 'vertical' ? expand : inNav ? false : (prev) => prev}
-        defaultEnter={expand}
-        during={TTANSITION_DURING_BASE}
-        styles={{
-          entering: {
-            transition: ['height', 'padding', 'margin'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms ease-out`).join(', '),
-          },
-          leaving: {
-            transition: ['height', 'padding', 'margin'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms ease-in`).join(', '),
-          },
-          leaved: { display: 'none' },
-        }}
-      >
-        {(listRef, collapseStyle, state) => {
+      <CollapseTransition height={0} enter={mode === 'vertical' ? expand : false} duration={TTANSITION_DURING_BASE}>
+        {(transitionRef, leaved) => {
           if (mode !== 'vertical') {
-            if (inNav && state !== 'leaved' && dataRef.current.nodeCache) {
-              return cloneElement(dataRef.current.nodeCache, {
-                style: { ...dataRef.current.nodeCache.props.style, ...collapseStyle },
-              });
+            if (inNav && !leaved && nodeSaved.current) {
+              return nodeSaved.current;
             }
             return null;
           }
 
           const node = (
-            <ul {...mergeCS(styled('menu__sub-list'), { style: collapseStyle })} ref={listRef} role="menu" aria-labelledby={id}>
+            <ul
+              {...mergeCS(styled('menu__sub-list'), {
+                style: { ...(leaved ? { display: 'none' } : undefined) },
+              })}
+              ref={mode === 'vertical' || inNav ? transitionRef : undefined}
+              role="menu"
+              aria-labelledby={id}
+            >
               {empty ? (
                 <div {...mergeCS(styled('menu__empty'), { style: { paddingLeft: space + (level + 1) * step } })}>{t('No data')}</div>
               ) : (
@@ -301,11 +259,11 @@ export const MenuSub = forwardRef<() => void, MenuSubProps>((props, ref): React.
             </ul>
           );
           if (mode === 'vertical' && inNav) {
-            dataRef.current.nodeCache = node;
+            nodeSaved.current = node;
           }
           return node;
         }}
       </CollapseTransition>
     </>
   );
-});
+}

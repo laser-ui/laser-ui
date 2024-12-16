@@ -493,7 +493,10 @@ export function Dropdown<ID extends React.Key, T extends DropdownItem<ID>>(props
                 >
                   <div
                     {...mergeCS(styled('dropdown-popup'), {
-                      style: { zIndex },
+                      style: {
+                        zIndex,
+                        ...(leaved ? { display: 'none' } : undefined),
+                      },
                     })}
                     ref={(instance) => {
                       popupRef.current = instance;

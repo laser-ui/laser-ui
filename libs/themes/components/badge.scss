@@ -2,17 +2,17 @@
 @use '../variables';
 @use '../mixins';
 
-.#{variables.$prefix}badge-enter-active,
-.#{variables.$prefix}badge-leave-active {
-  transition:
-    transform var(--#{variables.$prefix}animation-duration-base) ease-out,
-    opacity var(--#{variables.$prefix}animation-duration-base) ease-out !important;
-}
-
 .#{variables.$prefix}badge-enter-from,
 .#{variables.$prefix}badge-leave-to {
   opacity: 0 !important;
   transform: scale(0) !important;
+}
+
+.#{variables.$prefix}badge-enter-to,
+.#{variables.$prefix}badge-leave-to {
+  transition:
+    transform var(--#{variables.$prefix}animation-duration-base) ease-out,
+    opacity var(--#{variables.$prefix}animation-duration-base) ease-out !important;
 }
 
 @include mixins.b(badge) {

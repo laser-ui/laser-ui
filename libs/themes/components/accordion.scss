@@ -1,35 +1,31 @@
 @use '../variables';
 @use '../mixins';
 
-.#{variables.$prefix}accordion-enter-active {
-  overflow: hidden !important;
-  transition:
-    height var(--#{variables.$prefix}animation-duration-base) ease-out,
-    opacity var(--#{variables.$prefix}animation-duration-base) ease-out !important;
-}
+.#{variables.$prefix}accordion-enter-active,
 .#{variables.$prefix}accordion-leave-active {
   overflow: hidden !important;
-  transition:
-    height var(--#{variables.$prefix}animation-duration-base) ease-in,
-    opacity var(--#{variables.$prefix}animation-duration-base) ease-in !important;
-}
-
-.#{variables.$prefix}accordion-enter-from,
-.#{variables.$prefix}accordion-leave-from {
-  transition: none !important;
 }
 
 .#{variables.$prefix}accordion-enter-to,
 .#{variables.$prefix}accordion-leave-from {
   height: var(--#{variables.$prefix}collapse-vertical) !important;
-  overflow: hidden !important;
 }
 
 .#{variables.$prefix}accordion-enter-from,
 .#{variables.$prefix}accordion-leave-to {
   height: var(--#{variables.$prefix}collapse-vertical) !important;
-  overflow: hidden !important;
   opacity: 0;
+}
+
+.#{variables.$prefix}accordion-enter-to {
+  transition:
+    height var(--#{variables.$prefix}animation-duration-base) ease-out,
+    opacity var(--#{variables.$prefix}animation-duration-base) ease-out !important;
+}
+.#{variables.$prefix}accordion-leave-to {
+  transition:
+    height var(--#{variables.$prefix}animation-duration-base) ease-in,
+    opacity var(--#{variables.$prefix}animation-duration-base) ease-in !important;
 }
 
 @include mixins.b(accordion) {

@@ -73,13 +73,13 @@ export function Header(props: HeaderProps): React.ReactElement | null {
       />
       <Separator className={styles['app-header__separator']} vertical />
       <div className={styles['app-header__button-container']}>
-        <Dropdown
+        <Dropdown<Lang, DropdownItem<Lang>>
           list={(
             [
               ['🇨🇳', '简体中文', 'zh-CN'],
               ['🇺🇸', 'English', 'en-US'],
             ] as [string, string, Lang][]
-          ).map<DropdownItem<Lang>>((item) => ({
+          ).map((item) => ({
             id: item[2],
             title: (
               <div className={languageStorage.value === item[2] ? 'app-theme-primary' : undefined}>
@@ -89,16 +89,18 @@ export function Header(props: HeaderProps): React.ReactElement | null {
             ),
             type: 'item',
           }))}
-          onClick={(id: Lang) => {
+          onClick={(id) => {
             languageStorage.set(id);
             i18n.changeLanguage(id);
           }}
         >
-          <button className={styles['app-header__button']} aria-label={t('Change language')}>
-            <Icon size={24}>
-              <TranslateOutlined />
-            </Icon>
-          </button>
+          {(dropdownProps) => (
+            <button {...dropdownProps} className={styles['app-header__button']} aria-label={t('Change language')}>
+              <Icon size={24}>
+                <TranslateOutlined />
+              </Icon>
+            </button>
+          )}
         </Dropdown>
         <button
           className={styles['app-header__button']}

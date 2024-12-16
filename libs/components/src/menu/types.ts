@@ -21,6 +21,7 @@ export interface MenuItem<ID extends React.Key> {
 export interface MenuProps<ID extends React.Key, T extends MenuItem<ID>>
   extends BaseProps<'menu' | 'menu-popup', typeof CLASSES>,
     Omit<React.HTMLAttributes<HTMLElement>, 'children'> {
+  ref?: React.Ref<MenuRef>;
   list: T[];
   mode?: MenuMode;
   width?: string | number;

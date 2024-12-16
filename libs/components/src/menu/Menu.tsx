@@ -1,8 +1,8 @@
-import type { MenuItem, MenuProps, MenuRef } from './types';
+import type { MenuItem, MenuProps } from './types';
 
 import { findNested } from '@laser-ui/utils';
 import { isNull, isUndefined, nth } from 'lodash';
-import { Fragment, forwardRef, useCallback, useId, useImperativeHandle, useRef, useState } from 'react';
+import { Fragment, useCallback, useId, useImperativeHandle, useRef, useState } from 'react';
 
 import { MenuGroup } from './internal/MenuGroup';
 import { MenuItem as MenuItemFC } from './internal/MenuItem';
@@ -18,15 +18,13 @@ import {
   useNestedPopup,
   useStyled,
 } from '../hooks';
-import { CollapseTransition } from '../internal/transition';
+import { CollapseTransition } from '../transition';
 import { mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
-function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
-  props: MenuProps<ID, T>,
-  ref: React.ForwardedRef<MenuRef>,
-): React.ReactElement | null {
+export function Menu<ID extends React.Key, T extends MenuItem<ID>>(props: MenuProps<ID, T>): React.ReactElement | null {
   const {
+    ref,
     styleOverrides,
     styleProvider,
     list,
@@ -53,15 +51,10 @@ function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
 
   const menuRef = useRef<HTMLElement>(null);
 
-  const dataRef = useRef<{
-    mousedown: boolean;
-    updatePosition: Map<ID, () => void>;
-  }>({
-    mousedown: false,
-    updatePosition: new Map(),
-  });
+  const mousedown = useRef(false);
+  const updateSubPosition = useRef(new Set<() => void>());
 
-  const [focusVisible, focusVisibleWrapper] = useFocusVisible(
+  const [focusVisible, focusVisibleProps] = useFocusVisible(
     (code) => code.startsWith('Arrow') || ['Home', 'End', 'Enter', 'Space'].includes(code),
   );
 
@@ -380,12 +373,13 @@ function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
               </MenuGroup>
             ) : (
               <MenuSub
-                ref={(fn) => {
-                  if (isNull(fn)) {
-                    dataRef.current.updatePosition.delete(itemId);
-                  } else {
-                    dataRef.current.updatePosition.set(itemId, fn);
-                  }
+                ref={(instance) => {
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  const fn = instance!;
+                  updateSubPosition.current.add(fn);
+                  return () => {
+                    updateSubPosition.current.delete(fn);
+                  };
                 }}
                 namespace={namespace}
                 styled={styled}
@@ -441,7 +435,7 @@ function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
   })();
 
   const updatePosition = useCallback(() => {
-    for (const fn of dataRef.current.updatePosition.values()) {
+    for (const fn of updateSubPosition.current) {
       fn();
     }
   }, []);
@@ -451,32 +445,15 @@ function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
   useImperativeHandle(ref, () => ({ updatePosition }), [updatePosition]);
 
   return (
-    <CollapseTransition
-      originalSize={{
-        width,
-      }}
-      collapsedSize={{
-        width: 64,
-      }}
-      enter={mode !== 'icon'}
-      during={TTANSITION_DURING_BASE}
-      styles={{
-        entering: {
-          transition: ['width', 'padding', 'margin'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms linear`).join(', '),
-        },
-        leaving: {
-          transition: ['width', 'padding', 'margin'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms linear`).join(', '),
-        },
-      }}
-    >
-      {(collapseRef, collapseStyle) => {
+    <CollapseTransition width={64} enter={mode !== 'icon'} duration={TTANSITION_DURING_BASE}>
+      {(transitionRef, leaved) => {
         const preventBlur: React.MouseEventHandler<HTMLElement> = (e) => {
           if (document.activeElement === e.currentTarget && e.button === 0) {
             e.preventDefault();
           }
         };
 
-        return focusVisibleWrapper(
+        return (
           // eslint-disable-next-line jsx-a11y/aria-activedescendant-has-tabindex
           <nav
             {...restProps}
@@ -485,32 +462,40 @@ function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
               style: {
                 ...restProps.style,
                 width,
-                ...collapseStyle,
+                ...(leaved ? { display: 'none' } : undefined),
               },
             })}
-            ref={(el) => {
-              (collapseRef as any).current = el;
-              (menuRef as any).current = el;
+            ref={(instance) => {
+              menuRef.current = instance;
+              transitionRef(instance);
+              return () => {
+                menuRef.current = null;
+                transitionRef(null);
+              };
             }}
             tabIndex={restProps.tabIndex ?? 0}
             role="menubar"
             aria-orientation={mode === 'horizontal' ? 'horizontal' : 'vertical'}
             aria-activedescendant={isUndefined(focusId) ? undefined : getItemId(focusId)}
+            {...focusVisibleProps}
             onFocus={(e) => {
               restProps.onFocus?.(e);
+              focusVisibleProps.onFocus(e);
 
-              if (!dataRef.current.mousedown) {
+              if (!mousedown.current) {
                 initFocus();
               }
-              dataRef.current.mousedown = false;
+              mousedown.current = false;
             }}
             onBlur={(e) => {
               restProps.onBlur?.(e);
+              focusVisibleProps.onBlur(e);
 
               setPopupIds([]);
             }}
             onKeyDown={(e) => {
               restProps.onKeyDown?.(e);
+              focusVisibleProps.onKeyDown(e);
 
               if (popupIds.length > 0 && escClosable && e.code === 'Escape') {
                 e.stopPropagation();
@@ -523,7 +508,7 @@ function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
             onMouseDown={(e) => {
               restProps.onMouseDown?.(e);
 
-              dataRef.current.mousedown = true;
+              mousedown.current = true;
               preventBlur(e);
             }}
             onMouseUp={(e) => {
@@ -533,13 +518,9 @@ function MenuFC<ID extends React.Key, T extends MenuItem<ID>>(
             }}
           >
             {nodes}
-          </nav>,
+          </nav>
         );
       }}
     </CollapseTransition>
   );
 }
-
-export const Menu: <ID extends React.Key, T extends MenuItem<ID>>(
-  props: MenuProps<ID, T> & React.RefAttributes<MenuRef>,
-) => ReturnType<typeof MenuFC> = forwardRef(MenuFC) as any;
