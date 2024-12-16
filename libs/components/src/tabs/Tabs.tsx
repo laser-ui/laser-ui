@@ -330,8 +330,8 @@ function TabsFC<ID extends React.Key, T extends TabsItem<ID>>(
           {(listOverflow || addible) && (
             <div {...styled('tabs__button-container')} ref={buttonContainerRef}>
               {listOverflow && (
-                <Dropdown
-                  list={dropdownList.map<DropdownItem<ID>>((tab) => {
+                <Dropdown<ID, DropdownItem<ID>>
+                  list={dropdownList.map((tab) => {
                     const { id: itemId, title: itemTitle, dropdownRender: itemDropdownRender, disabled: itemDisabled } = tab;
 
                     return {
@@ -347,16 +347,19 @@ function TabsFC<ID extends React.Key, T extends TabsItem<ID>>(
                     changeActive(id);
                   }}
                 >
-                  <div
-                    {...styled('tabs__button', 'tabs__button--more', {
-                      'tabs__button.is-end': scrollEnd,
-                    })}
-                    aria-label={t('More')}
-                  >
-                    <Icon size={iconSize}>
-                      <MoreHorizOutlined />
-                    </Icon>
-                  </div>
+                  {(dropdownProps) => (
+                    <div
+                      {...styled('tabs__button', 'tabs__button--more', {
+                        'tabs__button.is-end': scrollEnd,
+                      })}
+                      {...dropdownProps}
+                      aria-label={t('More')}
+                    >
+                      <Icon size={iconSize}>
+                        <MoreHorizOutlined />
+                      </Icon>
+                    </div>
+                  )}
                 </Dropdown>
               )}
               {addible && (

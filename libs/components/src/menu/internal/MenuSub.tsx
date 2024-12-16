@@ -197,6 +197,7 @@ export function MenuSub(props: MenuSubProps): React.ReactElement | null {
                   enter={visible}
                   name={`${namespace}-popup-down`}
                   duration={TTANSITION_DURING_POPUP}
+                  onSkipEnter={updatePosition}
                   onBeforeEnter={updatePosition}
                 >
                   {(transitionRef, leaved) => (

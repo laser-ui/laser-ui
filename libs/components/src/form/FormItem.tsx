@@ -207,18 +207,17 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
 
   const labelExtra = (() => {
     if (labelExtraProp) {
-      return isString(labelExtraProp) ? (
-        <Tooltip title={labelExtraProp}>
-          <Icon>
-            <HelpOutlineOutlined />
-          </Icon>
-        </Tooltip>
-      ) : (
-        <Tooltip title={labelExtraProp.title}>
-          {labelExtraProp.icon ?? (
-            <Icon>
-              <HelpOutlineOutlined />
-            </Icon>
+      const { title, icon } = isString(labelExtraProp) ? { title: labelExtraProp, icon: undefined } : labelExtraProp;
+      return (
+        <Tooltip title={title}>
+          {(tooltipProps) => (
+            <div {...tooltipProps}>
+              {icon ?? (
+                <Icon>
+                  <HelpOutlineOutlined />
+                </Icon>
+              )}
+            </div>
           )}
         </Tooltip>
       );

@@ -1,5 +1,5 @@
 import type { CLASSES } from './vars';
-import type { BaseProps, CloneHTMLElement, PopupPlacement } from '../types';
+import type { BaseProps, PopupPlacement } from '../types';
 
 export {};
 
@@ -47,7 +47,13 @@ export interface TableTdProps extends BaseProps<'table', typeof CLASSES>, React.
 export interface TableFilterProps
   extends BaseProps<'table', typeof CLASSES>,
     Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'content'> {
-  children: React.ReactElement | ((render: CloneHTMLElement) => React.ReactNode);
+  children: (props: {
+    id: string;
+    onClick: React.MouseEventHandler<HTMLElement>;
+    onMouseEnter: React.MouseEventHandler<HTMLElement>;
+    onMouseLeave: React.MouseEventHandler<HTMLElement>;
+    onKeyDown: React.KeyboardEventHandler<HTMLElement>;
+  }) => React.ReactNode;
   content?: React.ReactNode;
   footer?: React.ReactElement | false;
   visible?: boolean;

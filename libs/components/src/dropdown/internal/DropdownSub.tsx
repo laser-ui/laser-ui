@@ -114,7 +114,13 @@ export function DropdownSub(props: DropdownSubProps): React.ReactElement | null 
               return el;
             }}
           >
-            <Transition enter={visible} name={`${namespace}-popup`} duration={TTANSITION_DURING_POPUP} onBeforeEnter={updatePosition}>
+            <Transition
+              enter={visible}
+              name={`${namespace}-popup`}
+              duration={TTANSITION_DURING_POPUP}
+              onSkipEnter={updatePosition}
+              onBeforeEnter={updatePosition}
+            >
               {(transitionRef, leaved) => (
                 <div
                   {...mergeCS(styled('dropdown-popup'), {

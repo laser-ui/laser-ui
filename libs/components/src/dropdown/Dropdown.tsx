@@ -461,6 +461,7 @@ export function Dropdown<ID extends React.Key, T extends DropdownItem<ID>>(props
               enter={visible}
               name={`${namespace}-popup-down`}
               duration={TTANSITION_DURING_POPUP}
+              onSkipEnter={updatePosition}
               onBeforeEnter={updatePosition}
               onAfterEnter={() => {
                 afterVisibleChange?.(true);

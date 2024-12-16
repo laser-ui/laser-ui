@@ -507,8 +507,8 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
       });
 
       suffixNode = (
-        <Dropdown
-          list={selectedNodes.map<DropdownItem<V>>(({ value, label, node }) => ({
+        <Dropdown<V, DropdownItem<V>>
+          list={selectedNodes.map(({ value, label, node }) => ({
             id: value,
             title: label,
             type: 'item',
@@ -524,9 +524,11 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
             return false;
           }}
         >
-          <Tag tabIndex={-1} size={size}>
-            {(selected as Set<V>).size}
-          </Tag>
+          {(dropdownProps) => (
+            <Tag {...dropdownProps} tabIndex={-1} size={size}>
+              {(selected as Set<V>).size}
+            </Tag>
+          )}
         </Dropdown>
       );
       selectedNode = selectedNodes.map(({ value, label, node }) => (

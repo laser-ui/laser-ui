@@ -550,8 +550,8 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
       });
 
       suffixNode = (
-        <Dropdown
-          list={selectedNodes.map<DropdownItem<V>>(({ value, label, node }) => ({
+        <Dropdown<V, DropdownItem<V>>
+          list={selectedNodes.map(({ value, label, node }) => ({
             id: value,
             title: label,
             type: 'item',
@@ -567,9 +567,11 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
             return false;
           }}
         >
-          <Tag tabIndex={-1} size={size}>
-            {(selected as Set<V>).size}
-          </Tag>
+          {(dropdownProps) => (
+            <Tag {...dropdownProps} tabIndex={-1} size={size}>
+              {(selected as Set<V>).size}
+            </Tag>
+          )}
         </Dropdown>
       );
       selectedNode = selectedNodes.map(({ value, label, node }) => (

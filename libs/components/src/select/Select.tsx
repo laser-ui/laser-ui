@@ -517,8 +517,8 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
       });
 
       suffixNode = (
-        <Dropdown
-          list={selectedItems.map<DropdownItem<V>>(({ value, label, item }) => ({
+        <Dropdown<V, DropdownItem<V>>
+          list={selectedItems.map(({ value, label, item }) => ({
             id: value,
             title: label,
             type: 'item',
@@ -529,9 +529,11 @@ function SelectFC<V extends React.Key, T extends SelectItem<V>>(
             return false;
           }}
         >
-          <Tag tabIndex={-1} size={size}>
-            {(selected as Set<V>).size}
-          </Tag>
+          {(dropdownProps) => (
+            <Tag {...dropdownProps} tabIndex={-1} size={size}>
+              {(selected as Set<V>).size}
+            </Tag>
+          )}
         </Dropdown>
       );
       selectedNode = selectedItems.map(({ value, label, item }) => (

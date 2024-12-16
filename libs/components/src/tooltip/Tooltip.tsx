@@ -104,10 +104,12 @@ export function Tooltip(props: TooltipProps): React.ReactElement | null {
             'aria-describedby': id,
             ...popupProps.trigger,
             onKeyDown: (e) => {
-              if (visible && escClosable && e.code === 'Escape') {
-                e.stopPropagation();
-                e.preventDefault();
-                changeVisible(false);
+              if (visible) {
+                if (escClosable && e.code === 'Escape') {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  changeVisible(false);
+                }
               }
             },
           })}
@@ -127,9 +129,20 @@ export function Tooltip(props: TooltipProps): React.ReactElement | null {
               name={`${namespace}-popup`}
               duration={TTANSITION_DURING}
               skipFirstTransition={skipFirstTransition}
-              onBeforeEnter={updatePosition}
+              onSkipEnter={updatePosition}
+              onBeforeEnter={(el) => {
+                updatePosition();
+                if (el) {
+                  el.style.setProperty(`--popup-duration`, TTANSITION_DURING.enter + 'ms');
+                }
+              }}
               onAfterEnter={() => {
                 afterVisibleChange?.(true);
+              }}
+              onBeforeLeave={(el) => {
+                if (el) {
+                  el.style.setProperty(`--popup-duration`, TTANSITION_DURING.leave + 'ms');
+                }
               }}
               onAfterLeave={() => {
                 afterVisibleChange?.(false);

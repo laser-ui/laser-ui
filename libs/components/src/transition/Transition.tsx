@@ -16,10 +16,12 @@ export function Transition(props: TransitionProps): React.ReactElement | null {
     name,
     duration,
     skipFirstTransition = true,
+    onSkipEnter,
     onBeforeEnter,
     onEnter,
     onAfterEnter,
     onEnterCancelled,
+    onSkipLeave,
     onBeforeLeave,
     onLeave,
     onAfterLeave,
@@ -146,6 +148,12 @@ export function Transition(props: TransitionProps): React.ReactElement | null {
             };
           }
         });
+      }
+    } else {
+      if (enter) {
+        onSkipEnter?.(el.current);
+      } else {
+        onSkipLeave?.(el.current);
       }
     }
     return () => {

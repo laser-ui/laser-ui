@@ -38,8 +38,8 @@ export function RatingStar(props: RatingStarProps): React.ReactElement | null {
 
   const [tooltipValue, setTooltipValue] = useState<number>(value);
 
-  const node = (
-    <div {...styled('rating__star')}>
+  const node = (tooltipProps?: any) => (
+    <div {...styled('rating__star')} {...tooltipProps}>
       {half && (
         <>
           <input
@@ -101,5 +101,5 @@ export function RatingStar(props: RatingStarProps): React.ReactElement | null {
     </div>
   );
 
-  return isUndefined(tooltip) ? node : <Tooltip title={tooltip?.(tooltipValue)}>{node}</Tooltip>;
+  return isUndefined(tooltip) ? node() : <Tooltip title={tooltip(tooltipValue)}>{node}</Tooltip>;
 }
