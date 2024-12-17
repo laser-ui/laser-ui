@@ -13,10 +13,10 @@ import { isUndefined } from 'lodash';
 import { useImperativeHandle, useMemo, useRef } from 'react';
 
 import { Checkbox } from '../../checkbox';
+import { CircularProgress } from '../../circular-progress';
 import { Empty } from '../../empty';
 import { useTranslation } from '../../hooks';
 import { Icon } from '../../icon';
-import { CircularProgress } from '../../internal/circular-progress';
 import { CollapseTransition } from '../../transition';
 import { mergeCS } from '../../utils';
 import { TTANSITION_DURING_BASE } from '../../vars';
@@ -144,7 +144,12 @@ export function TreePanel<V extends React.Key, T extends TreeItem<V>>(props: Tre
   return (
     <VirtualScroll
       {...vsProps}
-      ref={vsRef}
+      ref={(instance) => {
+        vsRef.current = instance;
+        return () => {
+          vsRef.current = null;
+        };
+      }}
       enable={!isUndefined(virtual)}
       listSize={virtual?.listSize ?? 0}
       listPadding={virtual?.listPadding ?? 0}
@@ -318,6 +323,7 @@ export function TreePanel<V extends React.Key, T extends TreeItem<V>>(props: Tre
       onScrollEnd={onScrollBottom}
     >
       {(vsList, onScroll) => (
+        // eslint-disable-next-line jsx-a11y/aria-activedescendant-has-tabindex
         <ul
           {...restProps}
           {...mergeCS(
@@ -330,7 +336,12 @@ export function TreePanel<V extends React.Key, T extends TreeItem<V>>(props: Tre
               style: restProps.style,
             },
           )}
-          ref={listRef}
+          ref={(instance) => {
+            listRef.current = instance;
+            return () => {
+              listRef.current = null;
+            };
+          }}
           role="tree"
           aria-multiselectable={multiple}
           aria-activedescendant={isUndefined(itemFocused) ? undefined : itemId(itemFocused.id)}

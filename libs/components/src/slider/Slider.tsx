@@ -333,7 +333,13 @@ export function Slider(props: SliderProps): React.ReactElement | null {
 
     return (
       <Tooltip
-        ref={isLeft ? tooltipLeftRef : tooltipRightRef}
+        ref={(instance) => {
+          const tooltipRef = isLeft ? tooltipLeftRef : tooltipRightRef;
+          tooltipRef.current = instance;
+          return () => {
+            tooltipRef.current = null;
+          };
+        }}
         visible={isLeft ? visibleLeft : visibleRight}
         title={customTooltip ? customTooltip(value) : value}
         placement={vertical ? 'right' : 'top'}
@@ -349,14 +355,19 @@ export function Slider(props: SliderProps): React.ReactElement | null {
                 bottom: vertical ? `calc(${value} / ${max - min} * 100% - 7px)` : undefined,
               },
             })}
-            ref={isLeft ? dotLeftRef : dotRightRef}
+            ref={(instance) => {
+              const dotRef = isLeft ? dotLeftRef : dotRightRef;
+              dotRef.current = instance;
+              return () => {
+                dotRef.current = null;
+              };
+            }}
             {...tooltipProps}
           >
             <input
               {...inputProps?.[index]}
               {...styled('slider__input')}
               {...formControl?.inputAria}
-              ref={inputProps?.[index]?.ref}
               type="range"
               value={value}
               max={max}
@@ -422,7 +433,12 @@ export function Slider(props: SliderProps): React.ReactElement | null {
         },
       )}
       {...designProps}
-      ref={sliderRef}
+      ref={(instance) => {
+        sliderRef.current = instance;
+        return () => {
+          sliderRef.current = null;
+        };
+      }}
       onMouseDown={(e) => {
         restProps.onMouseDown?.(e);
 

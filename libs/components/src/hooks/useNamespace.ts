@@ -1,9 +1,9 @@
-import { useContext } from 'react';
+import { use } from 'react';
 
 import { LContext } from '../context';
 
 export function useNamespace() {
-  const context = useContext(LContext);
+  const context = use(LContext);
 
   return context.namespace;
 }

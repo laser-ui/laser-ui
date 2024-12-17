@@ -114,7 +114,15 @@ export function TimePickerPanel(props: TimePickerPanelProps): React.ReactElement
     <div {...styled('time-picker__panel')}>
       {inDatePicker && <div {...styled('time-picker__header')}>{time.format(cols.join(':'))}</div>}
       {cols.includes('HH') && (
-        <ul {...styled('time-picker__column')} ref={ulHRef}>
+        <ul
+          {...styled('time-picker__column')}
+          ref={(instance) => {
+            ulHRef.current = instance;
+            return () => {
+              ulHRef.current = null;
+            };
+          }}
+        >
           {(is12Hour ? H12 : H24).map((n) => {
             let hour = Number(n);
             if (is12Hour) {
@@ -148,7 +156,15 @@ export function TimePickerPanel(props: TimePickerPanelProps): React.ReactElement
         </ul>
       )}
       {cols.includes('mm') && (
-        <ul {...styled('time-picker__column')} ref={ulMRef}>
+        <ul
+          {...styled('time-picker__column')}
+          ref={(instance) => {
+            ulMRef.current = instance;
+            return () => {
+              ulMRef.current = null;
+            };
+          }}
+        >
           {M60.map((n) => {
             const minute = Number(n);
             const { disabled, hidden } = config?.('minute', minute) ?? {};
@@ -174,7 +190,15 @@ export function TimePickerPanel(props: TimePickerPanelProps): React.ReactElement
         </ul>
       )}
       {cols.includes('ss') && (
-        <ul {...styled('time-picker__column')} ref={ulSRef}>
+        <ul
+          {...styled('time-picker__column')}
+          ref={(instance) => {
+            ulSRef.current = instance;
+            return () => {
+              ulSRef.current = null;
+            };
+          }}
+        >
           {S60.map((n) => {
             const second = Number(n);
             const { disabled, hidden } = config?.('second', second) ?? {};

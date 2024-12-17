@@ -4,7 +4,7 @@ import { useStorage } from '@laser-pro/storage';
 import { ConfigProvider, Root } from '@laser-ui/components';
 import highlightDarkStyles from 'highlight.js/styles/github-dark.css?inline';
 import highlightStyles from 'highlight.js/styles/github.css?inline';
-import { Suspense, createElement, useEffect, useMemo } from 'react';
+import { Suspense, useEffect, useMemo } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { FCPLoader } from './components';
@@ -59,15 +59,31 @@ export function App() {
             <Route path="/" element={<HomeRoute />} />
             {routes
               .filter(({ path }) => !path.startsWith('/iframe'))
-              .map(({ path, component }) => (
-                <Route key={path} path={path} element={<Suspense fallback={<FCPLoader />}>{createElement(component)}</Suspense>} />
+              .map(({ path, component: Component }) => (
+                <Route
+                  key={path}
+                  path={path}
+                  element={
+                    <Suspense fallback={<FCPLoader />}>
+                      <Component />
+                    </Suspense>
+                  }
+                />
               ))}
           </Route>
           <Route element={<IframeLayout />}>
             {routes
               .filter(({ path }) => path.startsWith('/iframe'))
-              .map(({ path, component }) => (
-                <Route key={path} path={path} element={<Suspense fallback={<FCPLoader />}>{createElement(component)}</Suspense>} />
+              .map(({ path, component: Component }) => (
+                <Route
+                  key={path}
+                  path={path}
+                  element={
+                    <Suspense fallback={<FCPLoader />}>
+                      <Component />
+                    </Suspense>
+                  }
+                />
               ))}
           </Route>
           <Route path="/docs" element={<Navigate to="/docs/Overview" replace />} />

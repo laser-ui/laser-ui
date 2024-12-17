@@ -1,5 +1,33 @@
+/* stylelint-disable declaration-property-value-disallowed-list */
 @use '../variables';
 @use '../mixins';
+
+.#{variables.$prefix}notification-enter-from {
+  transform: var(--notification-transform) !important;
+}
+.#{variables.$prefix}notification-enter-to {
+  transition: transform 133ms ease-out !important;
+}
+
+.#{variables.$prefix}notification-leave-from {
+  height: var(--#{variables.$prefix}collapse-vertical) !important;
+}
+.#{variables.$prefix}notification-leave-active {
+  overflow: hidden !important;
+}
+.#{variables.$prefix}notification-leave-to {
+  height: var(--#{variables.$prefix}collapse-vertical) !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  opacity: 0 !important;
+  transition:
+    height 166ms ease-in,
+    padding 166ms ease-in,
+    margin 166ms ease-in,
+    opacity 166ms ease-in !important;
+}
 
 @mixin notification-root {
   position: fixed;

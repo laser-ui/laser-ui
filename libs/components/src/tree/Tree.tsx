@@ -169,7 +169,12 @@ export function Tree<V extends React.Key, T extends TreeItem<V>>(props: TreeProp
   return (
     <TreePanel
       {...restProps}
-      ref={focusRef}
+      ref={(instance) => {
+        focusRef.current = instance;
+        return () => {
+          focusRef.current = null;
+        };
+      }}
       tabIndex={restProps.tabIndex ?? (disabled ? -1 : 0)}
       onFocus={(e) => {
         restProps.onFocus?.(e);

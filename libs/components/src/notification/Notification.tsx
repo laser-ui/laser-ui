@@ -13,8 +13,9 @@ import { useId, useRef } from 'react';
 import { CLASSES, TTANSITION_DURING } from './vars';
 import { useComponentProps, useNamespace, useStyled, useTranslation } from '../hooks';
 import { Icon } from '../icon';
+import { LazyLoading } from '../internal/lazy-loading';
 import { Portal } from '../internal/portal';
-import { Transition } from '../internal/transition';
+import { CollapseTransition } from '../transition';
 import { mergeCS } from '../utils';
 
 export function Notification(props: NotificationProps): React.ReactElement | null {
@@ -32,6 +33,7 @@ export function Notification(props: NotificationProps): React.ReactElement | nul
     escClosable = true,
     skipFirstTransition = true,
     destroyAfterClose = false,
+    lazyLoading = true,
     onClose,
     afterVisibleChange,
 
@@ -89,150 +91,120 @@ export function Notification(props: NotificationProps): React.ReactElement | nul
         return el;
       }}
     >
-      <Transition
+      <CollapseTransition
+        height={0}
         enter={visible}
-        during={TTANSITION_DURING}
+        name={`${namespace}-notification`}
+        duration={TTANSITION_DURING}
         skipFirstTransition={skipFirstTransition}
-        destroyWhenLeaved={destroyAfterClose}
-        afterEnter={() => {
+        onAfterEnter={() => {
           afterVisibleChange?.(true);
         }}
-        afterLeave={() => {
+        onAfterLeave={() => {
           afterVisibleChange?.(false);
         }}
       >
-        {(state) => {
-          let transitionStyle: React.CSSProperties = {};
-          switch (state) {
-            case 'enter':
-              transitionStyle = {
-                transform: placement === 'left-top' || placement === 'left-bottom' ? 'translate(-100%, 0)' : 'translate(100%, 0)',
-              };
-              break;
-
-            case 'entering':
-              transitionStyle = {
-                transition: ['transform'].map((attr) => `${attr} ${TTANSITION_DURING.enter}ms ease-out`).join(', '),
-              };
-              break;
-
-            case 'leave':
-              if (notificationRef.current) {
-                const height = notificationRef.current.offsetHeight;
-                transitionStyle = { height, overflow: 'hidden' };
-              }
-              break;
-
-            case 'leaving':
-              transitionStyle = {
-                height: 0,
-                overflow: 'hidden',
-                paddingTop: 0,
-                paddingBottom: 0,
-                marginTop: 0,
-                marginBottom: 0,
-                opacity: 0,
-                transition: ['height', 'padding', 'margin', 'opacity']
-                  .map((attr) => `${attr} ${TTANSITION_DURING.leave}ms ease-in`)
-                  .join(', '),
-              };
-              break;
-
-            case 'leaved':
-              transitionStyle = { display: 'none' };
-              break;
-
-            default:
-              break;
-          }
-
-          return (
-            <div
-              {...restProps}
-              {...mergeCS(
-                styled('notification', {
-                  [`notification--${type}`]: type,
-                }),
-                {
-                  className: restProps.className,
-                  style: {
-                    ...restProps.style,
-                    ...transitionStyle,
+        {(transitionRef, leaved) => (
+          <LazyLoading hidden={leaved} disabled={!lazyLoading}>
+            {leaved && destroyAfterClose ? null : (
+              <div
+                {...restProps}
+                {...mergeCS(
+                  styled('notification', {
+                    [`notification--${type}`]: type,
+                  }),
+                  {
+                    className: restProps.className,
+                    style: {
+                      ...restProps.style,
+                      ...{
+                        '--notification-transform':
+                          placement === 'left-top' || placement === 'left-bottom' ? 'translate(-100%, 0)' : 'translate(100%, 0)',
+                      },
+                      ...(leaved ? { display: 'none' } : undefined),
+                    },
                   },
-                },
-              )}
-              ref={notificationRef}
-              tabIndex={restProps.tabIndex ?? -1}
-              role={restProps.role ?? 'alert'}
-              aria-labelledby={titleId}
-              aria-describedby={descriptionId}
-              onMouseEnter={(e) => {
-                restProps.onMouseEnter?.(e);
+                )}
+                ref={(instance) => {
+                  notificationRef.current = instance;
+                  transitionRef(instance);
+                  return () => {
+                    notificationRef.current = null;
+                    transitionRef(null);
+                  };
+                }}
+                tabIndex={restProps.tabIndex ?? -1}
+                role={restProps.role ?? 'alert'}
+                aria-labelledby={titleId}
+                aria-describedby={descriptionId}
+                onMouseEnter={(e) => {
+                  restProps.onMouseEnter?.(e);
 
-                clearTid.current();
-              }}
-              onMouseLeave={(e) => {
-                restProps.onMouseLeave?.(e);
-
-                if (duration > 0) {
-                  clearTid.current = async.setTimeout(() => {
-                    onClose?.();
-                  }, duration * 1000);
-                }
-              }}
-              onKeyDown={(e) => {
-                restProps.onKeyDown?.(e);
-
-                if (visible && escClosable && e.code === 'Escape') {
-                  e.stopPropagation();
-                  e.preventDefault();
                   clearTid.current();
-                  onClose?.();
-                }
-              }}
-            >
-              {icon !== false && (!isUndefined(type) || checkNodeExist(icon)) && (
-                <div {...styled('notification__icon')}>
-                  {checkNodeExist(icon) ? (
-                    icon
-                  ) : (
-                    <Icon>
-                      {type === 'success' ? (
-                        <CheckCircleOutlined />
-                      ) : type === 'warning' ? (
-                        <WarningAmberOutlined />
-                      ) : type === 'error' ? (
-                        <HighlightOffOutlined />
-                      ) : (
-                        <InfoOutlined />
-                      )}
-                    </Icon>
-                  )}
-                </div>
-              )}
-              <div {...styled('notification__content')}>
-                <div {...styled('notification__header')}>
-                  <div {...styled('notification__title')} id={titleId}>
-                    {title}
-                  </div>
-                  {closable && (
-                    <button {...styled('notification__close')} aria-label={t('Close')} onClick={onClose}>
+                }}
+                onMouseLeave={(e) => {
+                  restProps.onMouseLeave?.(e);
+
+                  if (duration > 0) {
+                    clearTid.current = async.setTimeout(() => {
+                      onClose?.();
+                    }, duration * 1000);
+                  }
+                }}
+                onKeyDown={(e) => {
+                  restProps.onKeyDown?.(e);
+
+                  if (visible && escClosable && e.code === 'Escape') {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    clearTid.current();
+                    onClose?.();
+                  }
+                }}
+              >
+                {icon !== false && (!isUndefined(type) || checkNodeExist(icon)) && (
+                  <div {...styled('notification__icon')}>
+                    {checkNodeExist(icon) ? (
+                      icon
+                    ) : (
                       <Icon>
-                        <CloseOutlined />
+                        {type === 'success' ? (
+                          <CheckCircleOutlined />
+                        ) : type === 'warning' ? (
+                          <WarningAmberOutlined />
+                        ) : type === 'error' ? (
+                          <HighlightOffOutlined />
+                        ) : (
+                          <InfoOutlined />
+                        )}
                       </Icon>
-                    </button>
-                  )}
-                </div>
-                {checkNodeExist(children) && (
-                  <div {...styled('notification__description')} id={descriptionId}>
-                    {children}
+                    )}
                   </div>
                 )}
+                <div {...styled('notification__content')}>
+                  <div {...styled('notification__header')}>
+                    <div {...styled('notification__title')} id={titleId}>
+                      {title}
+                    </div>
+                    {closable && (
+                      <button {...styled('notification__close')} aria-label={t('Close')} onClick={onClose}>
+                        <Icon>
+                          <CloseOutlined />
+                        </Icon>
+                      </button>
+                    )}
+                  </div>
+                  {checkNodeExist(children) && (
+                    <div {...styled('notification__description')} id={descriptionId}>
+                      {children}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          );
-        }}
-      </Transition>
+            )}
+          </LazyLoading>
+        )}
+      </CollapseTransition>
     </Portal>
   );
 }

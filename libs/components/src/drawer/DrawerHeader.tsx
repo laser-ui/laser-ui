@@ -2,9 +2,10 @@ import type { DrawerHeaderProps } from './types';
 import type { ButtonProps } from '../button';
 
 import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
-import { Children } from 'react';
+import { has } from 'lodash';
+import { Fragment, use } from 'react';
 
-import { CLASSES } from './vars';
+import { CLASSES, DrawerContext } from './vars';
 import { Button } from '../button';
 import { useComponentProps, useControlled, useStyled, useTranslation } from '../hooks';
 import { Icon } from '../icon';
@@ -19,21 +20,14 @@ export function DrawerHeader(props: DrawerHeaderProps): React.ReactElement | nul
     closeProps: closePropsProp,
     onCloseClick,
 
-    _id,
-    _onClose,
-
     ...restProps
-  } = useComponentProps(
-    'DrawerHeader',
-    props as DrawerHeaderProps & {
-      _id: string;
-      _onClose: () => void;
-    },
-  );
+  } = useComponentProps('DrawerHeader', props);
 
   const styled = useStyled(CLASSES, { drawer: styleProvider?.drawer }, styleOverrides);
 
   const { t } = useTranslation();
+
+  const drawerContext = use(DrawerContext);
 
   const [closeLoading, changeCloseLoading] = useControlled<boolean>(false, closePropsProp?.loading);
 
@@ -47,11 +41,11 @@ export function DrawerHeader(props: DrawerHeaderProps): React.ReactElement | nul
         shouldClose.then((val) => {
           changeCloseLoading(false);
           if (val !== false) {
-            _onClose?.();
+            drawerContext?.onClose();
           }
         });
       } else if (shouldClose !== false) {
-        _onClose?.();
+        drawerContext?.onClose();
       }
     },
   };
@@ -64,28 +58,36 @@ export function DrawerHeader(props: DrawerHeaderProps): React.ReactElement | nul
         style: restProps.style,
       })}
     >
-      <div {...styled('drawer__header-title')} id={_id}>
+      <div {...styled('drawer__header-title')} id={drawerContext?.id}>
         {children}
       </div>
       <div {...styled('drawer__header-actions')}>
-        {Children.map(actions, (action) =>
-          action === 'close' ? (
-            <Button
-              {...closeProps}
-              aria-label={closeProps['aria-label'] ?? t('Close')}
-              pattern={closeProps.pattern ?? 'text'}
-              icon={
-                closeProps.icon ?? (
-                  <Icon>
-                    <CloseOutlined />
-                  </Icon>
-                )
-              }
-            />
-          ) : (
-            action
-          ),
-        )}
+        {actions.map((node, index) => {
+          const { id, action } = (has(node, ['id', 'action']) ? node : { id: index, action: node }) as {
+            id: React.Key;
+            action: React.ReactNode;
+          };
+          return (
+            <Fragment key={id}>
+              {action === 'close' ? (
+                <Button
+                  {...closeProps}
+                  aria-label={closeProps['aria-label'] ?? t('Close')}
+                  pattern={closeProps.pattern ?? 'text'}
+                  icon={
+                    closeProps.icon ?? (
+                      <Icon>
+                        <CloseOutlined />
+                      </Icon>
+                    )
+                  }
+                />
+              ) : (
+                action
+              )}
+            </Fragment>
+          );
+        })}
       </div>
     </div>
   );

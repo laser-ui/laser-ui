@@ -1,17 +1,17 @@
 import type { ButtonProps } from './types';
-import type { WaveRef } from '../internal/wave';
+import type { WaveRef } from '../wave';
 
 import { checkNodeExist } from '@laser-ui/utils';
 import { useRef } from 'react';
 
 import { CLASSES } from './vars';
+import { CircularProgress } from '../circular-progress';
 import { useComponentProps, useDesign, useScopedProps, useStyled } from '../hooks';
 import { Icon } from '../icon';
-import { CircularProgress } from '../internal/circular-progress';
-import { Wave } from '../internal/wave';
 import { CollapseTransition } from '../transition';
 import { mergeCS } from '../utils';
 import { TTANSITION_DURING_SLOW } from '../vars';
+import { Wave } from '../wave';
 
 export function Button(props: ButtonProps) {
   const {
@@ -67,7 +67,15 @@ export function Button(props: ButtonProps) {
         }
       }}
     >
-      <Wave ref={waveRef} color="var(--color)" />
+      <Wave
+        ref={(instance) => {
+          waveRef.current = instance;
+          return () => {
+            waveRef.current = null;
+          };
+        }}
+        color="var(--color)"
+      />
       {checkNodeExist(icon) ? (
         <div {...styled('button__icon')}>
           {loading ? (

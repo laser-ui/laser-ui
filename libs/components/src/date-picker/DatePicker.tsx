@@ -371,7 +371,12 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
           },
         )}
         {...designProps}
-        ref={boxRef}
+        ref={(instance) => {
+          boxRef.current = instance;
+          return () => {
+            boxRef.current = null;
+          };
+        }}
         onMouseDown={(e) => {
           restProps.onMouseDown?.(e);
 
@@ -394,7 +399,15 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
         {inputNode(true)}
         {range && (
           <>
-            <div {...styled('date-picker__indicator')} ref={indicatorRef} />
+            <div
+              {...styled('date-picker__indicator')}
+              ref={(instance) => {
+                indicatorRef.current = instance;
+                return () => {
+                  indicatorRef.current = null;
+                };
+              }}
+            />
             <div {...styled('date-picker__separator')}>
               <Icon>
                 <SwapHorizOutlined />
@@ -538,7 +551,12 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
               )}
               <div {...styled('date-picker__panel-wrapper')}>
                 <DatePickerPanel
-                  ref={panelRef}
+                  ref={(instance) => {
+                    panelRef.current = instance;
+                    return () => {
+                      panelRef.current = null;
+                    };
+                  }}
                   styled={styled}
                   currentSelected={dataRef.current.latestFocused === 'start' ? valueLeft : valueRight}
                   anotherSelected={dataRef.current.latestFocused === 'start' ? valueRight : valueLeft}
@@ -553,7 +571,12 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
                 />
                 {showTime && (
                   <TimePickerPanel
-                    ref={timePickerPanelRef}
+                    ref={(instance) => {
+                      timePickerPanelRef.current = instance;
+                      return () => {
+                        timePickerPanelRef.current = null;
+                      };
+                    }}
                     styled={styled as any}
                     time={dataRef.current.latestFocused === 'start' ? valueLeft : valueRight}
                     format={format}

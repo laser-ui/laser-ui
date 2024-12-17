@@ -18,20 +18,21 @@ export interface DrawerProps extends BaseProps<'drawer', typeof CLASSES>, React.
   container?: RefExtra;
   skipFirstTransition?: boolean;
   destroyAfterClose?: boolean;
+  lazyLoading?: boolean;
   zIndex?: number | string;
   onClose?: () => void;
   afterVisibleChange?: (visible: boolean) => void;
 }
 
 export interface DrawerHeaderProps extends BaseProps<'drawer', typeof CLASSES>, React.HTMLAttributes<HTMLDivElement> {
-  actions?: React.ReactNode[];
+  actions?: (React.ReactNode | { id: React.Key; action: React.ReactNode })[];
   closeProps?: ButtonProps;
   onCloseClick?: () => any | Promise<any>;
 }
 
 export interface DrawerFooterProps extends BaseProps<'drawer', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   align?: 'left' | 'center' | 'right';
-  actions?: React.ReactNode[];
+  actions?: (React.ReactNode | { id: React.Key; action: React.ReactNode })[];
   cancelProps?: ButtonProps;
   okProps?: ButtonProps;
   onCancelClick?: () => any | Promise<any>;

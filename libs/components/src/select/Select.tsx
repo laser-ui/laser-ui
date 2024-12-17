@@ -17,6 +17,7 @@ import { useCallback, useId, useImperativeHandle, useMemo, useRef, useState } fr
 import { CLASSES, IS_CREATED } from './vars';
 import { BaseInput } from '../base-input';
 import { Checkbox } from '../checkbox';
+import { CircularProgress } from '../circular-progress';
 import { Dropdown } from '../dropdown';
 import { Empty } from '../empty';
 import {
@@ -33,7 +34,6 @@ import {
   useTranslation,
 } from '../hooks';
 import { Icon } from '../icon';
-import { CircularProgress } from '../internal/circular-progress';
 import { Portal } from '../internal/portal';
 import { ROOT_DATA } from '../root/vars';
 import { Tag } from '../tag';
@@ -423,7 +423,12 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
           },
         )}
         {...designProps}
-        ref={boxRef}
+        ref={(instance) => {
+          boxRef.current = instance;
+          return () => {
+            boxRef.current = null;
+          };
+        }}
         onMouseDown={(e) => {
           restProps.onMouseDown?.(e);
 
@@ -736,7 +741,12 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
                     {loading && list.length === 0 ? null : (
                       <VirtualScroll
                         {...vsProps}
-                        ref={vsRef}
+                        ref={(instance) => {
+                          vsRef.current = instance;
+                          return () => {
+                            vsRef.current = null;
+                          };
+                        }}
                         enable={virtual !== false}
                         listSize={264}
                         listPadding={4}
@@ -816,7 +826,12 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
                         {(vsList, onScroll) => (
                           <ul
                             {...styled('select__list')}
-                            ref={listRef}
+                            ref={(instance) => {
+                              listRef.current = instance;
+                              return () => {
+                                listRef.current = null;
+                              };
+                            }}
                             id={listId}
                             tabIndex={-1}
                             role="listbox"

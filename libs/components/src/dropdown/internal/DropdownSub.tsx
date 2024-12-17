@@ -16,7 +16,7 @@ import { getHorizontalSidePosition, mergeCS } from '../../utils';
 import { TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../../vars';
 
 interface DropdownSubProps {
-  ref: React.RefCallback<() => void>;
+  ref?: React.RefCallback<() => void>;
   children: React.ReactNode;
   namespace: string;
   styled: Styled<typeof CLASSES>;
@@ -86,7 +86,12 @@ export function DropdownSub(props: DropdownSubProps): React.ReactElement | null 
               }),
               { style: { paddingLeft: 12 + level * 16 } },
             )}
-            ref={triggerRef}
+            ref={(instance) => {
+              triggerRef.current = instance;
+              return () => {
+                triggerRef.current = null;
+              };
+            }}
             id={id}
             role="menuitem"
             aria-haspopup

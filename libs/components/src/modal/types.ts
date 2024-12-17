@@ -16,20 +16,21 @@ export interface ModalProps extends BaseProps<'modal', typeof CLASSES>, React.HT
   escClosable?: boolean;
   skipFirstTransition?: boolean;
   destroyAfterClose?: boolean;
+  lazyLoading?: boolean;
   zIndex?: number | string;
   onClose?: () => void;
   afterVisibleChange?: (visible: boolean) => void;
 }
 
 export interface ModalHeaderProps extends BaseProps<'modal', typeof CLASSES>, React.HTMLAttributes<HTMLDivElement> {
-  actions?: React.ReactNode[];
+  actions?: (React.ReactNode | { id: React.Key; action: React.ReactNode })[];
   closeProps?: ButtonProps;
   onCloseClick?: () => any | Promise<any>;
 }
 
 export interface ModalFooterProps extends BaseProps<'modal', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   align?: 'left' | 'center' | 'right';
-  actions?: React.ReactNode[];
+  actions?: (React.ReactNode | { id: React.Key; action: React.ReactNode })[];
   cancelProps?: ButtonProps;
   okProps?: ButtonProps;
   onCancelClick?: () => any | Promise<any>;

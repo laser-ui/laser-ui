@@ -13,8 +13,9 @@ import { useId, useRef } from 'react';
 import { CLASSES, TTANSITION_DURING } from './vars';
 import { useComponentProps, useNamespace, useStyled, useTranslation } from '../hooks';
 import { Icon } from '../icon';
+import { LazyLoading } from '../internal/lazy-loading';
 import { Portal } from '../internal/portal';
-import { Transition } from '../internal/transition';
+import { CollapseTransition } from '../transition';
 import { mergeCS } from '../utils';
 
 export function Toast(props: ToastProps): React.ReactElement | null {
@@ -31,6 +32,7 @@ export function Toast(props: ToastProps): React.ReactElement | null {
     escClosable = true,
     skipFirstTransition = true,
     destroyAfterClose = false,
+    lazyLoading = true,
     onClose,
     afterVisibleChange,
 
@@ -80,141 +82,109 @@ export function Toast(props: ToastProps): React.ReactElement | null {
         return el;
       }}
     >
-      <Transition
+      <CollapseTransition
+        height={0}
         enter={visible}
-        during={TTANSITION_DURING}
+        name={`${namespace}-toast`}
+        duration={TTANSITION_DURING}
         skipFirstTransition={skipFirstTransition}
-        destroyWhenLeaved={destroyAfterClose}
-        afterEnter={() => {
+        onAfterEnter={() => {
           afterVisibleChange?.(true);
         }}
-        afterLeave={() => {
+        onAfterLeave={() => {
           afterVisibleChange?.(false);
         }}
       >
-        {(state) => {
-          let transitionStyle: React.CSSProperties = {};
-          switch (state) {
-            case 'enter':
-              transitionStyle = {
-                transform: placement === 'top' ? 'translate(0, -70%)' : 'translate(0, 70%)',
-                opacity: 0,
-              };
-              break;
-
-            case 'entering':
-              transitionStyle = {
-                transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING.enter}ms ease-out`).join(', '),
-              };
-              break;
-
-            case 'leave':
-              if (toastRef.current) {
-                const height = toastRef.current.offsetHeight;
-                transitionStyle = { height, overflow: 'hidden' };
-              }
-              break;
-
-            case 'leaving':
-              transitionStyle = {
-                height: 0,
-                overflow: 'hidden',
-                paddingTop: 0,
-                paddingBottom: 0,
-                marginTop: 0,
-                marginBottom: 0,
-                opacity: 0,
-                transition: ['height', 'padding', 'margin', 'opacity']
-                  .map((attr) => `${attr} ${TTANSITION_DURING.leave}ms ease-in`)
-                  .join(', '),
-              };
-              break;
-
-            case 'leaved':
-              transitionStyle = { display: 'none' };
-              break;
-
-            default:
-              break;
-          }
-
-          return (
-            <div
-              {...restProps}
-              {...mergeCS(
-                styled('toast', {
-                  [`toast--${type}`]: type,
-                }),
-                {
-                  className: restProps.className,
-                  style: {
-                    ...restProps.style,
-                    ...transitionStyle,
+        {(transitionRef, leaved) => (
+          <LazyLoading hidden={leaved} disabled={!lazyLoading}>
+            {leaved && destroyAfterClose ? null : (
+              <div
+                {...restProps}
+                {...mergeCS(
+                  styled('toast', {
+                    [`toast--${type}`]: type,
+                  }),
+                  {
+                    className: restProps.className,
+                    style: {
+                      ...restProps.style,
+                      ...{
+                        '--toast-transform': placement === 'top' ? 'translate(0, -70%)' : 'translate(0, 70%)',
+                      },
+                      ...(leaved ? { display: 'none' } : undefined),
+                    },
                   },
-                },
-              )}
-              ref={toastRef}
-              tabIndex={restProps.tabIndex ?? -1}
-              role={restProps.role ?? 'alert'}
-              aria-describedby={messageId}
-              onMouseEnter={(e) => {
-                restProps.onMouseEnter?.(e);
+                )}
+                ref={(instance) => {
+                  toastRef.current = instance;
+                  transitionRef(instance);
+                  return () => {
+                    toastRef.current = null;
+                    transitionRef(null);
+                  };
+                }}
+                tabIndex={restProps.tabIndex ?? -1}
+                role={restProps.role ?? 'alert'}
+                aria-describedby={messageId}
+                onMouseEnter={(e) => {
+                  restProps.onMouseEnter?.(e);
 
-                clearTid.current();
-              }}
-              onMouseLeave={(e) => {
-                restProps.onMouseLeave?.(e);
-
-                if (duration > 0) {
-                  clearTid.current = async.setTimeout(() => {
-                    onClose?.();
-                  }, duration * 1000);
-                }
-              }}
-              onKeyDown={(e) => {
-                restProps.onKeyDown?.(e);
-
-                if (visible && escClosable && e.code === 'Escape') {
-                  e.stopPropagation();
-                  e.preventDefault();
                   clearTid.current();
-                  onClose?.();
-                }
-              }}
-            >
-              {icon !== false && (!isUndefined(type) || checkNodeExist(icon)) && (
-                <div {...styled('toast__icon')}>
-                  {checkNodeExist(icon) ? (
-                    icon
-                  ) : (
-                    <Icon>
-                      {type === 'success' ? (
-                        <CheckCircleOutlined />
-                      ) : type === 'warning' ? (
-                        <WarningAmberOutlined />
-                      ) : type === 'error' ? (
-                        <HighlightOffOutlined />
-                      ) : (
-                        <InfoOutlined />
-                      )}
-                    </Icon>
-                  )}
+                }}
+                onMouseLeave={(e) => {
+                  restProps.onMouseLeave?.(e);
+
+                  if (duration > 0) {
+                    clearTid.current = async.setTimeout(() => {
+                      onClose?.();
+                    }, duration * 1000);
+                  }
+                }}
+                onKeyDown={(e) => {
+                  restProps.onKeyDown?.(e);
+
+                  if (visible && escClosable && e.code === 'Escape') {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    clearTid.current();
+                    onClose?.();
+                  }
+                }}
+              >
+                {icon !== false && (!isUndefined(type) || checkNodeExist(icon)) && (
+                  <div {...styled('toast__icon')}>
+                    {checkNodeExist(icon) ? (
+                      icon
+                    ) : (
+                      <Icon>
+                        {type === 'success' ? (
+                          <CheckCircleOutlined />
+                        ) : type === 'warning' ? (
+                          <WarningAmberOutlined />
+                        ) : type === 'error' ? (
+                          <HighlightOffOutlined />
+                        ) : (
+                          <InfoOutlined />
+                        )}
+                      </Icon>
+                    )}
+                  </div>
+                )}
+                <div {...styled('toast__message')} id={messageId}>
+                  {children}
                 </div>
-              )}
-              <div {...styled('toast__message')} id={messageId}>
-                {children}
+                {closable && (
+                  <button {...styled('toast__close')} aria-label={t('Close')} onClick={onClose}>
+                    <Icon>
+                      <CloseOutlined />
+                    </Icon>
+                  </button>
+                )}
               </div>
-              {closable && (
-                <button {...styled('toast__close')} aria-label={t('Close')} onClick={onClose}>
-                  <Icon>
-                    <CloseOutlined />
-                  </Icon>
-                </button>
-              )}
-            </div>
-          );
-        }}
-      </Transition>
+            )}
+          </LazyLoading>
+        )}
+      </CollapseTransition>
     </Portal>
   );
 }

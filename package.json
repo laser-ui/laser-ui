@@ -24,8 +24,6 @@
     "highlight.js": "^11.8.0",
     "i18next": "^23.5.1",
     "immer": "^10.0.2",
-    "jss": "^10.10.0",
-    "jss-preset-default": "^10.10.0",
     "lodash": "^4.17.21",
     "marked": "^6.0.0",
     "marked-highlight": "^2.0.6",

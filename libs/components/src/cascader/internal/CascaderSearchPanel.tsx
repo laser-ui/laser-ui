@@ -98,7 +98,12 @@ export function CascaderSearchPanel<V extends React.Key, T extends CascaderItem<
   return (
     <VirtualScroll
       {...vsProps}
-      ref={vsRef}
+      ref={(instance) => {
+        vsRef.current = instance;
+        return () => {
+          vsRef.current = null;
+        };
+      }}
       enable={virtual !== false}
       listSize={264}
       listPadding={4}
@@ -149,7 +154,12 @@ export function CascaderSearchPanel<V extends React.Key, T extends CascaderItem<
       {(vsList, onScroll) => (
         <ul
           {...styled('cascader__list')}
-          ref={listRef}
+          ref={(instance) => {
+            listRef.current = instance;
+            return () => {
+              listRef.current = null;
+            };
+          }}
           id={id}
           tabIndex={-1}
           role="listbox"

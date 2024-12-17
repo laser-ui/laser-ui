@@ -4,7 +4,6 @@ export { useControlled } from './useControlled';
 export { useDesign } from './useDesign';
 export { useDialogService } from './useDialogService';
 export { useFocusVisible } from './useFocusVisible';
-export { useJSS } from './useJSS';
 export { useLayout } from './useLayout';
 export { useLockScroll } from './useLockScroll';
 export { useMaxIndex } from './useMaxIndex';

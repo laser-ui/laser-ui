@@ -1,6 +1,6 @@
 import { CLASSES } from './vars';
-import { useStyled } from '../../hooks';
-import { mergeCS } from '../../utils';
+import { useStyled } from '../hooks';
+import { mergeCS } from '../utils';
 
 export function CircularProgress(props: React.SVGProps<SVGSVGElement>): React.ReactElement | null {
   const styled = useStyled(CLASSES, { 'circular-progress': undefined });

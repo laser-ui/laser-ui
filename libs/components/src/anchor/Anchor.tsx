@@ -121,10 +121,23 @@ export const Anchor: {
         className: restProps.className,
         style: restProps.style,
       })}
-      ref={anchorRef}
+      ref={(instance) => {
+        anchorRef.current = instance;
+        return () => {
+          anchorRef.current = null;
+        };
+      }}
     >
       <div {...styled('anchor__indicator-track')}>
-        <div {...styled('anchor__indicator-wrapper')} ref={indicatorRef}>
+        <div
+          {...styled('anchor__indicator-wrapper')}
+          ref={(instance) => {
+            indicatorRef.current = instance;
+            return () => {
+              indicatorRef.current = null;
+            };
+          }}
+        >
           {indicator === DOT_INDICATOR ? (
             <div {...styled('anchor__dot-indicator')} />
           ) : indicator === LINE_INDICATOR ? (

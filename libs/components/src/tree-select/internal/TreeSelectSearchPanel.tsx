@@ -16,7 +16,7 @@ import { TREE_NODE_KEY } from '../../tree/vars';
 import { VirtualScroll, type VirtualScrollRef } from '../../virtual-scroll';
 
 interface TreeSelectSearchPanelProps<V extends React.Key, T extends TreeItem<V>> {
-  ref: React.Ref<(code: any) => TreeSelectSearchPanelItem<V, T> | undefined>;
+  ref?: React.Ref<(code: any) => TreeSelectSearchPanelItem<V, T> | undefined>;
   namespace: string;
   styled: Styled<typeof CLASSES>;
   id: string;
@@ -98,7 +98,12 @@ export function TreeSelectSearchPanel<V extends React.Key, T extends TreeItem<V>
   return (
     <VirtualScroll
       {...vsProps}
-      ref={vsRef}
+      ref={(instance) => {
+        vsRef.current = instance;
+        return () => {
+          vsRef.current = null;
+        };
+      }}
       enable={virtual !== false}
       listSize={264}
       listPadding={4}
@@ -149,7 +154,12 @@ export function TreeSelectSearchPanel<V extends React.Key, T extends TreeItem<V>
       {(vsList, onScroll) => (
         <ul
           {...styled('tree')}
-          ref={listRef}
+          ref={(instance) => {
+            listRef.current = instance;
+            return () => {
+              listRef.current = null;
+            };
+          }}
           id={id}
           tabIndex={-1}
           role="listbox"

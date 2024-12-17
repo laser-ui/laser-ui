@@ -51,7 +51,15 @@ export function TableEmpty(props: TableEmptyProps): React.ReactElement | null {
         style: restProps.style,
       })}
     >
-      <td ref={tdRef} colSpan={colSpan}>
+      <td
+        ref={(instance) => {
+          tdRef.current = instance;
+          return () => {
+            tdRef.current = null;
+          };
+        }}
+        colSpan={colSpan}
+      >
         <div {...styled('table__empty-content')}>{checkNodeExist(children) ? children : <Empty image={Empty.SIMPLE_IMG} />}</div>
       </td>
     </tr>

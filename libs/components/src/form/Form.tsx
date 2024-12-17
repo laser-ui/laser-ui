@@ -51,7 +51,12 @@ export const Form: {
         className: restProps.className,
         style: restProps.style,
       })}
-      ref={formRef}
+      ref={(instance) => {
+        formRef.current = instance;
+        return () => {
+          formRef.current = null;
+        };
+      }}
       onSubmit={(e) => {
         restProps.onSubmit?.(e);
 

@@ -201,7 +201,12 @@ export const Popover: {
                             ...(leaved ? { display: 'none' } : undefined),
                           },
                         })}
-                        ref={popoverRef}
+                        ref={(instance) => {
+                          popoverRef.current = instance;
+                          return () => {
+                            popoverRef.current = null;
+                          };
+                        }}
                         tabIndex={-1}
                         role={(restProps.role ?? modal) ? 'alertdialog' : 'dialog'}
                         aria-modal={modal}

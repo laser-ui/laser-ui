@@ -4,8 +4,8 @@ import { useEventCallback } from '@laser-ui/hooks';
 import { useImperativeHandle, useState } from 'react';
 
 import { CLASSES } from './vars';
-import { useNamespace, useStyled } from '../../hooks';
-import { mergeCS } from '../../utils';
+import { useNamespace, useStyled } from '../hooks';
+import { mergeCS } from '../utils';
 
 export function Wave(props: WaveProps): React.ReactElement | null {
   const {

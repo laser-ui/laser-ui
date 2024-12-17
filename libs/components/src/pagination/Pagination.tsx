@@ -77,7 +77,12 @@ export function Pagination(props: PaginationProps): React.ReactElement | null {
           style: restProps.style,
         },
       )}
-      ref={navRef}
+      ref={(instance) => {
+        navRef.current = instance;
+        return () => {
+          navRef.current = null;
+        };
+      }}
       role="navigation"
       aria-label={restProps['aria-label'] ?? 'Pagination Navigation'}
     >

@@ -1,5 +1,36 @@
+/* stylelint-disable declaration-property-value-disallowed-list */
 @use '../variables';
 @use '../mixins';
+
+.#{variables.$prefix}toast-enter-from {
+  opacity: 0 !important;
+  transform: var(--toast-transform) !important;
+}
+.#{variables.$prefix}toast-enter-to {
+  transition:
+    opacity 133ms ease-out,
+    transform 133ms ease-out !important;
+}
+
+.#{variables.$prefix}toast-leave-from {
+  height: var(--#{variables.$prefix}collapse-vertical) !important;
+}
+.#{variables.$prefix}toast-leave-active {
+  overflow: hidden !important;
+}
+.#{variables.$prefix}toast-leave-to {
+  height: var(--#{variables.$prefix}collapse-vertical) !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  opacity: 0 !important;
+  transition:
+    height 166ms ease-in,
+    padding 166ms ease-in,
+    margin 166ms ease-in,
+    opacity 166ms ease-in !important;
+}
 
 @mixin toast-root {
   position: fixed;

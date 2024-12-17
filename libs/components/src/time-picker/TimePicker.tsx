@@ -358,7 +358,12 @@ export function TimePicker(props: TimePickerProps): React.ReactElement | null {
           },
         )}
         {...designProps}
-        ref={boxRef}
+        ref={(instance) => {
+          boxRef.current = instance;
+          return () => {
+            boxRef.current = null;
+          };
+        }}
         onMouseDown={(e) => {
           restProps.onMouseDown?.(e);
 
@@ -381,7 +386,15 @@ export function TimePicker(props: TimePickerProps): React.ReactElement | null {
         {inputNode(true)}
         {range && (
           <>
-            <div {...styled('time-picker__indicator')} ref={indicatorRef} />
+            <div
+              {...styled('time-picker__indicator')}
+              ref={(instance) => {
+                indicatorRef.current = instance;
+                return () => {
+                  indicatorRef.current = null;
+                };
+              }}
+            />
             <div {...styled('time-picker__separator')}>
               <Icon>
                 <SwapHorizOutlined />
@@ -496,7 +509,12 @@ export function TimePicker(props: TimePickerProps): React.ReactElement | null {
               }}
             >
               <TimePickerPanel
-                ref={panelRef}
+                ref={(instance) => {
+                  panelRef.current = instance;
+                  return () => {
+                    panelRef.current = null;
+                  };
+                }}
                 styled={styled}
                 time={dataRef.current.latestFocused === 'start' ? valueLeft : valueRight}
                 format={format}

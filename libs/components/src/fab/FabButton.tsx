@@ -5,9 +5,9 @@ import AddOutlined from '@material-design-icons/svg/outlined/add.svg?react';
 import { use } from 'react';
 
 import { BUTTON_CLASSES, FabBacktopContext, FabContext, FabListContext } from './vars';
+import { CircularProgress } from '../circular-progress';
 import { useComponentProps, useStyled } from '../hooks';
 import { Icon } from '../icon';
-import { CircularProgress } from '../internal/circular-progress';
 import { mergeCS } from '../utils';
 
 export function FabButton(props: FabButtonProps): React.ReactElement | null {

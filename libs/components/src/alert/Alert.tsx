@@ -11,7 +11,7 @@ import { isUndefined } from 'lodash';
 import { CLASSES } from './vars';
 import { useComponentProps, useControlled, useStyled, useTranslation } from '../hooks';
 import { Icon } from '../icon';
-import { CollapseTransition } from '../internal/transition';
+import { CollapseTransition } from '../transition';
 import { mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
@@ -55,83 +55,70 @@ export function Alert(props: AlertProps): React.ReactElement | null {
 
   return (
     <CollapseTransition
-      originalSize={{
-        height: 'auto',
-      }}
-      collapsedSize={{
-        height: 0,
-      }}
+      height={0}
       enter={visible}
-      during={TTANSITION_DURING_BASE}
-      styles={{
-        enter: { opacity: 0 },
-        entering: {
-          transition: ['height', 'padding', 'margin', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms ease-out`).join(', '),
-        },
-        leaving: {
-          opacity: 0,
-          transition: ['height', 'padding', 'margin', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms ease-in`).join(', '),
-        },
-        leaved: { display: 'none' },
-      }}
-      destroyWhenLeaved
-      afterEnter={() => {
+      duration={TTANSITION_DURING_BASE}
+      onAfterEnter={() => {
         afterVisibleChange?.(true);
       }}
-      afterLeave={() => {
+      onAfterLeave={() => {
         afterVisibleChange?.(false);
       }}
     >
-      {(alertRef, collapseStyle) => (
-        <div
-          {...restProps}
-          {...mergeCS(
-            styled('alert', {
-              'alert--with-title': hasTitle,
-              [`alert--${type}`]: type,
-            }),
-            {
-              className: restProps.className,
-              style: {
-                ...restProps.style,
-                ...collapseStyle,
+      {(transitionRef, leaved) =>
+        leaved ? null : (
+          <div
+            {...restProps}
+            {...mergeCS(
+              styled('alert', {
+                'alert--with-title': hasTitle,
+                [`alert--${type}`]: type,
+              }),
+              {
+                className: restProps.className,
+                style: { ...restProps.style },
               },
-            },
-          )}
-          ref={alertRef}
-          role={restProps.role ?? 'alert'}
-        >
-          {icon !== false && (!isUndefined(type) || checkNodeExist(icon)) && (
-            <div {...styled('alert__icon')}>
-              {checkNodeExist(icon) ? (
-                icon
-              ) : (
-                <Icon>
-                  {type === 'success' ? (
-                    <CheckCircleOutlined />
-                  ) : type === 'warning' ? (
-                    <WarningAmberOutlined />
-                  ) : type === 'error' ? (
-                    <HighlightOffOutlined />
-                  ) : (
-                    <InfoOutlined />
-                  )}
-                </Icon>
-              )}
-            </div>
-          )}
-          <div {...styled('alert__content')}>
-            {hasTitle && (
-              <div {...styled('alert__header')}>
-                <div {...styled('alert__title')}>{title}</div>
-                {closeNode}
+            )}
+            ref={(instance) => {
+              transitionRef(instance);
+              return () => {
+                transitionRef(null);
+              };
+            }}
+            role={restProps.role ?? 'alert'}
+          >
+            {icon !== false && (!isUndefined(type) || checkNodeExist(icon)) && (
+              <div {...styled('alert__icon')}>
+                {checkNodeExist(icon) ? (
+                  icon
+                ) : (
+                  <Icon>
+                    {type === 'success' ? (
+                      <CheckCircleOutlined />
+                    ) : type === 'warning' ? (
+                      <WarningAmberOutlined />
+                    ) : type === 'error' ? (
+                      <HighlightOffOutlined />
+                    ) : (
+                      <InfoOutlined />
+                    )}
+                  </Icon>
+                )}
               </div>
             )}
-            {checkNodeExist(children) && <div {...styled('alert__message')}>{children}</div>}
-            {!hasTitle && closeNode}
+            <div {...styled('alert__content')}>
+              {hasTitle && (
+                <div {...styled('alert__header')}>
+                  <div {...styled('alert__title')}>{title}</div>
+                  {closeNode}
+                </div>
+              )}
+              {checkNodeExist(children) && <div {...styled('alert__message')}>{children}</div>}
+              {!hasTitle && closeNode}
+            </div>
           </div>
-        </div>
-      )}
+        )
+      }
     </CollapseTransition>
   );
 }

@@ -15,8 +15,7 @@ interface RadioProps extends BaseProps<'radio', typeof CLASSES>, React.LabelHTML
   formControl?: FormControlProvider;
   model?: boolean;
   disabled?: boolean;
-  inputRef?: React.ForwardedRef<HTMLInputElement>;
-  inputRender?: CloneHTMLElement;
+  inputProps?: React.ComponentPropsWithRef<'input'>;
   onModelChange?: (checked: boolean) => void;
 }
 ```

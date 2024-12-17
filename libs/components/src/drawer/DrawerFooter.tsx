@@ -1,9 +1,10 @@
 import type { DrawerFooterProps } from './types';
 import type { ButtonProps } from '../button';
 
-import { Children } from 'react';
+import { has } from 'lodash';
+import { Fragment, use } from 'react';
 
-import { CLASSES } from './vars';
+import { CLASSES, DrawerContext } from './vars';
 import { Button } from '../button';
 import { useComponentProps, useControlled, useStyled, useTranslation } from '../hooks';
 import { mergeCS } from '../utils';
@@ -19,19 +20,14 @@ export function DrawerFooter(props: DrawerFooterProps): React.ReactElement | nul
     onCancelClick,
     onOkClick,
 
-    _onClose,
-
     ...restProps
-  } = useComponentProps(
-    'DrawerFooter',
-    props as DrawerFooterProps & {
-      _onClose: () => void;
-    },
-  );
+  } = useComponentProps('DrawerFooter', props);
 
   const styled = useStyled(CLASSES, { drawer: styleProvider?.drawer }, styleOverrides);
 
   const { t } = useTranslation();
+
+  const drawerContext = use(DrawerContext);
 
   const [cancelLoading, changeCancelLoading] = useControlled<boolean>(false, cancelPropsProp?.loading);
   const [okLoading, changeOkLoading] = useControlled<boolean>(false, okPropsProp?.loading);
@@ -46,11 +42,11 @@ export function DrawerFooter(props: DrawerFooterProps): React.ReactElement | nul
         shouldClose.then((val) => {
           changeCancelLoading(false);
           if (val !== false) {
-            _onClose?.();
+            drawerContext?.onClose();
           }
         });
       } else if (shouldClose !== false) {
-        _onClose?.();
+        drawerContext?.onClose();
       }
     },
   };
@@ -65,11 +61,11 @@ export function DrawerFooter(props: DrawerFooterProps): React.ReactElement | nul
         shouldClose.then((val) => {
           changeOkLoading(false);
           if (val !== false) {
-            _onClose?.();
+            drawerContext?.onClose();
           }
         });
       } else if (shouldClose !== false) {
-        _onClose?.();
+        drawerContext?.onClose();
       }
     },
   };
@@ -82,17 +78,25 @@ export function DrawerFooter(props: DrawerFooterProps): React.ReactElement | nul
         style: restProps.style,
       })}
     >
-      {Children.map(actions, (action) =>
-        action === 'cancel' ? (
-          <Button {...cancelProps} pattern={cancelProps.pattern ?? 'secondary'}>
-            {cancelProps.children ?? t('Footer', 'Cancel')}
-          </Button>
-        ) : action === 'ok' ? (
-          <Button {...okProps}>{okProps.children ?? t('Footer', 'OK')}</Button>
-        ) : (
-          action
-        ),
-      )}
+      {actions.map((node, index) => {
+        const { id, action } = (has(node, ['id', 'action']) ? node : { id: index, action: node }) as {
+          id: React.Key;
+          action: React.ReactNode;
+        };
+        return (
+          <Fragment key={id}>
+            {action === 'cancel' ? (
+              <Button {...cancelProps} pattern={cancelProps.pattern ?? 'secondary'}>
+                {cancelProps.children ?? t('Footer', 'Cancel')}
+              </Button>
+            ) : action === 'ok' ? (
+              <Button {...okProps}>{okProps.children ?? t('Footer', 'OK')}</Button>
+            ) : (
+              action
+            )}
+          </Fragment>
+        );
+      })}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import type { RadioProps } from './types';
-import type { WaveRef } from '../internal/wave';
+import type { WaveRef } from '../wave';
 
 import { checkNodeExist } from '@laser-ui/utils';
 import { use, useRef } from 'react';
@@ -7,8 +7,8 @@ import { use, useRef } from 'react';
 import { RadioGroup } from './RadioGroup';
 import { CLASSES, RadioGroupContext } from './vars';
 import { useComponentProps, useControlled, useDesign, useNamespace, useScopedProps, useStyled } from '../hooks';
-import { Wave } from '../internal/wave';
 import { mergeCS } from '../utils';
+import { Wave } from '../wave';
 
 export const Radio: {
   (props: RadioProps): React.ReactElement | null;
@@ -66,7 +66,15 @@ export const Radio: {
         }
       }}
     >
-      <Wave ref={waveRef} color={`var(--${namespace}-color-primary)`} />
+      <Wave
+        ref={(instance) => {
+          waveRef.current = instance;
+          return () => {
+            waveRef.current = null;
+          };
+        }}
+        color={`var(--${namespace}-color-primary)`}
+      />
       <div {...styled('radio__input-wrapper')}>
         <input
           {...inputProps}

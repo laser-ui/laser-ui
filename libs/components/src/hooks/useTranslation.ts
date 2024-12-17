@@ -1,10 +1,10 @@
 import { get } from 'lodash';
-import { useContext } from 'react';
+import { use } from 'react';
 
 import { RootContext } from '../root/vars';
 
 export function useTranslation() {
-  const context = useContext(RootContext);
+  const context = use(RootContext);
   const lang = context.i18nLang;
 
   return {

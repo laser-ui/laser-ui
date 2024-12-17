@@ -2,7 +2,8 @@ import type { ImageProps } from './types';
 
 import { useForceUpdate } from '@laser-ui/hooks';
 import { checkNodeExist } from '@laser-ui/utils';
-import { Children, useRef } from 'react';
+import { has } from 'lodash';
+import { Fragment, useRef } from 'react';
 
 import { ImageAction } from './ImageAction';
 import { ImageLoader } from './ImageLoader';
@@ -57,7 +58,17 @@ export const Image: {
     >
       {dataRef.current.isLoading && checkNodeExist(loading) && loading}
       {dataRef.current.isError && checkNodeExist(error) && error}
-      {actions && <div {...styled('image__actions')}>{Children.map(actions, (action) => action)}</div>}
+      {actions && (
+        <div {...styled('image__actions')}>
+          {actions.map((node, index) => {
+            const { id, action } = (has(node, ['id', 'action']) ? node : { id: index, action: node }) as {
+              id: React.Key;
+              action: React.ReactNode;
+            };
+            return <Fragment key={id}>{action}</Fragment>;
+          })}
+        </div>
+      )}
       <img
         {...imgProps}
         {...mergeCS(styled('image__img'), {

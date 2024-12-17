@@ -25,6 +25,10 @@
     display: inline-flex;
     vertical-align: top;
     background-color: transparent;
+
+    @include mixins.e(container) {
+      height: unset;
+    }
   }
 
   @include mixins.e(container) {
@@ -33,6 +37,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    height: var(--spinner-container-height);
   }
 
   @include mixins.e(icon) {

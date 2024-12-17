@@ -2,9 +2,10 @@ import type { ModalHeaderProps } from './types';
 import type { ButtonProps } from '../button';
 
 import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
-import { Children } from 'react';
+import { has } from 'lodash';
+import { Fragment, use } from 'react';
 
-import { CLASSES } from './vars';
+import { CLASSES, ModalContext } from './vars';
 import { Button } from '../button';
 import { useComponentProps, useControlled, useStyled, useTranslation } from '../hooks';
 import { Icon } from '../icon';
@@ -19,21 +20,14 @@ export function ModalHeader(props: ModalHeaderProps): React.ReactElement | null 
     closeProps: closePropsProp,
     onCloseClick,
 
-    _id,
-    _onClose,
-
     ...restProps
-  } = useComponentProps(
-    'ModalHeader',
-    props as ModalHeaderProps & {
-      _id: string;
-      _onClose: () => void;
-    },
-  );
+  } = useComponentProps('ModalHeader', props);
 
   const styled = useStyled(CLASSES, { modal: styleProvider?.modal }, styleOverrides);
 
   const { t } = useTranslation();
+
+  const modalContext = use(ModalContext);
 
   const [closeLoading, changeCloseLoading] = useControlled<boolean>(false, closePropsProp?.loading);
 
@@ -47,11 +41,11 @@ export function ModalHeader(props: ModalHeaderProps): React.ReactElement | null 
         shouldClose.then((val) => {
           changeCloseLoading(false);
           if (val !== false) {
-            _onClose?.();
+            modalContext?.onClose();
           }
         });
       } else if (shouldClose !== false) {
-        _onClose?.();
+        modalContext?.onClose();
       }
     },
   };
@@ -64,28 +58,36 @@ export function ModalHeader(props: ModalHeaderProps): React.ReactElement | null 
         style: restProps.style,
       })}
     >
-      <div {...styled('modal__header-title')} id={_id}>
+      <div {...styled('modal__header-title')} id={modalContext?.id}>
         {children}
       </div>
       <div {...styled('modal__header-actions')}>
-        {Children.map(actions, (action) =>
-          action === 'close' ? (
-            <Button
-              {...closeProps}
-              aria-label={closeProps['aria-label'] ?? t('Close')}
-              pattern={closeProps.pattern ?? 'text'}
-              icon={
-                closeProps.icon ?? (
-                  <Icon>
-                    <CloseOutlined />
-                  </Icon>
-                )
-              }
-            />
-          ) : (
-            action
-          ),
-        )}
+        {actions.map((node, index) => {
+          const { id, action } = (has(node, ['id', 'action']) ? node : { id: index, action: node }) as {
+            id: React.Key;
+            action: React.ReactNode;
+          };
+          return (
+            <Fragment key={id}>
+              {action === 'close' ? (
+                <Button
+                  {...closeProps}
+                  aria-label={closeProps['aria-label'] ?? t('Close')}
+                  pattern={closeProps.pattern ?? 'text'}
+                  icon={
+                    closeProps.icon ?? (
+                      <Icon>
+                        <CloseOutlined />
+                      </Icon>
+                    )
+                  }
+                />
+              ) : (
+                action
+              )}
+            </Fragment>
+          );
+        })}
       </div>
     </div>
   );

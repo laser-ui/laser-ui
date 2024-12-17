@@ -53,7 +53,15 @@ export function BadgeNumber(props: BadgeNumberProps): React.ReactElement | null 
   }, [num]);
 
   return (
-    <div {...styled('badge__number-container')} ref={containerRef}>
+    <div
+      {...styled('badge__number-container')}
+      ref={(instance) => {
+        containerRef.current = instance;
+        return () => {
+          containerRef.current = null;
+        };
+      }}
+    >
       {nums.map((n, i) => (
         <span {...styled('badge__number')} key={i}>
           {n}

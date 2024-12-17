@@ -1,6 +1,25 @@
 @use '../variables';
 @use '../mixins';
 
+.#{variables.$prefix}modal-enter-from,
+.#{variables.$prefix}modal-leave-to {
+  opacity: 0 !important;
+  transform: scale(0.3) !important;
+}
+
+.#{variables.$prefix}modal-enter-to {
+  transition:
+    opacity var(--#{variables.$prefix}animation-duration-base) ease-out,
+    transform var(--#{variables.$prefix}animation-duration-base) ease-out !important;
+  transform-origin: var(--modal-transform-origin) !important;
+}
+.#{variables.$prefix}modal-leave-to {
+  transition:
+    opacity var(--#{variables.$prefix}animation-duration-base) ease-in,
+    transform var(--#{variables.$prefix}animation-duration-base) ease-in !important;
+  transform-origin: var(--modal-transform-origin) !important;
+}
+
 @include mixins.b(modal) {
   $selector: &;
 

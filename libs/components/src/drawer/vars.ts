@@ -20,6 +20,10 @@ export const CLASSES = {
 };
 
 export const DrawerContext = createContext<
-  (offsets: Offsets) => void
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
->(() => {});
+  | {
+      id: string;
+      onClose: () => void;
+      onVisibleChange: (offsets: Offsets) => void;
+    }
+  | undefined
+>(undefined);

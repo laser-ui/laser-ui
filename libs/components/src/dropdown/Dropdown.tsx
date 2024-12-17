@@ -480,7 +480,12 @@ export function Dropdown<ID extends React.Key, T extends DropdownItem<ID>>(props
                       ...(leaved ? { display: 'none' } : undefined),
                     },
                   })}
-                  ref={dropdownRef}
+                  ref={(instance) => {
+                    dropdownRef.current = instance;
+                    return () => {
+                      dropdownRef.current = null;
+                    };
+                  }}
                   onMouseDown={(e) => {
                     restProps.onMouseDown?.(e);
 
@@ -513,7 +518,12 @@ export function Dropdown<ID extends React.Key, T extends DropdownItem<ID>>(props
                       const el = (
                         <ul
                           {...styled('dropdown__list')}
-                          ref={ulRef}
+                          ref={(instance) => {
+                            ulRef.current = instance;
+                            return () => {
+                              ulRef.current = null;
+                            };
+                          }}
                           id={id}
                           tabIndex={-1}
                           role="menu"

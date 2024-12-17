@@ -6,14 +6,14 @@ import CheckCircleFilled from '@material-design-icons/svg/filled/check_circle.sv
 import ErrorFilled from '@material-design-icons/svg/filled/error.svg?react';
 import HelpOutlineOutlined from '@material-design-icons/svg/outlined/help_outline.svg?react';
 import { isBoolean, isFunction, isNull, isNumber, isString, isUndefined } from 'lodash';
-import { useContext, useEffect, useId, useRef } from 'react';
+import { use, useEffect, useId, useRef } from 'react';
 
 import { FormError } from './internal/FormError';
 import { Validators } from './model/validators';
 import { CLASSES, FormContext, FormGroupContext } from './vars';
-import { useComponentProps, useStyled, useTranslation } from '../hooks';
+import { CircularProgress } from '../circular-progress';
+import { useComponentProps, useNamespace, useStyled, useTranslation } from '../hooks';
 import { Icon } from '../icon';
-import { CircularProgress } from '../internal/circular-progress';
 import { Tooltip } from '../tooltip';
 import { mergeCS } from '../utils';
 
@@ -49,13 +49,14 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
     ...restProps
   } = useComponentProps('FormItem', props);
 
+  const namespace = useNamespace();
   const styled = useStyled(CLASSES, { form: styleProvider?.form }, styleOverrides);
 
   const { t } = useTranslation();
   const forceUpdate = useForceUpdate();
 
-  const formContext = useContext(FormContext);
-  const formGroupContext = useContext(FormGroupContext);
+  const formContext = use(FormContext);
+  const formGroupContext = use(FormGroupContext);
 
   const divRef = useRef<HTMLDivElement>(null);
 
@@ -116,9 +117,8 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
     return false;
   })();
 
-  const errorsRef = useRef<FormError[]>([]);
-  const validateState: number = (() => {
-    const errors: FormError[] = [];
+  const [validateState, currentErrors] = (() => {
+    const currentErrors: FormError[] = [];
     let validateState: number = ValidateState.Empty;
 
     Object.entries(formControls ?? {}).forEach(([controlName, formErrors]) => {
@@ -154,10 +154,10 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
         let hasError = false;
         if (control.invalid && control.errors) {
           if (isString(formErrors)) {
-            errors.push({ key: controlName, controlName, message: formErrors, invalid: 'error' });
+            currentErrors.push({ key: controlName, controlName, message: formErrors, invalid: 'error' });
             hasError = true;
           } else if (Object.keys(formErrors).length === 2 && 'message' in formErrors && 'invalid' in formErrors) {
-            errors.push({
+            currentErrors.push({
               key: controlName,
               controlName,
               ...(formErrors as { message: string; invalid: 'warning' | 'error' }),
@@ -169,10 +169,10 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
             for (const key of Object.keys(control.errors)) {
               if (key in formErrors) {
                 if (isString((formErrors as any)[key])) {
-                  errors.push({ key: `${controlName}-${key}`, controlName, message: (formErrors as any)[key], invalid: 'error' });
+                  currentErrors.push({ key: `${controlName}-${key}`, controlName, message: (formErrors as any)[key], invalid: 'error' });
                   hasError = true;
                 } else {
-                  errors.push({ key: `${controlName}-${key}`, controlName, ...(formErrors as any)[key] });
+                  currentErrors.push({ key: `${controlName}-${key}`, controlName, ...(formErrors as any)[key] });
                   if ((formErrors as any)[key].invalid === 'error') {
                     hasError = true;
                   }
@@ -192,18 +192,20 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
       }
     });
 
+    return [validateState, currentErrors] as const;
+  })();
+  const errorsSaved = useRef<FormError[]>(currentErrors);
+  {
     const newErrors: FormError[] = [];
-    errorsRef.current.forEach((err) => {
-      const index = errors.findIndex((e) => e.key === err.key);
+    errorsSaved.current.forEach((err) => {
+      const index = currentErrors.findIndex((e) => e.key === err.key);
       newErrors.push(Object.assign(err, { hidden: index === -1 }));
       if (index !== -1) {
-        errors.splice(index, 1);
+        currentErrors.splice(index, 1);
       }
     });
-    errorsRef.current = newErrors.concat(errors);
-
-    return validateState;
-  })();
+    errorsSaved.current = newErrors.concat(currentErrors);
+  }
 
   const labelExtra = (() => {
     if (labelExtraProp) {
@@ -231,7 +233,12 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
         className: restProps.className,
         style: restProps.style,
       })}
-      ref={divRef}
+      ref={(instance) => {
+        divRef.current = instance;
+        return () => {
+          divRef.current = null;
+        };
+      }}
     >
       <div {...styled('form__item-container')}>
         {labelWidth !== 0 && (
@@ -278,7 +285,7 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
           <div {...styled('form__error-container')}>
             {(() => {
               const errorsMap = new Map<string, FormError[]>();
-              errorsRef.current.forEach((err) => {
+              errorsSaved.current.forEach((err) => {
                 if (errorsMap.has(err.controlName)) {
                   (errorsMap.get(err.controlName) as FormError[]).push(err);
                 } else {
@@ -295,12 +302,16 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
                     {errors.map((error) => (
                       <FormError
                         key={error.key}
+                        namespace={namespace}
                         styled={styled}
                         visible={!error.hidden}
                         message={error.message}
                         invalid={error.invalid}
-                        afterLeave={() => {
-                          errorsRef.current = errorsRef.current.filter((err) => err.key !== error.key);
+                        onAfterLeave={() => {
+                          const index = errorsSaved.current.findIndex((e) => e.key === error.key);
+                          if (index !== -1) {
+                            errorsSaved.current.splice(index, 1);
+                          }
                         }}
                       />
                     ))}

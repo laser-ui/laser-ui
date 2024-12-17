@@ -1,12 +1,12 @@
 import type { ComponentProps } from '../context/props';
 
 import { isUndefined } from 'lodash';
-import { useContext } from 'react';
+import { use } from 'react';
 
 import { LContext } from '../context';
 
 export function useComponentProps<T extends object>(component: keyof ComponentProps, props: T): T {
-  const context = useContext(LContext);
+  const context = use(LContext);
   const defaultProps: any = context.componentDefaultProps[component] ?? {};
   const definedProps: any = {};
   Object.keys(props).forEach((key) => {

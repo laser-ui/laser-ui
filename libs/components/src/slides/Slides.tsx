@@ -280,7 +280,12 @@ export function Slides<ID extends React.Key, T extends SlidesItem<ID>>(props: Sl
           style: restProps.style,
         },
       )}
-      ref={slidesRef}
+      ref={(instance) => {
+        slidesRef.current = instance;
+        return () => {
+          slidesRef.current = null;
+        };
+      }}
       onMouseEnter={(e) => {
         restProps.onMouseEnter?.(e);
 

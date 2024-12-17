@@ -3,9 +3,9 @@ import type { SwitchProps } from './types';
 import { checkNodeExist } from '@laser-ui/utils';
 
 import { CLASSES, TTANSITION_DURING } from './vars';
+import { CircularProgress } from '../circular-progress';
 import { useComponentProps, useControlled, useDesign, useNamespace, useScopedProps, useStyled } from '../hooks';
 import { Icon } from '../icon';
-import { CircularProgress } from '../internal/circular-progress';
 import { Transition } from '../transition';
 import { mergeCS } from '../utils';
 

@@ -76,7 +76,16 @@ export function Avatar(props: AvatarProps): React.ReactElement | null {
       ) : type === 'icon' ? (
         icon
       ) : (
-        <div ref={textRef}>{text}</div>
+        <div
+          ref={(instance) => {
+            textRef.current = instance;
+            return () => {
+              textRef.current = null;
+            };
+          }}
+        >
+          {text}
+        </div>
       )}
     </div>
   );

@@ -15,7 +15,7 @@ import { getHorizontalSidePosition, getVerticalSidePosition, mergeCS } from '../
 import { TTANSITION_DURING_BASE, TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../../vars';
 
 interface MenuSubProps {
-  ref: React.RefCallback<() => void>;
+  ref?: React.RefCallback<() => void>;
   children: React.ReactNode;
   namespace: string;
   styled: Styled<typeof CLASSES>;
@@ -144,7 +144,12 @@ export function MenuSub(props: MenuSubProps): React.ReactElement | null {
                 }),
                 { style: { paddingLeft: space + level * step } },
               )}
-              ref={triggerRef}
+              ref={(instance) => {
+                triggerRef.current = instance;
+                return () => {
+                  triggerRef.current = null;
+                };
+              }}
               id={id}
               role="menuitem"
               aria-haspopup
@@ -248,7 +253,14 @@ export function MenuSub(props: MenuSubProps): React.ReactElement | null {
               {...mergeCS(styled('menu__sub-list'), {
                 style: { ...(leaved ? { display: 'none' } : undefined) },
               })}
-              ref={mode === 'vertical' || inNav ? transitionRef : undefined}
+              ref={(instance) => {
+                if (mode === 'vertical' || inNav) {
+                  transitionRef(instance);
+                  return () => {
+                    transitionRef(null);
+                  };
+                }
+              }}
               role="menu"
               aria-labelledby={id}
             >

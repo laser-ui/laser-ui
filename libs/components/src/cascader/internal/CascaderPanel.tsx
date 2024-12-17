@@ -11,9 +11,9 @@ import { isNumber, isUndefined } from 'lodash';
 import { useImperativeHandle, useMemo, useRef } from 'react';
 
 import { Checkbox } from '../../checkbox';
+import { CircularProgress } from '../../circular-progress';
 import { Empty } from '../../empty';
 import { Icon } from '../../icon';
-import { CircularProgress } from '../../internal/circular-progress';
 import { VirtualScroll, type VirtualScrollRef } from '../../virtual-scroll';
 
 interface CascaderPanelProps<V extends React.Key, T extends CascaderItem<V>> {
@@ -158,7 +158,12 @@ export function CascaderPanel<V extends React.Key, T extends CascaderItem<V>>(pr
     <>
       <VirtualScroll
         {...vsProps}
-        ref={vsRef}
+        ref={(instance) => {
+          vsRef.current = instance;
+          return () => {
+            vsRef.current = null;
+          };
+        }}
         enable={virtual !== false}
         listSize={264}
         listPadding={4}
@@ -227,7 +232,12 @@ export function CascaderPanel<V extends React.Key, T extends CascaderItem<V>>(pr
         {(vsList, onScroll) => (
           <ul
             {...styled('cascader__list', 'cascader__list--inline')}
-            ref={listRef}
+            ref={(instance) => {
+              listRef.current = instance;
+              return () => {
+                listRef.current = null;
+              };
+            }}
             id={id}
             tabIndex={-1}
             role="listbox"
@@ -240,7 +250,18 @@ export function CascaderPanel<V extends React.Key, T extends CascaderItem<V>>(pr
         )}
       </VirtualScroll>
       {nodeFocused && !nodeFocused.origin.loading && nodeFocused.children && (
-        <CascaderPanel {...props} {...{ _root: false }} ref={focusRef} id={undefined} list={nodeFocused.children} />
+        <CascaderPanel
+          {...props}
+          {...{ _root: false }}
+          ref={(instance) => {
+            focusRef.current = instance;
+            return () => {
+              focusRef.current = null;
+            };
+          }}
+          id={undefined}
+          list={nodeFocused.children}
+        />
       )}
     </>
   );

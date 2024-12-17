@@ -90,7 +90,12 @@ export const Table: {
           style: restProps.style,
         },
       )}
-      ref={divRef}
+      ref={(instance) => {
+        divRef.current = instance;
+        return () => {
+          divRef.current = null;
+        };
+      }}
       onScroll={(e) => {
         restProps.onScroll?.(e);
 

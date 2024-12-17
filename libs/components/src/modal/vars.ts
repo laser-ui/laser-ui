@@ -1,3 +1,5 @@
+import { createContext } from 'react';
+
 export const CLASSES = {
   modal: '^modal',
   'modal--center': '^modal--center',
@@ -21,3 +23,11 @@ export const CLASSES = {
   'modal__alert-title': '^modal__alert-title',
   'modal__alert-message': '^modal__alert-message',
 };
+
+export const ModalContext = createContext<
+  | {
+      id: string;
+      onClose: () => void;
+    }
+  | undefined
+>(undefined);

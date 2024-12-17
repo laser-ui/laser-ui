@@ -165,16 +165,36 @@ export function Tabs<ID extends React.Key, T extends TabsItem<ID>>(props: TabsPr
           style: restProps.style,
         },
       )}
-      ref={tabsRef}
+      ref={(instance) => {
+        tabsRef.current = instance;
+        return () => {
+          tabsRef.current = null;
+        };
+      }}
     >
       <div
         {...styled('tabs__tablist-wrapper')}
-        ref={tablistWrapperRef}
+        ref={(instance) => {
+          tablistWrapperRef.current = instance;
+          return () => {
+            tablistWrapperRef.current = null;
+          };
+        }}
         onScroll={() => {
           refreshTabs();
         }}
       >
-        <div {...styled('tabs__tablist')} ref={tablistRef} role="tablist" aria-orientation={isHorizontal ? 'horizontal' : 'vertical'}>
+        <div
+          {...styled('tabs__tablist')}
+          ref={(instance) => {
+            tablistRef.current = instance;
+            return () => {
+              tablistRef.current = null;
+            };
+          }}
+          role="tablist"
+          aria-orientation={isHorizontal ? 'horizontal' : 'vertical'}
+        >
           {list.map((item, index) => {
             const { id: itemId, title: itemTitle, disabled: itemDisabled, closable: itemClosable } = item;
 
@@ -325,7 +345,15 @@ export function Tabs<ID extends React.Key, T extends TabsItem<ID>>(props: TabsPr
             );
           })}
           {(listOverflow || addible) && (
-            <div {...styled('tabs__button-container')} ref={buttonContainerRef}>
+            <div
+              {...styled('tabs__button-container')}
+              ref={(instance) => {
+                buttonContainerRef.current = instance;
+                return () => {
+                  buttonContainerRef.current = null;
+                };
+              }}
+            >
               {listOverflow && (
                 <Dropdown<ID, DropdownItem<ID>>
                   list={dropdownList.map((tab) => {
@@ -377,7 +405,12 @@ export function Tabs<ID extends React.Key, T extends TabsItem<ID>>(props: TabsPr
           )}
           <div
             {...styled(pattern === 'wrap' ? 'tabs__wrap-indicator' : pattern === 'slider' ? 'tabs__slider-indicator' : 'tabs__indicator')}
-            ref={indicatorRef}
+            ref={(instance) => {
+              indicatorRef.current = instance;
+              return () => {
+                indicatorRef.current = null;
+              };
+            }}
           />
         </div>
       </div>

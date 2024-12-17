@@ -18,5 +18,6 @@ export interface CardActionsProps extends BaseProps<'card', typeof CLASSES>, Omi
 }
 
 export interface CardActionProps extends BaseProps<'card', typeof CLASSES>, React.HTMLAttributes<HTMLDivElement> {
+  ref?: React.Ref<HTMLDivElement>;
   disabled?: boolean;
 }

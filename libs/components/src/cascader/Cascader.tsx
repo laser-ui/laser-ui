@@ -18,6 +18,7 @@ import { CascaderPanel } from './internal/CascaderPanel';
 import { CascaderSearchPanel } from './internal/CascaderSearchPanel';
 import { CLASSES } from './vars';
 import { BaseInput } from '../base-input';
+import { CircularProgress } from '../circular-progress';
 import { Dropdown } from '../dropdown';
 import {
   useComponentProps,
@@ -33,7 +34,6 @@ import {
   useTranslation,
 } from '../hooks';
 import { Icon } from '../icon';
-import { CircularProgress } from '../internal/circular-progress';
 import { Portal } from '../internal/portal';
 import { ROOT_DATA } from '../root/vars';
 import { Tag } from '../tag';
@@ -409,7 +409,12 @@ export function Cascader<V extends React.Key, T extends CascaderItem<V>>(props: 
           },
         )}
         {...designProps}
-        ref={boxRef}
+        ref={(instance) => {
+          boxRef.current = instance;
+          return () => {
+            boxRef.current = null;
+          };
+        }}
         onMouseDown={(e) => {
           restProps.onMouseDown?.(e);
 
@@ -723,7 +728,12 @@ export function Cascader<V extends React.Key, T extends CascaderItem<V>>(props: 
                     )}
                     {loading && isEmpty ? null : hasSearch ? (
                       <CascaderSearchPanel
-                        ref={focusRef}
+                        ref={(instance) => {
+                          focusRef.current = instance;
+                          return () => {
+                            focusRef.current = null;
+                          };
+                        }}
                         namespace={namespace}
                         styled={styled}
                         id={listId}
@@ -742,7 +752,12 @@ export function Cascader<V extends React.Key, T extends CascaderItem<V>>(props: 
                       />
                     ) : (
                       <CascaderPanel
-                        ref={focusRef}
+                        ref={(instance) => {
+                          focusRef.current = instance;
+                          return () => {
+                            focusRef.current = null;
+                          };
+                        }}
                         namespace={namespace}
                         styled={styled}
                         id={listId}

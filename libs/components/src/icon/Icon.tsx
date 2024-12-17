@@ -1,7 +1,6 @@
 import type { IconProps } from './types';
 
 import { isArray, isNumber, isUndefined } from 'lodash';
-import { cloneElement } from 'react';
 
 import { CLASSES } from './vars';
 import { useComponentProps, useNamespace, useStyled } from '../hooks';
@@ -34,19 +33,18 @@ export function Icon(props: IconProps): React.ReactElement | null {
         style: restProps.style,
       })}
     >
-      {cloneElement(children, {
-        ...children.props,
-        style: {
-          ...children.props.style,
+      <div
+        style={{
+          width,
+          height,
           transform: isUndefined(rotate) ? children.props.style?.transform : `rotate(${rotate}deg)`,
           animation: spin
             ? `${namespace}-spin ${spinSpeed}${isNumber(spinSpeed) ? 's' : ''} linear infinite`
             : children.props.style?.animation,
-        },
-        fill: 'currentColor',
-        width,
-        height,
-      })}
+        }}
+      >
+        {children}
+      </div>
     </div>
   );
 }

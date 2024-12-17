@@ -8,9 +8,9 @@ import { Fragment } from 'react';
 import { UploadAction } from './UploadAction';
 import { UploadPreviewAction } from './UploadPreviewAction';
 import { BUTTON_CLASSES, UploadActionContext } from './vars';
+import { CircularProgress } from '../circular-progress';
 import { useComponentProps, useStyled, useTranslation } from '../hooks';
 import { Icon } from '../icon';
-import { CircularProgress } from '../internal/circular-progress';
 import { mergeCS } from '../utils';
 
 export function UploadButton(props: UploadButtonProps): React.ReactElement | null {

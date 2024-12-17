@@ -109,7 +109,12 @@ export function TableCell(props: TableCellProps): React.ReactElement | null {
         },
       },
     ),
-    ref: cellRef,
+    ref: (instance: HTMLTableCellElement) => {
+      cellRef.current = instance;
+      return () => {
+        cellRef.current = null;
+      };
+    },
   };
   const child = (
     <div

@@ -7,7 +7,7 @@ export interface ImageProps extends BaseProps<'image', typeof CLASSES>, Omit<Rea
   imgProps: React.ImgHTMLAttributes<HTMLImageElement>;
   loading?: React.ReactNode;
   error?: React.ReactNode;
-  actions?: React.ReactElement[];
+  actions?: (React.ReactNode | { id: React.Key; action: React.ReactNode })[];
 }
 
 export interface ImageLoaderProps<K extends keyof HTMLImageElement = 'naturalWidth' | 'naturalHeight'> {

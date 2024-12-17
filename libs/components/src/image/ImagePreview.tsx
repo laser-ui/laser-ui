@@ -15,10 +15,10 @@ import { Button } from '../button';
 import { useComponentProps, useControlled, useLockScroll, useMaxIndex, useNamespace, useStyled } from '../hooks';
 import { Icon } from '../icon';
 import { Input } from '../input';
-import { Mask } from '../internal/mask';
 import { Portal } from '../internal/portal';
-import { Transition } from '../internal/transition';
+import { Mask } from '../mask';
 import { ROOT_DATA } from '../root/vars';
+import { Transition } from '../transition';
 import { mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
@@ -243,9 +243,9 @@ export function ImagePreview(props: ImagePreviewProps): React.ReactElement | nul
     >
       <Transition
         enter={visible}
-        during={TTANSITION_DURING_BASE}
-        destroyWhenLeaved
-        afterEnter={() => {
+        name={`${namespace}-popup`}
+        duration={TTANSITION_DURING_BASE}
+        onAfterEnter={() => {
           afterVisibleChange?.(true);
 
           dataRef.current.prevActiveEl = document.activeElement as HTMLElement | null;
@@ -253,7 +253,7 @@ export function ImagePreview(props: ImagePreviewProps): React.ReactElement | nul
             previewRef.current.focus({ preventScroll: true });
           }
         }}
-        afterLeave={() => {
+        onAfterLeave={() => {
           afterVisibleChange?.(false);
 
           if (dataRef.current.prevActiveEl) {
@@ -261,44 +261,26 @@ export function ImagePreview(props: ImagePreviewProps): React.ReactElement | nul
           }
         }}
       >
-        {(state) => {
-          let transitionStyle: React.CSSProperties = {};
-          switch (state) {
-            case 'enter':
-              transitionStyle = { transform: 'scale(0.3)', opacity: 0 };
-              break;
-
-            case 'entering':
-              transitionStyle = {
-                transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms ease-out`).join(', '),
-              };
-              break;
-
-            case 'leaving':
-              transitionStyle = {
-                transform: 'scale(0.3)',
-                opacity: 0,
-                transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms ease-in`).join(', '),
-              };
-              break;
-
-            default:
-              break;
-          }
-
-          return (
+        {(transitionRef, leaved) =>
+          leaved ? null : (
             <div
               {...restProps}
               {...mergeCS(styled('image-preview'), {
                 className: restProps.className,
                 style: {
                   ...restProps.style,
-                  ...transitionStyle,
-                  display: state === 'leaved' ? 'none' : undefined,
+                  ...{ '--popup-scale': 0.3, '--popup-duration': TTANSITION_DURING_BASE + 'ms' },
                   zIndex,
                 },
               })}
-              ref={previewRef}
+              ref={(instance) => {
+                previewRef.current = instance;
+                transitionRef(instance);
+                return () => {
+                  previewRef.current = null;
+                  transitionRef(null);
+                };
+              }}
               tabIndex={-1}
               onKeyDown={(e) => {
                 restProps.onKeyDown?.(e);
@@ -488,8 +470,8 @@ export function ImagePreview(props: ImagePreviewProps): React.ReactElement | nul
               </ul>
               <Mask visible />
             </div>
-          );
-        }}
+          )
+        }
       </Transition>
     </Portal>
   );

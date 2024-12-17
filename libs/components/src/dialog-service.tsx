@@ -1,10 +1,25 @@
-import { cloneElement, createElement } from 'react';
+export class DialogInstance<P extends object> {
+  public get node(): React.ReactElement<P> {
+    const Type = this.type;
+    return <Type key={this.key} {...this.props} />;
+  }
 
-export interface DialogInstance<P extends object> {
-  key: string | number;
-  node: React.FunctionComponentElement<P>;
-  close: () => void;
-  rerender: (props: P) => void;
+  constructor(
+    public key: string | number,
+    private type: React.FC<P>,
+    private props: any,
+    private service: DialogService,
+  ) {}
+
+  public rerender(props: Partial<P>) {
+    Object.assign(this.props, props);
+    this.service.emitChange(this.key);
+  }
+
+  public close() {
+    this.props.visible = false;
+    this.service.emitChange(this.key);
+  }
 }
 
 export class DialogService {
@@ -25,9 +40,13 @@ export class DialogService {
       visible: true,
       skipFirstTransition: false,
       onClose: () => {
-        this.close(dialogKey);
-
         (props as any).onClose?.();
+
+        const index = this._dialogs.findIndex((dialog) => dialog.key === dialogKey);
+        if (index !== -1) {
+          const instance = this._dialogs[index];
+          instance.close();
+        }
       },
       afterVisibleChange: (visible: boolean) => {
         (props as any).afterVisibleChange?.(visible);
@@ -41,17 +60,7 @@ export class DialogService {
         }
       },
     };
-    const node = createElement(type, { key: dialogKey, ...dialogProps } as any);
-    const instance: DialogInstance<P> = {
-      key: dialogKey,
-      node,
-      close: () => {
-        this.close(dialogKey);
-      },
-      rerender: (props) => {
-        this.rerender(dialogKey, props);
-      },
-    };
+    const instance: DialogInstance<P> = new DialogInstance(dialogKey, type, dialogProps, this);
 
     this._dialogs.push(instance);
     this._emitChange();
@@ -59,20 +68,9 @@ export class DialogService {
     return instance;
   }
 
-  close(key: string | number) {
+  emitChange(key: string | number) {
     const index = this._dialogs.findIndex((dialog) => dialog.key === key);
     if (index !== -1) {
-      const instance = this._dialogs[index];
-      instance.node = cloneElement(instance.node, { visible: false });
-      this._emitChange();
-    }
-  }
-
-  rerender(key: string | number, props: any) {
-    const index = this._dialogs.findIndex((dialog) => dialog.key === key);
-    if (index !== -1) {
-      const instance = this._dialogs[index];
-      instance.node = cloneElement(instance.node, props);
       this._emitChange();
     }
   }
@@ -80,11 +78,11 @@ export class DialogService {
   closeAll(animation = true) {
     if (animation) {
       this._dialogs.forEach((dialog) => {
-        dialog.node = cloneElement(dialog.node, { visible: false });
+        dialog.close();
       });
     } else {
       this._dialogs = [];
+      this._emitChange();
     }
-    this._emitChange();
   }
 }

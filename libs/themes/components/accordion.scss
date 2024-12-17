@@ -14,7 +14,7 @@
 .#{variables.$prefix}accordion-enter-from,
 .#{variables.$prefix}accordion-leave-to {
   height: var(--#{variables.$prefix}collapse-vertical) !important;
-  opacity: 0;
+  opacity: 0 !important;
 }
 
 .#{variables.$prefix}accordion-enter-to {

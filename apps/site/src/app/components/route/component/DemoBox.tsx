@@ -76,7 +76,12 @@ ${'```'}
 
   return (
     <section
-      ref={elRef}
+      ref={(instance) => {
+        elRef.current = instance;
+        return () => {
+          elRef.current = null;
+        };
+      }}
       id={id}
       className={classNames('app-demo-box', {
         'is-active': active,

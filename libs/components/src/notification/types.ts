@@ -14,6 +14,7 @@ export interface NotificationProps extends BaseProps<'notification', typeof CLAS
   escClosable?: boolean;
   skipFirstTransition?: boolean;
   destroyAfterClose?: boolean;
+  lazyLoading?: boolean;
   onClose?: () => void;
   afterVisibleChange?: (visible: boolean) => void;
 }

@@ -3,7 +3,7 @@ import type { VirtualScrollProps } from './types';
 import { useEventCallback } from '@laser-ui/hooks';
 import { checkScrollEnd } from '@laser-ui/utils';
 import { isBoolean, isNumber, isUndefined, nth } from 'lodash';
-import { Fragment, createElement, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { Fragment, useImperativeHandle, useMemo, useRef, useState } from 'react';
 
 import { EMPTY } from './vars';
 import { useComponentProps } from '../hooks';
@@ -26,7 +26,7 @@ export function VirtualScroll<T>(props: VirtualScrollProps<T>): React.ReactEleme
     itemFocusable: itemFocusableProp = true,
     itemFocused,
     itemInAriaSetsize: itemInAriaSetsizeProp = true,
-    placeholder,
+    placeholder: Placeholder,
     horizontal = false,
     onScrollEnd,
   } = useComponentProps('VirtualScroll', props);
@@ -245,32 +245,37 @@ export function VirtualScroll<T>(props: VirtualScrollProps<T>): React.ReactEleme
 
         if (fillSize[0] > 0) {
           list.unshift(
-            createElement(placeholder, {
-              key: '$$fill-size-0',
-              style: {
-                display: horizontal ? 'inline-block' : 'block',
-                overflow: 'hidden',
-                width: horizontal ? fillSize[0] : 0,
-                height: horizontal ? 0 : fillSize[0],
-                flexShrink: 0,
-              },
-              'aria-hidden': true,
-            }),
+            <Placeholder
+              key="$$fill-size-0"
+              {...{
+                style: {
+                  display: horizontal ? 'inline-block' : 'block',
+                  overflow: 'hidden',
+                  width: horizontal ? fillSize[0] : 0,
+                  height: horizontal ? 0 : fillSize[0],
+                  flexShrink: 0,
+                },
+                'aria-hidden': true,
+              }}
+            />,
           );
         }
+        <div></div>;
         if (fillSize[1] > 0) {
           list.push(
-            createElement(placeholder, {
-              key: '$$fill-size-1',
-              style: {
-                display: horizontal ? 'inline-block' : 'block',
-                overflow: 'hidden',
-                width: horizontal ? fillSize[1] : 0,
-                height: horizontal ? 0 : fillSize[1],
-                flexShrink: 0,
-              },
-              'aria-hidden': true,
-            }),
+            <Placeholder
+              key="$$fill-size-1"
+              {...{
+                style: {
+                  display: horizontal ? 'inline-block' : 'block',
+                  overflow: 'hidden',
+                  width: horizontal ? fillSize[1] : 0,
+                  height: horizontal ? 0 : fillSize[1],
+                  flexShrink: 0,
+                },
+                'aria-hidden': true,
+              }}
+            />,
           );
         }
 

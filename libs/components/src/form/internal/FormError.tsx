@@ -11,11 +11,11 @@ interface FormErrorProps {
   visible: boolean;
   message: string;
   invalid: 'warning' | 'error';
-  afterLeave: () => void;
+  onAfterLeave: () => void;
 }
 
 export function FormError(props: FormErrorProps): React.ReactElement | null {
-  const { namespace, styled, visible, message, invalid, afterLeave } = props;
+  const { namespace, styled, visible, message, invalid, onAfterLeave } = props;
 
   return (
     <CollapseTransition
@@ -24,7 +24,7 @@ export function FormError(props: FormErrorProps): React.ReactElement | null {
       name={`${namespace}-form-error`}
       duration={TTANSITION_DURING_FAST}
       skipFirstTransition={false}
-      onAfterLeave={afterLeave}
+      onAfterLeave={onAfterLeave}
     >
       {(transitionRef, leaved) => (
         <div

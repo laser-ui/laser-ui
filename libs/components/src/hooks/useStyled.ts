@@ -1,5 +1,5 @@
 import { isString, isUndefined } from 'lodash';
-import { useContext, useRef } from 'react';
+import { use, useRef } from 'react';
 
 import { LContext } from '../context';
 
@@ -13,7 +13,7 @@ export function useStyled<C extends { [index: string]: string }>(
   styleProvider: { [index: string]: string | undefined },
   styleOverrides?: { [K in keyof C]?: { remove?: boolean; className?: string; style?: React.CSSProperties } },
 ): Styled<C> {
-  const context = useContext(LContext);
+  const context = use(LContext);
   const classRoot: { [index: string]: string } = {};
   Object.keys(styleProvider).forEach((key) => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

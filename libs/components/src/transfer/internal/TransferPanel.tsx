@@ -8,11 +8,11 @@ import { isNumber } from 'lodash';
 import { useCallback, useId, useMemo, useRef } from 'react';
 
 import { Checkbox } from '../../checkbox';
+import { CircularProgress } from '../../circular-progress';
 import { Empty } from '../../empty';
 import { useTranslation } from '../../hooks';
 import { Icon } from '../../icon';
 import { Input } from '../../input';
-import { CircularProgress } from '../../internal/circular-progress';
 import { VirtualScroll, type VirtualScrollRef } from '../../virtual-scroll';
 import { IS_SELECTED, type CLASSES, NO_MATCH } from '../vars';
 
@@ -110,7 +110,12 @@ export function TransferPanel<V extends React.Key, T extends TransferItem<V>>(pr
         )}
         <VirtualScroll
           {...vsProps}
-          ref={vsRef}
+          ref={(instance) => {
+            vsRef.current = instance;
+            return () => {
+              vsRef.current = null;
+            };
+          }}
           enable={virtual !== false}
           listSize={192}
           listPadding={0}

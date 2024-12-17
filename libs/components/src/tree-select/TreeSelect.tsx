@@ -18,6 +18,7 @@ import { useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { TreeSelectSearchPanel } from './internal/TreeSelectSearchPanel';
 import { CLASSES } from './vars';
 import { BaseInput } from '../base-input';
+import { CircularProgress } from '../circular-progress';
 import { Dropdown } from '../dropdown';
 import {
   useComponentProps,
@@ -33,7 +34,6 @@ import {
   useTranslation,
 } from '../hooks';
 import { Icon } from '../icon';
-import { CircularProgress } from '../internal/circular-progress';
 import { Portal } from '../internal/portal';
 import { ROOT_DATA } from '../root/vars';
 import { Tag } from '../tag';
@@ -452,7 +452,12 @@ export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: Tr
           },
         )}
         {...designProps}
-        ref={boxRef}
+        ref={(instance) => {
+          boxRef.current = instance;
+          return () => {
+            boxRef.current = null;
+          };
+        }}
         onMouseDown={(e) => {
           restProps.onMouseDown?.(e);
 
@@ -772,7 +777,12 @@ export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: Tr
                     )}
                     {loading && isEmpty ? null : hasSearch ? (
                       <TreeSelectSearchPanel
-                        ref={focusRef}
+                        ref={(instance) => {
+                          focusRef.current = instance;
+                          return () => {
+                            focusRef.current = null;
+                          };
+                        }}
                         namespace={namespace}
                         styled={styled}
                         id={listId}
@@ -792,7 +802,12 @@ export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: Tr
                     ) : (
                       <TreePanel
                         style={{ maxHeight: 264, padding: '4px 0' }}
-                        ref={focusRef}
+                        ref={(instance) => {
+                          focusRef.current = instance;
+                          return () => {
+                            focusRef.current = null;
+                          };
+                        }}
                         id={listId}
                         namespace={namespace}
                         styled={styled as any}

@@ -1,5 +1,4 @@
 import type { SpinnerProps } from './types';
-import type { TransitionState } from '../internal/transition/types';
 
 import { useAsync, useForceUpdate } from '@laser-ui/hooks';
 import { checkNodeExist } from '@laser-ui/utils';
@@ -7,10 +6,10 @@ import { isNumber, isUndefined } from 'lodash';
 import { useEffect, useRef } from 'react';
 
 import { CLASSES } from './vars';
-import { useComponentProps, useStyled } from '../hooks';
+import { CircularProgress } from '../circular-progress';
+import { useComponentProps, useNamespace, useStyled } from '../hooks';
 import { Icon } from '../icon';
-import { CircularProgress } from '../internal/circular-progress';
-import { Transition } from '../internal/transition';
+import { Transition } from '../transition';
 import { mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
@@ -29,13 +28,13 @@ export function Spinner(props: SpinnerProps): React.ReactElement | null {
     ...restProps
   } = useComponentProps('Spinner', props);
 
+  const namespace = useNamespace();
   const styled = useStyled(CLASSES, { spinner: styleProvider?.spinner }, styleOverrides);
 
   const async = useAsync();
   const forceUpdate = useForceUpdate();
 
   const spinnerRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   const delayVisible = useRef(false);
 
@@ -57,36 +56,29 @@ export function Spinner(props: SpinnerProps): React.ReactElement | null {
     }
   }, [async, delay, forceUpdate, visibleProp]);
 
-  const transitionStyles: Partial<Record<TransitionState, React.CSSProperties>> = {
-    enter: { opacity: 0 },
-    entering: {
-      transition: ['opacity'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms linear`).join(', '),
-    },
-    leaving: {
-      opacity: 0,
-      transition: ['opacity'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms linear`).join(', '),
-    },
-    leaved: { display: 'none' },
-  };
-
   return (
     <Transition
       enter={visible}
-      during={TTANSITION_DURING_BASE}
-      afterRender={() => {
-        if (!alone && spinnerRef.current && containerRef.current) {
-          containerRef.current.style.height = `${spinnerRef.current.offsetHeight}px`;
+      name={`${namespace}-fade`}
+      duration={TTANSITION_DURING_BASE}
+      onSkipEnter={() => {
+        if (spinnerRef.current) {
+          spinnerRef.current.style.setProperty('--spinner-container-height', `${spinnerRef.current.offsetHeight}px`);
         }
       }}
-      destroyWhenLeaved
-      afterEnter={() => {
+      onBeforeEnter={() => {
+        if (spinnerRef.current) {
+          spinnerRef.current.style.setProperty('--spinner-container-height', `${spinnerRef.current.offsetHeight}px`);
+        }
+      }}
+      onAfterEnter={() => {
         afterVisibleChange?.(true);
       }}
-      afterLeave={() => {
+      onAfterLeave={() => {
         afterVisibleChange?.(false);
       }}
     >
-      {(state) => (
+      {(transitionRef, leaved) => (
         <div
           {...restProps}
           {...mergeCS(
@@ -97,13 +89,20 @@ export function Spinner(props: SpinnerProps): React.ReactElement | null {
               className: restProps.className,
               style: {
                 ...restProps.style,
-                ...transitionStyles[state],
+                ...(leaved ? { display: 'none' } : undefined),
               },
             },
           )}
-          ref={spinnerRef}
+          ref={(instance) => {
+            spinnerRef.current = instance;
+            transitionRef(instance);
+            return () => {
+              spinnerRef.current = null;
+              transitionRef(null);
+            };
+          }}
         >
-          <div {...styled('spinner__container')} ref={containerRef}>
+          <div {...styled('spinner__container')}>
             {children !== false && (
               <div
                 {...mergeCS(styled('spinner__icon'), {

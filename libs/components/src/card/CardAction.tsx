@@ -1,13 +1,12 @@
 import type { CardActionProps } from './types';
 
-import { forwardRef } from 'react';
-
 import { CLASSES } from './vars';
 import { useComponentProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-export const CardAction = forwardRef<HTMLDivElement, CardActionProps>((props, ref): React.ReactElement | null => {
+export function CardAction(props: CardActionProps): React.ReactElement | null {
   const {
+    ref,
     styleOverrides,
     styleProvider,
     children,
@@ -37,4 +36,4 @@ export const CardAction = forwardRef<HTMLDivElement, CardActionProps>((props, re
       {children}
     </div>
   );
-});
+}

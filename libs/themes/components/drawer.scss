@@ -1,6 +1,18 @@
 @use '../variables';
 @use '../mixins';
 
+.#{variables.$prefix}drawer-enter-from,
+.#{variables.$prefix}drawer-leave-to {
+  transform: var(--drawer-transform) !important;
+}
+
+.#{variables.$prefix}drawer-enter-to {
+  transition: transform var(--#{variables.$prefix}animation-duration-base) ease-out !important;
+}
+.#{variables.$prefix}drawer-leave-to {
+  transition: transform var(--#{variables.$prefix}animation-duration-base) ease-in !important;
+}
+
 @include mixins.b(drawer) {
   position: fixed;
   top: 0;

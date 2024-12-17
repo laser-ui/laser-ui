@@ -1,11 +1,10 @@
 import type { MaskProps } from './types';
-import type { TransitionState } from '../transition/types';
 
 import { CLASSES } from './vars';
-import { useStyled } from '../../hooks';
-import { mergeCS } from '../../utils';
-import { TTANSITION_DURING_FAST } from '../../vars';
+import { useNamespace, useStyled } from '../hooks';
 import { Transition } from '../transition';
+import { mergeCS } from '../utils';
+import { TTANSITION_DURING_FAST } from '../vars';
 
 export function Mask(props: MaskProps): React.ReactElement | null {
   const {
@@ -16,43 +15,40 @@ export function Mask(props: MaskProps): React.ReactElement | null {
     ...restProps
   } = props;
 
+  const namespace = useNamespace();
   const styled = useStyled(CLASSES, { mask: undefined });
-
-  const transitionStyles: Partial<Record<TransitionState, React.CSSProperties>> = {
-    enter: { opacity: 0 },
-    entering: {
-      transition: ['opacity'].map((attr) => `${attr} ${TTANSITION_DURING_FAST}ms linear`).join(', '),
-    },
-    leaving: {
-      opacity: 0,
-      transition: ['opacity'].map((attr) => `${attr} ${TTANSITION_DURING_FAST}ms linear`).join(', '),
-    },
-    leaved: { display: 'none' },
-  };
 
   return (
     <Transition
       enter={visible}
-      during={TTANSITION_DURING_FAST}
+      name={`${namespace}-fade`}
+      duration={TTANSITION_DURING_FAST}
       // TODO: Should it be controllable?
       skipFirstTransition={false}
-      afterEnter={() => {
+      onAfterEnter={() => {
         afterVisibleChange?.(true);
       }}
-      afterLeave={() => {
+      onAfterLeave={() => {
         afterVisibleChange?.(false);
       }}
     >
-      {(state) => (
+      {(transitionRef, leaved) => (
         <div
           {...restProps}
           {...mergeCS(styled('mask'), {
             className: restProps.className,
             style: {
               ...restProps.style,
-              ...transitionStyles[state],
+              ...{ '--fade-duration': TTANSITION_DURING_FAST + 'ms' },
+              ...(leaved ? { display: 'none' } : undefined),
             },
           })}
+          ref={(instance) => {
+            transitionRef(instance);
+            return () => {
+              transitionRef(null);
+            };
+          }}
           onClick={(e) => {
             restProps.onClick?.(e);
 

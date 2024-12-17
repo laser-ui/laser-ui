@@ -1,17 +1,16 @@
 import type { DrawerProps } from './types';
-import type { Offsets } from './types';
-import type { TransitionState } from '../internal/transition/types';
 
 import { isString, isUndefined } from 'lodash';
-import { cloneElement, useCallback, useContext, useEffect, useId, useRef } from 'react';
+import { use, useId, useRef } from 'react';
 
 import { DrawerFooter } from './DrawerFooter';
 import { DrawerHeader } from './DrawerHeader';
 import { CLASSES, DrawerContext } from './vars';
 import { useComponentProps, useLockScroll, useMaxIndex, useNamespace, useStyled } from '../hooks';
-import { Mask } from '../internal/mask';
+import { LazyLoading } from '../internal/lazy-loading';
 import { Portal } from '../internal/portal';
-import { Transition } from '../internal/transition';
+import { Mask } from '../mask';
+import { Transition } from '../transition';
 import { handleModalKeyDown, mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
@@ -36,6 +35,7 @@ export const Drawer: {
     container,
     skipFirstTransition = true,
     destroyAfterClose = false,
+    lazyLoading = true,
     zIndex: zIndexProp,
     onClose,
     afterVisibleChange,
@@ -51,44 +51,16 @@ export const Drawer: {
   const drawerRef = useRef<HTMLDivElement>(null);
   const drawerContentRef = useRef<HTMLDivElement>(null);
 
-  const dataRef = useRef<{
-    prevActiveEl: HTMLElement | null;
-  }>({
-    prevActiveEl: null,
-  });
+  const prevActiveEl = useRef<HTMLElement>(null);
 
   const uniqueId = useId();
   const titleId = `${namespace}-drawer-title-${uniqueId}`;
   const bodyId = `${namespace}-drawer-content-${uniqueId}`;
 
-  const drawerContext = useContext(DrawerContext);
-  const drawerContextValue = useCallback(
-    (offsets: Offsets) => {
-      const offset = offsets[placement].reduce((sum, v) => Math.min((v / 3) * 2, 200) + sum, 0);
-      if (drawerRef.current) {
-        drawerRef.current.style.transform =
-          placement === 'top'
-            ? `translateY(${offset}px)`
-            : placement === 'right'
-              ? `translateX(-${offset}px)`
-              : placement === 'bottom'
-                ? `translateY(-${offset}px)`
-                : `translateX(${offset}px)`;
-      }
-      if (drawerContentRef.current) {
-        drawerContext({
-          ...offsets,
-          [placement]: [
-            placement === 'top' || placement === 'bottom' ? drawerContentRef.current.offsetHeight : drawerContentRef.current.offsetWidth,
-          ].concat(offsets[placement]),
-        });
-      }
-    },
-    [drawerContext, placement],
-  );
+  const drawerContext = use(DrawerContext);
   const handleVisibleChange = (visible: boolean) => {
     if (drawerContentRef.current) {
-      drawerContext(
+      drawerContext?.onVisibleChange(
         Object.assign(
           { top: [], right: [], bottom: [], left: [] },
           {
@@ -104,12 +76,6 @@ export const Drawer: {
       );
     }
   };
-  useEffect(() => {
-    if (!visible) {
-      handleVisibleChange(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible]);
 
   const maxZIndex = useMaxIndex(visible);
   const zIndex = !isUndefined(zIndexProp)
@@ -119,41 +85,6 @@ export const Drawer: {
       : `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
 
   useLockScroll(isFixed && visible);
-
-  const transitionStyles: { [K in TransitionState]?: React.CSSProperties } = (() => {
-    const transform =
-      placement === 'top'
-        ? 'translate(0, -100%)'
-        : placement === 'right'
-          ? 'translate(100%, 0)'
-          : placement === 'bottom'
-            ? 'translate(0, 100%)'
-            : 'translate(-100%, 0)';
-
-    return {
-      enter: { transform },
-      entering: {
-        transition: ['transform'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms ease-out`).join(', '),
-      },
-      leaving: {
-        transform,
-        transition: ['transform'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms ease-in`).join(', '),
-      },
-      leaved: { transform },
-    };
-  })();
-
-  const headerNode = (() => {
-    if (headerProp) {
-      const node = isString(headerProp) ? <DrawerHeader>{headerProp}</DrawerHeader> : headerProp;
-      return cloneElement(node, {
-        _id: titleId,
-        _onClose: () => {
-          onClose?.();
-        },
-      });
-    }
-  })();
 
   return (
     <Portal
@@ -173,90 +104,151 @@ export const Drawer: {
     >
       <Transition
         enter={visible}
-        during={TTANSITION_DURING_BASE}
+        name={`${namespace}-drawer`}
+        duration={TTANSITION_DURING_BASE}
         skipFirstTransition={skipFirstTransition}
-        destroyWhenLeaved={destroyAfterClose}
-        afterRender={() => {
+        onSkipEnter={() => {
           handleVisibleChange(true);
         }}
-        afterEnter={() => {
+        onBeforeEnter={() => {
+          handleVisibleChange(true);
+        }}
+        onAfterEnter={() => {
           afterVisibleChange?.(true);
 
-          dataRef.current.prevActiveEl = document.activeElement as HTMLElement | null;
+          prevActiveEl.current = document.activeElement as HTMLElement | null;
           if (drawerRef.current) {
             drawerRef.current.focus({ preventScroll: true });
           }
         }}
-        afterLeave={() => {
+        onSkipLeave={() => {
+          handleVisibleChange(false);
+        }}
+        onBeforeLeave={() => {
+          handleVisibleChange(false);
+        }}
+        onAfterLeave={() => {
           afterVisibleChange?.(false);
 
-          if (dataRef.current.prevActiveEl) {
-            dataRef.current.prevActiveEl.focus({ preventScroll: true });
+          if (prevActiveEl.current) {
+            prevActiveEl.current.focus({ preventScroll: true });
           }
         }}
       >
-        {(state) => (
-          <div
-            {...restProps}
-            {...mergeCS(styled('drawer', `drawer--${placement}`), {
-              className: restProps.className,
-              style: {
-                ...restProps.style,
-                display: state === 'leaved' ? 'none' : undefined,
-                position: isFixed ? undefined : 'absolute',
-                zIndex,
-              },
-            })}
-            ref={drawerRef}
-            tabIndex={restProps.tabIndex ?? -1}
-            role="dialog"
-            aria-modal
-            aria-labelledby={headerNode ? titleId : undefined}
-            aria-describedby={bodyId}
-            onKeyDown={(e) => {
-              restProps.onKeyDown?.(e);
-
-              if (visible && escClosable && e.code === 'Escape') {
-                e.stopPropagation();
-                e.preventDefault();
-                onClose?.();
-              }
-
-              handleModalKeyDown(e);
-            }}
-          >
-            {mask && (
-              <Mask
-                visible={visible}
-                onClose={() => {
-                  if (maskClosable) {
-                    onClose?.();
-                  }
-                }}
-              />
-            )}
-            <div
-              {...mergeCS(styled('drawer__content'), {
-                style: {
-                  width: placement === 'left' || placement === 'right' ? width : undefined,
-                  height: placement === 'bottom' || placement === 'top' ? height : undefined,
-                  ...transitionStyles[state],
-                },
-              })}
-              ref={drawerContentRef}
-            >
-              {headerNode}
-              <div {...styled('drawer__body')} id={bodyId}>
-                <DrawerContext value={drawerContextValue}>{children}</DrawerContext>
-              </div>
-              {footer &&
-                cloneElement(footer, {
-                  _onClose: () => {
+        {(transitionRef, leaved) => (
+          <LazyLoading hidden={leaved} disabled={!lazyLoading}>
+            {leaved && destroyAfterClose ? null : (
+              <DrawerContext
+                value={{
+                  id: titleId,
+                  onClose: () => {
                     onClose?.();
                   },
-                })}
-            </div>
-          </div>
+                  onVisibleChange: (offsets) => {
+                    const offset = offsets[placement].reduce((sum, v) => Math.min((v / 3) * 2, 200) + sum, 0);
+                    if (drawerRef.current) {
+                      drawerRef.current.style.transform =
+                        placement === 'top'
+                          ? `translateY(${offset}px)`
+                          : placement === 'right'
+                            ? `translateX(-${offset}px)`
+                            : placement === 'bottom'
+                              ? `translateY(-${offset}px)`
+                              : `translateX(${offset}px)`;
+                    }
+                    if (drawerContentRef.current) {
+                      drawerContext?.onVisibleChange({
+                        ...offsets,
+                        [placement]: [
+                          placement === 'top' || placement === 'bottom'
+                            ? drawerContentRef.current.offsetHeight
+                            : drawerContentRef.current.offsetWidth,
+                        ].concat(offsets[placement]),
+                      });
+                    }
+                  },
+                }}
+              >
+                <div
+                  {...restProps}
+                  {...mergeCS(styled('drawer', `drawer--${placement}`), {
+                    className: restProps.className,
+                    style: {
+                      ...restProps.style,
+                      ...{
+                        '--drawer-transform':
+                          placement === 'top'
+                            ? 'translate(0, -100%)'
+                            : placement === 'right'
+                              ? 'translate(100%, 0)'
+                              : placement === 'bottom'
+                                ? 'translate(0, 100%)'
+                                : 'translate(-100%, 0)',
+                      },
+                      position: isFixed ? undefined : 'absolute',
+                      zIndex,
+                      ...(leaved ? { display: 'none' } : undefined),
+                    },
+                  })}
+                  ref={(instance) => {
+                    drawerRef.current = instance;
+                    return () => {
+                      drawerRef.current = null;
+                    };
+                  }}
+                  tabIndex={restProps.tabIndex ?? -1}
+                  role="dialog"
+                  aria-modal
+                  aria-labelledby={headerProp ? titleId : undefined}
+                  aria-describedby={bodyId}
+                  onKeyDown={(e) => {
+                    restProps.onKeyDown?.(e);
+
+                    if (visible && escClosable && e.code === 'Escape') {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      onClose?.();
+                    }
+
+                    handleModalKeyDown(e);
+                  }}
+                >
+                  {mask && (
+                    <Mask
+                      visible={visible}
+                      onClose={() => {
+                        if (maskClosable) {
+                          onClose?.();
+                        }
+                      }}
+                    />
+                  )}
+                  <div
+                    {...mergeCS(styled('drawer__content'), {
+                      style: {
+                        width: placement === 'left' || placement === 'right' ? width : undefined,
+                        height: placement === 'bottom' || placement === 'top' ? height : undefined,
+                      },
+                    })}
+                    ref={(instance) => {
+                      drawerContentRef.current = instance;
+                      transitionRef(instance);
+                      return () => {
+                        drawerContentRef.current = null;
+                        transitionRef(null);
+                      };
+                    }}
+                  >
+                    {isString(headerProp) ? <DrawerHeader>{headerProp}</DrawerHeader> : headerProp}
+                    <div {...styled('drawer__body')} id={bodyId}>
+                      {children}
+                    </div>
+                    {footer}
+                  </div>
+                </div>
+              </DrawerContext>
+            )}
+          </LazyLoading>
         )}
       </Transition>
     </Portal>
