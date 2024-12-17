@@ -1,7 +1,7 @@
 import type { DrawerProps } from './types';
 
 import { isString, isUndefined } from 'lodash';
-import { use, useId, useRef } from 'react';
+import { use, useId, useRef, useState } from 'react';
 
 import { DrawerFooter } from './DrawerFooter';
 import { DrawerHeader } from './DrawerHeader';
@@ -77,6 +77,8 @@ export const Drawer: {
     }
   };
 
+  const [offset, setOffset] = useState(0);
+
   const maxZIndex = useMaxIndex(visible);
   const zIndex = !isUndefined(zIndexProp)
     ? zIndexProp
@@ -146,16 +148,7 @@ export const Drawer: {
                   },
                   onVisibleChange: (offsets) => {
                     const offset = offsets[placement].reduce((sum, v) => Math.min((v / 3) * 2, 200) + sum, 0);
-                    if (drawerRef.current) {
-                      drawerRef.current.style.transform =
-                        placement === 'top'
-                          ? `translateY(${offset}px)`
-                          : placement === 'right'
-                            ? `translateX(-${offset}px)`
-                            : placement === 'bottom'
-                              ? `translateY(-${offset}px)`
-                              : `translateX(${offset}px)`;
-                    }
+                    setOffset(offset);
                     if (drawerContentRef.current) {
                       drawerContext?.onVisibleChange({
                         ...offsets,
@@ -187,6 +180,14 @@ export const Drawer: {
                       },
                       position: isFixed ? undefined : 'absolute',
                       zIndex,
+                      transform:
+                        placement === 'top'
+                          ? `translateY(${offset}px)`
+                          : placement === 'right'
+                            ? `translateX(-${offset}px)`
+                            : placement === 'bottom'
+                              ? `translateY(-${offset}px)`
+                              : `translateX(${offset}px)`,
                       ...(leaved ? { display: 'none' } : undefined),
                     },
                   })}
