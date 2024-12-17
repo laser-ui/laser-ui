@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.1](https://github.com/laser-ui/laser-ui/compare/v2.0.0...v2.0.1) (2024-12-17)
+
+### Bug Fixes
+
+- **hooks:** fix cant get ref after render by `useRefExtra` ([18c6aaf](https://github.com/laser-ui/laser-ui/commit/18c6aaffadf1f1e06dbb5c0a0a8642a7df8c2ed2))
+
 # [2.0.0](https://github.com/laser-ui/laser-ui/compare/v1.6.1...v2.0.0) (2024-12-17)
 
 ### Features
