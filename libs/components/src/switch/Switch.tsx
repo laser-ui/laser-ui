@@ -1,13 +1,12 @@
 import type { SwitchProps } from './types';
-import type { TransitionState } from '../internal/transition/types';
 
 import { checkNodeExist } from '@laser-ui/utils';
 
 import { CLASSES, TTANSITION_DURING } from './vars';
-import { useComponentProps, useControlled, useDesign, useScopedProps, useStyled } from '../hooks';
+import { useComponentProps, useControlled, useDesign, useNamespace, useScopedProps, useStyled } from '../hooks';
 import { Icon } from '../icon';
 import { CircularProgress } from '../internal/circular-progress';
-import { Transition } from '../internal/transition';
+import { Transition } from '../transition';
 import { mergeCS } from '../utils';
 
 export function Switch(props: SwitchProps) {
@@ -23,13 +22,13 @@ export function Switch(props: SwitchProps) {
     size: sizeProp,
     loading = false,
     disabled: disabledProp = false,
-    inputRef,
-    inputRender,
+    inputProps,
     onModelChange,
 
     ...restProps
   } = useComponentProps('Switch', props);
 
+  const namespace = useNamespace();
   const styled = useStyled(CLASSES, { switch: styleProvider?.switch }, styleOverrides);
 
   const [checked, changeChecked] = useControlled(defaultModel ?? false, model, onModelChange, undefined, formControl?.control);
@@ -37,36 +36,6 @@ export function Switch(props: SwitchProps) {
   const { size, disabled } = useScopedProps({ size: sizeProp, disabled: disabledProp || formControl?.control.disabled });
 
   const designProps = useDesign({ compose: { active: checked, disabled } });
-
-  const transitionStyles: Partial<Record<TransitionState, React.CSSProperties>> = {
-    enter: { left: 2 },
-    entering: {
-      left: 'calc(100% - 20px)',
-      transition: ['width', 'padding', 'margin', 'left'].map((attr) => `${attr} ${TTANSITION_DURING}ms linear`).join(', '),
-    },
-    entered: { right: 2 },
-    leave: { right: 2 },
-    leaving: {
-      right: 'calc(100% - 20px)',
-      transition: ['width', 'padding', 'margin', 'right'].map((attr) => `${attr} ${TTANSITION_DURING}ms linear`).join(', '),
-    },
-    leaved: { left: 2 },
-  };
-
-  const inputNode = (
-    <input
-      {...styled('switch__input')}
-      {...formControl?.inputAria}
-      ref={inputRef}
-      type="checkbox"
-      disabled={disabled}
-      role="switch"
-      aria-checked={checked}
-      onChange={() => {
-        changeChecked((draft) => !draft);
-      }}
-    />
-  );
 
   return (
     <label
@@ -108,13 +77,56 @@ export function Switch(props: SwitchProps) {
             )}
           </>
         )}
-        {inputRender ? inputRender(inputNode) : inputNode}
-        <Transition enter={checked} during={TTANSITION_DURING}>
-          {(state) => (
+        <input
+          {...inputProps}
+          {...styled('switch__input')}
+          {...formControl?.inputAria}
+          type="checkbox"
+          disabled={disabled}
+          role="switch"
+          aria-checked={checked}
+          onChange={() => {
+            changeChecked((draft) => !draft);
+          }}
+        />
+        <Transition
+          enter={checked}
+          name={`${namespace}-switch`}
+          duration={TTANSITION_DURING}
+          onSkipEnter={(el) => {
+            if (el) {
+              el.style.left = '';
+              el.style.right = '2px';
+            }
+          }}
+          onAfterEnter={(el) => {
+            if (el) {
+              el.style.left = '';
+              el.style.right = '2px';
+            }
+          }}
+          onSkipLeave={(el) => {
+            if (el) {
+              el.style.left = '2px';
+              el.style.right = '';
+            }
+          }}
+          onAfterLeave={(el) => {
+            if (el) {
+              el.style.left = '2px';
+              el.style.right = '';
+            }
+          }}
+        >
+          {(transitionRef) => (
             <div
-              {...mergeCS(styled('switch__state-dot'), {
-                style: transitionStyles[state],
-              })}
+              {...styled('switch__state-dot')}
+              ref={(instance) => {
+                transitionRef(instance);
+                return () => {
+                  transitionRef(null);
+                };
+              }}
             >
               {loading && (
                 <Icon>

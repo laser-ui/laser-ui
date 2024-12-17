@@ -1,15 +1,17 @@
 import type { TextareaProps } from './types';
 
-import { useForkRef } from '@laser-ui/hooks';
+import { useIsomorphicLayoutEffect } from '@laser-ui/hooks';
+import { setRef } from '@laser-ui/utils';
 import { isFunction, isNumber, isUndefined } from 'lodash';
-import { forwardRef, useEffect, useRef } from 'react';
+import { useRef } from 'react';
 
 import { CLASSES } from './vars';
 import { useComponentProps, useControlled, useDesign, useScopedProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>((props, ref): React.ReactElement | null => {
+export function Textarea(props: TextareaProps): React.ReactElement | null {
   const {
+    ref,
     styleOverrides,
     styleProvider,
     formControl,
@@ -27,13 +29,12 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>((props, r
   const styled = useStyled(CLASSES, { textarea: styleProvider?.textarea }, styleOverrides);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const combineTextareaRef = useForkRef(textareaRef, ref);
 
   const [value, changeValue] = useControlled<string>(defaultModel ?? '', model, onModelChange, undefined, formControl?.control);
 
   const { size, disabled } = useScopedProps({ size: sizeProp, disabled: restProps.disabled || formControl?.control.disabled });
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const textareaEl = textareaRef.current;
     if (textareaEl && autoRows !== false) {
       const cssText = textareaEl.style.cssText;
@@ -83,7 +84,14 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>((props, r
           },
         })}
         {...designProps}
-        ref={combineTextareaRef}
+        ref={(instance) => {
+          const ret = setRef(ref, instance);
+          textareaRef.current = instance;
+          return () => {
+            ret();
+            textareaRef.current = null;
+          };
+        }}
         value={value}
         disabled={disabled}
         onChange={(e) => {
@@ -103,4 +111,4 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>((props, r
       )}
     </>
   );
-});
+}

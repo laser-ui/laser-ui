@@ -5,6 +5,7 @@ import type { BaseProps, Size } from '../types';
 export {};
 
 export interface TextareaProps extends BaseProps<'textarea', typeof CLASSES>, React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+  ref?: React.Ref<HTMLTextAreaElement>;
   formControl?: FormControlProvider;
   model?: string;
   defaultModel?: string;

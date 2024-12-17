@@ -1,6 +1,6 @@
 import type { CLASSES } from './vars';
 import type { FormControlProvider } from '../form/types';
-import type { BaseProps, CloneHTMLElement } from '../types';
+import type { BaseProps } from '../types';
 
 export {};
 
@@ -10,8 +10,7 @@ export interface CheckboxProps extends BaseProps<'checkbox', typeof CLASSES>, Re
   defaultModel?: boolean;
   indeterminate?: boolean;
   disabled?: boolean;
-  inputRef?: React.ForwardedRef<HTMLInputElement>;
-  inputRender?: CloneHTMLElement;
+  inputProps?: React.ComponentPropsWithRef<'input'>;
   onModelChange?: (checked: boolean) => void;
 }
 
@@ -22,7 +21,20 @@ export interface CheckboxGroupItem<V extends React.Key> {
 }
 
 export interface CheckboxGroupProps<V extends React.Key, T extends CheckboxGroupItem<V>> {
-  children: (nodes: React.ReactElement[]) => React.ReactElement;
+  children: (
+    props: { role: 'group' },
+    optionProps: (option: T) => {
+      children: React.ReactNode;
+      model: boolean;
+      disabled: boolean;
+      inputProps?: {
+        'aria-invalid'?: boolean;
+        'aria-describedby'?: string;
+      };
+      onModelChange: (checked: boolean) => void;
+    },
+    options: T[],
+  ) => React.ReactElement | null;
   formControl?: FormControlProvider;
   list: T[];
   model?: V[];

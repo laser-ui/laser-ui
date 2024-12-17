@@ -20,8 +20,7 @@ export const Checkbox: {
     defaultModel,
     indeterminate = false,
     disabled: disabledProp = false,
-    inputRef,
-    inputRender,
+    inputProps,
     onModelChange,
 
     ...restProps
@@ -32,20 +31,6 @@ export const Checkbox: {
   const [checked, changeChecked] = useControlled(defaultModel ?? false, model, onModelChange, undefined, formControl?.control);
 
   const { disabled } = useScopedProps({ disabled: disabledProp || formControl?.control.disabled });
-
-  const inputNode = (
-    <input
-      {...styled('checkbox__input')}
-      {...formControl?.inputAria}
-      ref={inputRef}
-      type="checkbox"
-      disabled={disabled}
-      aria-checked={indeterminate ? 'mixed' : checked}
-      onChange={() => {
-        changeChecked((draft) => !draft);
-      }}
-    />
-  );
 
   return (
     <label
@@ -63,7 +48,17 @@ export const Checkbox: {
       )}
     >
       <div {...styled('checkbox__state-container')}>
-        {inputRender ? inputRender(inputNode) : inputNode}
+        <input
+          {...inputProps}
+          {...styled('checkbox__input')}
+          {...formControl?.inputAria}
+          type="checkbox"
+          disabled={disabled}
+          aria-checked={indeterminate ? 'mixed' : checked}
+          onChange={() => {
+            changeChecked((draft) => !draft);
+          }}
+        />
         {indeterminate ? <div {...styled('checkbox__indeterminate')} /> : checked && <div {...styled('checkbox__tick')} />}
       </div>
       {checkNodeExist(children) && <div {...styled('checkbox__label')}>{children}</div>}

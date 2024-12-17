@@ -2,18 +2,20 @@ import type { UploadButtonProps } from './types';
 
 import AddOutlined from '@material-design-icons/svg/outlined/add.svg?react';
 import InsertDriveFileTwoTone from '@material-design-icons/svg/two-tone/insert_drive_file.svg?react';
-import { Children, cloneElement, forwardRef } from 'react';
+import { has } from 'lodash';
+import { Fragment } from 'react';
 
 import { UploadAction } from './UploadAction';
 import { UploadPreviewAction } from './UploadPreviewAction';
-import { BUTTON_CLASSES } from './vars';
+import { BUTTON_CLASSES, UploadActionContext } from './vars';
 import { useComponentProps, useStyled, useTranslation } from '../hooks';
 import { Icon } from '../icon';
 import { CircularProgress } from '../internal/circular-progress';
 import { mergeCS } from '../utils';
 
-export const UploadButton = forwardRef<HTMLDivElement, UploadButtonProps>((props, ref): React.ReactElement | null => {
+export function UploadButton(props: UploadButtonProps): React.ReactElement | null {
   const {
+    ref,
     styleOverrides,
     styleProvider,
     file,
@@ -59,14 +61,22 @@ export const UploadButton = forwardRef<HTMLDivElement, UploadButtonProps>((props
             </>
           )}
           <div {...styled('upload-button__actions')}>
-            {Children.map(actions ?? [<UploadPreviewAction />, <UploadAction preset="remove" />], (action) =>
-              cloneElement(action as any, {
-                _file: file,
-                _defaultActions: defaultActions,
-                _light: true,
-                _onRemove: onRemove,
-              }),
-            )}
+            <UploadActionContext
+              value={{
+                file,
+                defaultActions,
+                light: true,
+                onRemove,
+              }}
+            >
+              {(actions ?? [<UploadPreviewAction />, <UploadAction preset="remove" />]).map((node, index) => {
+                const { id, action } = (has(node, ['id', 'action']) ? node : { id: index, action: node }) as {
+                  id: React.Key;
+                  action: React.ReactNode;
+                };
+                return <Fragment key={id}>{action}</Fragment>;
+              })}
+            </UploadActionContext>
           </div>
         </>
       ) : (
@@ -79,4 +89,4 @@ export const UploadButton = forwardRef<HTMLDivElement, UploadButtonProps>((props
       )}
     </div>
   );
-});
+}

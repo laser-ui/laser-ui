@@ -87,9 +87,9 @@ export function Root(props: RootProps): React.ReactElement | null {
   }
 
   return (
-    <RootContext.Provider value={context}>
+    <RootContext value={context}>
       {children}
       {dialogs.map(({ node }) => node)}
-    </RootContext.Provider>
+    </RootContext>
   );
 }

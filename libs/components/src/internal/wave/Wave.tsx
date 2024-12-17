@@ -1,14 +1,15 @@
-import type { WaveProps, WaveRef } from './types';
+import type { WaveProps } from './types';
 
 import { useEventCallback } from '@laser-ui/hooks';
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import { useImperativeHandle, useState } from 'react';
 
 import { CLASSES } from './vars';
 import { useNamespace, useStyled } from '../../hooks';
 import { mergeCS } from '../../utils';
 
-export const Wave = forwardRef<WaveRef, WaveProps>((props, ref): React.ReactElement | null => {
+export function Wave(props: WaveProps): React.ReactElement | null {
   const {
+    ref,
     color,
 
     ...restProps
@@ -43,4 +44,4 @@ export const Wave = forwardRef<WaveRef, WaveProps>((props, ref): React.ReactElem
   useImperativeHandle(ref, () => wave, [wave]);
 
   return node;
-});
+}

@@ -16,5 +16,5 @@ export function ConfigProvider(props: ConfigProviderProps): React.ReactElement |
     return context;
   }, [contextProp, parent]);
 
-  return <LContext.Provider value={context}>{children}</LContext.Provider>;
+  return <LContext value={context}>{children}</LContext>;
 }

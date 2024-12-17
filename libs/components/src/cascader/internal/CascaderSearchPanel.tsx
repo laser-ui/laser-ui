@@ -7,7 +7,7 @@ import type { CLASSES } from '../vars';
 import { useEventCallback } from '@laser-ui/hooks';
 import { scrollIntoViewIfNeeded } from '@laser-ui/utils';
 import { isNumber, isUndefined } from 'lodash';
-import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
+import { useImperativeHandle, useMemo, useRef } from 'react';
 
 import { Checkbox } from '../../checkbox';
 import { Empty } from '../../empty';
@@ -16,6 +16,7 @@ import { TREE_NODE_KEY } from '../../tree/vars';
 import { VirtualScroll, type VirtualScrollRef } from '../../virtual-scroll';
 
 interface CascaderSearchPanelProps<V extends React.Key, T extends CascaderItem<V>> {
+  ref?: React.Ref<(code: any) => CascaderSearchPanelItem<V, T> | undefined>;
   namespace: string;
   styled: Styled<typeof CLASSES>;
   id: string;
@@ -30,12 +31,24 @@ interface CascaderSearchPanelProps<V extends React.Key, T extends CascaderItem<V
   onClick: (item: CascaderSearchPanelItem<V, T>) => void;
 }
 
-function CascaderSearchPanelFC<V extends React.Key, T extends CascaderItem<V>>(
+export function CascaderSearchPanel<V extends React.Key, T extends CascaderItem<V>>(
   props: CascaderSearchPanelProps<V, T>,
-  ref: React.ForwardedRef<any>,
 ): React.ReactElement | null {
-  const { namespace, styled, id, list, customItem, itemId, itemFocused, multiple, onlyLeafSelectable, virtual, focusVisible, onClick } =
-    props;
+  const {
+    ref,
+    namespace,
+    styled,
+    id,
+    list,
+    customItem,
+    itemId,
+    itemFocused,
+    multiple,
+    onlyLeafSelectable,
+    virtual,
+    focusVisible,
+    onClick,
+  } = props;
 
   const listRef = useRef<HTMLUListElement>(null);
   const vsRef = useRef<VirtualScrollRef<CascaderSearchPanelItem<V, T>>>(null);
@@ -150,7 +163,3 @@ function CascaderSearchPanelFC<V extends React.Key, T extends CascaderItem<V>>(
     </VirtualScroll>
   );
 }
-
-export const CascaderSearchPanel: <V extends React.Key, T extends CascaderItem<V>>(
-  props: CascaderSearchPanelProps<V, T> & React.RefAttributes<any>,
-) => ReturnType<typeof CascaderSearchPanelFC> = forwardRef(CascaderSearchPanelFC) as any;

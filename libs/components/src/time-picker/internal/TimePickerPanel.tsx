@@ -5,7 +5,7 @@ import { useEventCallback } from '@laser-ui/hooks';
 import { scrollTo } from '@laser-ui/utils';
 import { freeze } from 'immer';
 import { isUndefined } from 'lodash';
-import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { useImperativeHandle, useRef, useState } from 'react';
 
 import dayjs from '../../dayjs';
 
@@ -14,6 +14,7 @@ const H12 = freeze(['12', ...Array.from({ length: 11 }).map((_, i) => `${i + 1 <
 const [H24, M60, S60] = [24, 60, 60].map((num) => freeze(Array.from({ length: num }).map((_, i) => `${i < 10 ? '0' : ''}${i}`)));
 
 interface TimePickerPanelProps {
+  ref?: React.Ref<(date: Date) => void>;
   styled: Styled<typeof CLASSES>;
   time: Date | null;
   format: string;
@@ -22,8 +23,8 @@ interface TimePickerPanelProps {
   onTimeChange: (time: Date) => void;
 }
 
-export const TimePickerPanel = forwardRef<(date: Date) => void, TimePickerPanelProps>((props, ref): React.ReactElement | null => {
-  const { styled, time: timeProp, format: formatProp, config, inDatePicker = false, onTimeChange } = props;
+export function TimePickerPanel(props: TimePickerPanelProps): React.ReactElement | null {
+  const { ref, styled, time: timeProp, format: formatProp, config, inDatePicker = false, onTimeChange } = props;
 
   const ulHRef = useRef<HTMLUListElement>(null);
   const ulMRef = useRef<HTMLUListElement>(null);
@@ -224,4 +225,4 @@ export const TimePickerPanel = forwardRef<(date: Date) => void, TimePickerPanelP
       )}
     </div>
   );
-});
+}

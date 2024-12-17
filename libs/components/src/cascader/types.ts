@@ -1,6 +1,6 @@
 import type { CLASSES } from './vars';
 import type { FormControlProvider } from '../form/types';
-import type { BaseProps, CloneHTMLElement, Size } from '../types';
+import type { BaseProps, Size } from '../types';
 
 export {};
 
@@ -19,6 +19,7 @@ export interface CascaderItem<V extends React.Key> {
 export interface CascaderProps<V extends React.Key, T extends CascaderItem<V>>
   extends BaseProps<'cascader' | 'cascader-popup', typeof CLASSES>,
     Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+  ref?: React.Ref<CascaderRef>;
   formControl?: FormControlProvider;
   list: T[];
   model?: V | null | V[];
@@ -43,8 +44,7 @@ export interface CascaderProps<V extends React.Key, T extends CascaderItem<V>>
     filter?: (value: string, item: T) => boolean;
     sort?: (a: T, b: T) => number;
   };
-  inputRef?: React.ForwardedRef<HTMLInputElement>;
-  inputRender?: CloneHTMLElement;
+  inputProps?: React.ComponentPropsWithRef<'input'>;
   popupRender?: (el: React.ReactElement) => React.ReactNode;
   onModelChange?: (value: any, origin: any) => void;
   onVisibleChange?: (visible: boolean) => void;

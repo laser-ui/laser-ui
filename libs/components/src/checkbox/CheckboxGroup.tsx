@@ -1,8 +1,5 @@
 import type { CheckboxGroupItem, CheckboxGroupProps } from './types';
 
-import { cloneElement } from 'react';
-
-import { Checkbox } from './Checkbox';
 import { useComponentProps, useControlled, useScopedProps } from '../hooks';
 
 export function CheckboxGroup<V extends React.Key, T extends CheckboxGroupItem<V>>(
@@ -35,30 +32,26 @@ export function CheckboxGroup<V extends React.Key, T extends CheckboxGroupItem<V
 
   const { disabled } = useScopedProps({ disabled: disabledProp || formControl?.control.disabled });
 
-  const childrenNode = children(
-    list.map((option) => (
-      <Checkbox
-        key={option.value}
-        model={values.includes(option.value)}
-        disabled={option.disabled || disabled}
-        inputRender={(el) => cloneElement(el, formControl?.inputAria)}
-        onModelChange={(checked) => {
-          changeValues((draft) => {
-            if (checked) {
-              draft.push(option.value);
-            } else {
-              draft.splice(
-                draft.findIndex((v) => v === option.value),
-                1,
-              );
-            }
-          });
-        }}
-      >
-        {option.label}
-      </Checkbox>
-    )),
+  return children(
+    { role: 'group' },
+    (option) => ({
+      children: option.label,
+      model: values.includes(option.value),
+      disabled: option.disabled || disabled,
+      inputProps: formControl?.inputAria,
+      onModelChange: (checked) => {
+        changeValues((draft) => {
+          if (checked) {
+            draft.push(option.value);
+          } else {
+            draft.splice(
+              draft.findIndex((v) => v === option.value),
+              1,
+            );
+          }
+        });
+      },
+    }),
+    list,
   );
-
-  return cloneElement(childrenNode, { role: childrenNode.props.role ?? 'group' });
 }

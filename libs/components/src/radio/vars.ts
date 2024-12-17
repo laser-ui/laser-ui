@@ -1,3 +1,7 @@
+import type { Size } from '../types';
+
+import { createContext } from 'react';
+
 export const CLASSES = {
   radio: '^radio',
   'radio.is-checked': 'is-checked',
@@ -12,3 +16,11 @@ export const CLASSES = {
   radio__input: '^radio__input',
   radio__label: '^radio__label',
 };
+
+export const RadioGroupContext = createContext<
+  | {
+      pattern?: 'outline' | 'fill';
+      size: Size;
+    }
+  | undefined
+>(undefined);

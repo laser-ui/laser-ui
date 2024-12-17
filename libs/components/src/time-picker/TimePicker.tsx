@@ -1,11 +1,12 @@
-import type { TimePickerProps, TimePickerRef } from './types';
+import type { TimePickerProps } from './types';
 
-import { useAsync, useEventCallback, useForceUpdate, useForkRef, useImmer, useResize } from '@laser-ui/hooks';
+import { useAsync, useEventCallback, useForceUpdate, useImmer, useIsomorphicLayoutEffect, useResize } from '@laser-ui/hooks';
+import { setRef } from '@laser-ui/utils';
 import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
 import AccessTimeOutlined from '@material-design-icons/svg/outlined/access_time.svg?react';
 import SwapHorizOutlined from '@material-design-icons/svg/outlined/swap_horiz.svg?react';
 import { isNull, isUndefined } from 'lodash';
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import { useEffect, useImperativeHandle, useRef } from 'react';
 
 import { TimePickerPanel } from './internal/TimePickerPanel';
 import { deepCompareDate, orderTime } from './utils';
@@ -18,7 +19,6 @@ import {
   useContainerScrolling,
   useControlled,
   useDesign,
-  useJSS,
   useLayout,
   useMaxIndex,
   useNamespace,
@@ -28,13 +28,14 @@ import {
 } from '../hooks';
 import { Icon } from '../icon';
 import { Portal } from '../internal/portal';
-import { Transition } from '../internal/transition';
 import { ROOT_DATA } from '../root/vars';
+import { Transition } from '../transition';
 import { getVerticalSidePosition, mergeCS } from '../utils';
 import { TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../vars';
 
-export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref): React.ReactElement | null => {
+export function TimePicker(props: TimePickerProps): React.ReactElement | null {
   const {
+    ref,
     styleOverrides,
     styleProvider,
     formControl,
@@ -51,8 +52,7 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
     disabled: disabledProp = false,
     config,
     escClosable = true,
-    inputRef,
-    inputRender,
+    inputProps,
     onModelChange,
     onVisibleChange,
     onClear,
@@ -67,7 +67,6 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
     { 'time-picker': styleProvider?.['time-picker'], 'time-picker-popup': styleProvider?.['time-picker-popup'] },
     styleOverrides,
   );
-  const sheet = useJSS<'position'>();
 
   const { t } = useTranslation();
   const forceUpdate = useForceUpdate();
@@ -80,8 +79,6 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
   const inputLeftRef = useRef<HTMLInputElement>(null);
   const inputRightRef = useRef<HTMLInputElement>(null);
   const indicatorRef = useRef<HTMLDivElement>(null);
-  const combineInputLeftRef = useForkRef(inputLeftRef, inputRef?.[0]);
-  const combineInputRightRef = useForkRef(inputRightRef, inputRef?.[1]);
   const panelRef = useRef<(date: Date) => void>(null);
 
   const dataRef = useRef<{
@@ -173,7 +170,6 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
   const maxZIndex = useMaxIndex(visible);
   const zIndex = `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
 
-  const transformOrigin = useRef<string>();
   const updatePosition = useEventCallback(() => {
     if (visible && boxRef.current && popupRef.current) {
       const height = popupRef.current.offsetHeight;
@@ -187,16 +183,10 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
           inWindow: WINDOW_SPACE,
         },
       );
-      transformOrigin.current = position.transformOrigin;
-      if (sheet.classes.position) {
-        popupRef.current.classList.toggle(sheet.classes.position, false);
-      }
-      sheet.replaceRule('position', {
-        top: position.top,
-        left: position.left,
-        maxWidth,
-      });
-      popupRef.current.classList.toggle(sheet.classes.position, true);
+      popupRef.current.style.setProperty(`--popup-down-transform-origin`, position.transformOrigin);
+      popupRef.current.style.top = position.top + 'px';
+      popupRef.current.style.left = position.left + 'px';
+      popupRef.current.style.maxWidth = maxWidth + 'px';
     }
   });
 
@@ -214,7 +204,7 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
     [updatePosition],
   );
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (boxRef.current && indicatorRef.current) {
       let focus = false;
       const boxRect = boxRef.current.getBoundingClientRect();
@@ -269,12 +259,21 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
   const inputNode = (isLeft: boolean) => {
     const index = isLeft ? 0 : 1;
     const value = isLeft ? valueLeft : valueRight;
-    const render = inputRender?.[index];
-    const node = (
+    const inputRef = isLeft ? inputLeftRef : inputRightRef;
+
+    return (
       <BaseInput
+        {...inputProps?.[index]}
         {...styled('time-picker__input')}
         {...formControl?.inputAria}
-        ref={isLeft ? combineInputLeftRef : combineInputRightRef}
+        ref={(instance) => {
+          inputRef.current = instance;
+          const ret = setRef(inputProps?.[index]?.ref, instance);
+          return () => {
+            inputRef.current = null;
+            ret();
+          };
+        }}
         type="text"
         autoComplete="off"
         value={inputValue[index]}
@@ -292,6 +291,8 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
           }
         }}
         onKeyDown={(e) => {
+          inputProps?.[index]?.onKeyDown?.(e);
+
           if (e.code === 'Escape') {
             if (visible && escClosable) {
               e.stopPropagation();
@@ -304,7 +305,9 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
             handleEnter(time);
           }
         }}
-        onFocus={() => {
+        onFocus={(e) => {
+          inputProps?.[index]?.onFocus?.(e);
+
           dataRef.current.clearTid?.();
           setFocused((draft) => {
             draft.fill(false);
@@ -316,7 +319,9 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
             panelRef.current?.(value);
           }
         }}
-        onBlur={() => {
+        onBlur={(e) => {
+          inputProps?.[index]?.onBlur?.(e);
+
           dataRef.current.clearTid = async.setTimeout(() => {
             setFocused([false, false]);
             changeVisible(false);
@@ -324,8 +329,6 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
         }}
       />
     );
-
-    return render ? render(node) : node;
   };
 
   const preventBlur: React.MouseEventHandler = (e) => {
@@ -428,8 +431,9 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
       >
         <Transition
           enter={visible}
-          during={TTANSITION_DURING_POPUP}
-          afterRender={() => {
+          name={`${namespace}-popup-down`}
+          duration={TTANSITION_DURING_POPUP}
+          onSkipEnter={() => {
             updatePosition();
 
             const cb = () => {
@@ -445,87 +449,78 @@ export const TimePicker = forwardRef<TimePickerRef, TimePickerProps>((props, ref
               cb();
             }
           }}
-          afterEnter={() => {
+          onBeforeEnter={() => {
+            updatePosition();
+
+            const cb = () => {
+              const value = focused[0] ? valueLeft : valueRight;
+              if (value) {
+                panelRef.current?.(value);
+              }
+            };
+            if (range) {
+              cb();
+            } else if (!dataRef.current.onceVisible) {
+              dataRef.current.onceVisible = true;
+              cb();
+            }
+          }}
+          onAfterEnter={() => {
             afterVisibleChange?.(true);
           }}
-          afterLeave={() => {
+          onAfterLeave={() => {
             afterVisibleChange?.(false);
           }}
         >
-          {(state) => {
-            let transitionStyle: React.CSSProperties = {};
-            switch (state) {
-              case 'enter':
-                transitionStyle = { transform: 'scaleY(0.7)', opacity: 0 };
-                break;
-
-              case 'entering':
-                transitionStyle = {
-                  transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-out`).join(', '),
-                  transformOrigin: transformOrigin.current,
+          {(transitionRef, leaved) => (
+            <div
+              {...mergeCS(styled('time-picker-popup'), {
+                style: {
+                  zIndex,
+                  ...(leaved ? { display: 'none' } : undefined),
+                },
+              })}
+              ref={(instance) => {
+                popupRef.current = instance;
+                transitionRef(instance);
+                return () => {
+                  popupRef.current = null;
+                  transitionRef(null);
                 };
-                break;
-
-              case 'leaving':
-                transitionStyle = {
-                  transform: 'scaleY(0.7)',
-                  opacity: 0,
-                  transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-in`).join(', '),
-                  transformOrigin: transformOrigin.current,
-                };
-                break;
-
-              case 'leaved':
-                transitionStyle = { display: 'none' };
-                break;
-
-              default:
-                break;
-            }
-
-            return (
-              <div
-                {...mergeCS(styled('time-picker-popup'), {
-                  style: {
-                    zIndex,
-                    ...transitionStyle,
-                  },
-                })}
-                ref={popupRef}
-                onMouseDown={(e) => {
-                  preventBlur(e);
+              }}
+              onMouseDown={(e) => {
+                preventBlur(e);
+              }}
+              onMouseUp={(e) => {
+                preventBlur(e);
+              }}
+            >
+              <TimePickerPanel
+                ref={panelRef}
+                styled={styled}
+                time={dataRef.current.latestFocused === 'start' ? valueLeft : valueRight}
+                format={format}
+                config={config ? (...args) => config(...args, dataRef.current.latestFocused, [valueLeft, valueRight]) : undefined}
+                onTimeChange={(time) => {
+                  changeValue(time);
                 }}
-                onMouseUp={(e) => {
-                  preventBlur(e);
-                }}
-              >
-                <TimePickerPanel
-                  ref={panelRef}
-                  styled={styled}
-                  time={dataRef.current.latestFocused === 'start' ? valueLeft : valueRight}
-                  format={format}
-                  config={config ? (...args) => config(...args, dataRef.current.latestFocused, [valueLeft, valueRight]) : undefined}
-                  onTimeChange={(time) => {
-                    changeValue(time);
+              />
+              <div {...styled('time-picker__footer')}>
+                <Button
+                  pattern="link"
+                  onClick={() => {
+                    const now = new Date();
+                    changeValue(now);
+                    handleEnter(now);
                   }}
-                />
-                <div {...styled('time-picker__footer')}>
-                  <Button
-                    pattern="link"
-                    onClick={() => {
-                      const now = new Date();
-                      changeValue(now);
-                      handleEnter(now);
-                    }}
-                  >
-                    {t('TimePicker', 'Now')}
-                  </Button>
-                </div>
+                >
+                  {t('TimePicker', 'Now')}
+                </Button>
               </div>
-            );
-          }}
+            </div>
+          )}
         </Transition>
       </Portal>
     </>
   );
-});
+}

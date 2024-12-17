@@ -166,7 +166,15 @@ export function Stepper<T extends StepperItem>(props: StepperProps<T>): React.Re
             {checkNodeExist(itemDescription) && (
               <CollapseTransition height={0} enter={!vertical || isActive} duration={TTANSITION_DURING_BASE}>
                 {(transitionRef, leaved) => (
-                  <div ref={transitionRef} style={{ display: leaved ? 'none' : undefined }}>
+                  <div
+                    ref={(instance) => {
+                      transitionRef(instance);
+                      return () => {
+                        transitionRef(null);
+                      };
+                    }}
+                    style={{ display: leaved ? 'none' : undefined }}
+                  >
                     <div
                       {...mergeCS(styled('stepper__step-description'), {
                         style: { marginLeft: labelBottom ? undefined : `calc(${dotSize}px + 8px)` },

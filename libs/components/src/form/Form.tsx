@@ -65,7 +65,7 @@ export const Form: {
       }}
     >
       <ConfigProvider context={{ componentSize: size }}>
-        <FormContext.Provider
+        <FormContext
           value={{
             vertical,
             labelWidth: labelWidth ?? (vertical ? undefined : 'auto'),
@@ -76,7 +76,7 @@ export const Form: {
           }}
         >
           <div {...styled('form__row')}>{children}</div>
-        </FormContext.Provider>
+        </FormContext>
       </ConfigProvider>
     </form>
   );

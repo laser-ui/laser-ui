@@ -8,11 +8,15 @@
   transform: scale(0) !important;
 }
 
-.#{variables.$prefix}badge-enter-to,
-.#{variables.$prefix}badge-leave-to {
+.#{variables.$prefix}badge-enter-to {
   transition:
     transform var(--#{variables.$prefix}animation-duration-base) ease-out,
     opacity var(--#{variables.$prefix}animation-duration-base) ease-out !important;
+}
+.#{variables.$prefix}badge-leave-to {
+  transition:
+    transform var(--#{variables.$prefix}animation-duration-base) ease-in,
+    opacity var(--#{variables.$prefix}animation-duration-base) ease-in !important;
 }
 
 @include mixins.b(badge) {

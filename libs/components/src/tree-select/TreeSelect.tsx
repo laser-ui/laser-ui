@@ -1,17 +1,19 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import type { TreeSelectSearchPanelItem } from './internal/types';
-import type { TreeSelectProps, TreeSelectRef } from './types';
+import type { TreeSelectProps } from './types';
+import type { BaseInputProps } from '../base-input';
 import type { DropdownItem } from '../dropdown/types';
 import type { AbstractTreeNode } from '../tree/node/abstract-node';
 import type { TreeItem } from '../tree/types';
 
-import { useEventCallback, useForkRef, useResize } from '@laser-ui/hooks';
-import { findNested } from '@laser-ui/utils';
+import { useEventCallback, useResize } from '@laser-ui/hooks';
+import { findNested, setRef } from '@laser-ui/utils';
 import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
 import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
 import KeyboardArrowDownOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_down.svg?react';
 import SearchOutlined from '@material-design-icons/svg/outlined/search.svg?react';
 import { isNull, isNumber, isUndefined } from 'lodash';
-import { createElement, forwardRef, useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
 
 import { TreeSelectSearchPanel } from './internal/TreeSelectSearchPanel';
 import { CLASSES } from './vars';
@@ -23,7 +25,6 @@ import {
   useControlled,
   useDesign,
   useFocusVisible,
-  useJSS,
   useLayout,
   useMaxIndex,
   useNamespace,
@@ -34,9 +35,9 @@ import {
 import { Icon } from '../icon';
 import { CircularProgress } from '../internal/circular-progress';
 import { Portal } from '../internal/portal';
-import { Transition } from '../internal/transition';
 import { ROOT_DATA } from '../root/vars';
 import { Tag } from '../tag';
+import { Transition } from '../transition';
 import { TreePanel } from '../tree/internal/TreePanel';
 import { MultipleTreeNode } from '../tree/node/multiple-node';
 import { SingleTreeNode } from '../tree/node/single-node';
@@ -45,11 +46,9 @@ import { TREE_NODE_KEY } from '../tree/vars';
 import { getVerticalSidePosition, isPrintableCharacter, mergeCS } from '../utils';
 import { TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../vars';
 
-function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
-  props: TreeSelectProps<V, T>,
-  ref: React.ForwardedRef<TreeSelectRef>,
-): React.ReactElement | null {
+export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: TreeSelectProps<V, T>): React.ReactElement | null {
   const {
+    ref,
     styleOverrides,
     styleProvider,
     formControl,
@@ -76,8 +75,7 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
     customItem,
     customSelected,
     customSearch,
-    inputRef: inputRefProp,
-    inputRender,
+    inputProps,
     popupRender,
     onModelChange,
     onFirstExpand,
@@ -101,7 +99,6 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
     },
     styleOverrides,
   );
-  const sheet = useJSS<'position'>();
 
   const expandSaved = useRef(new Set<V>());
 
@@ -116,7 +113,6 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
   const boxRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const combineInputRef = useForkRef(inputRef, inputRefProp);
   const focusRef = useRef<any>(null);
 
   const [nodes, nodesMap] = useMemo(() => {
@@ -247,7 +243,7 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
 
   const isEmpty = hasSearch ? searchList.length === 0 : nodes.length === 0;
 
-  const [focusVisible, focusVisibleWrapper] = useFocusVisible(
+  const [focusVisible, focusVisibleProps] = useFocusVisible(
     (code) => code.startsWith('Arrow') || ['Home', 'End', 'Enter', 'Space'].includes(code),
   );
   const [_itemFocusedWithoutSearch, setItemFocusedWithoutSearch] = useState<AbstractTreeNode<V, T> | undefined>();
@@ -296,7 +292,6 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
   const maxZIndex = useMaxIndex(visible);
   const zIndex = `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
 
-  const transformOrigin = useRef<string>();
   const updatePosition = useEventCallback(() => {
     if (visible && boxRef.current && popupRef.current) {
       const boxWidth = boxRef.current.offsetWidth;
@@ -311,17 +306,11 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
           inWindow: WINDOW_SPACE,
         },
       );
-      transformOrigin.current = position.transformOrigin;
-      if (sheet.classes.position) {
-        popupRef.current.classList.toggle(sheet.classes.position, false);
-      }
-      sheet.replaceRule('position', {
-        top: position.top,
-        left: position.left,
-        minWidth: Math.min(boxWidth, maxWidth),
-        maxWidth,
-      });
-      popupRef.current.classList.toggle(sheet.classes.position, true);
+      popupRef.current.style.setProperty(`--popup-down-transform-origin`, position.transformOrigin);
+      popupRef.current.style.top = position.top + 'px';
+      popupRef.current.style.left = position.left + 'px';
+      popupRef.current.style.minWidth = Math.min(boxWidth, maxWidth) + 'px';
+      popupRef.current.style.maxWidth = maxWidth + 'px';
     }
   });
 
@@ -368,168 +357,9 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
     }
   };
 
-  const scrollCallback = useRef<() => void>();
+  const scrollCallback = useRef(() => {});
   const inputable = searchable && visible;
   const clearable = clearableProp && hasSelected && !visible && !loading && !disabled;
-  const inputNode = focusVisibleWrapper(
-    createElement<any>(
-      searchable ? BaseInput : 'div',
-      Object.assign(
-        {
-          ...mergeCS(styled('tree-select__search'), {
-            style: {
-              opacity: inputable ? undefined : 0,
-              zIndex: inputable ? undefined : -1,
-            },
-          }),
-          ...formControl?.inputAria,
-          ref: combineInputRef,
-          tabIndex: disabled ? -1 : 0,
-          role: 'combobox',
-          'aria-haspopup': 'listbox',
-          'aria-expanded': visible,
-          'aria-controls': listId,
-          onBlur: () => {
-            changeVisible(false);
-          },
-          onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
-            if (e.code === 'Escape') {
-              if (visible && escClosable) {
-                e.stopPropagation();
-                e.preventDefault();
-                changeVisible(false);
-              }
-            } else {
-              const itemFocused = (code: 'next' | 'prev' | 'first' | 'last' | 'prev-level' | 'next-level') => {
-                if (focusRef.current) {
-                  const item = focusRef.current(code);
-
-                  if (item) {
-                    hasSearch ? setItemFocusedWithSearch(item) : setItemFocusedWithoutSearch(item);
-
-                    if (virtual === false && !code.includes('level')) {
-                      scrollCallback.current = () => {
-                        const el = document.getElementById(getItemId(hasSearch ? item.value : item.id));
-                        if (el) {
-                          focusRef.current(el);
-                        }
-                      };
-                      if (visible) {
-                        scrollCallback.current();
-                        scrollCallback.current = undefined;
-                      }
-                    }
-                  }
-                }
-              };
-              if (visible) {
-                switch (e.code) {
-                  case 'ArrowUp': {
-                    e.preventDefault();
-                    itemFocused('prev');
-                    break;
-                  }
-
-                  case 'ArrowDown': {
-                    e.preventDefault();
-                    itemFocused('next');
-                    break;
-                  }
-
-                  case 'ArrowLeft': {
-                    if (!hasSearch) {
-                      e.preventDefault();
-                      itemFocused('prev-level');
-                    }
-                    break;
-                  }
-
-                  case 'ArrowRight': {
-                    if (!hasSearch) {
-                      e.preventDefault();
-                      itemFocused('next-level');
-                    }
-                    break;
-                  }
-
-                  case 'Home': {
-                    e.preventDefault();
-                    itemFocused('first');
-                    break;
-                  }
-
-                  case 'End': {
-                    e.preventDefault();
-                    itemFocused('last');
-                    break;
-                  }
-
-                  default: {
-                    if (e.code === 'Enter' || (e.code === 'Space' && !searchable)) {
-                      e.preventDefault();
-                      if (hasSearch) {
-                        if (itemFocusedWithSearch) {
-                          changeSelectedByClickWithSearch(itemFocusedWithSearch);
-                        }
-                      } else {
-                        if (itemFocusedWithoutSearch) {
-                          changeSelectedByClickWithoutSearch(itemFocusedWithoutSearch);
-                        }
-                      }
-                    }
-                    break;
-                  }
-                }
-              } else if (!(searchable && ['Home', 'End', 'Enter', 'Space'].includes(e.code))) {
-                switch (e.code) {
-                  case 'End':
-                  case 'ArrowUp': {
-                    e.preventDefault();
-                    changeVisible(true);
-                    itemFocused('last');
-                    break;
-                  }
-
-                  case 'Home':
-                  case 'ArrowDown': {
-                    e.preventDefault();
-                    changeVisible(true);
-                    itemFocused('first');
-                    break;
-                  }
-
-                  case 'Enter':
-                  case 'Space': {
-                    e.preventDefault();
-                    changeVisible(true);
-                    break;
-                  }
-
-                  default: {
-                    if (isPrintableCharacter(e.key)) {
-                      changeVisible(true);
-                    }
-                    break;
-                  }
-                }
-              }
-            }
-          },
-        },
-        searchable
-          ? {
-              type: 'text',
-              value: searchValue,
-              autoComplete: 'off',
-              disabled,
-              onValueChange: (val: string) => {
-                changeSearchValue(val);
-              },
-            }
-          : {},
-      ),
-    ),
-  );
 
   const [selectedNode, suffixNode, selectedLabel] = (() => {
     let selectedNode: React.ReactNode = null;
@@ -641,7 +471,181 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
         }}
       >
         <div {...styled('tree-select__container')} title={selectedLabel}>
-          {inputRender ? inputRender(inputNode) : inputNode}
+          {(() => {
+            const nodeProps: any = Object.assign(
+              {
+                ...inputProps,
+                ...mergeCS(styled('tree-select__search'), {
+                  style: {
+                    opacity: inputable ? undefined : 0,
+                    zIndex: inputable ? undefined : -1,
+                  },
+                }),
+                ...formControl?.inputAria,
+                ref: (instance) => {
+                  inputRef.current = instance;
+                  const ret = setRef(inputProps?.ref, instance);
+                  return () => {
+                    inputRef.current = null;
+                    ret();
+                  };
+                },
+                tabIndex: disabled ? -1 : 0,
+                role: 'combobox',
+                'aria-haspopup': 'listbox',
+                'aria-expanded': visible,
+                'aria-controls': listId,
+                onFocus: (e) => {
+                  inputProps?.onFocus?.(e);
+                  focusVisibleProps.onFocus(e);
+                },
+                onBlur: (e) => {
+                  inputProps?.onBlur?.(e);
+                  focusVisibleProps.onBlur(e);
+
+                  changeVisible(false);
+                },
+                onKeyDown: (e) => {
+                  inputProps?.onKeyDown?.(e);
+                  focusVisibleProps.onKeyDown(e);
+
+                  if (e.code === 'Escape') {
+                    if (visible && escClosable) {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      changeVisible(false);
+                    }
+                  } else {
+                    const itemFocused = (code: 'next' | 'prev' | 'first' | 'last' | 'prev-level' | 'next-level') => {
+                      if (focusRef.current) {
+                        const item = focusRef.current(code);
+
+                        if (item) {
+                          hasSearch ? setItemFocusedWithSearch(item) : setItemFocusedWithoutSearch(item);
+
+                          if (virtual === false && !code.includes('level')) {
+                            scrollCallback.current = () => {
+                              scrollCallback.current = () => {};
+                              const el = document.getElementById(getItemId(hasSearch ? item.value : item.id));
+                              if (el) {
+                                focusRef.current(el);
+                              }
+                            };
+                            if (visible) {
+                              scrollCallback.current();
+                            }
+                          }
+                        }
+                      }
+                    };
+                    if (visible) {
+                      switch (e.code) {
+                        case 'ArrowUp': {
+                          e.preventDefault();
+                          itemFocused('prev');
+                          break;
+                        }
+
+                        case 'ArrowDown': {
+                          e.preventDefault();
+                          itemFocused('next');
+                          break;
+                        }
+
+                        case 'ArrowLeft': {
+                          if (!hasSearch) {
+                            e.preventDefault();
+                            itemFocused('prev-level');
+                          }
+                          break;
+                        }
+
+                        case 'ArrowRight': {
+                          if (!hasSearch) {
+                            e.preventDefault();
+                            itemFocused('next-level');
+                          }
+                          break;
+                        }
+
+                        case 'Home': {
+                          e.preventDefault();
+                          itemFocused('first');
+                          break;
+                        }
+
+                        case 'End': {
+                          e.preventDefault();
+                          itemFocused('last');
+                          break;
+                        }
+
+                        default: {
+                          if (e.code === 'Enter' || (e.code === 'Space' && !searchable)) {
+                            e.preventDefault();
+                            if (hasSearch) {
+                              if (itemFocusedWithSearch) {
+                                changeSelectedByClickWithSearch(itemFocusedWithSearch);
+                              }
+                            } else {
+                              if (itemFocusedWithoutSearch) {
+                                changeSelectedByClickWithoutSearch(itemFocusedWithoutSearch);
+                              }
+                            }
+                          }
+                          break;
+                        }
+                      }
+                    } else if (!(searchable && ['Home', 'End', 'Enter', 'Space'].includes(e.code))) {
+                      switch (e.code) {
+                        case 'End':
+                        case 'ArrowUp': {
+                          e.preventDefault();
+                          changeVisible(true);
+                          itemFocused('last');
+                          break;
+                        }
+
+                        case 'Home':
+                        case 'ArrowDown': {
+                          e.preventDefault();
+                          changeVisible(true);
+                          itemFocused('first');
+                          break;
+                        }
+
+                        case 'Enter':
+                        case 'Space': {
+                          e.preventDefault();
+                          changeVisible(true);
+                          break;
+                        }
+
+                        default: {
+                          if (isPrintableCharacter(e.key)) {
+                            changeVisible(true);
+                          }
+                          break;
+                        }
+                      }
+                    }
+                  }
+                },
+              } as React.ComponentPropsWithRef<'input'>,
+              searchable
+                ? ({
+                    type: 'text',
+                    value: searchValue,
+                    autoComplete: 'off',
+                    disabled,
+                    onValueChange: (val) => {
+                      changeSearchValue(val);
+                    },
+                  } as BaseInputProps)
+                : {},
+            );
+            return searchable ? <BaseInput {...nodeProps} /> : <div {...nodeProps} />;
+          })()}
           {!inputable &&
             (hasSelected ? (
               <div {...styled('tree-select__content')}>{selectedNode}</div>
@@ -712,139 +716,114 @@ function TreeSelectFC<V extends React.Key, T extends TreeItem<V>>(
       >
         <Transition
           enter={visible}
-          during={TTANSITION_DURING_POPUP}
-          afterRender={() => {
+          name={`${namespace}-popup-down`}
+          duration={TTANSITION_DURING_POPUP}
+          onSkipEnter={() => {
             updatePosition();
-            scrollCallback.current?.();
-            scrollCallback.current = undefined;
+            scrollCallback.current();
           }}
-          afterEnter={() => {
+          onBeforeEnter={() => {
+            updatePosition();
+            scrollCallback.current();
+          }}
+          onAfterEnter={() => {
             afterVisibleChange?.(true);
           }}
-          afterLeave={() => {
+          onAfterLeave={() => {
             afterVisibleChange?.(false);
           }}
         >
-          {(state) => {
-            let transitionStyle: React.CSSProperties = {};
-            switch (state) {
-              case 'enter':
-                transitionStyle = { transform: 'scaleY(0.7)', opacity: 0 };
-                break;
-
-              case 'entering':
-                transitionStyle = {
-                  transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-out`).join(', '),
-                  transformOrigin: transformOrigin.current,
+          {(transitionRef, leaved) => (
+            <div
+              {...mergeCS(styled('tree-select-popup'), {
+                style: {
+                  zIndex,
+                  ...(leaved ? { display: 'none' } : undefined),
+                },
+              })}
+              ref={(instance) => {
+                popupRef.current = instance;
+                transitionRef(instance);
+                return () => {
+                  popupRef.current = null;
+                  transitionRef(null);
                 };
-                break;
-
-              case 'leaving':
-                transitionStyle = {
-                  transform: 'scaleY(0.7)',
-                  opacity: 0,
-                  transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-in`).join(', '),
-                  transformOrigin: transformOrigin.current,
-                };
-                break;
-
-              case 'leaved':
-                transitionStyle = { display: 'none' };
-                break;
-
-              default:
-                break;
-            }
-
-            return (
-              <div
-                {...mergeCS(styled('tree-select-popup'), {
-                  style: {
-                    zIndex,
-                    ...transitionStyle,
-                  },
-                })}
-                ref={popupRef}
-                onMouseDown={(e) => {
-                  preventBlur(e);
-                }}
-                onMouseUp={(e) => {
-                  preventBlur(e);
-                }}
-              >
-                {(() => {
-                  const el = (
-                    <div {...styled('tree-select-popup__content')}>
-                      {loading && (
-                        <div
-                          {...styled('tree-select-popup__loading', {
-                            'tree-select-popup__loading--empty': isEmpty,
-                          })}
-                        >
-                          <Icon>
-                            <CircularProgress />
-                          </Icon>
-                        </div>
-                      )}
-                      {loading && isEmpty ? null : hasSearch ? (
-                        <TreeSelectSearchPanel
-                          ref={focusRef}
-                          namespace={namespace}
-                          styled={styled}
-                          id={listId}
-                          list={searchList}
-                          customItem={customItem}
-                          itemId={getItemId}
-                          itemFocused={itemFocusedWithSearch}
-                          multiple={multiple}
-                          onlyLeafSelectable={onlyLeafSelectable}
-                          virtual={virtual}
-                          focusVisible={focusVisible}
-                          onClick={(item) => {
-                            setItemFocusedWithSearch(item);
-                            changeSelectedByClickWithSearch(item);
-                          }}
-                        />
-                      ) : (
-                        <TreePanel
-                          style={{ maxHeight: 264, padding: '4px 0' }}
-                          ref={focusRef}
-                          id={listId}
-                          namespace={namespace}
-                          styled={styled as any}
-                          list={nodes}
-                          itemId={getItemId}
-                          itemSelected={!multiple && hasSelected ? nodesMap.get(selected as V) : undefined}
-                          itemFocused={itemFocusedWithoutSearch}
-                          expands={expands}
-                          customItem={customItem}
-                          showLine={showLine}
-                          multiple={multiple}
-                          onlyLeafSelectable={onlyLeafSelectable}
-                          disabled={false}
-                          virtual={
-                            virtual === false ? undefined : { listSize: 264, listPadding: 4, itemSize: isNumber(virtual) ? virtual : 32 }
-                          }
-                          focusVisible={focusVisible}
-                          onNodeFocus={setItemFocusedWithoutSearch}
-                          onNodeExpand={handleExpand}
-                          onNodeClick={changeSelectedByClickWithoutSearch}
-                          onScrollBottom={onScrollBottom}
-                        />
-                      )}
-                    </div>
-                  );
-                  return popupRender ? popupRender(el) : el;
-                })()}
-              </div>
-            );
-          }}
+              }}
+              onMouseDown={(e) => {
+                preventBlur(e);
+              }}
+              onMouseUp={(e) => {
+                preventBlur(e);
+              }}
+            >
+              {(() => {
+                const el = (
+                  <div {...styled('tree-select-popup__content')}>
+                    {loading && (
+                      <div
+                        {...styled('tree-select-popup__loading', {
+                          'tree-select-popup__loading--empty': isEmpty,
+                        })}
+                      >
+                        <Icon>
+                          <CircularProgress />
+                        </Icon>
+                      </div>
+                    )}
+                    {loading && isEmpty ? null : hasSearch ? (
+                      <TreeSelectSearchPanel
+                        ref={focusRef}
+                        namespace={namespace}
+                        styled={styled}
+                        id={listId}
+                        list={searchList}
+                        customItem={customItem}
+                        itemId={getItemId}
+                        itemFocused={itemFocusedWithSearch}
+                        multiple={multiple}
+                        onlyLeafSelectable={onlyLeafSelectable}
+                        virtual={virtual}
+                        focusVisible={focusVisible}
+                        onClick={(item) => {
+                          setItemFocusedWithSearch(item);
+                          changeSelectedByClickWithSearch(item);
+                        }}
+                      />
+                    ) : (
+                      <TreePanel
+                        style={{ maxHeight: 264, padding: '4px 0' }}
+                        ref={focusRef}
+                        id={listId}
+                        namespace={namespace}
+                        styled={styled as any}
+                        list={nodes}
+                        itemId={getItemId}
+                        itemSelected={!multiple && hasSelected ? nodesMap.get(selected as V) : undefined}
+                        itemFocused={itemFocusedWithoutSearch}
+                        expands={expands}
+                        customItem={customItem}
+                        showLine={showLine}
+                        multiple={multiple}
+                        onlyLeafSelectable={onlyLeafSelectable}
+                        disabled={false}
+                        virtual={
+                          virtual === false ? undefined : { listSize: 264, listPadding: 4, itemSize: isNumber(virtual) ? virtual : 32 }
+                        }
+                        focusVisible={focusVisible}
+                        onNodeFocus={setItemFocusedWithoutSearch}
+                        onNodeExpand={handleExpand}
+                        onNodeClick={changeSelectedByClickWithoutSearch}
+                        onScrollBottom={onScrollBottom}
+                      />
+                    )}
+                  </div>
+                );
+                return popupRender ? popupRender(el) : el;
+              })()}
+            </div>
+          )}
         </Transition>
       </Portal>
     </>
   );
 }
-
-export const TreeSelect: <ID extends React.Key, T extends TreeItem<ID>>(
-  props: TreeSelectProps<ID, T> & React.RefAttributes<TreeSelectRef>,
-) => ReturnType<typeof TreeSelectFC> = forwardRef(TreeSelectFC) as any;

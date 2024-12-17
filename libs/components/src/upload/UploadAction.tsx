@@ -1,48 +1,35 @@
-import type { UploadActionProps, UploadFile } from './types';
+import type { UploadActionProps } from './types';
 
 import { saveFile } from '@laser-ui/utils';
 import DeleteOutlineOutlined from '@material-design-icons/svg/outlined/delete_outline.svg?react';
 import FileDownloadOutlined from '@material-design-icons/svg/outlined/file_download.svg?react';
 import { isUndefined } from 'lodash';
-import { forwardRef } from 'react';
+import { use } from 'react';
 
-import { ACTION_CLASSES } from './vars';
+import { ACTION_CLASSES, UploadActionContext } from './vars';
 import { useComponentProps, useStyled, useTranslation } from '../hooks';
 import { Icon } from '../icon';
 import { mergeCS } from '../utils';
 
-export const UploadAction = forwardRef<HTMLDivElement, UploadActionProps>((props, ref): React.ReactElement | null => {
+export function UploadAction(props: UploadActionProps): React.ReactElement | null {
   const {
+    ref,
     styleOverrides,
     styleProvider,
     children,
     preset,
     disabled: disabledProp = false,
 
-    _file,
-    _defaultActions,
-    _light,
-    _onRemove,
-
     ...restProps
-  } = useComponentProps(
-    'UploadAction',
-    props as UploadActionProps & {
-      _file: UploadFile;
-      _defaultActions?: {
-        preview?: (file: UploadFile) => void;
-        download?: (file: UploadFile) => void;
-      };
-      _light?: boolean;
-      _onRemove?: () => void;
-    },
-  );
+  } = useComponentProps('UploadAction', props);
 
   const styled = useStyled(ACTION_CLASSES, { 'upload-action': styleProvider?.['upload-action'] }, styleOverrides);
 
   const { t } = useTranslation();
 
-  const disabled = preset === 'download' ? disabledProp || isUndefined(_file.url) : disabledProp;
+  const uploadActionContext = use(UploadActionContext);
+
+  const disabled = preset === 'download' ? disabledProp || isUndefined(uploadActionContext?.file.url) : disabledProp;
 
   return (
     <div
@@ -50,7 +37,7 @@ export const UploadAction = forwardRef<HTMLDivElement, UploadActionProps>((props
       {...mergeCS(
         styled('upload-action', {
           'upload-action.is-disabled': disabled,
-          'upload-action--light': _light,
+          'upload-action--light': uploadActionContext?.light,
         }),
         {
           className: restProps.className,
@@ -71,14 +58,16 @@ export const UploadAction = forwardRef<HTMLDivElement, UploadActionProps>((props
         restProps.onClick?.(e);
 
         e.stopPropagation();
-        if (preset === 'download') {
-          if (_defaultActions?.download) {
-            _defaultActions.download(_file);
-          } else {
-            saveFile(_file.url as string, _file.name);
+        if (uploadActionContext) {
+          if (preset === 'download') {
+            if (uploadActionContext.defaultActions?.download) {
+              uploadActionContext.defaultActions.download(uploadActionContext.file);
+            } else {
+              saveFile(uploadActionContext.file.url as string, uploadActionContext.file.name);
+            }
+          } else if (preset === 'remove') {
+            uploadActionContext.onRemove?.();
           }
-        } else if (preset === 'remove') {
-          _onRemove?.();
         }
       }}
     >
@@ -94,4 +83,4 @@ export const UploadAction = forwardRef<HTMLDivElement, UploadActionProps>((props
         ) : null)}
     </div>
   );
-});
+}

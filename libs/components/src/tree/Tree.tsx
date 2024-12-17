@@ -107,7 +107,7 @@ export function Tree<V extends React.Key, T extends TreeItem<V>>(props: TreeProp
 
   const hasSelected = multiple ? (selected as Set<V>).size > 0 : !isNull(selected);
 
-  const [focusVisible, focusVisibleWrapper] = useFocusVisible(
+  const [focusVisible, focusVisibleProps] = useFocusVisible(
     (code) => code.startsWith('Arrow') || ['Home', 'End', 'Enter', 'Space'].includes(code),
   );
   const [_focused, setFocused] = useState<AbstractTreeNode<V, T>>();
@@ -166,13 +166,22 @@ export function Tree<V extends React.Key, T extends TreeItem<V>>(props: TreeProp
     }
   };
 
-  return focusVisibleWrapper(
+  return (
     <TreePanel
       {...restProps}
       ref={focusRef}
       tabIndex={restProps.tabIndex ?? (disabled ? -1 : 0)}
+      onFocus={(e) => {
+        restProps.onFocus?.(e);
+        focusVisibleProps.onFocus(e);
+      }}
+      onBlur={(e) => {
+        restProps.onBlur?.(e);
+        focusVisibleProps.onBlur(e);
+      }}
       onKeyDown={(e) => {
         restProps.onKeyDown?.(e);
+        focusVisibleProps.onKeyDown(e);
 
         const focusItem = (code: 'next' | 'prev' | 'first' | 'last' | 'prev-level' | 'next-level') => {
           if (focusRef.current) {
@@ -252,6 +261,6 @@ export function Tree<V extends React.Key, T extends TreeItem<V>>(props: TreeProp
       onNodeExpand={handleExpand}
       onNodeClick={handleClick}
       onScrollBottom={onScrollBottom}
-    />,
+    />
   );
 }

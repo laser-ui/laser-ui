@@ -1,12 +1,13 @@
 import type { SliderProps } from './types';
+import type { TooltipRef } from '../tooltip';
 
-import { useEvent, useRefExtra } from '@laser-ui/hooks';
+import { useEvent, useIsomorphicLayoutEffect, useRefExtra } from '@laser-ui/hooks';
 import { isArray, isNull, isNumber, toNumber } from 'lodash';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { CLASSES } from './vars';
 import { useComponentProps, useControlled, useDesign, useScopedProps, useStyled } from '../hooks';
-import { Tooltip, type TooltipRef } from '../tooltip';
+import { Tooltip } from '../tooltip';
 import { mergeCS } from '../utils';
 
 export function Slider(props: SliderProps): React.ReactElement | null {
@@ -28,8 +29,7 @@ export function Slider(props: SliderProps): React.ReactElement | null {
     vertical = false,
     reverse = false,
     disabled: disabledProp = false,
-    inputRef,
-    inputRender,
+    inputProps,
     onModelChange,
 
     ...restProps
@@ -213,7 +213,7 @@ export function Slider(props: SliderProps): React.ReactElement | null {
     }
   };
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (thumbDraggingPoint) {
       tooltipLeftRef.current?.updatePosition();
       tooltipRightRef.current?.updatePosition();
@@ -328,49 +328,8 @@ export function Slider(props: SliderProps): React.ReactElement | null {
   })();
 
   const getDotNode = (isLeft: boolean) => {
+    const index = isLeft ? 0 : 1;
     const value = isLeft ? valueLeft : valueRight;
-
-    const render = (inputRender ?? [])[isLeft ? 0 : 1];
-    const inputNode = (
-      <input
-        {...styled('slider__input')}
-        {...formControl?.inputAria}
-        ref={isLeft ? inputRef?.[0] : inputRef?.[1]}
-        type="range"
-        value={value}
-        max={max}
-        min={min}
-        step={step ?? undefined}
-        disabled={disabled}
-        aria-orientation={vertical ? 'vertical' : 'horizontal'}
-        onChange={(e) => {
-          const val = toNumber(e.currentTarget.value);
-          if (range) {
-            const index = isLeft ? 0 : 1;
-            changeValue((draft: any) => {
-              const offset = val - draft[index];
-              const isAdd = offset > 0;
-              draft[index] = val;
-              if (isNumber(rangeMinDistance) && draft[1] - draft[0] < rangeMinDistance) {
-                const _index = isLeft ? 1 : 0;
-                draft[_index] = getValue(draft[_index] + offset, isAdd ? 'ceil' : 'floor');
-                if (draft[1] - draft[0] < rangeMinDistance) {
-                  draft[index] = getValue(draft[_index] + (isAdd ? -rangeMinDistance : rangeMinDistance), isAdd ? 'floor' : 'ceil');
-                }
-              }
-            });
-          } else {
-            changeValue(val);
-          }
-        }}
-        onFocus={() => {
-          setDotFocused(isLeft ? 'left' : 'right');
-        }}
-        onBlur={() => {
-          setDotFocused(null);
-        }}
-      />
-    );
 
     return (
       <Tooltip
@@ -382,17 +341,62 @@ export function Slider(props: SliderProps): React.ReactElement | null {
           setDotVisible(visible ? (isLeft ? 'left' : 'right') : null);
         }}
       >
-        <div
-          {...mergeCS(styled('slider__input-wrapper'), {
-            style: {
-              left: vertical ? undefined : `calc(${value} / ${max - min} * 100% - 7px)`,
-              bottom: vertical ? `calc(${value} / ${max - min} * 100% - 7px)` : undefined,
-            },
-          })}
-          ref={isLeft ? dotLeftRef : dotRightRef}
-        >
-          {render ? render(inputNode) : inputNode}
-        </div>
+        {(tooltipProps) => (
+          <div
+            {...mergeCS(styled('slider__input-wrapper'), {
+              style: {
+                left: vertical ? undefined : `calc(${value} / ${max - min} * 100% - 7px)`,
+                bottom: vertical ? `calc(${value} / ${max - min} * 100% - 7px)` : undefined,
+              },
+            })}
+            ref={isLeft ? dotLeftRef : dotRightRef}
+            {...tooltipProps}
+          >
+            <input
+              {...inputProps?.[index]}
+              {...styled('slider__input')}
+              {...formControl?.inputAria}
+              ref={inputProps?.[index]?.ref}
+              type="range"
+              value={value}
+              max={max}
+              min={min}
+              step={step ?? undefined}
+              disabled={disabled}
+              aria-orientation={vertical ? 'vertical' : 'horizontal'}
+              onChange={(e) => {
+                const val = toNumber(e.currentTarget.value);
+                if (range) {
+                  const index = isLeft ? 0 : 1;
+                  changeValue((draft: any) => {
+                    const offset = val - draft[index];
+                    const isAdd = offset > 0;
+                    draft[index] = val;
+                    if (isNumber(rangeMinDistance) && draft[1] - draft[0] < rangeMinDistance) {
+                      const _index = isLeft ? 1 : 0;
+                      draft[_index] = getValue(draft[_index] + offset, isAdd ? 'ceil' : 'floor');
+                      if (draft[1] - draft[0] < rangeMinDistance) {
+                        draft[index] = getValue(draft[_index] + (isAdd ? -rangeMinDistance : rangeMinDistance), isAdd ? 'floor' : 'ceil');
+                      }
+                    }
+                  });
+                } else {
+                  changeValue(val);
+                }
+              }}
+              onFocus={(e) => {
+                inputProps?.[index]?.onFocus?.(e);
+
+                setDotFocused(isLeft ? 'left' : 'right');
+              }}
+              onBlur={(e) => {
+                inputProps?.[index]?.onBlur?.(e);
+
+                setDotFocused(null);
+              }}
+            />
+          </div>
+        )}
       </Tooltip>
     );
   };

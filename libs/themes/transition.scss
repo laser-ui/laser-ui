@@ -21,13 +21,13 @@
   transition:
     transform var(--popup-duration, 116ms) ease-out,
     opacity var(--popup-duration, 116ms) ease-out !important;
-  transform-origin: var(--popup-transform-origin);
+  transform-origin: var(--popup-transform-origin) !important;
 }
 .#{variables.$prefix}popup-leave-to {
   transition:
     transform var(--popup-duration, 116ms) ease-in,
     opacity var(--popup-duration, 116ms) ease-in !important;
-  transform-origin: var(--popup-transform-origin);
+  transform-origin: var(--popup-transform-origin) !important;
 }
 
 .#{variables.$prefix}popup-down-enter-from,
@@ -40,13 +40,13 @@
   transition:
     transform var(--popup-down-duration, 116ms) ease-out,
     opacity var(--popup-down-duration, 116ms) ease-out !important;
-  transform-origin: var(--popup-down-transform-origin);
+  transform-origin: var(--popup-down-transform-origin) !important;
 }
 .#{variables.$prefix}popup-down-leave-to {
   transition:
     transform var(--popup-down-duration, 116ms) ease-in,
     opacity var(--popup-down-duration, 116ms) ease-in !important;
-  transform-origin: var(--popup-down-transform-origin);
+  transform-origin: var(--popup-down-transform-origin) !important;
 }
 
 .#{variables.$prefix}collapse-horizontal-enter-active,

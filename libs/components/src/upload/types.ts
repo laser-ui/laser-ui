@@ -1,6 +1,6 @@
 import type { ACTION_CLASSES, BUTTON_CLASSES, CLASSES, LIST_CLASSES, PICTURE_CLASSES, PICTURE_LIST_CLASSES } from './vars';
 import type { FormControlProvider } from '../form/types';
-import type { BaseProps, CloneHTMLElement } from '../types';
+import type { BaseProps } from '../types';
 
 export {};
 
@@ -20,7 +20,13 @@ export interface UploadFile {
 export interface UploadProps
   extends BaseProps<'upload' | 'upload-list', typeof CLASSES>,
     Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'list'> {
-  children: React.ReactElement | ((render: CloneHTMLElement) => React.ReactElement | null);
+  ref?: React.Ref<HTMLInputElement>;
+  children: (props: {
+    onClick: React.MouseEventHandler<HTMLElement>;
+    onDragEnter?: React.DragEventHandler<HTMLElement>;
+    onDragOver?: React.DragEventHandler<HTMLElement>;
+    onDrop?: React.DragEventHandler<HTMLElement>;
+  }) => React.ReactNode;
   formControl?: FormControlProvider;
   model?: UploadFile[];
   defaultModel?: UploadFile[];
@@ -49,8 +55,9 @@ export interface UploadProps
 export interface UploadButtonProps
   extends BaseProps<'upload-button', typeof BUTTON_CLASSES>,
     Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+  ref?: React.Ref<HTMLDivElement>;
   file?: UploadFile;
-  actions?: React.ReactNode[];
+  actions?: (React.ReactNode | { id: React.Key; action: React.ReactNode })[];
   defaultActions?: {
     preview?: (file: UploadFile) => void;
     download?: (file: UploadFile) => void;
@@ -59,6 +66,7 @@ export interface UploadButtonProps
 }
 
 export interface UploadActionProps extends BaseProps<'upload-action', typeof ACTION_CLASSES>, React.HTMLAttributes<HTMLDivElement> {
+  ref?: React.Ref<HTMLDivElement>;
   preset?: 'download' | 'remove';
   disabled?: boolean;
 }
@@ -66,13 +74,14 @@ export interface UploadActionProps extends BaseProps<'upload-action', typeof ACT
 export interface UploadPreviewActionProps
   extends BaseProps<'upload-action', typeof ACTION_CLASSES>,
     React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  ref?: React.Ref<HTMLAnchorElement>;
   disabled?: boolean;
 }
 
 export interface UploadListProps
   extends BaseProps<'upload-list', typeof LIST_CLASSES>,
     Omit<React.HTMLAttributes<HTMLUListElement>, 'children'> {
-  actions?: (file: UploadFile, index: number) => React.ReactNode[];
+  actions?: (file: UploadFile, index: number) => (React.ReactNode | { id: React.Key; action: React.ReactNode })[];
   defaultActions?: {
     preview?: (file: UploadFile) => void;
     download?: (file: UploadFile) => void;
@@ -80,7 +89,7 @@ export interface UploadListProps
 }
 
 export interface UploadPictureProps extends BaseProps<'upload-picture', typeof PICTURE_CLASSES>, React.HTMLAttributes<HTMLUListElement> {
-  actions?: (file: UploadFile, index: number) => React.ReactNode[];
+  actions?: (file: UploadFile, index: number) => (React.ReactNode | { id: React.Key; action: React.ReactNode })[];
   defaultActions?: {
     preview?: (file: UploadFile) => void;
     download?: (file: UploadFile) => void;
@@ -90,7 +99,7 @@ export interface UploadPictureProps extends BaseProps<'upload-picture', typeof P
 export interface UploadPictureListProps
   extends BaseProps<'upload-picture-list', typeof PICTURE_LIST_CLASSES>,
     Omit<React.HTMLAttributes<HTMLUListElement>, 'children'> {
-  actions?: (file: UploadFile, index: number) => React.ReactNode[];
+  actions?: (file: UploadFile, index: number) => (React.ReactNode | { id: React.Key; action: React.ReactNode })[];
   defaultActions?: {
     preview?: (file: UploadFile) => void;
     download?: (file: UploadFile) => void;

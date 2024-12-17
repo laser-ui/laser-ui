@@ -247,7 +247,7 @@ export const Drawer: {
             >
               {headerNode}
               <div {...styled('drawer__body')} id={bodyId}>
-                <DrawerContext.Provider value={drawerContextValue}>{children}</DrawerContext.Provider>
+                <DrawerContext value={drawerContextValue}>{children}</DrawerContext>
               </div>
               {footer &&
                 cloneElement(footer, {

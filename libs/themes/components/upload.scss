@@ -2,6 +2,20 @@
 @use '../variables';
 @use '../mixins';
 
+.#{variables.$prefix}upload-picture-enter-from,
+.#{variables.$prefix}upload-picture-leave-to {
+  transform: scale(0) !important;
+}
+
+.#{variables.$prefix}upload-picture-enter-to {
+  transition: transform var(--#{variables.$prefix}animation-duration-base) ease-out !important;
+  transform-origin: top left !important;
+}
+.#{variables.$prefix}upload-picture-leave-to {
+  transition: transform var(--#{variables.$prefix}animation-duration-base) ease-in !important;
+  transform-origin: top left !important;
+}
+
 @include mixins.b(upload) {
   display: none;
 }
@@ -137,10 +151,19 @@
 
 @include mixins.b(upload-list) {
   --color: var(--#{variables.$prefix}upload-list-color);
+  --gutter-y: var(--#{variables.$prefix}upload-list-gutter-y, 8px);
 
   padding: 0;
   margin: 0;
   list-style: none;
+
+  @include mixins.e(row) {
+    margin: calc(-1 * var(--gutter-y)) 0 0 0;
+
+    & > * {
+      margin-top: var(--gutter-y);
+    }
+  }
 
   @include mixins.e(item) {
     position: relative;
@@ -148,10 +171,6 @@
     align-items: center;
     height: 24px;
     transition: background-color var(--#{variables.$prefix}animation-duration-base) linear;
-
-    & + & {
-      margin-top: 8px;
-    }
 
     &:hover {
       background-color: var(--#{variables.$prefix}background-color-hover);
@@ -290,10 +309,19 @@
 
 @include mixins.b(upload-picture-list) {
   --color: var(--#{variables.$prefix}upload-picture-list-color);
+  --gutter-y: var(--#{variables.$prefix}upload-picture-list-gutter-y, 8px);
 
   padding: 0;
   margin: 0;
   list-style: none;
+
+  @include mixins.e(row) {
+    margin: calc(-1 * var(--gutter-y)) 0 0 0;
+
+    & > * {
+      margin-top: var(--gutter-y);
+    }
+  }
 
   @include mixins.e(item) {
     position: relative;
@@ -303,10 +331,6 @@
     padding: 8px;
     border: 1px solid var(--#{variables.$prefix}color-border);
     transition: background-color var(--#{variables.$prefix}animation-duration-base) linear;
-
-    & + & {
-      margin-top: 8px;
-    }
 
     &:hover {
       background-color: var(--#{variables.$prefix}background-color-hover);

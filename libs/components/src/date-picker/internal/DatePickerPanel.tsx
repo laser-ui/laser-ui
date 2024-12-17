@@ -7,13 +7,14 @@ import KeyboardArrowLeftOutlined from '@material-design-icons/svg/outlined/keybo
 import KeyboardArrowRightOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_right.svg?react';
 import KeyboardDoubleArrowLeftOutlined from '@material-design-icons/svg/outlined/keyboard_double_arrow_left.svg?react';
 import KeyboardDoubleArrowRightOutlined from '@material-design-icons/svg/outlined/keyboard_double_arrow_right.svg?react';
-import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { useImperativeHandle, useRef, useState } from 'react';
 
 import dayjs from '../../dayjs';
 import { useTranslation } from '../../hooks';
 import { Icon } from '../../icon';
 
 interface DatePickerPanelProps {
+  ref?: React.Ref<(date: Date) => void>;
   styled: Styled<typeof CLASSES>;
   currentSelected: Date | null;
   anotherSelected: Date | null;
@@ -22,8 +23,8 @@ interface DatePickerPanelProps {
   onDateChange: (date: Date) => void;
 }
 
-export const DatePickerPanel = forwardRef<(date: Date) => void, DatePickerPanelProps>((props, ref): React.ReactElement | null => {
-  const { styled, currentSelected: currentSelectedProp, anotherSelected: anotherSelectedProp, config, range, onDateChange } = props;
+export function DatePickerPanel(props: DatePickerPanelProps): React.ReactElement | null {
+  const { ref, styled, currentSelected: currentSelectedProp, anotherSelected: anotherSelectedProp, config, range, onDateChange } = props;
 
   const dataRef = useRef<{
     clearLoop?: () => void;
@@ -188,4 +189,4 @@ export const DatePickerPanel = forwardRef<(date: Date) => void, DatePickerPanelP
       </table>
     </div>
   );
-});
+}

@@ -1,7 +1,7 @@
 import type { CLASSES } from './vars';
 import type { FormControlProvider } from '../form/types';
 import type { TreeItem } from '../tree/types';
-import type { BaseProps, CloneHTMLElement, Size } from '../types';
+import type { BaseProps, Size } from '../types';
 
 export {};
 
@@ -12,6 +12,7 @@ export interface TreeSelectRef {
 export interface TreeSelectProps<V extends React.Key, T extends TreeItem<V>>
   extends BaseProps<'tree-select' | 'tree' | 'tree-select-popup', typeof CLASSES>,
     Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+  ref: React.Ref<TreeSelectRef>;
   formControl?: FormControlProvider;
   list: T[];
   model?: V | null | V[];
@@ -39,8 +40,7 @@ export interface TreeSelectProps<V extends React.Key, T extends TreeItem<V>>
     filter?: (value: string, item: T) => boolean;
     sort?: (a: T, b: T) => number;
   };
-  inputRef?: React.ForwardedRef<HTMLInputElement>;
-  inputRender?: CloneHTMLElement;
+  inputProps?: React.ComponentPropsWithRef<'input'>;
   popupRender?: (el: React.ReactElement) => React.ReactNode;
   onModelChange?: (value: any, origin: any) => void;
   onFirstExpand?: (value: V, origin: T) => void;

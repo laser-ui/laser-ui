@@ -10,19 +10,20 @@ import AddBoxOutlined from '@material-design-icons/svg/outlined/add_box.svg?reac
 import ArrowRightOutlined from '@material-design-icons/svg/outlined/arrow_right.svg?react';
 import IndeterminateCheckBoxOutlined from '@material-design-icons/svg/outlined/indeterminate_check_box.svg?react';
 import { isUndefined } from 'lodash';
-import { cloneElement, forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
+import { useImperativeHandle, useMemo, useRef } from 'react';
 
 import { Checkbox } from '../../checkbox';
 import { Empty } from '../../empty';
 import { useTranslation } from '../../hooks';
 import { Icon } from '../../icon';
 import { CircularProgress } from '../../internal/circular-progress';
-import { CollapseTransition } from '../../internal/transition';
+import { CollapseTransition } from '../../transition';
 import { mergeCS } from '../../utils';
 import { TTANSITION_DURING_BASE } from '../../vars';
 import { VirtualScroll, type VirtualScrollRef } from '../../virtual-scroll';
 
 interface TreePanelProps<V extends React.Key, T extends TreeItem<V>> extends Omit<React.HTMLAttributes<HTMLUListElement>, 'children'> {
+  ref?: React.Ref<(code: any) => AbstractTreeNode<V, T> | undefined>;
   namespace: string;
   styled: Styled<typeof CLASSES>;
   list: AbstractTreeNode<V, T>[];
@@ -43,11 +44,9 @@ interface TreePanelProps<V extends React.Key, T extends TreeItem<V>> extends Omi
   onScrollBottom: (() => void) | undefined;
 }
 
-function TreePanelFC<V extends React.Key, T extends TreeItem<V>>(
-  props: TreePanelProps<V, T>,
-  ref: React.ForwardedRef<any>,
-): React.ReactElement | null {
+export function TreePanel<V extends React.Key, T extends TreeItem<V>>(props: TreePanelProps<V, T>): React.ReactElement | null {
   const {
+    ref,
     namespace,
     styled,
     list,
@@ -230,7 +229,7 @@ function TreePanelFC<V extends React.Key, T extends TreeItem<V>>(
                       model={item.checked}
                       disabled={item.disabled}
                       indeterminate={item.indeterminate}
-                      inputRender={(el) => cloneElement(el, { tabIndex: -1 })}
+                      inputProps={{ tabIndex: -1 }}
                       onClick={(e) => {
                         e.stopPropagation();
                         onNodeFocus(item);
@@ -242,31 +241,20 @@ function TreePanelFC<V extends React.Key, T extends TreeItem<V>>(
                 <div {...styled('tree__option-content')}>{customItem ? customItem(item.origin) : item.origin.label}</div>
               </div>
               {!item.origin.loading && (
-                <CollapseTransition
-                  originalSize={{
-                    height: 'auto',
-                  }}
-                  collapsedSize={{
-                    height: 0,
-                  }}
-                  enter={isExpand}
-                  during={TTANSITION_DURING_BASE}
-                  styles={{
-                    entering: {
-                      transition: ['height', 'padding', 'margin'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms ease-out`).join(', '),
-                    },
-                    leaving: {
-                      transition: ['height', 'padding', 'margin'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms ease-in`).join(', '),
-                    },
-                    leaved: { display: 'none' },
-                  }}
-                >
-                  {(listRef, collapseStyle) => (
+                <CollapseTransition height={0} enter={isExpand} duration={TTANSITION_DURING_BASE}>
+                  {(transitionRef, leaved) => (
                     <ul
                       {...mergeCS(styled('tree__group'), {
-                        style: collapseStyle,
+                        style: { ...(leaved ? { display: 'none' } : undefined) },
                       })}
-                      ref={listRef}
+                      ref={(instance) => {
+                        listRef.current = instance;
+                        transitionRef(instance);
+                        return () => {
+                          listRef.current = null;
+                          transitionRef(null);
+                        };
+                      }}
                       role="group"
                       aria-labelledby={itemId(item.id)}
                     >
@@ -306,7 +294,7 @@ function TreePanelFC<V extends React.Key, T extends TreeItem<V>>(
                   model={item.checked}
                   disabled={item.disabled}
                   indeterminate={item.indeterminate}
-                  inputRender={(el) => cloneElement(el, { tabIndex: -1 })}
+                  inputProps={{ tabIndex: -1 }}
                   onClick={(e) => {
                     e.stopPropagation();
                     onNodeFocus(item);
@@ -354,7 +342,3 @@ function TreePanelFC<V extends React.Key, T extends TreeItem<V>>(
     </VirtualScroll>
   );
 }
-
-export const TreePanel: <V extends React.Key, T extends TreeItem<V>>(
-  props: TreePanelProps<V, T> & React.RefAttributes<any>,
-) => ReturnType<typeof TreePanelFC> = forwardRef(TreePanelFC) as any;

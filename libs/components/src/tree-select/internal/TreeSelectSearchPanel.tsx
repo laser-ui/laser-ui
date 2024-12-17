@@ -7,7 +7,7 @@ import type { CLASSES } from '../vars';
 import { useEventCallback } from '@laser-ui/hooks';
 import { scrollIntoViewIfNeeded } from '@laser-ui/utils';
 import { isNumber, isUndefined } from 'lodash';
-import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
+import { useImperativeHandle, useMemo, useRef } from 'react';
 
 import { Checkbox } from '../../checkbox';
 import { Empty } from '../../empty';
@@ -16,6 +16,7 @@ import { TREE_NODE_KEY } from '../../tree/vars';
 import { VirtualScroll, type VirtualScrollRef } from '../../virtual-scroll';
 
 interface TreeSelectSearchPanelProps<V extends React.Key, T extends TreeItem<V>> {
+  ref: React.Ref<(code: any) => TreeSelectSearchPanelItem<V, T> | undefined>;
   namespace: string;
   styled: Styled<typeof CLASSES>;
   id: string;
@@ -30,12 +31,24 @@ interface TreeSelectSearchPanelProps<V extends React.Key, T extends TreeItem<V>>
   onClick: (item: TreeSelectSearchPanelItem<V, T>) => void;
 }
 
-function TreeSelectSearchPanelFC<V extends React.Key, T extends TreeItem<V>>(
+export function TreeSelectSearchPanel<V extends React.Key, T extends TreeItem<V>>(
   props: TreeSelectSearchPanelProps<V, T>,
-  ref: React.ForwardedRef<any>,
 ): React.ReactElement | null {
-  const { namespace, styled, id, list, customItem, itemId, itemFocused, multiple, onlyLeafSelectable, virtual, focusVisible, onClick } =
-    props;
+  const {
+    ref,
+    namespace,
+    styled,
+    id,
+    list,
+    customItem,
+    itemId,
+    itemFocused,
+    multiple,
+    onlyLeafSelectable,
+    virtual,
+    focusVisible,
+    onClick,
+  } = props;
 
   const listRef = useRef<HTMLUListElement>(null);
   const vsRef = useRef<VirtualScrollRef<TreeSelectSearchPanelItem<V, T>>>(null);
@@ -150,7 +163,3 @@ function TreeSelectSearchPanelFC<V extends React.Key, T extends TreeItem<V>>(
     </VirtualScroll>
   );
 }
-
-export const TreeSelectSearchPanel: <V extends React.Key, T extends TreeItem<V>>(
-  props: TreeSelectSearchPanelProps<V, T> & React.RefAttributes<any>,
-) => ReturnType<typeof TreeSelectSearchPanelFC> = forwardRef(TreeSelectSearchPanelFC) as any;

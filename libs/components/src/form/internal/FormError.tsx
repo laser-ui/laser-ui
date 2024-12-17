@@ -1,11 +1,12 @@
 import type { Styled } from '../../hooks/useStyled';
 import type { CLASSES } from '../vars';
 
-import { CollapseTransition } from '../../internal/transition';
+import { CollapseTransition } from '../../transition';
 import { mergeCS } from '../../utils';
 import { TTANSITION_DURING_FAST } from '../../vars';
 
 interface FormErrorProps {
+  namespace: string;
   styled: Styled<typeof CLASSES>;
   visible: boolean;
   message: string;
@@ -14,38 +15,28 @@ interface FormErrorProps {
 }
 
 export function FormError(props: FormErrorProps): React.ReactElement | null {
-  const { styled, visible, message, invalid, afterLeave } = props;
+  const { namespace, styled, visible, message, invalid, afterLeave } = props;
 
   return (
     <CollapseTransition
-      originalSize={{
-        height: 'auto',
-      }}
-      collapsedSize={{
-        height: 0,
-      }}
+      height={0}
       enter={visible}
-      during={TTANSITION_DURING_FAST}
-      styles={{
-        enter: { opacity: 0 },
-        entering: {
-          transition: ['height', 'padding', 'margin', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_FAST}ms linear`).join(', '),
-        },
-        leaving: {
-          opacity: 0,
-          transition: ['height', 'padding', 'margin', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_FAST}ms linear`).join(', '),
-        },
-        leaved: { display: 'none' },
-      }}
+      name={`${namespace}-form-error`}
+      duration={TTANSITION_DURING_FAST}
       skipFirstTransition={false}
-      afterLeave={afterLeave}
+      onAfterLeave={afterLeave}
     >
-      {(ref, collapseStyle) => (
+      {(transitionRef, leaved) => (
         <div
           {...mergeCS(styled('form__error', `form__error--${invalid}`), {
-            style: collapseStyle,
+            style: { ...(leaved ? { display: 'none' } : undefined) },
           })}
-          ref={ref}
+          ref={(instance) => {
+            transitionRef(instance);
+            return () => {
+              transitionRef(null);
+            };
+          }}
           title={message}
         >
           {message}

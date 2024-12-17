@@ -1,9 +1,9 @@
 import type { RadioGroupItem, RadioGroupProps } from './types';
 
 import { nth } from 'lodash';
-import { cloneElement, useId } from 'react';
+import { useId } from 'react';
 
-import { Radio } from './Radio';
+import { RadioGroupContext } from './vars';
 import { useComponentProps, useControlled, useScopedProps } from '../hooks';
 
 export function RadioGroup<V extends React.Key, T extends RadioGroupItem<V>>(props: RadioGroupProps<V, T>): React.ReactElement | null {
@@ -37,28 +37,25 @@ export function RadioGroup<V extends React.Key, T extends RadioGroupItem<V>>(pro
 
   const { size, disabled } = useScopedProps({ size: sizeProp, disabled: disabledProp || formControl?.control.disabled });
 
-  const childrenNode = children(
-    list.map((option) => (
-      <Radio
-        {...{ _pattern: pattern, _size: size }}
-        key={option.value}
-        model={option.value === value}
-        disabled={option.disabled || disabled}
-        inputRender={(el) =>
-          cloneElement(el, {
-            ...formControl?.inputAria,
-            value: option.value,
+  return (
+    <RadioGroupContext value={{ pattern, size }}>
+      {children(
+        { role: 'radiogroup' },
+        (option) => ({
+          children: option.label,
+          model: option.value === value,
+          disabled: option.disabled || disabled,
+          inputProps: {
             name,
-          })
-        }
-        onModelChange={() => {
-          changeValue(option.value);
-        }}
-      >
-        {option.label}
-      </Radio>
-    )),
+            value: option.value,
+            ...formControl?.inputAria,
+          },
+          onModelChange: () => {
+            changeValue(option.value);
+          },
+        }),
+        list,
+      )}
+    </RadioGroupContext>
   );
-
-  return cloneElement(childrenNode, { role: childrenNode.props.role ?? 'radiogroup' });
 }

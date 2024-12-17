@@ -1,8 +1,9 @@
 import type { UploadFile, UploadProps } from './types';
 
-import { useEventCallback, useForkRef, useUnmount } from '@laser-ui/hooks';
-import { isFunction, isNumber } from 'lodash';
-import { cloneElement, forwardRef, useMemo, useRef } from 'react';
+import { useEventCallback, useUnmount } from '@laser-ui/hooks';
+import { setRef } from '@laser-ui/utils';
+import { isNumber } from 'lodash';
+import { useMemo, useRef } from 'react';
 
 import { UploadAction } from './UploadAction';
 import { UploadButton } from './UploadButton';
@@ -14,8 +15,17 @@ import { CLASSES, UploadContext } from './vars';
 import { useComponentProps, useControlled, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
 
-function UploadFC(props: UploadProps, ref: React.ForwardedRef<HTMLInputElement>): React.ReactElement | null {
+export const Upload: {
+  (props: UploadProps): React.ReactElement | null;
+  Button: typeof UploadButton;
+  Action: typeof UploadAction;
+  PreviewAction: typeof UploadPreviewAction;
+  List: typeof UploadList;
+  Picture: typeof UploadPicture;
+  PictureList: typeof UploadPictureList;
+} = (props) => {
   const {
+    ref,
     children,
     styleOverrides,
     styleProvider,
@@ -36,7 +46,6 @@ function UploadFC(props: UploadProps, ref: React.ForwardedRef<HTMLInputElement>)
   const styled = useStyled(CLASSES, { upload: styleProvider?.upload, 'upload-list': styleProvider?.['upload-list'] }, styleOverrides);
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const combineInputRef = useForkRef(inputRef, ref);
 
   const fileURLs = useRef([] as string[]);
 
@@ -178,47 +187,6 @@ function UploadFC(props: UploadProps, ref: React.ForwardedRef<HTMLInputElement>)
     }
   };
 
-  const render = (el: React.ReactElement) => {
-    let dragProps: React.HTMLAttributes<HTMLElement> = {};
-    if (drag) {
-      dragProps = {
-        onDragEnter: (e) => {
-          el.props.onDragEnter?.(e);
-
-          e.stopPropagation();
-          e.preventDefault();
-        },
-        onDragOver: (e) => {
-          el.props.onDragOver?.(e);
-
-          e.stopPropagation();
-          e.preventDefault();
-        },
-        onDrop: (e) => {
-          el.props.onDrop?.(e);
-
-          e.stopPropagation();
-          e.preventDefault();
-
-          const dt = e.dataTransfer;
-          const files = dt.files;
-          handleFiles(files);
-        },
-      };
-    }
-
-    return cloneElement<React.HTMLAttributes<HTMLElement>>(el, {
-      ...dragProps,
-      onClick: (e) => {
-        el.props.onClick?.(e);
-
-        if (inputRef.current) {
-          inputRef.current.click();
-        }
-      },
-    });
-  };
-
   const handleRemove = useEventCallback((file: UploadFile) => {
     onRemove?.(file);
 
@@ -232,14 +200,49 @@ function UploadFC(props: UploadProps, ref: React.ForwardedRef<HTMLInputElement>)
 
   return (
     <>
-      <UploadContext.Provider value={context}>{isFunction(children) ? children(render) : render(children)}</UploadContext.Provider>
+      <UploadContext value={context}>
+        {children({
+          onClick: () => {
+            if (inputRef.current) {
+              inputRef.current.click();
+            }
+          },
+          ...(drag
+            ? {
+                onDragEnter: (e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                },
+                onDragOver: (e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                },
+                onDrop: (e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+
+                  const dt = e.dataTransfer;
+                  const files = dt.files;
+                  handleFiles(files);
+                },
+              }
+            : undefined),
+        })}
+      </UploadContext>
       <input
         {...restProps}
         {...mergeCS(styled('upload'), {
           className: restProps.className,
           style: restProps.style,
         })}
-        ref={combineInputRef}
+        ref={(instance) => {
+          const ret = setRef(ref, instance);
+          inputRef.current = instance;
+          return () => {
+            ret();
+            inputRef.current = null;
+          };
+        }}
         type={restProps.type ?? 'file'}
         onChange={(e) => {
           restProps.onChange?.(e);
@@ -254,17 +257,7 @@ function UploadFC(props: UploadProps, ref: React.ForwardedRef<HTMLInputElement>)
       />
     </>
   );
-}
-
-export const Upload: {
-  (props: UploadProps & React.RefAttributes<HTMLInputElement>): ReturnType<typeof UploadFC>;
-  Button: typeof UploadButton;
-  Action: typeof UploadAction;
-  PreviewAction: typeof UploadPreviewAction;
-  List: typeof UploadList;
-  Picture: typeof UploadPicture;
-  PictureList: typeof UploadPictureList;
-} = forwardRef(UploadFC) as any;
+};
 
 Upload.Button = UploadButton;
 Upload.Action = UploadAction;

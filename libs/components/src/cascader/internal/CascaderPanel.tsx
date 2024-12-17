@@ -8,7 +8,7 @@ import { useEventCallback } from '@laser-ui/hooks';
 import { scrollIntoViewIfNeeded } from '@laser-ui/utils';
 import KeyboardArrowRightOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_right.svg?react';
 import { isNumber, isUndefined } from 'lodash';
-import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
+import { useImperativeHandle, useMemo, useRef } from 'react';
 
 import { Checkbox } from '../../checkbox';
 import { Empty } from '../../empty';
@@ -17,6 +17,7 @@ import { CircularProgress } from '../../internal/circular-progress';
 import { VirtualScroll, type VirtualScrollRef } from '../../virtual-scroll';
 
 interface CascaderPanelProps<V extends React.Key, T extends CascaderItem<V>> {
+  ref?: React.Ref<(code: any) => AbstractTreeNode<V, T> | undefined>;
   namespace: string;
   styled: Styled<typeof CLASSES>;
   id: string | undefined;
@@ -32,11 +33,9 @@ interface CascaderPanelProps<V extends React.Key, T extends CascaderItem<V>> {
   onClick: (item: AbstractTreeNode<V, T>) => void;
 }
 
-function CascaderPanelFC<V extends React.Key, T extends CascaderItem<V>>(
-  props: CascaderPanelProps<V, T>,
-  ref: React.ForwardedRef<any>,
-): React.ReactElement | null {
+export function CascaderPanel<V extends React.Key, T extends CascaderItem<V>>(props: CascaderPanelProps<V, T>): React.ReactElement | null {
   const {
+    ref,
     namespace,
     styled,
     id,
@@ -246,7 +245,3 @@ function CascaderPanelFC<V extends React.Key, T extends CascaderItem<V>>(
     </>
   );
 }
-
-export const CascaderPanel: <V extends React.Key, T extends CascaderItem<V>>(
-  props: CascaderPanelProps<V, T> & React.RefAttributes<any>,
-) => ReturnType<typeof CascaderPanelFC> = forwardRef(CascaderPanelFC) as any;

@@ -1,6 +1,6 @@
 import type { CLASSES } from './vars';
 import type { FormControlProvider } from '../form/types';
-import type { BaseProps, CloneHTMLElement, Size } from '../types';
+import type { BaseProps, Size } from '../types';
 
 export {};
 
@@ -9,8 +9,7 @@ export interface RadioProps extends BaseProps<'radio', typeof CLASSES>, React.La
   model?: boolean;
   defaultModel?: boolean;
   disabled?: boolean;
-  inputRef?: React.ForwardedRef<HTMLInputElement>;
-  inputRender?: CloneHTMLElement;
+  inputProps?: React.ComponentPropsWithRef<'input'>;
   onModelChange?: (checked: boolean) => void;
 }
 
@@ -21,7 +20,22 @@ export interface RadioGroupItem<V extends React.Key> {
 }
 
 export interface RadioGroupProps<V extends React.Key, T extends RadioGroupItem<V>> {
-  children: (nodes: React.ReactElement[]) => React.ReactElement;
+  children: (
+    props: { role: 'radiogroup' },
+    optionProps: (option: T) => {
+      children: React.ReactNode;
+      model: boolean;
+      disabled: boolean;
+      inputProps?: {
+        name: string;
+        value: V;
+        'aria-invalid'?: boolean;
+        'aria-describedby'?: string;
+      };
+      onModelChange: () => void;
+    },
+    options: T[],
+  ) => React.ReactElement | null;
   formControl?: FormControlProvider;
   list: T[];
   model?: V | null;

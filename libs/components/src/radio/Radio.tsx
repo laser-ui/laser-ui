@@ -1,12 +1,11 @@
 import type { RadioProps } from './types';
 import type { WaveRef } from '../internal/wave';
-import type { Size } from '../types';
 
 import { checkNodeExist } from '@laser-ui/utils';
-import { useRef } from 'react';
+import { use, useRef } from 'react';
 
 import { RadioGroup } from './RadioGroup';
-import { CLASSES } from './vars';
+import { CLASSES, RadioGroupContext } from './vars';
 import { useComponentProps, useControlled, useDesign, useNamespace, useScopedProps, useStyled } from '../hooks';
 import { Wave } from '../internal/wave';
 import { mergeCS } from '../utils';
@@ -23,41 +22,24 @@ export const Radio: {
     model,
     defaultModel,
     disabled: disabledProp = false,
-    inputRef,
-    inputRender,
+    inputProps,
     onModelChange,
 
-    _pattern,
-    _size,
-
     ...restProps
-  } = useComponentProps('Radio', props as RadioProps & { _pattern?: 'outline' | 'fill'; _size: Size });
+  } = useComponentProps('Radio', props);
 
   const namespace = useNamespace();
   const styled = useStyled(CLASSES, { radio: styleProvider?.radio }, styleOverrides);
 
   const waveRef = useRef<WaveRef>(null);
 
+  const groupContext = use(RadioGroupContext);
+
   const [checked, changeChecked] = useControlled(defaultModel ?? false, model, onModelChange, undefined, formControl?.control);
 
   const { disabled } = useScopedProps({ disabled: disabledProp || formControl?.control.disabled });
 
-  const designProps = useDesign({ compose: _pattern ? { active: checked, disabled } : undefined });
-
-  const inputNode = (
-    <input
-      {...styled('radio__input')}
-      {...formControl?.inputAria}
-      ref={inputRef}
-      type="radio"
-      checked={checked}
-      disabled={disabled}
-      aria-checked={checked}
-      onChange={() => {
-        changeChecked(true);
-      }}
-    />
-  );
+  const designProps = useDesign({ compose: groupContext?.pattern ? { active: checked, disabled } : undefined });
 
   return (
     <label
@@ -66,9 +48,9 @@ export const Radio: {
         styled('radio', {
           'radio.is-checked': checked,
           'radio.is-disabled': disabled,
-          'radio--button': _pattern,
-          [`radio--button-${_pattern}`]: _pattern,
-          [`radio--button-${_size}`]: _size,
+          'radio--button': groupContext?.pattern,
+          [`radio--button-${groupContext?.pattern}`]: groupContext?.pattern,
+          [`radio--button-${groupContext?.size}`]: groupContext?.size,
         }),
         {
           className: restProps.className,
@@ -79,13 +61,26 @@ export const Radio: {
       onClick={(e) => {
         restProps.onClick?.(e);
 
-        if (_pattern) {
+        if (groupContext?.pattern) {
           waveRef.current?.();
         }
       }}
     >
       <Wave ref={waveRef} color={`var(--${namespace}-color-primary)`} />
-      <div {...styled('radio__input-wrapper')}>{inputRender ? inputRender(inputNode) : inputNode}</div>
+      <div {...styled('radio__input-wrapper')}>
+        <input
+          {...inputProps}
+          {...styled('radio__input')}
+          {...formControl?.inputAria}
+          type="radio"
+          checked={checked}
+          disabled={disabled}
+          aria-checked={checked}
+          onChange={() => {
+            changeChecked(true);
+          }}
+        />
+      </div>
       {checkNodeExist(children) && <div {...styled('radio__label')}>{children}</div>}
     </label>
   );

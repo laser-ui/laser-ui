@@ -28,6 +28,7 @@ export const ACTION_CLASSES = {
 
 export const LIST_CLASSES = {
   'upload-list': '^upload-list',
+  'upload-list__row': '^upload-list__row',
   'upload-list__item': '^upload-list__item',
   'upload-list__item--load': '^upload-list__item--load',
   'upload-list__item--error': '^upload-list__item--error',
@@ -55,6 +56,7 @@ export const PICTURE_CLASSES = {
 
 export const PICTURE_LIST_CLASSES = {
   'upload-picture-list': '^upload-picture-list',
+  'upload-picture-list__row': '^upload-picture-list__row',
   'upload-picture-list__item': '^upload-picture-list__item',
   'upload-picture-list__item--load': '^upload-picture-list__item--load',
   'upload-picture-list__item--error': '^upload-picture-list__item--error',
@@ -75,3 +77,16 @@ export const UploadContext = createContext<{
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onRemove: () => {},
 });
+
+export const UploadActionContext = createContext<
+  | {
+      file: UploadFile;
+      defaultActions?: {
+        preview?: (file: UploadFile) => void;
+        download?: (file: UploadFile) => void;
+      };
+      light?: boolean;
+      onRemove?: () => void;
+    }
+  | undefined
+>(undefined);

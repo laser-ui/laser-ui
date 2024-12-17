@@ -1,16 +1,18 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import type { CascaderSearchPanelItem } from './internal/types';
-import type { CascaderItem, CascaderProps, CascaderRef } from './types';
+import type { CascaderItem, CascaderProps } from './types';
+import type { BaseInputProps } from '../base-input';
 import type { DropdownItem } from '../dropdown/types';
 import type { AbstractTreeNode } from '../tree/node/abstract-node';
 
-import { useEventCallback, useForkRef, useResize } from '@laser-ui/hooks';
-import { findNested } from '@laser-ui/utils';
+import { useEventCallback, useResize } from '@laser-ui/hooks';
+import { findNested, setRef } from '@laser-ui/utils';
 import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
 import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
 import KeyboardArrowDownOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_down.svg?react';
 import SearchOutlined from '@material-design-icons/svg/outlined/search.svg?react';
 import { isNull, isUndefined } from 'lodash';
-import { createElement, forwardRef, useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
 
 import { CascaderPanel } from './internal/CascaderPanel';
 import { CascaderSearchPanel } from './internal/CascaderSearchPanel';
@@ -23,7 +25,6 @@ import {
   useControlled,
   useDesign,
   useFocusVisible,
-  useJSS,
   useLayout,
   useMaxIndex,
   useNamespace,
@@ -34,9 +35,9 @@ import {
 import { Icon } from '../icon';
 import { CircularProgress } from '../internal/circular-progress';
 import { Portal } from '../internal/portal';
-import { Transition } from '../internal/transition';
 import { ROOT_DATA } from '../root/vars';
 import { Tag } from '../tag';
+import { Transition } from '../transition';
 import { MultipleTreeNode } from '../tree/node/multiple-node';
 import { SingleTreeNode } from '../tree/node/single-node';
 import { getTreeNodeLabel } from '../tree/utils';
@@ -44,11 +45,9 @@ import { TREE_NODE_KEY } from '../tree/vars';
 import { getVerticalSidePosition, isPrintableCharacter, mergeCS } from '../utils';
 import { TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../vars';
 
-function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
-  props: CascaderProps<V, T>,
-  ref: React.ForwardedRef<CascaderRef>,
-): React.ReactElement | null {
+export function Cascader<V extends React.Key, T extends CascaderItem<V>>(props: CascaderProps<V, T>): React.ReactElement | null {
   const {
+    ref,
     styleOverrides,
     styleProvider,
     formControl,
@@ -72,8 +71,7 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
     customItem,
     customSelected,
     customSearch,
-    inputRef: inputRefProp,
-    inputRender,
+    inputProps,
     popupRender,
     onModelChange,
     onVisibleChange,
@@ -91,7 +89,6 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
     { cascader: styleProvider?.cascader, 'cascader-popup': styleProvider?.['cascader-popup'] },
     styleOverrides,
   );
-  const sheet = useJSS<'position'>();
 
   const { t } = useTranslation();
 
@@ -104,7 +101,6 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
   const boxRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const combineInputRef = useForkRef(inputRef, inputRefProp);
   const focusRef = useRef<any>(null);
 
   const itemFocused = useRef(new Set<V>());
@@ -229,7 +225,7 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
 
   const isEmpty = hasSearch ? searchList.length === 0 : nodes.length === 0;
 
-  const [focusVisible, focusVisibleWrapper] = useFocusVisible(
+  const [focusVisible, focusVisibleProps] = useFocusVisible(
     (code) => code.startsWith('Arrow') || ['Home', 'End', 'Enter', 'Space'].includes(code),
   );
   const [_itemFocusedWithoutSearch, setItemFocusedWithoutSearch] = useState<AbstractTreeNode<V, T> | undefined>();
@@ -278,7 +274,6 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
   const maxZIndex = useMaxIndex(visible);
   const zIndex = `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
 
-  const transformOrigin = useRef<string>();
   const updatePosition = useEventCallback(() => {
     if (visible && boxRef.current && popupRef.current) {
       const height = popupRef.current.offsetHeight;
@@ -292,16 +287,10 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
           inWindow: WINDOW_SPACE,
         },
       );
-      transformOrigin.current = position.transformOrigin;
-      if (sheet.classes.position) {
-        popupRef.current.classList.toggle(sheet.classes.position, false);
-      }
-      sheet.replaceRule('position', {
-        top: position.top,
-        left: position.left,
-        maxWidth,
-      });
-      popupRef.current.classList.toggle(sheet.classes.position, true);
+      popupRef.current.style.setProperty(`--popup-down-transform-origin`, position.transformOrigin);
+      popupRef.current.style.top = position.top + 'px';
+      popupRef.current.style.left = position.left + 'px';
+      popupRef.current.style.maxWidth = maxWidth + 'px';
     }
   });
 
@@ -325,168 +314,9 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
     }
   };
 
-  const scrollCallback = useRef<() => void>();
+  const scrollCallback = useRef(() => {});
   const inputable = searchable && visible;
   const clearable = clearableProp && hasSelected && !visible && !loading && !disabled;
-  const inputNode = focusVisibleWrapper(
-    createElement<any>(
-      searchable ? BaseInput : 'div',
-      Object.assign(
-        {
-          ...mergeCS(styled('cascader__search'), {
-            style: {
-              opacity: inputable ? undefined : 0,
-              zIndex: inputable ? undefined : -1,
-            },
-          }),
-          ...formControl?.inputAria,
-          ref: combineInputRef,
-          tabIndex: disabled ? -1 : 0,
-          role: 'combobox',
-          'aria-haspopup': 'listbox',
-          'aria-expanded': visible,
-          'aria-controls': listId,
-          onBlur: () => {
-            changeVisible(false);
-          },
-          onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
-            if (e.code === 'Escape') {
-              if (visible && escClosable) {
-                e.stopPropagation();
-                e.preventDefault();
-                changeVisible(false);
-              }
-            } else {
-              const focusItem = (code: 'next' | 'prev' | 'first' | 'last' | 'prev-level' | 'next-level') => {
-                if (focusRef.current) {
-                  const item = focusRef.current(code);
-
-                  if (item) {
-                    hasSearch ? changeItemFocusedWithSearch(item) : changeItemFocusedWithoutSearch(item);
-
-                    if (virtual === false && !code.includes('level')) {
-                      scrollCallback.current = () => {
-                        const el = document.getElementById(getItemId(hasSearch ? item.value : item.id));
-                        if (el) {
-                          focusRef.current(el);
-                        }
-                      };
-                      if (visible) {
-                        scrollCallback.current();
-                        scrollCallback.current = undefined;
-                      }
-                    }
-                  }
-                }
-              };
-              if (visible) {
-                switch (e.code) {
-                  case 'ArrowUp': {
-                    e.preventDefault();
-                    focusItem('prev');
-                    break;
-                  }
-
-                  case 'ArrowDown': {
-                    e.preventDefault();
-                    focusItem('next');
-                    break;
-                  }
-
-                  case 'ArrowLeft': {
-                    if (!hasSearch) {
-                      e.preventDefault();
-                      focusItem('prev-level');
-                    }
-                    break;
-                  }
-
-                  case 'ArrowRight': {
-                    if (!hasSearch) {
-                      e.preventDefault();
-                      focusItem('next-level');
-                    }
-                    break;
-                  }
-
-                  case 'Home': {
-                    e.preventDefault();
-                    focusItem('first');
-                    break;
-                  }
-
-                  case 'End': {
-                    e.preventDefault();
-                    focusItem('last');
-                    break;
-                  }
-
-                  default: {
-                    if (e.code === 'Enter' || (e.code === 'Space' && !searchable)) {
-                      e.preventDefault();
-                      if (hasSearch) {
-                        if (itemFocusedWithSearch) {
-                          changeSelectedByClickWithSearch(itemFocusedWithSearch);
-                        }
-                      } else {
-                        if (itemFocusedWithoutSearch) {
-                          changeSelectedByClickWithoutSearch(itemFocusedWithoutSearch);
-                        }
-                      }
-                    }
-                    break;
-                  }
-                }
-              } else if (!(searchable && ['Home', 'End', 'Enter', 'Space'].includes(e.code))) {
-                switch (e.code) {
-                  case 'End':
-                  case 'ArrowUp': {
-                    e.preventDefault();
-                    changeVisible(true);
-                    focusItem('last');
-                    break;
-                  }
-
-                  case 'Home':
-                  case 'ArrowDown': {
-                    e.preventDefault();
-                    changeVisible(true);
-                    focusItem('first');
-                    break;
-                  }
-
-                  case 'Enter':
-                  case 'Space': {
-                    e.preventDefault();
-                    changeVisible(true);
-                    break;
-                  }
-
-                  default: {
-                    if (isPrintableCharacter(e.key)) {
-                      changeVisible(true);
-                    }
-                    break;
-                  }
-                }
-              }
-            }
-          },
-        },
-        searchable
-          ? {
-              type: 'text',
-              value: searchValue,
-              autoComplete: 'off',
-              disabled,
-              onValueChange: (val: string) => {
-                changeSearchValue(val);
-              },
-            }
-          : {},
-      ),
-    ),
-  );
 
   const [selectedNode, suffixNode, selectedLabel] = (() => {
     let selectedNode: React.ReactNode = null;
@@ -598,7 +428,181 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
         }}
       >
         <div {...styled('cascader__container')} title={selectedLabel}>
-          {inputRender ? inputRender(inputNode) : inputNode}
+          {(() => {
+            const nodeProps: any = Object.assign(
+              {
+                ...inputProps,
+                ...mergeCS(styled('cascader__search'), {
+                  style: {
+                    opacity: inputable ? undefined : 0,
+                    zIndex: inputable ? undefined : -1,
+                  },
+                }),
+                ...formControl?.inputAria,
+                ref: (instance) => {
+                  inputRef.current = instance;
+                  const ret = setRef(inputProps?.ref, instance);
+                  return () => {
+                    inputRef.current = null;
+                    ret();
+                  };
+                },
+                tabIndex: disabled ? -1 : 0,
+                role: 'combobox',
+                'aria-haspopup': 'listbox',
+                'aria-expanded': visible,
+                'aria-controls': listId,
+                onFocus: (e) => {
+                  inputProps?.onFocus?.(e);
+                  focusVisibleProps.onFocus(e);
+                },
+                onBlur: (e) => {
+                  inputProps?.onBlur?.(e);
+                  focusVisibleProps.onBlur(e);
+
+                  changeVisible(false);
+                },
+                onKeyDown: (e) => {
+                  inputProps?.onKeyDown?.(e);
+                  focusVisibleProps.onKeyDown(e);
+
+                  if (e.code === 'Escape') {
+                    if (visible && escClosable) {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      changeVisible(false);
+                    }
+                  } else {
+                    const focusItem = (code: 'next' | 'prev' | 'first' | 'last' | 'prev-level' | 'next-level') => {
+                      if (focusRef.current) {
+                        const item = focusRef.current(code);
+
+                        if (item) {
+                          hasSearch ? changeItemFocusedWithSearch(item) : changeItemFocusedWithoutSearch(item);
+
+                          if (virtual === false && !code.includes('level')) {
+                            scrollCallback.current = () => {
+                              scrollCallback.current = () => {};
+                              const el = document.getElementById(getItemId(hasSearch ? item.value : item.id));
+                              if (el) {
+                                focusRef.current(el);
+                              }
+                            };
+                            if (visible) {
+                              scrollCallback.current();
+                            }
+                          }
+                        }
+                      }
+                    };
+                    if (visible) {
+                      switch (e.code) {
+                        case 'ArrowUp': {
+                          e.preventDefault();
+                          focusItem('prev');
+                          break;
+                        }
+
+                        case 'ArrowDown': {
+                          e.preventDefault();
+                          focusItem('next');
+                          break;
+                        }
+
+                        case 'ArrowLeft': {
+                          if (!hasSearch) {
+                            e.preventDefault();
+                            focusItem('prev-level');
+                          }
+                          break;
+                        }
+
+                        case 'ArrowRight': {
+                          if (!hasSearch) {
+                            e.preventDefault();
+                            focusItem('next-level');
+                          }
+                          break;
+                        }
+
+                        case 'Home': {
+                          e.preventDefault();
+                          focusItem('first');
+                          break;
+                        }
+
+                        case 'End': {
+                          e.preventDefault();
+                          focusItem('last');
+                          break;
+                        }
+
+                        default: {
+                          if (e.code === 'Enter' || (e.code === 'Space' && !searchable)) {
+                            e.preventDefault();
+                            if (hasSearch) {
+                              if (itemFocusedWithSearch) {
+                                changeSelectedByClickWithSearch(itemFocusedWithSearch);
+                              }
+                            } else {
+                              if (itemFocusedWithoutSearch) {
+                                changeSelectedByClickWithoutSearch(itemFocusedWithoutSearch);
+                              }
+                            }
+                          }
+                          break;
+                        }
+                      }
+                    } else if (!(searchable && ['Home', 'End', 'Enter', 'Space'].includes(e.code))) {
+                      switch (e.code) {
+                        case 'End':
+                        case 'ArrowUp': {
+                          e.preventDefault();
+                          changeVisible(true);
+                          focusItem('last');
+                          break;
+                        }
+
+                        case 'Home':
+                        case 'ArrowDown': {
+                          e.preventDefault();
+                          changeVisible(true);
+                          focusItem('first');
+                          break;
+                        }
+
+                        case 'Enter':
+                        case 'Space': {
+                          e.preventDefault();
+                          changeVisible(true);
+                          break;
+                        }
+
+                        default: {
+                          if (isPrintableCharacter(e.key)) {
+                            changeVisible(true);
+                          }
+                          break;
+                        }
+                      }
+                    }
+                  }
+                },
+              } as React.ComponentPropsWithRef<'input'>,
+              searchable
+                ? ({
+                    type: 'text',
+                    value: searchValue,
+                    autoComplete: 'off',
+                    disabled,
+                    onValueChange: (val) => {
+                      changeSearchValue(val);
+                    },
+                  } as BaseInputProps)
+                : {},
+            );
+            return searchable ? <BaseInput {...nodeProps} /> : <div {...nodeProps} />;
+          })()}
           {!inputable &&
             (hasSelected ? (
               <div {...styled('cascader__content')}>{selectedNode}</div>
@@ -663,130 +667,105 @@ function CascaderFC<V extends React.Key, T extends CascaderItem<V>>(
       >
         <Transition
           enter={visible}
-          during={TTANSITION_DURING_POPUP}
-          afterRender={() => {
+          name={`${namespace}-popup-down`}
+          duration={TTANSITION_DURING_POPUP}
+          onSkipEnter={() => {
             updatePosition();
-            scrollCallback.current?.();
-            scrollCallback.current = undefined;
+            scrollCallback.current();
           }}
-          afterEnter={() => {
+          onBeforeEnter={() => {
+            updatePosition();
+            scrollCallback.current();
+          }}
+          onAfterEnter={() => {
             afterVisibleChange?.(true);
           }}
-          afterLeave={() => {
+          onAfterLeave={() => {
             afterVisibleChange?.(false);
           }}
         >
-          {(state) => {
-            let transitionStyle: React.CSSProperties = {};
-            switch (state) {
-              case 'enter':
-                transitionStyle = { transform: 'scaleY(0.7)', opacity: 0 };
-                break;
-
-              case 'entering':
-                transitionStyle = {
-                  transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-out`).join(', '),
-                  transformOrigin: transformOrigin.current,
+          {(transitionRef, leaved) => (
+            <div
+              {...mergeCS(styled('cascader-popup'), {
+                style: {
+                  zIndex,
+                  ...(leaved ? { display: 'none' } : undefined),
+                },
+              })}
+              ref={(instance) => {
+                popupRef.current = instance;
+                transitionRef(instance);
+                return () => {
+                  popupRef.current = null;
+                  transitionRef(null);
                 };
-                break;
-
-              case 'leaving':
-                transitionStyle = {
-                  transform: 'scaleY(0.7)',
-                  opacity: 0,
-                  transition: ['transform', 'opacity'].map((attr) => `${attr} ${TTANSITION_DURING_POPUP}ms ease-in`).join(', '),
-                  transformOrigin: transformOrigin.current,
-                };
-                break;
-
-              case 'leaved':
-                transitionStyle = { display: 'none' };
-                break;
-
-              default:
-                break;
-            }
-
-            return (
-              <div
-                {...mergeCS(styled('cascader-popup'), {
-                  style: {
-                    zIndex,
-                    ...transitionStyle,
-                  },
-                })}
-                ref={popupRef}
-                onMouseDown={(e) => {
-                  preventBlur(e);
-                }}
-                onMouseUp={(e) => {
-                  preventBlur(e);
-                }}
-              >
-                {(() => {
-                  const el = (
-                    <div {...styled('cascader-popup__content')}>
-                      {loading && (
-                        <div
-                          {...styled('cascader-popup__loading', {
-                            'cascader-popup__loading--empty': isEmpty,
-                          })}
-                        >
-                          <Icon>
-                            <CircularProgress />
-                          </Icon>
-                        </div>
-                      )}
-                      {loading && isEmpty ? null : hasSearch ? (
-                        <CascaderSearchPanel
-                          ref={focusRef}
-                          namespace={namespace}
-                          styled={styled}
-                          id={listId}
-                          list={searchList}
-                          customItem={customItem}
-                          itemId={getItemId}
-                          itemFocused={itemFocusedWithSearch}
-                          multiple={multiple}
-                          onlyLeafSelectable={onlyLeafSelectable}
-                          virtual={virtual}
-                          focusVisible={focusVisible}
-                          onClick={(item) => {
-                            changeItemFocusedWithSearch(item);
-                            changeSelectedByClickWithSearch(item);
-                          }}
-                        />
-                      ) : (
-                        <CascaderPanel
-                          ref={focusRef}
-                          namespace={namespace}
-                          styled={styled}
-                          id={listId}
-                          list={nodes}
-                          customItem={customItem}
-                          itemId={getItemId}
-                          itemSelected={!multiple && hasSelected ? nodesMap.get(selected as V) : undefined}
-                          itemFocused={itemFocusedWithoutSearch}
-                          multiple={multiple}
-                          virtual={virtual}
-                          focusVisible={focusVisible}
-                          onFocus={changeItemFocusedWithoutSearch}
-                          onClick={changeSelectedByClickWithoutSearch}
-                        />
-                      )}
-                    </div>
-                  );
-                  return popupRender ? popupRender(el) : el;
-                })()}
-              </div>
-            );
-          }}
+              }}
+              onMouseDown={(e) => {
+                preventBlur(e);
+              }}
+              onMouseUp={(e) => {
+                preventBlur(e);
+              }}
+            >
+              {(() => {
+                const el = (
+                  <div {...styled('cascader-popup__content')}>
+                    {loading && (
+                      <div
+                        {...styled('cascader-popup__loading', {
+                          'cascader-popup__loading--empty': isEmpty,
+                        })}
+                      >
+                        <Icon>
+                          <CircularProgress />
+                        </Icon>
+                      </div>
+                    )}
+                    {loading && isEmpty ? null : hasSearch ? (
+                      <CascaderSearchPanel
+                        ref={focusRef}
+                        namespace={namespace}
+                        styled={styled}
+                        id={listId}
+                        list={searchList}
+                        customItem={customItem}
+                        itemId={getItemId}
+                        itemFocused={itemFocusedWithSearch}
+                        multiple={multiple}
+                        onlyLeafSelectable={onlyLeafSelectable}
+                        virtual={virtual}
+                        focusVisible={focusVisible}
+                        onClick={(item) => {
+                          changeItemFocusedWithSearch(item);
+                          changeSelectedByClickWithSearch(item);
+                        }}
+                      />
+                    ) : (
+                      <CascaderPanel
+                        ref={focusRef}
+                        namespace={namespace}
+                        styled={styled}
+                        id={listId}
+                        list={nodes}
+                        customItem={customItem}
+                        itemId={getItemId}
+                        itemSelected={!multiple && hasSelected ? nodesMap.get(selected as V) : undefined}
+                        itemFocused={itemFocusedWithoutSearch}
+                        multiple={multiple}
+                        virtual={virtual}
+                        focusVisible={focusVisible}
+                        onFocus={changeItemFocusedWithoutSearch}
+                        onClick={changeSelectedByClickWithoutSearch}
+                      />
+                    )}
+                  </div>
+                );
+                return popupRender ? popupRender(el) : el;
+              })()}
+            </div>
+          )}
         </Transition>
       </Portal>
     </>
   );
 }
-
-export const Cascader: <ID extends React.Key, T extends CascaderItem<ID>>(
-  props: CascaderProps<ID, T> & React.RefAttributes<CascaderRef>,
-) => ReturnType<typeof CascaderFC> = forwardRef(CascaderFC) as any;

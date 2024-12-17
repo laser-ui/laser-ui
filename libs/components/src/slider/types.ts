@@ -1,6 +1,6 @@
 import type { CLASSES } from './vars';
 import type { FormControlProvider } from '../form/types';
-import type { BaseProps, CloneHTMLElement } from '../types';
+import type { BaseProps } from '../types';
 
 export {};
 
@@ -20,7 +20,6 @@ export interface SliderProps extends BaseProps<'slider', typeof CLASSES>, Omit<R
   vertical?: boolean;
   reverse?: boolean;
   disabled?: boolean;
-  inputRef?: [React.ForwardedRef<HTMLInputElement>?, React.ForwardedRef<HTMLInputElement>?];
-  inputRender?: [CloneHTMLElement?, CloneHTMLElement?];
+  inputProps?: [React.ComponentPropsWithRef<'input'>?, React.ComponentPropsWithRef<'input'>?];
   onModelChange?: (value: any) => void;
 }

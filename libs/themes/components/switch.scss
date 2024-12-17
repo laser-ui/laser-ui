@@ -1,6 +1,29 @@
+/* stylelint-disable declaration-property-value-disallowed-list */
 @use 'sass:map';
 @use '../variables';
 @use '../mixins';
+
+.#{variables.$prefix}switch-enter-from {
+  left: 2px !important;
+}
+
+.#{variables.$prefix}switch-enter-to {
+  left: calc(100% - 20px) !important;
+  transition:
+    width var(--#{variables.$prefix}animation-duration-fast) ease-in,
+    left 133ms linear !important;
+}
+
+.#{variables.$prefix}switch-leave-from {
+  right: 2px !important;
+}
+
+.#{variables.$prefix}switch-leave-to {
+  right: calc(100% - 20px) !important;
+  transition:
+    width var(--#{variables.$prefix}animation-duration-fast) ease-in,
+    right 133ms linear !important;
+}
 
 @keyframes #{variables.$prefix}switch-focus {
   0% {

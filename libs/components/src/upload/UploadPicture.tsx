@@ -1,17 +1,17 @@
 import type { UploadPictureProps } from './types';
 
-import { useImmer } from '@laser-ui/hooks';
 import InsertDriveFileTwoTone from '@material-design-icons/svg/two-tone/insert_drive_file.svg?react';
-import { isNumber } from 'lodash';
-import { Children, cloneElement, useContext } from 'react';
+import { has, isNumber } from 'lodash';
+import { Fragment, use, useRef } from 'react';
 
 import { UploadAction } from './UploadAction';
 import { UploadPreviewAction } from './UploadPreviewAction';
-import { PICTURE_CLASSES, UploadContext } from './vars';
-import { useComponentProps, useNextTick, useStyled, useTranslation } from '../hooks';
+import { useNextTick } from './hooks';
+import { PICTURE_CLASSES, UploadActionContext, UploadContext } from './vars';
+import { useComponentProps, useNamespace, useStyled, useTranslation } from '../hooks';
 import { Icon } from '../icon';
-import { Transition } from '../internal/transition';
 import { Progress } from '../progress';
+import { Transition } from '../transition';
 import { mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
@@ -26,15 +26,29 @@ export function UploadPicture(props: UploadPictureProps): React.ReactElement | n
     ...restProps
   } = useComponentProps('UploadPicture', props);
 
+  const namespace = useNamespace();
   const styled = useStyled(PICTURE_CLASSES, { 'upload-picture': styleProvider?.['upload-picture'] }, styleOverrides);
 
   const { t } = useTranslation();
 
-  const { files, onRemove } = useContext(UploadContext);
+  const { files: currentFiles, onRemove } = use(UploadContext);
+
+  const files = useRef(currentFiles);
+  {
+    const newFiles = currentFiles.map((file) => Object.assign({}, file));
+    let index = -1;
+    for (const file of files.current) {
+      index += 1;
+      if ((file as any).__removing) {
+        if (files.current[index - 1]?.uid === newFiles[index - 1]?.uid) {
+          newFiles.splice(index, 0, file);
+        }
+      }
+    }
+    files.current = newFiles;
+  }
 
   const nextTick = useNextTick();
-
-  const [removeUIDs, setRemoveUIDs] = useImmer<React.Key[]>([]);
 
   return (
     <ul
@@ -45,64 +59,35 @@ export function UploadPicture(props: UploadPictureProps): React.ReactElement | n
       })}
     >
       <div {...styled('upload-picture__row')}>
-        {files.map((file, index) => (
+        {files.current.map((file, index) => (
           <Transition
             key={file.uid}
-            enter={!removeUIDs.includes(file.uid)}
-            during={TTANSITION_DURING_BASE}
+            enter={!(file as any).__removing}
+            name={`${namespace}-upload-picture`}
+            duration={TTANSITION_DURING_BASE}
             skipFirstTransition={nextTick.current ? false : true}
-            afterLeave={() => {
-              setRemoveUIDs((draft) => {
-                draft.splice(
-                  draft.findIndex((uid) => uid === file.uid),
-                  1,
-                );
-              });
-              onRemove(file);
+            onAfterLeave={() => {
+              const index = files.current.findIndex((f) => f.uid === file.uid);
+              if (index !== -1) {
+                files.current.splice(index, 1);
+              }
             }}
           >
-            {(state) => {
-              let transitionStyle: React.CSSProperties = {};
-              switch (state) {
-                case 'enter':
-                  transitionStyle = { transform: 'scale(0)' };
-                  break;
-
-                case 'entering':
-                  transitionStyle = {
-                    transition: ['transform'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms ease-out`).join(', '),
-                    transformOrigin: 'top left',
-                  };
-                  break;
-
-                case 'leaving':
-                  transitionStyle = {
-                    transform: 'scale(0)',
-                    transition: ['transform'].map((attr) => `${attr} ${TTANSITION_DURING_BASE}ms ease-in`).join(', '),
-                    transformOrigin: 'top left',
-                  };
-                  break;
-
-                case 'leaved':
-                  transitionStyle = { display: 'none' };
-                  break;
-
-                default:
-                  break;
-              }
-
-              return (
-                <div>
+            {(transitionRef, leaved) =>
+              leaved ? null : (
+                <div
+                  ref={(instance) => {
+                    transitionRef(instance);
+                    return () => {
+                      transitionRef(null);
+                    };
+                  }}
+                >
                   <li
-                    {...mergeCS(
-                      styled('upload-picture__item', {
-                        [`upload-picture__item--${file.state}`]: file.state,
-                        'upload-picture__item.is-disabled': file && file.state === 'progress',
-                      }),
-                      {
-                        style: transitionStyle,
-                      },
-                    )}
+                    {...styled('upload-picture__item', {
+                      [`upload-picture__item--${file.state}`]: file.state,
+                      'upload-picture__item.is-disabled': file && file.state === 'progress',
+                    })}
                   >
                     {file.state !== 'progress' ? (
                       <>
@@ -117,20 +102,27 @@ export function UploadPicture(props: UploadPictureProps): React.ReactElement | n
                           </>
                         )}
                         <div {...styled('upload-picture__actions')}>
-                          {Children.map(
-                            actions ? actions(file, index) : [<UploadPreviewAction />, <UploadAction preset="remove" />],
-                            (action: any) =>
-                              cloneElement(action, {
-                                _file: file,
-                                _defaultActions: defaultActions,
-                                _light: true,
-                                _onRemove: () => {
-                                  setRemoveUIDs((draft) => {
-                                    draft.push(file.uid);
-                                  });
-                                },
-                              }),
-                          )}
+                          <UploadActionContext
+                            value={{
+                              file,
+                              defaultActions,
+                              light: true,
+                              onRemove: () => {
+                                (file as any).__removing = true;
+                                onRemove(file);
+                              },
+                            }}
+                          >
+                            {(actions ? actions(file, index) : [<UploadPreviewAction />, <UploadAction preset="remove" />]).map(
+                              (node, index) => {
+                                const { id, action } = (has(node, ['id', 'action']) ? node : { id: index, action: node }) as {
+                                  id: React.Key;
+                                  action: React.ReactNode;
+                                };
+                                return <Fragment key={id}>{action}</Fragment>;
+                              },
+                            )}
+                          </UploadActionContext>
                         </div>
                       </>
                     ) : (
@@ -143,8 +135,8 @@ export function UploadPicture(props: UploadPictureProps): React.ReactElement | n
                     )}
                   </li>
                 </div>
-              );
-            }}
+              )
+            }
           </Transition>
         ))}
         <div>{children}</div>

@@ -1,6 +1,33 @@
 @use '../variables';
 @use '../mixins';
 
+.#{variables.$prefix}form-error-enter-active,
+.#{variables.$prefix}form-error-leave-active {
+  overflow: hidden !important;
+}
+
+.#{variables.$prefix}form-error-enter-to,
+.#{variables.$prefix}form-error-leave-from {
+  height: var(--#{variables.$prefix}collapse-vertical) !important;
+}
+
+.#{variables.$prefix}form-error-enter-from,
+.#{variables.$prefix}form-error-leave-to {
+  height: var(--#{variables.$prefix}collapse-vertical) !important;
+  opacity: 0;
+}
+
+.#{variables.$prefix}form-error-enter-to {
+  transition:
+    height var(--#{variables.$prefix}animation-duration-fast) ease-out,
+    opacity var(--#{variables.$prefix}animation-duration-fast) ease-out !important;
+}
+.#{variables.$prefix}form-error-leave-to {
+  transition:
+    height var(--#{variables.$prefix}animation-duration-fast) ease-in,
+    opacity var(--#{variables.$prefix}animation-duration-fast) ease-in !important;
+}
+
 @include mixins.b(form) {
   --gutter-x: var(--#{variables.$prefix}form-gutter-x, 8px);
   --gutter-y: var(--#{variables.$prefix}form-gutter-y, 0px);

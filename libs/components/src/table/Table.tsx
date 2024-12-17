@@ -97,7 +97,7 @@ export const Table: {
         handleFixed();
       }}
     >
-      <TableContext.Provider value={context}>{children}</TableContext.Provider>
+      <TableContext value={context}>{children}</TableContext>
     </div>
   );
 };

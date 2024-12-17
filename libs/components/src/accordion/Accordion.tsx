@@ -202,7 +202,14 @@ export function Accordion<ID extends React.Key, T extends AccordionItem<ID>>(pro
             >
               {(transitionRef, leaved) => (
                 <LazyLoading hidden={leaved} disabled={!lazyLoading}>
-                  <div ref={transitionRef}>
+                  <div
+                    ref={(instance) => {
+                      transitionRef(instance);
+                      return () => {
+                        transitionRef(null);
+                      };
+                    }}
+                  >
                     <div
                       {...mergeCS(styled('accordion__item-region'), {
                         style: { ...(leaved ? { display: 'none' } : undefined) },

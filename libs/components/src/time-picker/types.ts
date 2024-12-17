@@ -1,6 +1,6 @@
 import type { CLASSES } from './vars';
 import type { FormControlProvider } from '../form/types';
-import type { BaseProps, CloneHTMLElement, Size } from '../types';
+import type { BaseProps, Size } from '../types';
 
 export {};
 
@@ -11,6 +11,7 @@ export interface TimePickerRef {
 export interface TimePickerProps
   extends BaseProps<'time-picker' | 'time-picker-popup', typeof CLASSES>,
     Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'placeholder'> {
+  ref?: React.Ref<TimePickerRef>;
   formControl?: FormControlProvider;
   model?: Date | [Date, Date] | null;
   defaultModel?: Date | [Date, Date] | null;
@@ -30,8 +31,7 @@ export interface TimePickerProps
     current: [Date | null, Date | null],
   ) => { disabled?: boolean; hidden?: boolean };
   escClosable?: boolean;
-  inputRef?: [React.ForwardedRef<HTMLInputElement>?, React.ForwardedRef<HTMLInputElement>?];
-  inputRender?: [CloneHTMLElement?, CloneHTMLElement?];
+  inputProps?: [React.ComponentPropsWithRef<'input'>?, React.ComponentPropsWithRef<'input'>?];
   onModelChange?: (date: any) => void;
   onVisibleChange?: (visible: boolean) => void;
   onClear?: () => void;

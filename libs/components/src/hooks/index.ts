@@ -10,7 +10,6 @@ export { useLockScroll } from './useLockScroll';
 export { useMaxIndex } from './useMaxIndex';
 export { useNamespace } from './useNamespace';
 export { useNestedPopup } from './useNestedPopup';
-export { useNextTick } from './useNextTick';
 export { useScopedProps } from './useScopedProps';
 export { useStyled } from './useStyled';
 export { useTranslation } from './useTranslation';
