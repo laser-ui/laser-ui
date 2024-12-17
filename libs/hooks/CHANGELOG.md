@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/laser-ui/laser-ui/compare/v1.6.1...v2.0.0) (2024-12-17)
+
+### Features
+
+- **hooks:** add `setAfterPainted` method to `useAsync` ([5b53b6a](https://github.com/laser-ui/laser-ui/commit/5b53b6a4d5fd75b01105debadc32f87860854f59))
+- **hooks:** support callback after painted ([ed54a01](https://github.com/laser-ui/laser-ui/commit/ed54a01d8b099f2206ad2f64483a60af2df6a456))
+
 ## [1.6.1](https://github.com/laser-ui/laser-ui/compare/v1.6.0...v1.6.1) (2024-11-17)
 
 **Note:** Version bump only for package @laser-ui/hooks

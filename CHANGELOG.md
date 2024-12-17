@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/laser-ui/laser-ui/compare/v1.6.1...v2.0.0) (2024-12-17)
+
+### Bug Fixes
+
+- **components:** fix nested drawer ([7175bd1](https://github.com/laser-ui/laser-ui/commit/7175bd11c19831f1c2cc272a60440bbe3de295c9))
+
+### Features
+
+- **components:** add `Transition` component ([61f28b0](https://github.com/laser-ui/laser-ui/commit/61f28b06e97235dec80982117b483f1c65b811ef))
+- **hooks:** add `setAfterPainted` method to `useAsync` ([5b53b6a](https://github.com/laser-ui/laser-ui/commit/5b53b6a4d5fd75b01105debadc32f87860854f59))
+- **hooks:** support callback after painted ([ed54a01](https://github.com/laser-ui/laser-ui/commit/ed54a01d8b099f2206ad2f64483a60af2df6a456))
+
 ## [1.6.1](https://github.com/laser-ui/laser-ui/compare/v1.6.0...v1.6.1) (2024-11-17)
 
 ### Bug Fixes
