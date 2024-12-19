@@ -17,7 +17,7 @@ importers:
         specifier: ^0.1.0
         version: 0.1.0(@laser-ui/hooks@1.0.1(immer@10.1.1))
       '@material-design-icons/svg':
-        specifier: ^0.14.12
+        specifier: ^0.14.13
         version: 0.14.13
       axios:
         specifier: ^1.6.8
