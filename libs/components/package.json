@@ -27,8 +27,7 @@
   "types": "./index.d.ts",
   "dependencies": {
     "@material-design-icons/svg": "^0.14.12",
-    "lodash": "^4.17.21",
-    "rcl-store": "^2.1.0"
+    "lodash": "^4.17.21"
   },
   "peerDependencies": {
     "dayjs": "^1.11.0",

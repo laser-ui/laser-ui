@@ -49,9 +49,6 @@ importers:
       marked-highlight:
         specifier: ^2.0.6
         version: 2.1.3(marked@6.0.0)
-      rcl-store:
-        specifier: ^2.1.0
-        version: 2.1.1(immer@10.1.1)(react@19.0.0)
       react:
         specifier: ^19.0.0
         version: 19.0.0
@@ -6575,12 +6572,6 @@ packages:
   rc@1.2.8:
     resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
     hasBin: true
-
-  rcl-store@2.1.1:
-    resolution: {integrity: sha512-6ffRRofKds7dRQuA+J9U3EYiGwxNmEe8tI61cxQZVvN0Z8izQ85s3LzOCOo9D02WFbUc1Rt6Eqmi3mzmNjjBMw==}
-    peerDependencies:
-      immer: '>=2.0.0'
-      react: ^18.0.0
 
   react-dom@19.0.0:
     resolution: {integrity: sha512-4GV5sHFG0e/0AD4X+ySy6UJd3jVl1iNsNHdpad0qhABJ11twS3TTBnseqsKurKcsNqCEFeGL3uLpVChpIO3QfQ==}
@@ -16312,11 +16303,6 @@ snapshots:
       ini: 1.3.8
       minimist: 1.2.8
       strip-json-comments: 2.0.1
-
-  rcl-store@2.1.1(immer@10.1.1)(react@19.0.0):
-    dependencies:
-      immer: 10.1.1
-      react: 19.0.0
 
   react-dom@19.0.0(react@19.0.0):
     dependencies:

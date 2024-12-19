@@ -1,16 +1,8 @@
-import type { DialogInstance } from '../dialog-service';
 import type { Lang } from '../types';
 
-import { createStore } from 'rcl-store';
 import { createContext } from 'react';
 
 import resources from '../resources.json';
-
-export const Store = createStore<{
-  dialogs: DialogInstance<any>[];
-}>({
-  dialogs: [],
-});
 
 export const ROOT_DATA: {
   clickEvent?: {

@@ -2,10 +2,10 @@ import type { RootProps } from './types';
 
 import { useEvent, useRefExtra } from '@laser-ui/hooks';
 import { isString, set } from 'lodash';
-import { useStore } from 'rcl-store';
 import { useEffect, useMemo } from 'react';
 
-import { ROOT_DATA, RootContext, Store } from './vars';
+import { useDialogs } from './dialog-service';
+import { ROOT_DATA, RootContext } from './vars';
 import dayjs from '../dayjs';
 import resources from '../resources.json';
 
@@ -14,7 +14,7 @@ export function Root(props: RootProps): React.ReactElement | null {
 
   const windowRef = useRefExtra(() => window);
 
-  const [{ dialogs }] = useStore(Store, ['dialogs']);
+  const dialogs = useDialogs();
 
   useEffect(() => {
     const handleResize = () => {

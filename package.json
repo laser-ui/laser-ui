@@ -27,7 +27,6 @@
     "lodash": "^4.17.21",
     "marked": "^6.0.0",
     "marked-highlight": "^2.0.6",
-    "rcl-store": "^2.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-i18next": "^13.2.2",
