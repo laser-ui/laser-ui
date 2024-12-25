@@ -74,7 +74,9 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
         throw new Error(`Cant find '${controlName as string}', please check if name exists!`);
       }
       (formControl as any)._emitChange = () => {
-        (formControl as any)._emitChange = true;
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        (formControl as any)._emitChange = () => {};
+        (formControl as any)._emitChanged = true;
       };
       obj[controlName] = {
         control: formControl,
@@ -89,7 +91,7 @@ export function FormItem<T extends { [index: string]: FormErrors }>(props: FormI
   useEffect(() => {
     const clear: (() => void)[] = [];
     for (const { control } of Object.values(formControlProviders)) {
-      if ((control as any)._emitChange === true) {
+      if ((control as any)._emitChanged === true) {
         forceUpdate();
       }
       (control as any)._emitChange = forceUpdate;

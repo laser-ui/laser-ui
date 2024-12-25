@@ -47,7 +47,9 @@ export function useForm<T extends { [K in keyof T]: AbstractControl } = any>(
   const [form, setForm] = useState(() => {
     const form = initForm();
     (form as any)._emitChange = () => {
-      (form as any)._emitChange = true;
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      (form as any)._emitChange = () => {};
+      (form as any)._emitChanged = true;
     };
     return form;
   });
@@ -67,7 +69,7 @@ export function useForm<T extends { [K in keyof T]: AbstractControl } = any>(
   });
 
   useEffect(() => {
-    if ((form as any)._emitChange === true) {
+    if ((form as any)._emitChanged === true) {
       forceUpdate();
     }
     (form as any)._emitChange = emitChange;
