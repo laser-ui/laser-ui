@@ -62,7 +62,7 @@
   max-width: calc(100vw - 40px);
   padding: 6px 16px;
   margin: 0 auto 12px;
-  pointer-events: all;
+  pointer-events: auto;
   background-color: var(--#{variables.$prefix}background-color);
   border-radius: var(--#{variables.$prefix}border-radius);
   outline: none;

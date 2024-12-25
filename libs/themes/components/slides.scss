@@ -179,7 +179,7 @@
     height: 8px;
     margin: 0 4px;
     appearance: none;
-    pointer-events: all;
+    pointer-events: auto;
     cursor: pointer;
     background: var(--#{variables.$prefix}background-color-mask);
     border-radius: 50%;
