@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.3](https://github.com/laser-ui/laser-ui/compare/v2.0.2...v2.0.3) (2024-12-25)
+
+### Bug Fixes
+
+- **components:** fix form emit change ([37e7c2b](https://github.com/laser-ui/laser-ui/commit/37e7c2bb37d70190d4d86c021977bcf3cb936134))
+
 ## [2.0.2](https://github.com/laser-ui/laser-ui/compare/v2.0.1...v2.0.2) (2024-12-19)
 
 **Note:** Version bump only for package @laser-ui/source
