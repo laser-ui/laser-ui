@@ -12,6 +12,7 @@ export default function (name: string) {
     "@laser-ui/hooks": "${lernaJson.version}",
     "@laser-ui/themes": "${lernaJson.version}",
     "@laser-ui/utils": "${lernaJson.version}",
+    "@material-design-icons/svg": "${packageJson.dependencies['@material-design-icons/svg']}",
     "bootstrap": "${packageJson.dependencies['bootstrap']}",
     "dayjs": "${packageJson.dependencies['dayjs']}",
     "immer": "${packageJson.dependencies['immer']}",
