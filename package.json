@@ -4,6 +4,7 @@
   "private": true,
   "license": "MIT",
   "scripts": {
+    "start": "nx run site:serve",
     "build:affected": "nx affected -t build",
     "lint:affected": "nx affected -t lint",
     "lint:style": "stylelint **/*.{css,scss,html,md}",
