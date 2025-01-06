@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.4](https://github.com/laser-ui/laser-ui/compare/v2.0.3...v2.0.4) (2025-01-06)
+
+### Bug Fixes
+
+- **components:** fix `useMaxIndex` ([c09e8b9](https://github.com/laser-ui/laser-ui/commit/c09e8b93409f72f3b0ff45564c0228139302905c))
+
 ## [2.0.3](https://github.com/laser-ui/laser-ui/compare/v2.0.2...v2.0.3) (2024-12-25)
 
 ### Bug Fixes
