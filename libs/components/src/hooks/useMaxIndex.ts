@@ -1,40 +1,26 @@
 import { useUnmount } from '@laser-ui/hooks';
-import { useId, useMemo, useRef } from 'react';
+import { nth } from 'lodash';
+import { useMemo, useRef } from 'react';
 
-const MAX_INDEX_MANAGER = {
-  record: [] as { id: string; n: number }[],
-
-  add(id: string): number {
-    let n = 1;
-    if (this.record.length > 0) {
-      n = this.record[this.record.length - 1].n + 1;
-    }
-    this.record.push({ id, n });
-    return n;
-  },
-
-  delete(id: string) {
-    this.record = this.record.filter((item) => item.id !== id);
-  },
-};
+let ZINDEX: number[] = [];
 
 export function useMaxIndex(visible: boolean) {
-  const id = useId();
-
-  const prevMaxZIndex = useRef(0);
+  const zIndex = useRef(0);
 
   const maxZIndex = useMemo(() => {
     if (visible) {
-      return MAX_INDEX_MANAGER.add(id);
+      const z = (nth(ZINDEX, -1) ?? 0) + 1;
+      zIndex.current = z;
+      ZINDEX.push(z);
+      return z;
+    } else {
+      ZINDEX = ZINDEX.filter((z) => z !== zIndex.current);
+      return zIndex.current;
     }
-
-    MAX_INDEX_MANAGER.delete(id);
-    return prevMaxZIndex.current;
-  }, [id, visible]);
-  prevMaxZIndex.current = maxZIndex;
+  }, [visible]);
 
   useUnmount(() => {
-    MAX_INDEX_MANAGER.delete(id);
+    ZINDEX = ZINDEX.filter((z) => z !== zIndex.current);
   });
 
   return maxZIndex;
