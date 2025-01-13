@@ -4,6 +4,7 @@ import { useEvent, useRefExtra } from '@laser-ui/hooks';
 import { isString, set } from 'lodash';
 import { useEffect, useMemo } from 'react';
 
+import { Dialogs } from './Dialogs';
 import { useDialogs } from './dialog-service';
 import { ROOT_DATA, RootContext } from './vars';
 import dayjs from '../dayjs';
@@ -89,7 +90,7 @@ export function Root(props: RootProps): React.ReactElement | null {
   return (
     <RootContext value={context}>
       {children}
-      {dialogs.map(({ node }) => node)}
+      <Dialogs dialogs={dialogs} />
     </RootContext>
   );
 }

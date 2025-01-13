@@ -1,6 +1,6 @@
 export { useDialogService } from './hooks';
 
-export { Root, DialogService } from './root';
+export { Root, DialogService, Dialogs } from './root';
 
 export { ConfigProvider } from './config-provider';
 
