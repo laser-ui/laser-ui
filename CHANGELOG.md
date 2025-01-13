@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.5](https://github.com/laser-ui/laser-ui/compare/v2.0.4...v2.0.5) (2025-01-13)
+
+### Features
+
+- **components:** add `Dialogs` ([eca6d58](https://github.com/laser-ui/laser-ui/commit/eca6d580b7ea94990f8b80e1672f6eaec601550e))
+
 ## [2.0.4](https://github.com/laser-ui/laser-ui/compare/v2.0.3...v2.0.4) (2025-01-06)
 
 ### Bug Fixes
