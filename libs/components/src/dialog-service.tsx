@@ -1,7 +1,32 @@
 export class DialogInstance<P extends object> {
+  public visible = true;
+
   public get node(): React.ReactElement<P> {
     const Type = this.type;
-    return <Type key={this.key} {...this.props} />;
+    return (
+      <Type
+        key={this.key}
+        {...this.props}
+        visible={this.visible}
+        skipFirstTransition={this.props.skipFirstTransition ?? false}
+        onClose={() => {
+          const res = this.props.onClose?.();
+          if (res !== false) {
+            this.close();
+          }
+        }}
+        afterVisibleChange={(visible: boolean) => {
+          this.props.afterVisibleChange?.(visible);
+          if (!visible) {
+            const index = this.service.dialogs.findIndex((dialog) => dialog.key === this.key);
+            if (index !== -1) {
+              this.service.dialogs.splice(index, 1);
+            }
+            this.service.emitChange(this.key);
+          }
+        }}
+      />
+    );
   }
 
   constructor(
@@ -17,59 +42,35 @@ export class DialogInstance<P extends object> {
   }
 
   public close() {
-    this.props.visible = false;
+    this.visible = false;
     this.service.emitChange(this.key);
   }
 }
 
 export class DialogService {
   private _key = -1;
-  private _dialogs: DialogInstance<any>[] = [];
   private _emitChange: () => void;
+
+  public dialogs: DialogInstance<any>[] = [];
 
   constructor(emitChange: (dialogs: DialogInstance<any>[]) => void) {
     this._emitChange = () => {
-      emitChange(([] as DialogInstance<any>[]).concat(this._dialogs));
+      emitChange(([] as DialogInstance<any>[]).concat(this.dialogs));
     };
   }
 
   open<P extends object>(type: React.FC<P>, props: Omit<P, 'visible'>, key?: string | number): DialogInstance<P> {
     const dialogKey = key ?? `l_#${++this._key}`;
-    const dialogProps = {
-      ...props,
-      visible: true,
-      skipFirstTransition: false,
-      onClose: () => {
-        (props as any).onClose?.();
+    const instance: DialogInstance<P> = new DialogInstance(dialogKey, type, props, this);
 
-        const index = this._dialogs.findIndex((dialog) => dialog.key === dialogKey);
-        if (index !== -1) {
-          const instance = this._dialogs[index];
-          instance.close();
-        }
-      },
-      afterVisibleChange: (visible: boolean) => {
-        (props as any).afterVisibleChange?.(visible);
-
-        if (!visible) {
-          const index = this._dialogs.findIndex((dialog) => dialog.key === dialogKey);
-          if (index !== -1) {
-            this._dialogs.splice(index, 1);
-            this._emitChange();
-          }
-        }
-      },
-    };
-    const instance: DialogInstance<P> = new DialogInstance(dialogKey, type, dialogProps, this);
-
-    this._dialogs.push(instance);
+    this.dialogs.push(instance);
     this._emitChange();
 
     return instance;
   }
 
   emitChange(key: string | number) {
-    const index = this._dialogs.findIndex((dialog) => dialog.key === key);
+    const index = this.dialogs.findIndex((dialog) => dialog.key === key);
     if (index !== -1) {
       this._emitChange();
     }
@@ -77,11 +78,11 @@ export class DialogService {
 
   closeAll(animation = true) {
     if (animation) {
-      this._dialogs.forEach((dialog) => {
+      this.dialogs.forEach((dialog) => {
         dialog.close();
       });
     } else {
-      this._dialogs = [];
+      this.dialogs = [];
       this._emitChange();
     }
   }
