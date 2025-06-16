@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.3](https://github.com/laser-ui/laser-ui/compare/v2.1.2...v2.1.3) (2025-06-16)
+
+### Bug Fixes
+
+- **components:** fix zindex ([cedfd1b](https://github.com/laser-ui/laser-ui/commit/cedfd1b5f244d6433215e5b4eaf3c79aae4440de))
+
 ## [2.1.2](https://github.com/laser-ui/laser-ui/compare/v2.1.1...v2.1.2) (2025-06-16)
 
 ### Bug Fixes
