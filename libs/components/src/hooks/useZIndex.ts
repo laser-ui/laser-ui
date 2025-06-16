@@ -1,36 +1,25 @@
-import { useUnmount } from '@laser-ui/hooks';
-import { isUndefined } from 'lodash';
-import { useId, useRef } from 'react';
+import { useIsomorphicLayoutEffect } from '@laser-ui/hooks';
+import { useId, useState } from 'react';
 
-const ZINDEX: number[] = [0];
-const INDEX = new Map<string, number>();
+const ZINDEX = new Map<string, number>([['$ZERO', 0]]);
 
 export function useZIndex(visible: boolean) {
   const id = useId();
-  const zIndex = useRef(0);
+  const [zIndex, setZIndex] = useState(0);
 
-  if (visible) {
-    const index = INDEX.get(id);
-    if (isUndefined(index)) {
-      zIndex.current = ZINDEX[ZINDEX.length - 1] + 1;
-      ZINDEX.push(zIndex.current);
-      INDEX.set(id, ZINDEX.length - 1);
+  useIsomorphicLayoutEffect(() => {
+    if (visible) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const zIndex = Array.from(ZINDEX).at(-1)![1] + 1;
+      ZINDEX.set(id, zIndex);
+      setZIndex(zIndex);
+      return () => {
+        ZINDEX.delete(id);
+      };
+    } else {
+      ZINDEX.delete(id);
     }
-  } else {
-    const index = INDEX.get(id);
-    if (!isUndefined(index)) {
-      ZINDEX.splice(index, 1);
-      INDEX.delete(id);
-    }
-  }
+  }, [id, visible]);
 
-  useUnmount(() => {
-    const index = INDEX.get(id);
-    if (!isUndefined(index)) {
-      ZINDEX.splice(index, 1);
-      INDEX.delete(id);
-    }
-  });
-
-  return zIndex.current;
+  return zIndex;
 }
