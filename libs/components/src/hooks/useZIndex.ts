@@ -1,24 +1,35 @@
 import { useUnmount } from '@laser-ui/hooks';
-import { useRef } from 'react';
+import { isUndefined } from 'lodash';
+import { useId, useRef } from 'react';
 
-let ZINDEX: number[] = [];
+const ZINDEX: number[] = [0];
+const INDEX = new Map<string, number>();
 
 export function useZIndex(visible: boolean) {
-  const previousVisible = useRef(false);
+  const id = useId();
   const zIndex = useRef(0);
 
-  if (visible !== previousVisible.current) {
-    previousVisible.current = visible;
-    if (visible) {
-      zIndex.current = (ZINDEX[ZINDEX.length - 1] ?? 0) + 1;
+  if (visible) {
+    const index = INDEX.get(id);
+    if (isUndefined(index)) {
+      zIndex.current = ZINDEX[ZINDEX.length - 1] + 1;
       ZINDEX.push(zIndex.current);
-    } else {
-      ZINDEX = ZINDEX.filter((val) => val !== zIndex.current);
+      INDEX.set(id, ZINDEX.length - 1);
+    }
+  } else {
+    const index = INDEX.get(id);
+    if (!isUndefined(index)) {
+      ZINDEX.splice(index, 1);
+      INDEX.delete(id);
     }
   }
 
   useUnmount(() => {
-    ZINDEX = ZINDEX.filter((z) => z !== zIndex.current);
+    const index = INDEX.get(id);
+    if (!isUndefined(index)) {
+      ZINDEX.splice(index, 1);
+      INDEX.delete(id);
+    }
   });
 
   return zIndex.current;
