@@ -12,7 +12,7 @@ import { useRef, useState } from 'react';
 
 import { PREVIEW_CLASSES } from './vars';
 import { Button } from '../button';
-import { useComponentProps, useControlled, useLockScroll, useMaxIndex, useNamespace, useStyled } from '../hooks';
+import { useComponentProps, useControlled, useLockScroll, useNamespace, useStyled, useZIndex } from '../hooks';
 import { Icon } from '../icon';
 import { Input } from '../input';
 import { Portal } from '../internal/portal';
@@ -89,8 +89,8 @@ export function ImagePreview(props: ImagePreviewProps): React.ReactElement | nul
   const [isDragging, setIsDragging] = useState(false);
   const listenDragEvent = visible && isDragging;
 
-  const maxZIndex = useMaxIndex(visible);
-  const zIndex = !isUndefined(zIndexProp) ? zIndexProp : `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
+  const zIndexValue = useZIndex(visible);
+  const zIndex = !isUndefined(zIndexProp) ? zIndexProp : `calc(var(--${namespace}-zindex-fixed) + ${zIndexValue})`;
 
   useLockScroll(visible);
 

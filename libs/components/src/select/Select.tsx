@@ -27,11 +27,11 @@ import {
   useDesign,
   useFocusVisible,
   useLayout,
-  useMaxIndex,
   useNamespace,
   useScopedProps,
   useStyled,
   useTranslation,
+  useZIndex,
 } from '../hooks';
 import { Icon } from '../icon';
 import { Portal } from '../internal/portal';
@@ -261,8 +261,8 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
     }
   };
 
-  const maxZIndex = useMaxIndex(visible);
-  const zIndex = `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
+  const zIndexValue = useZIndex(visible);
+  const zIndex = `calc(var(--${namespace}-zindex-fixed) + ${zIndexValue})`;
 
   const updatePosition = useEventCallback(() => {
     if (visible && boxRef.current && popupRef.current) {

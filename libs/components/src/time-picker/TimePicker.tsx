@@ -20,11 +20,11 @@ import {
   useControlled,
   useDesign,
   useLayout,
-  useMaxIndex,
   useNamespace,
   useScopedProps,
   useStyled,
   useTranslation,
+  useZIndex,
 } from '../hooks';
 import { Icon } from '../icon';
 import { Portal } from '../internal/portal';
@@ -167,8 +167,8 @@ export function TimePicker(props: TimePickerProps): React.ReactElement | null {
 
   const { size, disabled } = useScopedProps({ size: sizeProp, disabled: disabledProp || formControl?.control.disabled });
 
-  const maxZIndex = useMaxIndex(visible);
-  const zIndex = `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
+  const zIndexValue = useZIndex(visible);
+  const zIndex = `calc(var(--${namespace}-zindex-fixed) + ${zIndexValue})`;
 
   const updatePosition = useEventCallback(() => {
     if (visible && boxRef.current && popupRef.current) {

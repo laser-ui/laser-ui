@@ -7,7 +7,7 @@ import { useId, useImperativeHandle, useRef } from 'react';
 import { PopoverFooter } from './PopoverFooter';
 import { PopoverHeader } from './PopoverHeader';
 import { CLASSES, PopoverContext, TTANSITION_DURING } from './vars';
-import { useComponentProps, useControlled, useLockScroll, useMaxIndex, useNamespace, useStyled } from '../hooks';
+import { useComponentProps, useControlled, useLockScroll, useNamespace, useStyled, useZIndex } from '../hooks';
 import { LazyLoading } from '../internal/lazy-loading';
 import { Popup } from '../internal/popup';
 import { Portal } from '../internal/portal';
@@ -67,8 +67,8 @@ export const Popover: {
 
   const [visible, changeVisible] = useControlled<boolean>(defaultVisible ?? false, visibleProp, onVisibleChange);
 
-  const maxZIndex = useMaxIndex(visible);
-  const zIndex = !isUndefined(zIndexProp) ? zIndexProp : `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
+  const zIndexValue = useZIndex(visible);
+  const zIndex = !isUndefined(zIndexProp) ? zIndexProp : `calc(var(--${namespace}-zindex-fixed) + ${zIndexValue})`;
 
   const placement = useRef(placementProp);
   const updatePosition = useEventCallback(() => {

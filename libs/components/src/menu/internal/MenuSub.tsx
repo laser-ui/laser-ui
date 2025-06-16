@@ -7,7 +7,7 @@ import { checkNodeExist } from '@laser-ui/utils';
 import { isUndefined } from 'lodash';
 import { useImperativeHandle, useRef } from 'react';
 
-import { useMaxIndex, useTranslation } from '../../hooks';
+import { useTranslation, useZIndex } from '../../hooks';
 import { Popup } from '../../internal/popup';
 import { Portal } from '../../internal/portal';
 import { CollapseTransition, Transition } from '../../transition';
@@ -113,7 +113,8 @@ export function MenuSub(props: MenuSubProps): React.ReactElement | null {
     }
   });
 
-  const maxZIndex = useMaxIndex(visible);
+  const zIndexValue = useZIndex(visible);
+  const zIndex = `calc(var(--${namespace}-zindex-fixed) + ${zIndexValue})`;
 
   useImperativeHandle(ref, () => updatePosition, [updatePosition]);
 
@@ -209,7 +210,7 @@ export function MenuSub(props: MenuSubProps): React.ReactElement | null {
                     <div
                       {...mergeCS(styled('menu-popup'), {
                         style: {
-                          zIndex: `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`,
+                          zIndex,
                           ...(inHorizontalNav ? undefined : { '--popup-down-scale': 0.01, minWidth: 160 }),
                           ...(leaved ? { display: 'none' } : undefined),
                         },

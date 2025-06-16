@@ -6,7 +6,7 @@ import { use, useId, useRef, useState } from 'react';
 import { DrawerFooter } from './DrawerFooter';
 import { DrawerHeader } from './DrawerHeader';
 import { CLASSES, DrawerContext } from './vars';
-import { useComponentProps, useLockScroll, useMaxIndex, useNamespace, useStyled } from '../hooks';
+import { useComponentProps, useLockScroll, useNamespace, useStyled, useZIndex } from '../hooks';
 import { LazyLoading } from '../internal/lazy-loading';
 import { Portal } from '../internal/portal';
 import { Mask } from '../mask';
@@ -79,12 +79,12 @@ export const Drawer: {
 
   const [offset, setOffset] = useState(0);
 
-  const maxZIndex = useMaxIndex(visible);
+  const zIndexValue = useZIndex(visible);
   const zIndex = !isUndefined(zIndexProp)
     ? zIndexProp
     : !isFixed
       ? `var(--${namespace}-zindex-absolute)`
-      : `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
+      : `calc(var(--${namespace}-zindex-fixed) + ${zIndexValue})`;
 
   useLockScroll(isFixed && visible);
 

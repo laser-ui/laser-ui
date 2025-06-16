@@ -5,7 +5,7 @@ import { isUndefined } from 'lodash';
 import { useId, useImperativeHandle, useRef } from 'react';
 
 import { CLASSES, TTANSITION_DURING } from './vars';
-import { useComponentProps, useControlled, useMaxIndex, useNamespace, useStyled } from '../hooks';
+import { useComponentProps, useControlled, useNamespace, useStyled, useZIndex } from '../hooks';
 import { LazyLoading } from '../internal/lazy-loading';
 import { Popup } from '../internal/popup';
 import { Portal } from '../internal/portal';
@@ -51,8 +51,8 @@ export function Tooltip(props: TooltipProps): React.ReactElement | null {
 
   const [visible, changeVisible] = useControlled<boolean>(defaultVisible ?? false, visibleProp, onVisibleChange);
 
-  const maxZIndex = useMaxIndex(visible);
-  const zIndex = !isUndefined(zIndexProp) ? zIndexProp : `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
+  const zIndexValue = useZIndex(visible);
+  const zIndex = !isUndefined(zIndexProp) ? zIndexProp : `calc(var(--${namespace}-zindex-fixed) + ${zIndexValue})`;
 
   const placement = useRef(placementProp);
   const updatePosition = useEventCallback(() => {

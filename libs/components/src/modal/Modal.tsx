@@ -7,7 +7,7 @@ import { ModalAlert } from './ModalAlert';
 import { ModalFooter } from './ModalFooter';
 import { ModalHeader } from './ModalHeader';
 import { CLASSES, ModalContext } from './vars';
-import { useComponentProps, useLockScroll, useMaxIndex, useNamespace, useStyled } from '../hooks';
+import { useComponentProps, useLockScroll, useNamespace, useStyled, useZIndex } from '../hooks';
 import { LazyLoading } from '../internal/lazy-loading';
 import { Portal } from '../internal/portal';
 import { Mask } from '../mask';
@@ -57,8 +57,8 @@ export const Modal: {
   const titleId = `${namespace}-modal-title-${uniqueId}`;
   const bodyId = `${namespace}-modal-content-${uniqueId}`;
 
-  const maxZIndex = useMaxIndex(visible);
-  const zIndex = !isUndefined(zIndexProp) ? zIndexProp : `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
+  const zIndexValue = useZIndex(visible);
+  const zIndex = !isUndefined(zIndexProp) ? zIndexProp : `calc(var(--${namespace}-zindex-fixed) + ${zIndexValue})`;
 
   useLockScroll(visible);
 

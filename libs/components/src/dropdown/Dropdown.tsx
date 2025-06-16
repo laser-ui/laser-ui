@@ -15,11 +15,11 @@ import {
   useContainerScrolling,
   useControlled,
   useFocusVisible,
-  useMaxIndex,
   useNamespace,
   useNestedPopup,
   useStyled,
   useTranslation,
+  useZIndex,
 } from '../hooks';
 import { Popup } from '../internal/popup';
 import { Portal } from '../internal/portal';
@@ -130,8 +130,8 @@ export function Dropdown<ID extends React.Key, T extends DropdownItem<ID>>(props
     setFocusIds(ids);
   };
 
-  const maxZIndex = useMaxIndex(visible);
-  const zIndex = !isUndefined(zIndexProp) ? zIndexProp : `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
+  const zIndexValue = useZIndex(visible);
+  const zIndex = !isUndefined(zIndexProp) ? zIndexProp : `calc(var(--${namespace}-zindex-fixed) + ${zIndexValue})`;
 
   const placement = useRef(placementProp);
   const updatePosition = useEventCallback(() => {

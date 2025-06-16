@@ -27,11 +27,11 @@ import {
   useDesign,
   useFocusVisible,
   useLayout,
-  useMaxIndex,
   useNamespace,
   useScopedProps,
   useStyled,
   useTranslation,
+  useZIndex,
 } from '../hooks';
 import { Icon } from '../icon';
 import { Portal } from '../internal/portal';
@@ -271,8 +271,8 @@ export function Cascader<V extends React.Key, T extends CascaderItem<V>>(props: 
     }
   })();
 
-  const maxZIndex = useMaxIndex(visible);
-  const zIndex = `calc(var(--${namespace}-zindex-fixed) + ${maxZIndex})`;
+  const zIndexValue = useZIndex(visible);
+  const zIndex = `calc(var(--${namespace}-zindex-fixed) + ${zIndexValue})`;
 
   const updatePosition = useEventCallback(() => {
     if (visible && boxRef.current && popupRef.current) {
