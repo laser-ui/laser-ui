@@ -22,7 +22,7 @@ export class DialogInstance<P extends object> {
             if (index !== -1) {
               this.service.dialogs.splice(index, 1);
             }
-            this.service.emitChange(this.key);
+            this.service.emitChange();
           }
         }}
       />
@@ -38,12 +38,12 @@ export class DialogInstance<P extends object> {
 
   public rerender(props: Partial<P>) {
     Object.assign(this.props, props);
-    this.service.emitChange(this.key);
+    this.service.emitChange();
   }
 
   public close() {
     this.visible = false;
-    this.service.emitChange(this.key);
+    this.service.emitChange();
   }
 }
 
@@ -69,11 +69,8 @@ export class DialogService {
     return instance;
   }
 
-  emitChange(key: string | number) {
-    const index = this.dialogs.findIndex((dialog) => dialog.key === key);
-    if (index !== -1) {
-      this._emitChange();
-    }
+  emitChange() {
+    this._emitChange();
   }
 
   closeAll(animation = true) {
