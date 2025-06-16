@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.2](https://github.com/laser-ui/laser-ui/compare/v2.1.1...v2.1.2) (2025-06-16)
+
+### Bug Fixes
+
+- **components:** fix dialogs ([d4d2d21](https://github.com/laser-ui/laser-ui/commit/d4d2d217aa126119fc4b802fb741c73439f7af85))
+- **components:** fix zindex ([1548071](https://github.com/laser-ui/laser-ui/commit/154807147ff83f860a2c2647a62f27ed99a3b8fd))
+
 ## [2.1.1](https://github.com/laser-ui/laser-ui/compare/v2.1.0...v2.1.1) (2025-06-16)
 
 ### Bug Fixes
