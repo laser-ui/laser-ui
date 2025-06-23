@@ -748,7 +748,7 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
                           };
                         }}
                         enable={virtual !== false}
-                        listSize={264}
+                        listSize={200 + 32 * 2}
                         listPadding={4}
                         itemRender={(item, index, props, ancestry, children) => {
                           const { label: itemLabel, value: itemValue, disabled: itemDisabled } = item;
@@ -756,13 +756,30 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
                           const node = customItem ? customItem(item) : itemLabel;
 
                           if (children) {
+                            const level = (() => {
+                              let val = 1;
+                              for (let index = ancestry.length - 1; index > -1; index--) {
+                                if (ancestry[index].children) {
+                                  val += 1;
+                                }
+                              }
+                              return val;
+                            })();
+
                             return (
-                              <ul {...styled('select__option-group')} key={itemValue} role="group" aria-labelledby={getItemId(itemValue)}>
+                              <>
                                 <li {...styled('select__option-group-label')} key={itemValue} id={getItemId(itemValue)} role="presentation">
                                   <div {...styled('select__option-content')}>{node}</div>
                                 </li>
-                                {children}
-                              </ul>
+                                <ul
+                                  {...mergeCS(styled('select__option-group'), { style: { '--level': level } as any })}
+                                  key={itemValue}
+                                  role="group"
+                                  aria-labelledby={getItemId(itemValue)}
+                                >
+                                  {children}
+                                </ul>
+                              </>
                             );
                           }
 
@@ -775,13 +792,10 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
 
                           return (
                             <li
-                              {...mergeCS(
-                                styled('select__option', {
-                                  'select__option.is-selected': !multiple && isSelected,
-                                  'select__option.is-disabled': itemDisabled,
-                                }),
-                                { style: { paddingLeft: ancestry.length === 0 ? undefined : 12 + 8 } },
-                              )}
+                              {...styled('select__option', {
+                                'select__option.is-selected': !multiple && isSelected,
+                                'select__option.is-disabled': itemDisabled,
+                              })}
                               {...props}
                               key={itemValue}
                               id={getItemId(itemValue)}

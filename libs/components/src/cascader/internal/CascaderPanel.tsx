@@ -165,7 +165,7 @@ export function CascaderPanel<V extends React.Key, T extends CascaderItem<V>>(pr
           };
         }}
         enable={virtual !== false}
-        listSize={264}
+        listSize={200 + 32 * 2}
         listPadding={4}
         itemRender={(item, index, props) => {
           let isSelectedAncestry = false;

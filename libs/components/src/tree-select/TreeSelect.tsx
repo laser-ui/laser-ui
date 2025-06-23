@@ -822,7 +822,13 @@ export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: Tr
                         onlyLeafSelectable={onlyLeafSelectable}
                         disabled={false}
                         virtual={
-                          virtual === false ? undefined : { listSize: 264, listPadding: 4, itemSize: isNumber(virtual) ? virtual : 32 }
+                          virtual === false
+                            ? undefined
+                            : {
+                                listSize: 200 + 32 * 2,
+                                listPadding: 4,
+                                itemSize: isNumber(virtual) ? virtual : 32,
+                              }
                         }
                         focusVisible={focusVisible}
                         onNodeFocus={setItemFocusedWithoutSearch}

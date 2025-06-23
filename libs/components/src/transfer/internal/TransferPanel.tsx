@@ -117,7 +117,7 @@ export function TransferPanel<V extends React.Key, T extends TransferItem<V>>(pr
             };
           }}
           enable={virtual !== false}
-          listSize={192}
+          listSize={192 + 32 * 2}
           listPadding={0}
           itemRender={(item, index, props) => (
             <li

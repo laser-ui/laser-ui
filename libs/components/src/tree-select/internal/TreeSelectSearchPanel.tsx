@@ -105,7 +105,7 @@ export function TreeSelectSearchPanel<V extends React.Key, T extends TreeItem<V>
         };
       }}
       enable={virtual !== false}
-      listSize={264}
+      listSize={200 + 32 * 2}
       listPadding={4}
       itemRender={(item, index, props) => {
         const node = item[TREE_NODE_KEY];

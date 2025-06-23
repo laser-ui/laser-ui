@@ -200,7 +200,7 @@ $select-option-height: 32px;
     display: flex;
     align-items: center;
     min-height: $select-option-height;
-    padding: 0 12px;
+    padding: 0 12px 0 calc(12px + var(--level, 0) * 8px);
     cursor: pointer;
     transition: background-color var(--#{variables.$prefix}animation-duration-base) linear;
 
@@ -239,7 +239,7 @@ $select-option-height: 32px;
     display: flex;
     align-items: center;
     min-height: $select-option-height;
-    padding: 0 12px;
+    padding: 0 12px 0 calc(12px + var(--level, 0) * 8px);
     font-size: var(--#{variables.$prefix}font-size-subtitle);
     color: var(--#{variables.$prefix}color-text-sub);
   }
@@ -248,7 +248,7 @@ $select-option-height: 32px;
     display: flex;
     align-items: center;
     height: $select-option-height;
-    padding: 0 12px;
+    padding: 0 12px 0 calc(12px + var(--level, 0) * 8px);
     color: var(--#{variables.$prefix}color-disabled);
   }
 }
