@@ -41,6 +41,7 @@ export interface DropdownProps<ID extends React.Key, T extends DropdownItem<ID>>
   placement?: VerticalSidePlacement;
   placementFixed?: boolean;
   arrow?: boolean;
+  virtual?: boolean | number;
   escClosable?: boolean;
   zIndex?: number | string;
   popupRender?: (el: React.ReactElement) => React.ReactNode;

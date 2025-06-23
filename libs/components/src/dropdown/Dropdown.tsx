@@ -1,14 +1,11 @@
 import type { DropdownItem, DropdownProps } from './types';
 
 import { useEventCallback, useRefExtra } from '@laser-ui/hooks';
-import { scrollIntoViewIfNeeded } from '@laser-ui/utils';
-import { isNumber, isUndefined, nth } from 'lodash';
-import { Fragment, useId, useImperativeHandle, useRef, useState } from 'react';
+import { isUndefined, nth } from 'lodash';
+import { useId, useImperativeHandle, useRef, useState } from 'react';
 
-import { DropdownGroup } from './internal/DropdownGroup';
-import { DropdownItem as DropdownItemFC } from './internal/DropdownItem';
-import { DropdownSub } from './internal/DropdownSub';
-import { checkEnableItem, getSameLevelEnableItems } from './utils';
+import { DropdownList } from './internal/DropdownList';
+import { checkEnableItem } from './utils';
 import { CLASSES } from './vars';
 import {
   useComponentProps,
@@ -18,12 +15,10 @@ import {
   useNamespace,
   useNestedPopup,
   useStyled,
-  useTranslation,
   useZIndex,
 } from '../hooks';
 import { Popup } from '../internal/popup';
 import { Portal } from '../internal/portal';
-import { Separator } from '../separator';
 import { Transition } from '../transition';
 import { getVerticalSidePosition, mergeCS } from '../utils';
 import { TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../vars';
@@ -41,6 +36,7 @@ export function Dropdown<ID extends React.Key, T extends DropdownItem<ID>>(props
     placement: placementProp = 'bottom-right',
     placementFixed = false,
     arrow = false,
+    virtual = false,
     escClosable = true,
     zIndex: zIndexProp,
     popupRender,
@@ -52,7 +48,6 @@ export function Dropdown<ID extends React.Key, T extends DropdownItem<ID>>(props
   } = useComponentProps('Dropdown', props);
 
   const namespace = useNamespace();
-  const { t } = useTranslation();
   const styled = useStyled(
     CLASSES,
     { dropdown: styleProvider?.dropdown, 'dropdown-popup': styleProvider?.['dropdown-popup'] },
@@ -66,7 +61,6 @@ export function Dropdown<ID extends React.Key, T extends DropdownItem<ID>>(props
 
   const triggerRef = useRefExtra(() => document.getElementById(triggerId));
   const popupRef = useRef<HTMLDivElement>(null);
-  const ulRef = useRef<HTMLUListElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const updateSubPosition = useRef(new Map<ID, () => void>());
@@ -162,207 +156,7 @@ export function Dropdown<ID extends React.Key, T extends DropdownItem<ID>>(props
     }
   };
 
-  let handleKeyDown: React.KeyboardEventHandler<HTMLElement> | undefined;
-  const nodes = (() => {
-    const getNodes = (arr: T[], level: number, subParents: T[]): React.ReactElement[] =>
-      arr.map((item) => {
-        const {
-          id: itemId,
-          title: itemTitle,
-          type: itemType,
-          icon: itemIcon,
-          disabled: itemDisabled = false,
-          separator: itemSeparator,
-          children,
-        } = item;
-
-        const newSubParents = itemType === 'sub' ? subParents.concat([item]) : subParents;
-        const id = getItemId(itemId);
-        const isFocus = itemId === focusId;
-        const isEmpty = !(children && children.length > 0);
-        const popupState = popupIds.find((v) => v.id === itemId);
-
-        const handleItemClick = () => {
-          const close = onClick?.(itemId, item);
-
-          setFocusIds(subParents.map((parentItem) => parentItem.id).concat([itemId]));
-          if (close !== false) {
-            changeVisible(false);
-          }
-        };
-
-        if (isFocus) {
-          handleKeyDown = (e) => {
-            const sameLevelItems = getSameLevelEnableItems((nth(subParents, -1)?.children as T[]) ?? list);
-            const focusItem = (val?: T) => {
-              if (val) {
-                setFocusIds(subParents.map((parentItem) => parentItem.id).concat([val.id]));
-              }
-            };
-            const scrollToItem = (val?: T) => {
-              if (val) {
-                const el = document.getElementById(getItemId(val.id));
-                if (el && ulRef.current) {
-                  scrollIntoViewIfNeeded(el, ulRef.current);
-                }
-              }
-            };
-
-            switch (e.code) {
-              case 'ArrowUp': {
-                e.preventDefault();
-                const index = sameLevelItems.findIndex((sameLevelItem) => sameLevelItem.id === itemId);
-                const item = nth(sameLevelItems, index - 1);
-                focusItem(item);
-                scrollToItem(item);
-                if (item && nth(popupIds, -1)?.id === itemId) {
-                  setPopupIds(popupIds.slice(0, -1));
-                }
-                break;
-              }
-
-              case 'ArrowDown': {
-                e.preventDefault();
-                const index = sameLevelItems.findIndex((sameLevelItem) => sameLevelItem.id === itemId);
-                const item = nth(sameLevelItems, (index + 1) % sameLevelItems.length);
-                focusItem(item);
-                scrollToItem(item);
-                if (item && nth(popupIds, -1)?.id === itemId) {
-                  setPopupIds(popupIds.slice(0, -1));
-                }
-                break;
-              }
-
-              case 'ArrowLeft': {
-                e.preventDefault();
-                setPopupIds(popupIds.slice(0, -1));
-                const ids = subParents.map((item) => item.id);
-                if (ids.length > 0) {
-                  setFocusIds(ids);
-                }
-                break;
-              }
-
-              case 'ArrowRight':
-                e.preventDefault();
-                if (itemType === 'sub') {
-                  addPopupId(itemId);
-                  if (children) {
-                    const newFocusItem = nth(getSameLevelEnableItems(children), 0);
-                    if (newFocusItem) {
-                      setFocusIds(newSubParents.map((parentItem) => parentItem.id).concat([newFocusItem.id]));
-                    }
-                  }
-                }
-                break;
-
-              case 'Home':
-                e.preventDefault();
-                focusItem(nth(sameLevelItems, 0));
-                if (ulRef.current) {
-                  ulRef.current.scrollTop = 0;
-                }
-                break;
-
-              case 'End':
-                e.preventDefault();
-                focusItem(nth(sameLevelItems, -1));
-                if (ulRef.current) {
-                  ulRef.current.scrollTop = ulRef.current.scrollHeight;
-                }
-                break;
-
-              case 'Enter':
-              case 'Space':
-                e.preventDefault();
-                if (itemType === 'item') {
-                  handleItemClick();
-                } else if (itemType === 'sub') {
-                  addPopupId(itemId);
-                }
-                break;
-
-              default:
-                break;
-            }
-          };
-        }
-
-        return (
-          <Fragment key={itemId}>
-            {itemSeparator && <Separator style={{ margin: '2px 0' }} />}
-            {itemType === 'item' ? (
-              <DropdownItemFC
-                namespace={namespace}
-                styled={styled}
-                id={id}
-                level={level}
-                icon={itemIcon}
-                focus={focusVisible && isFocus}
-                disabled={itemDisabled}
-                onClick={handleItemClick}
-              >
-                {itemTitle}
-              </DropdownItemFC>
-            ) : itemType === 'group' ? (
-              <DropdownGroup
-                styled={styled}
-                id={id}
-                level={level}
-                list={children && getNodes(children as T[], level + 1, newSubParents)}
-                empty={isEmpty}
-              >
-                {itemTitle}
-              </DropdownGroup>
-            ) : (
-              <DropdownSub
-                ref={(instance) => {
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  const fn = instance!;
-                  updateSubPosition.current.set(itemId, fn);
-                  return () => {
-                    updateSubPosition.current.delete(itemId);
-                  };
-                }}
-                namespace={namespace}
-                styled={styled}
-                id={id}
-                level={level}
-                icon={itemIcon}
-                list={children && getNodes(children as T[], 0, newSubParents)}
-                popupState={popupState?.visible}
-                trigger={trigger}
-                empty={isEmpty}
-                focus={focusVisible && isFocus}
-                disabled={itemDisabled}
-                zIndex={
-                  isUndefined(zIndex)
-                    ? zIndex
-                    : isNumber(zIndex)
-                      ? zIndex + 1 + subParents.length
-                      : `calc(${zIndex} + ${1 + subParents.length})`
-                }
-                onVisibleChange={(visible) => {
-                  if (visible) {
-                    if (subParents.length === 0) {
-                      setPopupIds([{ id: itemId, visible: true }]);
-                    } else {
-                      addPopupId(itemId);
-                    }
-                  } else {
-                    removePopupId(itemId);
-                  }
-                }}
-              >
-                {itemTitle}
-              </DropdownSub>
-            )}
-          </Fragment>
-        );
-      });
-
-    return getNodes(list, 0, []);
-  })();
+  const handleKeyDown = useRef<React.KeyboardEventHandler<HTMLElement>>(undefined);
 
   const updateAllPosition = useEventCallback(() => {
     updatePosition();
@@ -422,7 +216,7 @@ export function Dropdown<ID extends React.Key, T extends DropdownItem<ID>>(props
                   e.preventDefault();
                   changeVisible(false);
                 } else {
-                  handleKeyDown?.(e);
+                  handleKeyDown.current?.(e);
                 }
               } else {
                 switch (e.code) {
@@ -515,25 +309,40 @@ export function Dropdown<ID extends React.Key, T extends DropdownItem<ID>>(props
                     {...popupProps.popup}
                   >
                     {(() => {
-                      const el = (
-                        <ul
-                          {...styled('dropdown__list')}
-                          ref={(instance) => {
-                            ulRef.current = instance;
-                            return () => {
-                              ulRef.current = null;
-                            };
+                      const node = (
+                        <DropdownList
+                          namespace={namespace}
+                          styled={styled}
+                          ulProps={{
+                            id,
+                            'aria-labelledby': triggerId,
+                            'aria-activedescendant': isUndefined(focusId) ? undefined : getItemId(focusId),
                           }}
-                          id={id}
-                          tabIndex={-1}
-                          role="menu"
-                          aria-labelledby={triggerId}
-                          aria-activedescendant={isUndefined(focusId) ? undefined : getItemId(focusId)}
-                        >
-                          {list.length === 0 ? <div {...styled('dropdown__empty')}>{t('No data')}</div> : nodes}
-                        </ul>
+                          list={list}
+                          virtual={virtual}
+                          focusVisible={focusVisible}
+                          focusId={focusId}
+                          popupIds={popupIds}
+                          updateSubPosition={updateSubPosition}
+                          trigger={trigger}
+                          zIndex={zIndex}
+                          handleKeyDown={handleKeyDown}
+                          getItemId={getItemId}
+                          onClick={onClick}
+                          onFocusIdsChange={(ids) => {
+                            setFocusIds(ids);
+                          }}
+                          onPopupIdsChange={(ids) => {
+                            setPopupIds(ids);
+                          }}
+                          addPopupId={addPopupId}
+                          removePopupId={removePopupId}
+                          onVisibleChange={(visible) => {
+                            changeVisible(visible);
+                          }}
+                        />
                       );
-                      return popupRender ? popupRender(el) : el;
+                      return popupRender ? popupRender(node) : node;
                     })()}
                     {arrow && <div {...styled('dropdown__arrow')} />}
                   </div>

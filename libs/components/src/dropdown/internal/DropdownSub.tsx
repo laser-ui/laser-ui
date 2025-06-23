@@ -7,7 +7,6 @@ import KeyboardArrowRightOutlined from '@material-design-icons/svg/outlined/keyb
 import { isUndefined } from 'lodash';
 import { useImperativeHandle, useRef } from 'react';
 
-import { useTranslation } from '../../hooks';
 import { Icon } from '../../icon';
 import { Popup } from '../../internal/popup';
 import { Portal } from '../../internal/portal';
@@ -21,12 +20,10 @@ interface DropdownSubProps {
   namespace: string;
   styled: Styled<typeof CLASSES>;
   id: string;
-  level: number;
   icon: React.ReactNode | undefined;
   list: React.ReactNode;
   popupState: boolean | undefined;
   trigger: 'hover' | 'click';
-  empty: boolean;
   focus: boolean;
   disabled: boolean;
   zIndex: number | string | undefined;
@@ -34,13 +31,10 @@ interface DropdownSubProps {
 }
 
 export function DropdownSub(props: DropdownSubProps): React.ReactElement | null {
-  const { ref, children, namespace, styled, id, level, icon, list, popupState, trigger, empty, focus, disabled, zIndex, onVisibleChange } =
-    props;
+  const { ref, children, namespace, styled, id, icon, list, popupState, trigger, focus, disabled, zIndex, onVisibleChange } = props;
 
   const triggerRef = useRef<HTMLLIElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
-
-  const { t } = useTranslation();
 
   const visible = !isUndefined(popupState);
 
@@ -79,13 +73,10 @@ export function DropdownSub(props: DropdownSubProps): React.ReactElement | null 
       {(popupProps) => (
         <>
           <li
-            {...mergeCS(
-              styled('dropdown__item', 'dropdown__item--sub', {
-                'dropdown__item.is-expand': visible,
-                'dropdown__item.is-disabled': disabled,
-              }),
-              { style: { paddingLeft: 12 + level * 16 } },
-            )}
+            {...styled('dropdown__item', 'dropdown__item--sub', {
+              'dropdown__item.is-expand': visible,
+              'dropdown__item.is-disabled': disabled,
+            })}
             ref={(instance) => {
               triggerRef.current = instance;
               return () => {
@@ -144,13 +135,7 @@ export function DropdownSub(props: DropdownSubProps): React.ReactElement | null 
                   }}
                   {...popupProps.popup}
                 >
-                  <ul {...styled('dropdown__list')} role="menu" aria-labelledby={id}>
-                    {empty ? (
-                      <div {...mergeCS(styled('dropdown__empty'), { style: { paddingLeft: 12 + level * 16 } })}>{t('No data')}</div>
-                    ) : (
-                      list
-                    )}
-                  </ul>
+                  {list}
                 </div>
               )}
             </Transition>

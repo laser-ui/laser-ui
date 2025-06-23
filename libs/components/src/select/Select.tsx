@@ -12,7 +12,7 @@ import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
 import KeyboardArrowDownOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_down.svg?react';
 import SearchOutlined from '@material-design-icons/svg/outlined/search.svg?react';
 import { isNull, isNumber, isUndefined } from 'lodash';
-import { useCallback, useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { Fragment, useCallback, useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
 
 import { CLASSES, IS_CREATED } from './vars';
 import { BaseInput } from '../base-input';
@@ -352,6 +352,7 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
             type: 'item',
             disabled: item?.disabled,
           }))}
+          virtual={virtual}
           onClick={(id: V) => {
             changeSelectedByClick(id);
             return false;
@@ -767,19 +768,18 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
                             })();
 
                             return (
-                              <>
-                                <li {...styled('select__option-group-label')} key={itemValue} id={getItemId(itemValue)} role="presentation">
+                              <Fragment key={itemValue}>
+                                <li {...styled('select__option-group-label')} id={getItemId(itemValue)} role="presentation">
                                   <div {...styled('select__option-content')}>{node}</div>
                                 </li>
                                 <ul
                                   {...mergeCS(styled('select__option-group'), { style: { '--level': level } as any })}
-                                  key={itemValue}
                                   role="group"
                                   aria-labelledby={getItemId(itemValue)}
                                 >
                                   {children}
                                 </ul>
-                              </>
+                              </Fragment>
                             );
                           }
 

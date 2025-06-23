@@ -340,6 +340,7 @@ export function Cascader<V extends React.Key, T extends CascaderItem<V>>(props: 
             type: 'item',
             disabled: node?.origin.disabled,
           }))}
+          virtual={virtual}
           onClick={(id) => {
             changeSelected((draft) => {
               (draft as V[]).splice(

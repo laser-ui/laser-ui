@@ -72,11 +72,11 @@ $dropdown-item-height: 32px;
     }
 
     @include mixins.m(item) {
-      padding: 0 12px;
+      padding: 0 12px 0 calc(12px + var(--level, 0) * 16px);
     }
 
     @include mixins.m(sub) {
-      padding: 0 24px 0 12px;
+      padding: 0 24px 0 calc(12px + var(--level, 0) * 16px);
 
       @include mixins.when(expand) {
         background-color: var(--#{variables.$prefix}background-color-hover);
@@ -101,7 +101,7 @@ $dropdown-item-height: 32px;
     display: flex;
     align-items: center;
     min-height: $dropdown-item-height;
-    padding: 0 12px;
+    padding: 0 12px 0 calc(12px + var(--level, 0) * 16px);
     margin: 0;
     font-size: var(--#{variables.$prefix}font-size-subtitle);
     color: var(--#{variables.$prefix}color-text-sub);
@@ -135,7 +135,7 @@ $dropdown-item-height: 32px;
     display: flex;
     align-items: center;
     height: $dropdown-item-height;
-    padding: 0 12px;
+    padding: 0 12px 0 calc(12px + var(--level, 0) * 16px);
     color: var(--#{variables.$prefix}color-disabled);
   }
 
