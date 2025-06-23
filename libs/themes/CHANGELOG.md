@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/laser-ui/laser-ui/compare/v2.1.3...v2.2.0) (2025-06-23)
+
+### Bug Fixes
+
+- **components:** update `listSize` of `VirtualScroll` ([a38d857](https://github.com/laser-ui/laser-ui/commit/a38d85779850d6f58aeffc55cd8c2be93a0f921c))
+
+### Features
+
+- **components:** dropdown support virtual scroll ([3e64aac](https://github.com/laser-ui/laser-ui/commit/3e64aac4a5f2819122600c97e18fd37d2aee50f9))
+
 ## [2.1.3](https://github.com/laser-ui/laser-ui/compare/v2.1.2...v2.1.3) (2025-06-16)
 
 **Note:** Version bump only for package @laser-ui/themes
