@@ -53,22 +53,36 @@ $dropdown-item-height: 32px;
   }
 
   @include mixins.e(item) {
+    --color: var(--#{variables.$prefix}dropdown-item-color, var(--#{variables.$prefix}color-text));
+    --background-color: var(--#{variables.$prefix}dropdown-item-background-color, var(--#{variables.$prefix}background-color-hover));
+
     position: relative;
     display: flex;
     align-items: center;
     min-height: $dropdown-item-height;
     margin: 0;
+    color: var(--color);
     list-style: none;
     cursor: pointer;
     transition: background-color var(--#{variables.$prefix}animation-duration-base) linear;
 
     &:hover {
-      background-color: var(--#{variables.$prefix}background-color-hover);
+      background-color: var(--background-color);
     }
 
     @include mixins.when(disabled) {
       color: var(--#{variables.$prefix}color-disabled);
       pointer-events: none;
+    }
+
+    @each $theme, $rgb in variables.$themes {
+      @include mixins.theme(#{$theme}) {
+        --color: var(--#{variables.$prefix}dropdown-item-color, var(--#{variables.$prefix}color-#{$theme}));
+        --background-color: var(
+          --#{variables.$prefix}dropdown-item-background-color,
+          var(--#{variables.$prefix}background-color-#{$theme})
+        );
+      }
     }
 
     @include mixins.m(item) {
@@ -79,7 +93,7 @@ $dropdown-item-height: 32px;
       padding: 0 24px 0 calc(12px + var(--level, 0) * 16px);
 
       @include mixins.when(expand) {
-        background-color: var(--#{variables.$prefix}background-color-hover);
+        background-color: var(--background-color);
       }
     }
   }

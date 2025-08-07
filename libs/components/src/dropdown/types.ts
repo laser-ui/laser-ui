@@ -12,6 +12,7 @@ export interface DropdownItem<ID extends React.Key> {
   title: React.ReactNode;
   type: 'item' | 'group' | 'sub';
   icon?: React.ReactNode;
+  theme?: 'primary' | 'success' | 'warning' | 'danger';
   disabled?: boolean;
   separator?: boolean;
   children?: DropdownItem<ID>[];

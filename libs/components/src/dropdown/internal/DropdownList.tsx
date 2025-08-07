@@ -100,6 +100,7 @@ export function DropdownList<ID extends React.Key, T extends DropdownItem<ID>>(p
           title: itemTitle,
           type: itemType,
           icon: itemIcon,
+          theme: itemTheme,
           disabled: itemDisabled = false,
           separator: itemSeparator,
           children,
@@ -218,6 +219,7 @@ export function DropdownList<ID extends React.Key, T extends DropdownItem<ID>>(p
             {itemType === 'item' ? (
               <li
                 {...styled('dropdown__item', 'dropdown__item--item', {
+                  [`dropdown__item.t-${itemTheme}`]: !itemDisabled && itemTheme,
                   'dropdown__item.is-disabled': itemDisabled,
                 })}
                 id={id}
@@ -271,6 +273,7 @@ export function DropdownList<ID extends React.Key, T extends DropdownItem<ID>>(p
                 styled={styled}
                 id={id}
                 icon={itemIcon}
+                theme={itemTheme}
                 list={
                   <DropdownList
                     namespace={namespace}

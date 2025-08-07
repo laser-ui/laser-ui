@@ -21,6 +21,7 @@ interface DropdownSubProps {
   styled: Styled<typeof CLASSES>;
   id: string;
   icon: React.ReactNode | undefined;
+  theme: 'primary' | 'success' | 'warning' | 'danger' | undefined;
   list: React.ReactNode;
   popupState: boolean | undefined;
   trigger: 'hover' | 'click';
@@ -31,7 +32,7 @@ interface DropdownSubProps {
 }
 
 export function DropdownSub(props: DropdownSubProps): React.ReactElement | null {
-  const { ref, children, namespace, styled, id, icon, list, popupState, trigger, focus, disabled, zIndex, onVisibleChange } = props;
+  const { ref, children, namespace, styled, id, icon, theme, list, popupState, trigger, focus, disabled, zIndex, onVisibleChange } = props;
 
   const triggerRef = useRef<HTMLLIElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -74,6 +75,7 @@ export function DropdownSub(props: DropdownSubProps): React.ReactElement | null 
         <>
           <li
             {...styled('dropdown__item', 'dropdown__item--sub', {
+              [`dropdown__item.t-${theme}`]: !disabled && theme,
               'dropdown__item.is-expand': visible,
               'dropdown__item.is-disabled': disabled,
             })}
