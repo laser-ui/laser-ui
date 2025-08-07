@@ -26,7 +26,7 @@ jobs:
           path: ${{ env.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-pnpm-store-
-      - run: pnpm install
+      - run: pnpm install --no-frozen-lockfile
       - run: pnpm run lint:affected
       - run: pnpm run lint:style
   test:
@@ -50,7 +50,7 @@ jobs:
           path: ${{ env.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-pnpm-store-
-      - run: pnpm install
+      - run: pnpm install --no-frozen-lockfile
       - run: pnpm run test:affected
       - uses: codecov/codecov-action@v3
         with:
@@ -79,7 +79,7 @@ jobs:
           path: ${{ env.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-pnpm-store-
-      - run: pnpm install
+      - run: pnpm install --no-frozen-lockfile
       - run: pnpm run build:affected
   pr-preview:
     runs-on: ubuntu-latest
@@ -126,7 +126,7 @@ jobs:
           path: ${{ env.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-pnpm-store-
-      - run: pnpm install
+      - run: pnpm install --no-frozen-lockfile
       - run: pnpm exec nx run site:build --configuration=production --skip-nx-cache
       - run: cp ./dist/apps/site/index.html ./dist/apps/site/200.html
       - uses: dswistowski/surge-sh-action@v1

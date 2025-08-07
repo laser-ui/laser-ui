@@ -25,7 +25,7 @@ jobs:
           path: ${{ env.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-pnpm-store-
-      - run: pnpm install
+      - run: pnpm install --no-frozen-lockfile
       - run: pnpm run lint:affected
       - run: pnpm run lint:style
   test:
@@ -48,7 +48,7 @@ jobs:
           path: ${{ env.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-pnpm-store-
-      - run: pnpm install
+      - run: pnpm install --no-frozen-lockfile
       - run: pnpm run test:affected
   build-site:
     needs: [lint, test]
@@ -73,7 +73,7 @@ jobs:
           path: ${{ env.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-pnpm-store-
-      - run: pnpm install
+      - run: pnpm install --no-frozen-lockfile
       - run: pnpm exec nx run site:build --configuration=production --skip-nx-cache
       - run: wget https://raw.githubusercontent.com/rafgraph/spa-github-pages/gh-pages/404.html
       - run: cp ./404.html ./dist/apps/site/404.html
