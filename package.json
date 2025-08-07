@@ -108,7 +108,7 @@
   "engines": {
     "node": "16.x || 18.x || 20.x || 22.x",
     "npm": "Please use pnpm instead of NPM to install dependencies",
-    "pnpm": "9.x"
+    "pnpm": "9.x || 10.x"
   },
   "pnpm": {
     "patchedDependencies": {

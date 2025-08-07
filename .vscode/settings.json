@@ -2,7 +2,6 @@
   "typescript.tsdk": "./node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "eslint.format.enable": true,
-  "eslint.validate": ["json"],
   "stylelint.validate": ["css", "scss", "html", "markdown"],
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
