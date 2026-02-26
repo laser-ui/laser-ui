@@ -36,14 +36,20 @@ export class FormControl<V> extends AbstractControl<V> {
   override setValue(value: V, onlySelf?: boolean): void {
     this._value = value;
     this.updateValueAndValidity(onlySelf);
+
+    this._emitRender?.current();
   }
   override patchValue(value: V, onlySelf?: boolean): void {
     this.setValue(value, onlySelf);
+
+    this._emitRender?.current();
   }
   override reset(formState: V | FormControlState<V> = this.defaultState, onlySelf?: boolean): void {
     this._applyFormState(formState);
     this.markAsPristine(onlySelf);
     this.setValue(this.value, onlySelf);
+
+    this._emitRender?.current();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function

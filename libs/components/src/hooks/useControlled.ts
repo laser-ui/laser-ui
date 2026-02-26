@@ -20,15 +20,14 @@ export function useControlled<T, S = T>(
     valueRef.current,
     (value: any) => {
       const newValue = isFunction(value) ? produce(valueRef.current, value) : freeze(value);
-      const reRender = deepCompare ? !deepCompare(valueRef.current, newValue) : !Object.is(valueRef.current, newValue);
-      if (reRender) {
+      const rerender = deepCompare ? !deepCompare(valueRef.current, newValue) : !Object.is(valueRef.current, newValue);
+      if (rerender) {
         setValue(newValue);
         onChange?.(newValue);
 
         if (formControl) {
           formControl.markAsDirty(true);
           formControl.setValue(newValue);
-          (formControl.root as any)._emitChange?.(formControl);
         }
       }
       return newValue;

@@ -1,5 +1,6 @@
 import type { FormGroup } from './form-group';
 import type { AsyncValidatorFn, FormControlStatus, ValidationErrors, ValidatorFn } from './types';
+import type { RefObject } from 'react';
 
 import { isArray } from 'lodash';
 
@@ -68,6 +69,8 @@ function removeValidators<T extends ValidatorFn | AsyncValidatorFn>(validators: 
 }
 
 export abstract class AbstractControl<V = any> {
+  protected _emitRender?: RefObject<() => void>;
+
   private _parent: FormGroup | null = null;
 
   private _pristine: boolean = true;
@@ -90,11 +93,17 @@ export abstract class AbstractControl<V = any> {
     this._composedAsyncValidatorFn = coerceToAsyncValidator(this._rawAsyncValidators);
   }
 
+  setEmitRender(emitRender?: RefObject<() => void>): void {
+    this._emitRender = emitRender;
+  }
+
   get validator(): ValidatorFn | null {
     return this._composedValidatorFn;
   }
   set validator(validatorFn: ValidatorFn | null) {
     this._rawValidators = this._composedValidatorFn = validatorFn;
+
+    this._emitRender?.current();
   }
 
   get asyncValidator(): AsyncValidatorFn | null {
@@ -102,6 +111,8 @@ export abstract class AbstractControl<V = any> {
   }
   set asyncValidator(asyncValidatorFn: AsyncValidatorFn | null) {
     this._rawAsyncValidators = this._composedAsyncValidatorFn = asyncValidatorFn;
+
+    this._emitRender?.current();
   }
 
   get parent(): FormGroup | null {
@@ -156,24 +167,36 @@ export abstract class AbstractControl<V = any> {
   setValidators(validators: ValidatorFn | ValidatorFn[] | null): void {
     this._rawValidators = validators;
     this._composedValidatorFn = coerceToValidator(validators);
+
+    this._emitRender?.current();
   }
   setAsyncValidators(validators: AsyncValidatorFn | AsyncValidatorFn[] | null): void {
     this._rawAsyncValidators = validators;
     this._composedAsyncValidatorFn = coerceToAsyncValidator(validators);
+
+    this._emitRender?.current();
   }
 
   addValidators(validators: ValidatorFn | ValidatorFn[]): void {
     this.setValidators(addValidators(validators, this._rawValidators));
+
+    this._emitRender?.current();
   }
   addAsyncValidators(validators: AsyncValidatorFn | AsyncValidatorFn[]): void {
     this.setAsyncValidators(addValidators(validators, this._rawAsyncValidators));
+
+    this._emitRender?.current();
   }
 
   removeValidators(validators: ValidatorFn | ValidatorFn[]): void {
     this.setValidators(removeValidators(validators, this._rawValidators));
+
+    this._emitRender?.current();
   }
   removeAsyncValidators(validators: AsyncValidatorFn | AsyncValidatorFn[]): void {
     this.setAsyncValidators(removeValidators(validators, this._rawAsyncValidators));
+
+    this._emitRender?.current();
   }
 
   hasValidator(validator: ValidatorFn): boolean {
@@ -185,9 +208,13 @@ export abstract class AbstractControl<V = any> {
 
   clearValidators(): void {
     this.validator = null;
+
+    this._emitRender?.current();
   }
   clearAsyncValidators(): void {
     this.asyncValidator = null;
+
+    this._emitRender?.current();
   }
 
   markAsDirty(onlySelf = false): void {
@@ -196,6 +223,8 @@ export abstract class AbstractControl<V = any> {
     if (this._parent && !onlySelf) {
       this._parent.markAsDirty(onlySelf);
     }
+
+    this._emitRender?.current();
   }
   markAsPristine(onlySelf = false): void {
     this._pristine = true;
@@ -207,6 +236,8 @@ export abstract class AbstractControl<V = any> {
     if (this._parent && !onlySelf) {
       this._parent._updatePristine(onlySelf);
     }
+
+    this._emitRender?.current();
   }
   markAsPending(onlySelf = false): void {
     this._status = PENDING;
@@ -214,6 +245,8 @@ export abstract class AbstractControl<V = any> {
     if (this._parent && !onlySelf) {
       this._parent.markAsPending(onlySelf);
     }
+
+    this._emitRender?.current();
   }
 
   disable(onlySelf = false): void {
@@ -228,6 +261,8 @@ export abstract class AbstractControl<V = any> {
     });
 
     this._updateAncestors(onlySelf, skipPristineCheck);
+
+    this._emitRender?.current();
   }
   enable(onlySelf = false): void {
     // If parent has been marked artificially dirty we don't want to re-calculate the
@@ -241,15 +276,21 @@ export abstract class AbstractControl<V = any> {
     this.updateValueAndValidity(true);
 
     this._updateAncestors(onlySelf, skipPristineCheck);
+
+    this._emitRender?.current();
   }
 
   setParent(parent: FormGroup): void {
     this._parent = parent;
+
+    this._emitRender?.current();
   }
 
   setErrors(errors: ValidationErrors | null): void {
     this._errors = errors;
     this._updateControlsErrors();
+
+    this._emitRender?.current();
   }
 
   updateValueAndValidity(onlySelf = false): void {
@@ -268,6 +309,8 @@ export abstract class AbstractControl<V = any> {
     if (this._parent && !onlySelf) {
       this._parent.updateValueAndValidity(onlySelf);
     }
+
+    this._emitRender?.current();
   }
 
   protected abstract _value: V;
@@ -359,7 +402,7 @@ export abstract class AbstractControl<V = any> {
           // necessary that we have updated the `_hasOwnPendingAsyncValidator` boolean flag first.
           this.setErrors(errors);
 
-          (this.root as any)._emitChange?.(this);
+          this._emitRender?.current();
         }
       });
     }

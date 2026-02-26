@@ -1,4 +1,5 @@
 import type { AsyncValidatorFn, FormControlStatus, ValidatorFn } from './types';
+import type { RefObject } from 'react';
 
 import { AbstractControl } from './abstract-control';
 import { VALID } from './vars';
@@ -58,6 +59,14 @@ export class FormGroup<T extends { [K in keyof T]: AbstractControl } = any> exte
     this.updateValueAndValidity(true);
   }
 
+  override setEmitRender(emitRender?: RefObject<() => void>): void {
+    this._emitRender = emitRender;
+
+    this._forEachChild((control) => {
+      control.setEmitRender(emitRender);
+    });
+  }
+
   get<S extends string>(path: S): AbstractControl<GetFormControlProperty<{ [K in keyof T]: T[K]['value'] }, S>>;
   get<S extends ArrayLike<string>>(path: S): AbstractControl<GetFormControlPropertyFromArray<{ [K in keyof T]: T[K]['value'] }, S>>;
   get(path: string[] | string): AbstractControl | null {
@@ -81,12 +90,16 @@ export class FormGroup<T extends { [K in keyof T]: AbstractControl } = any> exte
       control.setParent(this);
     }
     this.updateValueAndValidity();
+
+    this._emitRender?.current();
   }
   removeControl<K extends keyof T>(name: K): void;
   removeControl(name: string): void;
   removeControl(name: string): void {
     delete (this.controls as any)[name];
     this.updateValueAndValidity();
+
+    this._emitRender?.current();
   }
   setControl<K extends keyof T>(name: K, control: T[K]): void;
   setControl(name: string, control: AbstractControl): void;
@@ -94,6 +107,8 @@ export class FormGroup<T extends { [K in keyof T]: AbstractControl } = any> exte
     delete (this.controls as any)[name];
     this.addControl(name, control);
     this.updateValueAndValidity();
+
+    this._emitRender?.current();
   }
   contains<K extends keyof T>(controlName: K): boolean;
   contains(controlName: string): boolean;
@@ -108,6 +123,8 @@ export class FormGroup<T extends { [K in keyof T]: AbstractControl } = any> exte
       (this.controls as any)[name].setValue(value[name], true);
     });
     this.updateValueAndValidity(onlySelf);
+
+    this._emitRender?.current();
   }
   override patchValue(value: GetFormGroupValue<T> & { [K: string]: any }, onlySelf?: boolean): void {
     Object.keys(value).forEach((name) => {
@@ -116,6 +133,8 @@ export class FormGroup<T extends { [K in keyof T]: AbstractControl } = any> exte
       }
     });
     this.updateValueAndValidity(onlySelf);
+
+    this._emitRender?.current();
   }
   override reset(value: GetFormGroupValue<T> & { [K: string]: any } = {}, onlySelf?: boolean): void {
     this._forEachChild((control, name) => {
@@ -123,6 +142,8 @@ export class FormGroup<T extends { [K in keyof T]: AbstractControl } = any> exte
     });
     this._updatePristine(onlySelf);
     this.updateValueAndValidity(onlySelf);
+
+    this._emitRender?.current();
   }
 
   protected override _updateValue(): void {
