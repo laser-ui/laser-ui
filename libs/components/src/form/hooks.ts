@@ -2,7 +2,8 @@
 import type { AbstractControl } from './model/abstract-control';
 import type { FormGroup } from './model/form-group';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEventCallback } from '@laser-ui/hooks';
+import { useEffect, useRef, useState } from 'react';
 
 function createUltimateProxy<T extends object>(instance: T) {
   return new Proxy(instance, {
@@ -56,20 +57,22 @@ function createUltimateProxy<T extends object>(instance: T) {
 export function useForm<T extends { [K in keyof T]: AbstractControl } = any>(initForm: () => FormGroup<T>) {
   const emitRender = useRef(() => {});
 
-  const [form, setForm] = useState(() => {
+  const [origin, setOrigin] = useState(() => {
     const form = initForm();
     form.setEmitRender(emitRender);
     return form;
   });
+  const [form, setForm] = useState(origin);
 
-  const updateForm = useCallback((newForm?: FormGroup) => {
+  const updateForm = useEventCallback((newForm?: FormGroup) => {
     if (newForm) {
       newForm.setEmitRender(emitRender);
-      setForm(newForm);
+      setOrigin(newForm);
+      setForm(createUltimateProxy(newForm));
     } else {
-      setForm(createUltimateProxy(form));
+      setForm(createUltimateProxy(origin));
     }
-  }, []);
+  });
 
   useEffect(() => {
     emitRender.current = () => {
