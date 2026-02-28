@@ -67,6 +67,7 @@
     "@vitejs/plugin-react": "~4.0.4",
     "@vitest/coverage-c8": "~0.32.4",
     "@vitest/ui": "~0.32.4",
+    "babel-plugin-react-compiler": "^1.0.0",
     "cypress": "^13.0.0",
     "eslint": "8.46.0",
     "eslint-config-prettier": "9.0.0",
@@ -106,7 +107,7 @@
     "yaml-front-matter": "^4.1.1"
   },
   "engines": {
-    "node": "16.x || 18.x || 20.x || 22.x",
+    "node": "16.x || 18.x || 20.x || 22.x || 24.x",
     "npm": "Please use pnpm instead of NPM to install dependencies",
     "pnpm": "9.x || 10.x"
   },
