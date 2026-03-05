@@ -13,6 +13,7 @@ import { Checkbox } from '../../checkbox';
 import { Empty } from '../../empty';
 import { getTreeNodeLabel } from '../../tree/utils';
 import { TREE_NODE_KEY } from '../../tree/vars';
+import { mergeCS } from '../../utils';
 import { VirtualScroll, type VirtualScrollRef } from '../../virtual-scroll';
 
 interface TreeSelectSearchPanelProps<V extends React.Key, T extends TreeItem<V>> {
@@ -153,7 +154,12 @@ export function TreeSelectSearchPanel<V extends React.Key, T extends TreeItem<V>
     >
       {(vsList, onScroll) => (
         <ul
-          {...styled('tree')}
+          {...mergeCS(styled('tree'), {
+            style: {
+              maxHeight: 264,
+              padding: '4px 0',
+            },
+          })}
           ref={(instance) => {
             listRef.current = instance;
             return () => {
