@@ -151,7 +151,13 @@ export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: Tr
         if (multiple) {
           onModelChange(
             value,
-            (value as V[]).map((v) => (nodesMap.get(v) as AbstractTreeNode<V, T>).origin),
+            (value as V[]).map((v) => {
+              const node = nodesMap.get(v) as AbstractTreeNode<V, T>;
+              if (node) {
+                return node.origin;
+              }
+              return null;
+            }),
           );
         } else {
           onModelChange(value, isNull(value) ? null : (nodesMap.get(value as V) as AbstractTreeNode<V, T>).origin);

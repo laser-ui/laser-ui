@@ -20,9 +20,10 @@ export function CheckboxGroup<V extends React.Key, T extends CheckboxGroupItem<V
     model,
     (vals) => {
       if (onModelChange) {
+        const listMap = new Map(list.map((o) => [o.value, o]));
         onModelChange(
           vals,
-          vals.map((val) => list.find((o) => o.value === val) as T),
+          vals.map((val) => (listMap.get(val) ?? null) as T),
         );
       }
     },

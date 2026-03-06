@@ -126,7 +126,7 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
         if (multiple) {
           onModelChange(
             value,
-            (value as V[]).map((v) => itemsMap.get(v)),
+            (value as V[]).map((v) => itemsMap.get(v) ?? null),
           );
         } else {
           onModelChange(value, isNull(value) ? null : itemsMap.get(value as V));

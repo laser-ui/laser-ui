@@ -51,7 +51,7 @@ export function Transfer<V extends React.Key, T extends TransferItem<V>>(props: 
       if (onModelChange) {
         onModelChange(
           value,
-          value.map((v) => itemsMap.get(v) as T),
+          value.map((v) => (itemsMap.get(v) ?? null) as T),
         );
       }
     },
