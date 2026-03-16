@@ -1,6 +1,6 @@
 {
   "name": "@laser-ui/utils",
-  "version": "2.3.4",
+  "version": "2.3.5",
   "description": "Shared utils used by Laser UI packages.",
   "keywords": [
     "ui",

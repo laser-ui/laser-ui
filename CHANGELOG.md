@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.5](https://github.com/laser-ui/laser-ui/compare/v2.3.4...v2.3.5) (2026-03-16)
+
+### Bug Fixes
+
+- **components:** fix pass class or style to `inputProps` ([1f7a6ba](https://github.com/laser-ui/laser-ui/commit/1f7a6ba7524742cb7095b2f335a87f91434203a0))
+
 ## [2.3.4](https://github.com/laser-ui/laser-ui/compare/v2.3.3...v2.3.4) (2026-03-06)
 
 ### Bug Fixes
