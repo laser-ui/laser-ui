@@ -50,7 +50,10 @@ export const Checkbox: {
       <div {...styled('checkbox__state-container')}>
         <input
           {...inputProps}
-          {...styled('checkbox__input')}
+          {...mergeCS(styled('checkbox__input'), {
+            className: inputProps?.className,
+            style: inputProps?.style,
+          })}
           {...formControl?.inputAria}
           type="checkbox"
           disabled={disabled}

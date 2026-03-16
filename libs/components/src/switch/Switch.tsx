@@ -79,7 +79,10 @@ export function Switch(props: SwitchProps) {
         )}
         <input
           {...inputProps}
-          {...styled('switch__input')}
+          {...mergeCS(styled('switch__input'), {
+            className: inputProps?.className,
+            style: inputProps?.style,
+          })}
           {...formControl?.inputAria}
           type="checkbox"
           disabled={disabled}

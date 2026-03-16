@@ -151,7 +151,10 @@ export function InputNumber(props: InputNumberProps) {
       {checkNodeExist(prefix) && <div {...styled('input__prefix')}>{prefix}</div>}
       <BaseInput
         {...inputProps}
-        {...styled('input__input')}
+        {...mergeCS(styled('input__input'), {
+          className: inputProps?.className,
+          style: inputProps?.style,
+        })}
         {...formControl?.inputAria}
         ref={(instance) => {
           inputRef.current = instance;

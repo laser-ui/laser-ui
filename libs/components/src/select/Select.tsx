@@ -453,7 +453,9 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
               {
                 ...inputProps,
                 ...mergeCS(styled('select__search'), {
+                  className: inputProps?.className,
                   style: {
+                    ...inputProps?.style,
                     opacity: inputable ? undefined : 0,
                     zIndex: inputable ? undefined : -1,
                   },

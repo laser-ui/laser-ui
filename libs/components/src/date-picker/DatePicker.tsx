@@ -277,7 +277,10 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
     return (
       <BaseInput
         {...inputProps?.[index]}
-        {...styled('date-picker__input')}
+        {...mergeCS(styled('date-picker__input'), {
+          className: inputProps?.[index]?.className,
+          style: inputProps?.[index]?.style,
+        })}
         {...formControl?.inputAria}
         ref={(instance) => {
           inputRef.current = instance;

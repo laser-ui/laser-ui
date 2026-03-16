@@ -78,7 +78,10 @@ export const Radio: {
       <div {...styled('radio__input-wrapper')}>
         <input
           {...inputProps}
-          {...styled('radio__input')}
+          {...mergeCS(styled('radio__input'), {
+            className: inputProps?.className,
+            style: inputProps?.style,
+          })}
           {...formControl?.inputAria}
           type="radio"
           checked={checked}

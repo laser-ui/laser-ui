@@ -445,7 +445,9 @@ export function Cascader<V extends React.Key, T extends CascaderItem<V>>(props: 
               {
                 ...inputProps,
                 ...mergeCS(styled('cascader__search'), {
+                  className: inputProps?.className,
                   style: {
+                    ...inputProps?.style,
                     opacity: inputable ? undefined : 0,
                     zIndex: inputable ? undefined : -1,
                   },

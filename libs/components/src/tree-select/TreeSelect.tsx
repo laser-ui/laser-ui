@@ -488,7 +488,9 @@ export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: Tr
               {
                 ...inputProps,
                 ...mergeCS(styled('tree-select__search'), {
+                  className: inputProps?.className,
                   style: {
+                    ...inputProps?.style,
                     opacity: inputable ? undefined : 0,
                     zIndex: inputable ? undefined : -1,
                   },

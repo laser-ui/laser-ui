@@ -264,7 +264,10 @@ export function TimePicker(props: TimePickerProps): React.ReactElement | null {
     return (
       <BaseInput
         {...inputProps?.[index]}
-        {...styled('time-picker__input')}
+        {...mergeCS(styled('time-picker__input'), {
+          className: inputProps?.[index]?.className,
+          style: inputProps?.[index]?.style,
+        })}
         {...formControl?.inputAria}
         ref={(instance) => {
           inputRef.current = instance;

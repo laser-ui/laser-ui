@@ -366,7 +366,10 @@ export function Slider(props: SliderProps): React.ReactElement | null {
           >
             <input
               {...inputProps?.[index]}
-              {...styled('slider__input')}
+              {...mergeCS(styled('slider__input'), {
+                className: inputProps?.[index]?.className,
+                style: inputProps?.[index]?.style,
+              })}
               {...formControl?.inputAria}
               type="range"
               value={value}
