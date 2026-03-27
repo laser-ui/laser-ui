@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/laser-ui/laser-ui/compare/v2.3.5...v2.4.0) (2026-03-27)
+
+### Bug Fixes
+
+- fix `no-non-null-assertion` ([0080403](https://github.com/laser-ui/laser-ui/commit/0080403dcf3c8d82f473d5ce62c2222efdfc0e06))
+
 ## [2.3.5](https://github.com/laser-ui/laser-ui/compare/v2.3.4...v2.3.5) (2026-03-16)
 
 ### Bug Fixes
