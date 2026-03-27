@@ -9,8 +9,11 @@ export function useZIndex(visible: boolean) {
 
   useIsomorphicLayoutEffect(() => {
     if (visible) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const zIndex = Array.from(ZINDEX).at(-1)![1] + 1;
+      let zIndex = 1;
+      const end = Array.from(ZINDEX).at(-1);
+      if (end) {
+        zIndex = end[1] + 1;
+      }
       ZINDEX.set(id, zIndex);
       setZIndex(zIndex);
       return () => {

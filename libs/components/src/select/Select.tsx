@@ -162,10 +162,8 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
       return [];
     }
 
-    const filterFn = isUndefined(customSearch?.filter)
-      ? (item: T) => item.label.includes(searchValue)
-      : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        (item: T) => customSearch!.filter!(searchValue, item);
+    const customFilterFn = customSearch && customSearch.filter ? customSearch.filter : undefined;
+    const filterFn = customFilterFn ? (item: T) => customFilterFn(searchValue, item) : (item: T) => item.label.includes(searchValue);
     const sortFn = customSearch?.sort;
 
     let itemCreated = createItem?.(searchValue);

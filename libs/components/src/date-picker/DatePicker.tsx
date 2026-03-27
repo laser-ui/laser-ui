@@ -583,12 +583,14 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
                     styled={styled as any}
                     time={dataRef.current.latestFocused === 'start' ? valueLeft : valueRight}
                     format={format}
-                    config={
-                      showTime && !isBoolean(showTime) && showTime.config
-                        ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                          (...args) => showTime.config!(...args, dataRef.current.latestFocused, [valueLeft, valueRight])
-                        : undefined
-                    }
+                    config={(() => {
+                      if (showTime && !isBoolean(showTime)) {
+                        const fn = showTime.config;
+                        if (fn) {
+                          return (...args) => fn(...args, dataRef.current.latestFocused, [valueLeft, valueRight]);
+                        }
+                      }
+                    })()}
                     inDatePicker
                     onTimeChange={(time) => {
                       changeValue(time);

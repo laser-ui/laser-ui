@@ -2,7 +2,6 @@ import type { TransferItem, TransferProps } from './types';
 
 import KeyboardArrowLeftOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_left.svg?react';
 import KeyboardArrowRightOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_right.svg?react';
-import { isUndefined } from 'lodash';
 import { useMemo } from 'react';
 
 import { TransferPanel } from './internal/TransferPanel';
@@ -81,10 +80,10 @@ export function Transfer<V extends React.Key, T extends TransferItem<V>>(props: 
     const allSelected = [true, true];
     const hasSelected = [false, false];
 
-    const filterFn = isUndefined(customSearch?.filter)
-      ? (item: T, searchValue: string) => item.label.includes(searchValue)
-      : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        (item: T, searchValue: string) => customSearch!.filter!(searchValue, item);
+    const customFilterFn = customSearch && customSearch.filter ? customSearch.filter : undefined;
+    const filterFn = customFilterFn
+      ? (item: T, searchValue: string) => customFilterFn(searchValue, item)
+      : (item: T, searchValue: string) => item.label.includes(searchValue);
     const sortFn = customSearch?.sort;
 
     const handleItem = (item: T, index: 0 | 1, noMatch: boolean) => {

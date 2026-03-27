@@ -16,8 +16,7 @@ export function useStyled<C extends { [index: string]: string }>(
   const context = use(LContext);
   const classRoot: { [index: string]: string } = {};
   Object.keys(styleProvider).forEach((key) => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    classRoot[key] = isUndefined(styleProvider[key]) ? `${context.namespace}-${key}` : styleProvider[key]!;
+    classRoot[key] = isUndefined(styleProvider[key]) ? `${context.namespace}-${key}` : styleProvider[key];
   });
   const prevClassRoot = useRef(classRoot);
   const cache = useRef<any>({});
@@ -61,8 +60,7 @@ export function useStyled<C extends { [index: string]: string }>(
     const handleKey = (classKey: string) => {
       let remove = false;
       if (styleOverrides && styleOverrides[classKey]) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const styleOverride = styleOverrides[classKey]!;
+        const styleOverride = styleOverrides[classKey];
         if (styleOverride.remove) {
           remove = true;
         }

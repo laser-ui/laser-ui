@@ -137,6 +137,10 @@ export const Upload: {
                 update({ state: xhr.status >= 200 && xhr.status < 300 ? 'load' : 'error', percent: undefined });
               });
 
+              if (!request) {
+                throw new Error('`request` prop is required when upload file!');
+              }
+
               const {
                 url,
                 method = 'POST',
@@ -148,8 +152,7 @@ export const Upload: {
                   return formData;
                 },
                 custom,
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              } = request!;
+              } = request;
 
               xhr.open(method, url);
               xhr.responseType = responseType;

@@ -11,7 +11,7 @@ import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
 import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
 import KeyboardArrowDownOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_down.svg?react';
 import SearchOutlined from '@material-design-icons/svg/outlined/search.svg?react';
-import { isNull, isUndefined } from 'lodash';
+import { isNull } from 'lodash';
 import { useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
 
 import { CascaderPanel } from './internal/CascaderPanel';
@@ -196,10 +196,8 @@ export function Cascader<V extends React.Key, T extends CascaderItem<V>>(props: 
       return [];
     }
 
-    const filterFn = isUndefined(customSearch?.filter)
-      ? (item: T) => item.label.includes(searchValue)
-      : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        (item: T) => customSearch!.filter!(searchValue, item);
+    const customFilterFn = customSearch && customSearch.filter ? customSearch.filter : undefined;
+    const filterFn = customFilterFn ? (item: T) => customFilterFn(searchValue, item) : (item: T) => item.label.includes(searchValue);
     const sortFn = customSearch?.sort;
 
     const searchList: CascaderSearchPanelItem<V, T>[] = [];

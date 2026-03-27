@@ -187,20 +187,20 @@ export function Slides<ID extends React.Key, T extends SlidesItem<ID>>(props: Sl
   };
 
   useIsomorphicLayoutEffect(() => {
-    if (slidesRef.current) {
+    const slidesEl = slidesRef.current;
+    if (slidesEl) {
       let size = 0;
-      const slideEls = slidesRef.current.querySelectorAll(`.${namespace}-slides__slide`);
+      const slideEls = slidesEl.querySelectorAll(`.${namespace}-slides__slide`);
       slideEls.forEach((el) => {
         const index = Number((el as HTMLDivElement).dataset['index']);
         if (index < activeIndex) {
           size += (el as HTMLDivElement)[vertical ? 'offsetHeight' : 'offsetWidth'];
         } else if (index === activeIndex) {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          slidesRef.current!.style.height = (el as HTMLDivElement).offsetHeight + 'px';
+          slidesEl.style.height = (el as HTMLDivElement).offsetHeight + 'px';
         }
       });
 
-      const containerEl = slidesRef.current.querySelector(`.${namespace}-slides__container`) as HTMLDivElement;
+      const containerEl = slidesEl.querySelector(`.${namespace}-slides__container`) as HTMLDivElement;
       containerEl.style.transform = effect === 'slide' ? `translate${vertical ? 'Y' : 'X'}(calc(-${size}px + ${dragDistance}px))` : '';
     }
   });

@@ -375,12 +375,12 @@ export function Menu<ID extends React.Key, T extends MenuItem<ID>>(props: MenuPr
             ) : (
               <MenuSub
                 ref={(instance) => {
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  const fn = instance!;
-                  updateSubPosition.current.set(itemId, fn);
-                  return () => {
-                    updateSubPosition.current.delete(itemId);
-                  };
+                  if (instance) {
+                    updateSubPosition.current.set(itemId, instance);
+                    return () => {
+                      updateSubPosition.current.delete(itemId);
+                    };
+                  }
                 }}
                 namespace={namespace}
                 styled={styled}
