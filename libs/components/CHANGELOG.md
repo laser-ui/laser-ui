@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0](https://github.com/laser-ui/laser-ui/compare/v2.4.0...v2.5.0) (2026-04-03)
+
+### Features
+
+- **components:** cascader support `onScrollBottom` event ([19508bb](https://github.com/laser-ui/laser-ui/commit/19508bbd77fabdd3b884b40e77005d8f596985ac))
+
 # [2.4.0](https://github.com/laser-ui/laser-ui/compare/v2.3.5...v2.4.0) (2026-03-27)
 
 ### Bug Fixes
