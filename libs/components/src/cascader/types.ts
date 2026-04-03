@@ -51,5 +51,6 @@ export interface CascaderProps<V extends React.Key, T extends CascaderItem<V>>
   onSearch?: (value: string) => void;
   onClear?: () => void;
   onFirstFocus?: (value: V, origin: T) => void;
+  onScrollBottom?: (ancestors: V[]) => void;
   afterVisibleChange?: (visible: boolean) => void;
 }

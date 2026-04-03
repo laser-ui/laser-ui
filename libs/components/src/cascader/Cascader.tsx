@@ -79,6 +79,7 @@ export function Cascader<V extends React.Key, T extends CascaderItem<V>>(props: 
     onClear,
     onFirstFocus,
     afterVisibleChange,
+    onScrollBottom,
 
     ...restProps
   } = useComponentProps('Cascader', props);
@@ -756,6 +757,9 @@ export function Cascader<V extends React.Key, T extends CascaderItem<V>>(props: 
                           changeItemFocusedWithSearch(item);
                           changeSelectedByClickWithSearch(item);
                         }}
+                        onScrollBottom={() => {
+                          onScrollBottom?.([]);
+                        }}
                       />
                     ) : (
                       <CascaderPanel
@@ -778,6 +782,9 @@ export function Cascader<V extends React.Key, T extends CascaderItem<V>>(props: 
                         focusVisible={focusVisible}
                         onFocus={changeItemFocusedWithoutSearch}
                         onClick={changeSelectedByClickWithoutSearch}
+                        onScrollBottom={(ancestors) => {
+                          onScrollBottom?.(ancestors);
+                        }}
                       />
                     )}
                   </div>

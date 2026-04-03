@@ -29,6 +29,7 @@ interface CascaderSearchPanelProps<V extends React.Key, T extends CascaderItem<V
   virtual: boolean | number;
   focusVisible: boolean;
   onClick: (item: CascaderSearchPanelItem<V, T>) => void;
+  onScrollBottom: () => void;
 }
 
 export function CascaderSearchPanel<V extends React.Key, T extends CascaderItem<V>>(
@@ -48,6 +49,7 @@ export function CascaderSearchPanel<V extends React.Key, T extends CascaderItem<
     virtual,
     focusVisible,
     onClick,
+    onScrollBottom,
   } = props;
 
   const listRef = useRef<HTMLUListElement>(null);
@@ -150,6 +152,7 @@ export function CascaderSearchPanel<V extends React.Key, T extends CascaderItem<
       }}
       itemFocused={itemFocused?.value}
       placeholder="li"
+      onScrollEnd={onScrollBottom}
     >
       {(vsList, onScroll) => (
         <ul

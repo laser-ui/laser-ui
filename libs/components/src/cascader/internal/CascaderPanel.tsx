@@ -31,6 +31,7 @@ interface CascaderPanelProps<V extends React.Key, T extends CascaderItem<V>> {
   focusVisible: boolean;
   onFocus: (item: AbstractTreeNode<V, T>) => void;
   onClick: (item: AbstractTreeNode<V, T>) => void;
+  onScrollBottom: (ancestors: V[]) => void;
 }
 
 export function CascaderPanel<V extends React.Key, T extends CascaderItem<V>>(props: CascaderPanelProps<V, T>): React.ReactElement | null {
@@ -49,6 +50,7 @@ export function CascaderPanel<V extends React.Key, T extends CascaderItem<V>>(pr
     focusVisible,
     onFocus,
     onClick,
+    onScrollBottom,
 
     _root = true,
   } = props as CascaderPanelProps<V, T> & { _root?: boolean };
@@ -228,6 +230,9 @@ export function CascaderPanel<V extends React.Key, T extends CascaderItem<V>>(pr
         }}
         itemFocused={nodeFocused?.id}
         placeholder="li"
+        onScrollEnd={() => {
+          onScrollBottom([]);
+        }}
       >
         {(vsList, onScroll) => (
           <ul
@@ -261,6 +266,9 @@ export function CascaderPanel<V extends React.Key, T extends CascaderItem<V>>(pr
           }}
           id={undefined}
           list={nodeFocused.children}
+          onScrollBottom={(ancestors) => {
+            onScrollBottom([nodeFocused.id].concat(ancestors));
+          }}
         />
       )}
     </>
