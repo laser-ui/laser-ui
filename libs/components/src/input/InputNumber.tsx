@@ -1,18 +1,30 @@
 import type { InputNumberProps } from './types';
 
-import { useAsync, useEvent, useForceUpdate, useRefExtra } from '@laser-ui/hooks';
+import { useAsync, useEvent, useRefExtra } from '@laser-ui/hooks';
 import { checkNodeExist, setRef } from '@laser-ui/utils';
 import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
 import KeyboardArrowDownOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_down.svg?react';
 import KeyboardArrowUpOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_up.svg?react';
 import { isNull, isUndefined } from 'lodash';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 import { CLASSES } from './vars';
 import { BaseInput } from '../base-input';
 import { useComponentProps, useControlled, useDesign, useScopedProps, useStyled, useTranslation } from '../hooks';
 import { Icon } from '../icon';
 import { mergeCS } from '../utils';
+
+function syncValueToPlaceholder(value: number | null, placeholder: string) {
+  if (isNull(value)) {
+    if (placeholder) {
+      return '';
+    }
+  } else {
+    if (value !== Number(placeholder)) {
+      return value.toString();
+    }
+  }
+}
 
 export function InputNumber(props: InputNumberProps) {
   const {
@@ -43,33 +55,24 @@ export function InputNumber(props: InputNumberProps) {
 
   const async = useAsync();
   const { t } = useTranslation();
-  const forceUpdate = useForceUpdate();
 
   const dataRef = useRef<{
-    inputFocused: boolean;
-    inputValue?: string;
     clearLoop?: () => void;
     clearTid?: () => void;
-  }>({
-    inputFocused: false,
-  });
+  }>({});
 
   const windowRef = useRefExtra(() => window);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [value, _changeValue] = useControlled<number | null>(defaultModel ?? null, model, onModelChange, undefined, formControl?.control);
-  const inputValue =
-    dataRef.current.inputFocused && !isUndefined(dataRef.current.inputValue)
-      ? dataRef.current.inputValue
-      : isNull(value)
-        ? ''
-        : value.toString();
+  const [placeholderValue, setPlaceholderValue] = useState(() => (isNull(value) ? '' : value.toString()));
+  const newPlaceholderValue = syncValueToPlaceholder(value, placeholderValue);
+  if (!isUndefined(newPlaceholderValue)) {
+    setPlaceholderValue(newPlaceholderValue);
+  }
   const changeValue = (val: number | null) => {
-    if ((isNull(val) ? '' : val.toString()) !== inputValue) {
-      forceUpdate();
-    }
-    dataRef.current.inputValue = undefined;
     _changeValue(val);
+    setPlaceholderValue(isNull(val) ? '' : val.toString());
   };
 
   const { size, disabled } = useScopedProps({ size: sizeProp, disabled: disabledProp || formControl?.control.disabled });
@@ -78,27 +81,26 @@ export function InputNumber(props: InputNumberProps) {
     Number(Math.max(min ?? -Infinity, Math.min(max ?? Infinity, val)).toFixed(step.toString().split('.')[1]?.length ?? 0));
 
   const handleNumberButtonMouseDown = (increase = true) => {
-    changeValue(
-      getValue(
-        (() => {
-          let val = inputValue.length > 0 ? Number(inputValue) : null;
-          if (isNull(val)) {
-            return 0;
-          }
-          if (integer && !Number.isInteger(val)) {
-            val = Math.round(val);
-          }
-          return increase ? val + step : val - step;
-        })(),
-      ),
+    const val = getValue(
+      (() => {
+        let val = placeholderValue.length > 0 ? Number(placeholderValue) : null;
+        if (isNull(val)) {
+          return 0;
+        }
+        if (integer && !Number.isInteger(val)) {
+          val = Math.round(val);
+        }
+        return increase ? val + step : val - step;
+      })(),
     );
+    changeValue(val);
 
     const loop = (prev: number) => {
       const val = getValue(increase ? prev + step : prev - step);
       changeValue(val);
       dataRef.current.clearLoop = async.setTimeout(() => loop(val), 50);
     };
-    dataRef.current.clearTid = async.setTimeout(() => loop(Number(inputValue)), 400);
+    dataRef.current.clearTid = async.setTimeout(() => loop(Number(placeholderValue)), 400);
   };
 
   const handleNumberButtonMouseUp = () => {
@@ -164,7 +166,7 @@ export function InputNumber(props: InputNumberProps) {
             ret();
           };
         }}
-        value={inputValue}
+        value={placeholderValue}
         max={max}
         min={min}
         step={step}
@@ -172,33 +174,24 @@ export function InputNumber(props: InputNumberProps) {
         placeholder={placeholder}
         disabled={disabled}
         onValueChange={(val) => {
-          forceUpdate();
-          dataRef.current.inputValue = val;
-
+          setPlaceholderValue(val);
           if (val.length === 0) {
-            changeValue(null);
+            _changeValue(null);
           } else {
             const num = Number(val);
             if ((isUndefined(max) || num <= max) && (isUndefined(min) || num >= min) && (!integer || Number.isInteger(num))) {
-              changeValue(num);
+              _changeValue(num);
             }
           }
-        }}
-        onFocus={(e) => {
-          inputProps?.onFocus?.(e);
-
-          dataRef.current.inputFocused = true;
-          dataRef.current.inputValue = undefined;
         }}
         onBlur={(e) => {
           inputProps?.onBlur?.(e);
 
-          dataRef.current.inputFocused = false;
-
-          if (inputValue.length === 0) {
-            changeValue(null);
+          let val = value;
+          if (placeholderValue.length === 0) {
+            val = null;
           } else {
-            let num = Number(inputValue);
+            let num = Number(placeholderValue);
             if (!isUndefined(max) && num > max) {
               num = max;
             }
@@ -208,13 +201,16 @@ export function InputNumber(props: InputNumberProps) {
             if (integer && !Number.isInteger(num)) {
               num = Math.round(num);
             }
-            changeValue(num);
+            val = num;
+          }
+          if (val !== value) {
+            changeValue(val);
           }
         }}
       />
       {clearable && !disabled && (
         <div
-          {...mergeCS(styled('input__clear'), { style: { opacity: inputValue.length > 0 ? 1 : 0 } })}
+          {...mergeCS(styled('input__clear'), { style: { opacity: placeholderValue.length > 0 ? 1 : 0 } })}
           role="button"
           aria-label={t('Clear')}
           onClick={() => {
