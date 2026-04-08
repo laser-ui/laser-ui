@@ -2,9 +2,9 @@
 import type { TransitionProps } from './types';
 import type { ArrayElement } from '../types';
 
-import { useAsync, useForceUpdate, useIsomorphicLayoutEffect, useUnmount } from '@laser-ui/hooks';
+import { useAsync, useIsomorphicLayoutEffect, useUnmount } from '@laser-ui/hooks';
 import { isNumber, isUndefined } from 'lodash';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 
 const CLASSES = ['enter-from', 'enter-active', 'enter-to', 'leave-from', 'leave-active', 'leave-to'] as const;
@@ -28,7 +28,6 @@ export function Transition(props: TransitionProps): React.ReactElement | null {
     onLeaveCancelled,
   } = props;
 
-  const forceUpdate = useForceUpdate();
   const async = useAsync();
 
   const el = useRef<HTMLElement>(null);
@@ -38,9 +37,9 @@ export function Transition(props: TransitionProps): React.ReactElement | null {
 
   const skipTransition = useRef(skipFirstTransition);
   const prevEnter = useRef(enter);
-  const leaved = useRef(skipFirstTransition ? !enter : false);
-  if (enter) {
-    leaved.current = false;
+  const [leaved, setLeaved] = useState(() => (skipFirstTransition ? !enter : false));
+  if (enter && leaved) {
+    setLeaved(false);
   }
 
   const resetClasses = useRef(() => {});
@@ -127,9 +126,8 @@ export function Transition(props: TransitionProps): React.ReactElement | null {
             clearTransitionEnd.current();
             removeClasses(['leave-active', 'leave-to']);
             onAfterLeave?.(el.current);
-            leaved.current = true;
             flushSync(() => {
-              forceUpdate();
+              setLeaved(true);
             });
           };
           if (isUndefined(duration)) {
@@ -171,5 +169,5 @@ export function Transition(props: TransitionProps): React.ReactElement | null {
 
   return children((instance) => {
     el.current = instance;
-  }, leaved.current);
+  }, leaved);
 }

@@ -70,11 +70,7 @@ export function Dropdown<ID extends React.Key, T extends DropdownItem<ID>>(props
   );
 
   const [visible, changeVisible] = useControlled<boolean>(defaultVisible ?? false, visibleProp, onVisibleChange);
-  const { popupIdsRef, setPopupIds, addPopupId, removePopupId } = useNestedPopup<ID>();
-  if (!visible) {
-    popupIdsRef.current = [];
-  }
-  const popupIds = popupIdsRef.current;
+  const { popupIds, setPopupIds, addPopupId, removePopupId } = useNestedPopup<ID>(visible);
   const [focusIds, setFocusIds] = useState<ID[]>([]);
   const focusId = (() => {
     let id: ID | undefined;

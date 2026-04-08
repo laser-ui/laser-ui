@@ -1,27 +1,18 @@
-import type { DraftFunction } from '@laser-ui/hooks/useImmer';
-
-import { useForceUpdate } from '@laser-ui/hooks';
-import { freeze, produce } from 'immer';
-import { isFunction } from 'lodash';
-import { useRef } from 'react';
+import { useImmer } from '@laser-ui/hooks';
 
 interface PopupId<ID> {
   id: ID;
   visible: boolean;
 }
 
-export function useNestedPopup<ID>() {
-  const forceUpdate = useForceUpdate();
-
-  const popupIdsRef = useRef<PopupId<ID>[]>([]);
-
-  const setPopupIds = (value: PopupId<ID>[] | DraftFunction<PopupId<ID>[]>) => {
-    popupIdsRef.current = isFunction(value) ? produce(popupIdsRef.current, value) : freeze(value);
-    forceUpdate();
-  };
+export function useNestedPopup<ID>(visible = true) {
+  const [popupIds, setPopupIds] = useImmer<PopupId<ID>[]>([]);
+  if (!visible && popupIds.length > 0) {
+    setPopupIds([]);
+  }
 
   return {
-    popupIdsRef,
+    popupIds,
     setPopupIds,
     addPopupId: (id: ID) => {
       setPopupIds((draft) => {

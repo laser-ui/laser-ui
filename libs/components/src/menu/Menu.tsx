@@ -111,8 +111,7 @@ export function Menu<ID extends React.Key, T extends MenuItem<ID>>(props: MenuPr
       onExpandsChange(ids, items);
     }
   });
-  const { popupIdsRef, setPopupIds, addPopupId, removePopupId } = useNestedPopup<ID>();
-  const popupIds = popupIdsRef.current;
+  const { popupIds, setPopupIds, addPopupId, removePopupId } = useNestedPopup<ID>();
   const [focusIds, setFocusIds] = useState<ID[]>([]);
   const focusId = (() => {
     if (mode === 'vertical') {

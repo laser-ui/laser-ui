@@ -1,12 +1,12 @@
 import type { DatePickerProps } from './types';
 
-import { useAsync, useEventCallback, useForceUpdate, useImmer, useIsomorphicLayoutEffect, useResize } from '@laser-ui/hooks';
+import { useAsync, useEventCallback, useImmer, useIsomorphicLayoutEffect, useResize } from '@laser-ui/hooks';
 import { setRef } from '@laser-ui/utils';
 import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
 import CalendarTodayOutlined from '@material-design-icons/svg/outlined/calendar_today.svg?react';
 import SwapHorizOutlined from '@material-design-icons/svg/outlined/swap_horiz.svg?react';
 import { isArray, isBoolean, isNull, isUndefined } from 'lodash';
-import { useEffect, useImperativeHandle, useRef } from 'react';
+import { useImperativeHandle, useRef } from 'react';
 
 import { DatePickerPanel } from './internal/DatePickerPanel';
 import { CLASSES } from './vars';
@@ -76,105 +76,139 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
   );
 
   const { t } = useTranslation();
-  const forceUpdate = useForceUpdate();
   const async = useAsync();
 
   const { contentResizeRef } = useLayout();
 
   const boxRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
-  const inputLeftRef = useRef<HTMLInputElement>(null);
-  const inputRightRef = useRef<HTMLInputElement>(null);
+  const inputStartRef = useRef<HTMLInputElement>(null);
+  const inputEndRef = useRef<HTMLInputElement>(null);
   const indicatorRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<(date: Date) => void>(null);
   const timePickerPanelRef = useRef<(date: Date) => void>(null);
   const updatePanel = (date: Date) => {
-    panelRef.current?.(date);
-    timePickerPanelRef.current?.(date);
+    if (visible) {
+      panelRef.current?.(date);
+      timePickerPanelRef.current?.(date);
+    }
   };
 
   const dataRef = useRef<{
     clearTid?: () => void;
-    latestFocused: 'start' | 'end';
-    onceVisible: boolean;
-    focusAnother: boolean;
-    inputValue: [string?, string?];
-    rangeDate: [Date | null, Date | null];
-  }>({
-    latestFocused: 'start',
-    onceVisible: false,
-    focusAnother: false,
-    inputValue: [undefined, undefined],
-    rangeDate: [null, null],
-  });
+    lastVisible?: 'start' | 'end';
+    focusWithoutUser: boolean;
+  }>({ focusWithoutUser: false });
 
   const format = isUndefined(formatProp) ? (showTime ? 'YYYY-MM-DD HH:mm:ss' : `YYYY-MM-DD`) : formatProp;
-  const order = (date: [Date, Date]) => orderDate(date, orderProp, showTime ? undefined : 'date');
 
   const [visible, changeVisible] = useControlled<boolean>(defaultVisible ?? false, visibleProp, onVisibleChange);
-
   const [focused, setFocused] = useImmer<[boolean, boolean]>([false, false]);
-  if (focused[0]) {
-    dataRef.current.latestFocused = 'start';
-  }
-  if (focused[1]) {
-    dataRef.current.latestFocused = 'end';
-  }
 
-  const [_value, _changeValue] = useControlled<Date | [Date, Date] | null>(
+  const [value, _changeValue] = useControlled<Date | [Date, Date] | null>(
     defaultModel ?? null,
     model,
     onModelChange,
     (a, b) => deepCompareDate(a, b, format),
     formControl?.control,
   );
-  let [valueLeft, valueRight = null] = range ? ((_value as [Date, Date] | null) ?? [null, null]) : [_value as Date | null, null];
-  if (range) {
-    if (isNull(_value)) {
-      [valueLeft, valueRight] = dataRef.current.rangeDate;
-    } else {
-      dataRef.current.rangeDate = [null, null];
-    }
-  }
-  const inputValue = [0, 1].map((index) =>
-    focused[index] && !isUndefined(dataRef.current.inputValue[index])
-      ? (dataRef.current.inputValue[index] as string)
-      : (() => {
-          const value = index === 0 ? valueLeft : valueRight;
-          return isNull(value) ? '' : dayjs(value).format(format);
-        })(),
-  );
-  const changeValue = (date: Date) => {
-    const index = focused.findIndex((f) => f);
-    if (range) {
-      if (isNull(_value)) {
-        dataRef.current.rangeDate[index] = date;
-        if (dataRef.current.rangeDate.every((v) => !isNull(v))) {
-          dataRef.current.focusAnother = order(dataRef.current.rangeDate as [Date, Date]);
-          if (dataRef.current.focusAnother) {
-            dataRef.current.rangeDate.reverse();
-          }
-          dataRef.current.inputValue = [undefined, undefined];
-          _changeValue(dataRef.current.rangeDate as [Date, Date]);
-        }
+  const [placeholderValues, setPlaceholderValues] = useImmer(() => {
+    let values: [string, string] = ['', ''];
+    if (value) {
+      if (range) {
+        values = (value as [Date, Date]).map((v) => dayjs(v).format(format)) as [string, string];
       } else {
-        dataRef.current.inputValue = [undefined, undefined];
-        _changeValue((draft) => {
-          (draft as [Date, Date])[index] = date;
-          dataRef.current.focusAnother = order(draft as [Date, Date]);
-          if (dataRef.current.focusAnother) {
-            (draft as [Date, Date]).reverse();
-          }
-        });
+        values[0] = dayjs(value as Date).format(format);
+      }
+    }
+    return values;
+  });
+  const newPlaceholderValues = ((): [string, string] | undefined => {
+    if (focused.some((f) => f)) {
+      return;
+    }
+    if (isNull(value)) {
+      if (placeholderValues.some((p) => p)) {
+        return ['', ''];
       }
     } else {
-      dataRef.current.inputValue = [undefined, undefined];
-      _changeValue(date);
+      if (isArray(value)) {
+        const currentPlaceholder = value.map((v) => dayjs(v).format(format)) as [string, string];
+        if (currentPlaceholder.some((p, i) => p !== placeholderValues[i])) {
+          return currentPlaceholder;
+        }
+      } else {
+        const currentPlaceholder = dayjs(value).format(format);
+        if (currentPlaceholder !== placeholderValues[0]) {
+          return [currentPlaceholder, ''];
+        }
+      }
     }
-    forceUpdate();
+  })();
+  if (!isUndefined(newPlaceholderValues)) {
+    setPlaceholderValues(newPlaceholderValues);
+  }
+  const placeholderDates = placeholderValues.map((v) => (v && dayjs(v, format, true).isValid() ? dayjs(v, format).toDate() : null)) as [
+    Date | null,
+    Date | null,
+  ];
+  const changeValue = (date: Date | [Date, Date] | null) => {
+    if (isNull(date)) {
+      _changeValue(null);
+      setPlaceholderValues(['', '']);
+    } else {
+      if (range) {
+        let newValue = [...placeholderDates];
+        if (isArray(date)) {
+          newValue = date;
+        } else {
+          newValue[focused[0] ? 0 : 1] = date;
+        }
+        if (newValue.every((v) => !isNull(v))) {
+          const reverse = orderDate(newValue as [Date, Date], orderProp, showTime ? undefined : 'date');
+          if (reverse) {
+            newValue.reverse();
+            const inputEl = focused[0] ? inputEndRef.current : inputStartRef.current;
+            if (inputEl) {
+              dataRef.current.focusWithoutUser = true;
+              inputEl.focus({ preventScroll: true });
+            }
+          }
+          _changeValue(newValue as [Date, Date]);
+        }
+        setPlaceholderValues(newValue.map((v) => (v ? dayjs(v).format(format) : '')) as [string, string]);
+      } else {
+        _changeValue(date);
+        setPlaceholderValues([dayjs(date as Date).format(format), '']);
+      }
+    }
+  };
+  const handleEnter = (date: Date | [Date, Date]) => {
+    if (isArray(date)) {
+      updatePanel(date[focused[0] ? 0 : 1]);
+      changeVisible(false);
+      dataRef.current.lastVisible = focused[0] ? 'start' : 'end';
+    } else {
+      updatePanel(date);
+      if (range) {
+        if (placeholderDates[focused[0] ? 1 : 0]) {
+          changeVisible(false);
+          dataRef.current.lastVisible = focused[0] ? 'start' : 'end';
+        } else {
+          const inputEl = focused[0] ? inputEndRef.current : inputStartRef.current;
+          if (inputEl) {
+            dataRef.current.focusWithoutUser = true;
+            inputEl.focus({ preventScroll: true });
+          }
+        }
+      } else {
+        changeVisible(false);
+        dataRef.current.lastVisible = 'start';
+      }
+    }
   };
 
-  const [placeholderLeft = t('DatePicker', range ? 'Start date' : 'Select date'), placeholderRight = t('DatePicker', 'End date')] = range
+  const [placeholderStart = t('DatePicker', range ? 'Start date' : 'Select date'), placeholderEnd = t('DatePicker', 'End date')] = range
     ? ((placeholder as [string?, string?] | undefined) ?? [])
     : [placeholder as string | undefined];
 
@@ -202,6 +236,23 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
       popupRef.current.style.maxWidth = maxWidth + 'px';
     }
   });
+  const updatePanelWhenEnter = useEventCallback(() => {
+    const update = () => {
+      const date = placeholderDates[focused[0] ? 0 : 1];
+      if (date) {
+        updatePanel(date);
+      }
+    };
+    if (range) {
+      if ((focused[0] ? 'start' : 'end') !== dataRef.current.lastVisible) {
+        update();
+      }
+    } else {
+      if (dataRef.current.lastVisible !== 'start') {
+        update();
+      }
+    }
+  });
 
   useContainerScrolling(boxRef, updatePosition, !visible);
 
@@ -221,13 +272,13 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
     if (boxRef.current && indicatorRef.current) {
       let focus = false;
       const boxRect = boxRef.current.getBoundingClientRect();
-      if (inputLeftRef.current && document.activeElement === inputLeftRef.current) {
-        const rect = inputLeftRef.current.getBoundingClientRect();
+      if (inputStartRef.current && document.activeElement === inputStartRef.current) {
+        const rect = inputStartRef.current.getBoundingClientRect();
         indicatorRef.current.style.cssText = `left:${rect.left - boxRect.left}px;width:${rect.width}px;opacity:1;`;
         focus = true;
       }
-      if (inputRightRef.current && document.activeElement === inputRightRef.current) {
-        const rect = inputRightRef.current.getBoundingClientRect();
+      if (inputEndRef.current && document.activeElement === inputEndRef.current) {
+        const rect = inputEndRef.current.getBoundingClientRect();
         indicatorRef.current.style.cssText = `left:${rect.left - boxRect.left}px;width:${rect.width}px;opacity:1;`;
         focus = true;
       }
@@ -237,42 +288,10 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
     }
   });
 
-  useEffect(() => {
-    if (dataRef.current.focusAnother && document.activeElement) {
-      const el = document.activeElement.parentElement as HTMLElement;
-      for (let index = 0; index < el.childElementCount; index++) {
-        const element = el.children.item(index) as HTMLElement;
-        if (element.tagName.toLowerCase() === 'input' && element !== document.activeElement) {
-          element.focus({ preventScroll: true });
-          break;
-        }
-      }
-    }
-    dataRef.current.focusAnother = false;
-  });
-
-  const handleEnter = (date: Date) => {
-    if (range) {
-      const index = focused.findIndex((f) => f);
-      if (isNull(index === 0 ? valueRight : valueLeft)) {
-        dataRef.current.focusAnother = true;
-        forceUpdate();
-      } else {
-        changeVisible(false);
-      }
-    } else {
-      changeVisible(false);
-    }
-    if (!dataRef.current.focusAnother) {
-      updatePanel(date);
-    }
-  };
-
-  const clearable = clearableProp && !isNull(_value) && !visible && !disabled;
-  const inputNode = (isLeft: boolean) => {
-    const index = isLeft ? 0 : 1;
-    const value = isLeft ? valueLeft : valueRight;
-    const inputRef = isLeft ? inputLeftRef : inputRightRef;
+  const clearable = clearableProp && !disabled && !visible && placeholderValues.some((p) => p);
+  const inputNode = (isStart: boolean) => {
+    const index = isStart ? 0 : 1;
+    const inputRef = isStart ? inputStartRef : inputEndRef;
 
     return (
       <BaseInput
@@ -292,18 +311,31 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
         }}
         type="text"
         autoComplete="off"
-        value={inputValue[index]}
+        value={placeholderValues[index]}
         size={22}
-        placeholder={isLeft ? placeholderLeft : placeholderRight}
+        placeholder={isStart ? placeholderStart : placeholderEnd}
         disabled={disabled}
         onValueChange={(val) => {
-          forceUpdate();
-          dataRef.current.inputValue[index] = val;
+          const values = [...placeholderValues] as [string, string];
+          values[index] = val;
+          setPlaceholderValues(values);
 
-          if (dayjs(val, format, true).isValid()) {
-            const date = dayjs(val, format).toDate();
-            changeValue(date);
-            updatePanel(date);
+          if (range) {
+            if (values.every((v) => !v)) {
+              _changeValue(null);
+            } else if (values.every((v) => v && dayjs(v, format, true).isValid())) {
+              const dates = values.map((v) => dayjs(v, format).toDate()) as [Date, Date];
+              _changeValue(dates);
+              updatePanel(dates[index]);
+            }
+          } else {
+            if (!values[index]) {
+              _changeValue(null);
+            } else if (values[index] && dayjs(values[index], format, true).isValid()) {
+              const date = dayjs(values[index], format).toDate();
+              _changeValue(date);
+              updatePanel(date);
+            }
           }
         }}
         onKeyDown={(e) => {
@@ -314,11 +346,13 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
               e.stopPropagation();
               e.preventDefault();
               changeVisible(false);
+              dataRef.current.lastVisible = isStart ? 'start' : 'end';
             }
-          } else if (e.code === 'Enter' && inputValue[index] && dayjs(inputValue[index], format, true).isValid()) {
-            e.preventDefault();
-            const date = dayjs(inputValue[index], format).toDate();
-            handleEnter(date);
+          } else if (e.code === 'Enter') {
+            if (placeholderDates[index]) {
+              e.preventDefault();
+              handleEnter(placeholderDates[index]);
+            }
           }
         }}
         onFocus={(e) => {
@@ -327,13 +361,14 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
           dataRef.current.clearTid?.();
           setFocused((draft) => {
             draft.fill(false);
-            draft[isLeft ? 0 : 1] = true;
+            draft[index] = true;
           });
-          dataRef.current.inputValue = [undefined, undefined];
 
-          if (visible && range && value) {
-            updatePanel(value);
+          if (range && !dataRef.current.focusWithoutUser && placeholderDates[index]) {
+            updatePanel(placeholderDates[index]);
           }
+
+          dataRef.current.focusWithoutUser = false;
         }}
         onBlur={(e) => {
           inputProps?.[index]?.onBlur?.(e);
@@ -341,6 +376,7 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
           dataRef.current.clearTid = async.setTimeout(() => {
             setFocused([false, false]);
             changeVisible(false);
+            dataRef.current.lastVisible = isStart ? 'start' : 'end';
           }, 20);
         }}
       />
@@ -349,9 +385,9 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
 
   const preventBlur: React.MouseEventHandler = (e) => {
     if (
-      (document.activeElement === inputLeftRef.current || document.activeElement === inputRightRef.current) &&
-      e.target !== inputLeftRef.current &&
-      e.target !== inputRightRef.current &&
+      (document.activeElement === inputStartRef.current || document.activeElement === inputEndRef.current) &&
+      e.target !== inputStartRef.current &&
+      e.target !== inputEndRef.current &&
       e.button === 0
     ) {
       e.preventDefault();
@@ -394,7 +430,8 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
           restProps.onClick?.(e);
 
           if (!focused.some((f) => f)) {
-            inputLeftRef.current?.focus({ preventScroll: true });
+            dataRef.current.focusWithoutUser = true;
+            inputStartRef.current?.focus({ preventScroll: true });
           }
           changeVisible(true);
         }}
@@ -427,8 +464,7 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
             onClick={(e) => {
               e.stopPropagation();
 
-              dataRef.current.inputValue = [undefined, undefined];
-              _changeValue(null);
+              changeValue(null);
               onClear?.();
             }}
           >
@@ -464,35 +500,11 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
           duration={TTANSITION_DURING_POPUP}
           onSkipEnter={() => {
             updatePosition();
-
-            const cb = () => {
-              const value = focused[0] ? valueLeft : valueRight;
-              if (value) {
-                updatePanel(value);
-              }
-            };
-            if (range) {
-              cb();
-            } else if (!dataRef.current.onceVisible) {
-              dataRef.current.onceVisible = true;
-              cb();
-            }
+            updatePanelWhenEnter();
           }}
           onBeforeEnter={() => {
             updatePosition();
-
-            const cb = () => {
-              const value = focused[0] ? valueLeft : valueRight;
-              if (value) {
-                updatePanel(value);
-              }
-            };
-            if (range) {
-              cb();
-            } else if (!dataRef.current.onceVisible) {
-              dataRef.current.onceVisible = true;
-              cb();
-            }
+            updatePanelWhenEnter();
           }}
           onAfterEnter={() => {
             afterVisibleChange?.(true);
@@ -526,30 +538,20 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
             >
               {presetDate && (
                 <ul {...styled('date-picker__preset')}>
-                  {Object.keys(presetDate).map((name) => {
-                    const handleClick = () => {
-                      const date = presetDate[name]();
-                      dataRef.current.inputValue = [undefined, undefined];
-                      if (range) {
-                        if (isArray(date)) {
-                          _changeValue(date);
-                          changeVisible(false);
-                        } else {
-                          changeValue(date);
-                          handleEnter(date);
-                        }
-                      } else {
-                        _changeValue(date);
-                        handleEnter(date as Date);
-                      }
-                    };
-
-                    return (
-                      <li {...styled('date-picker__preset-option')} key={name} role="button" onClick={handleClick}>
-                        {name}
-                      </li>
-                    );
-                  })}
+                  {Object.keys(presetDate).map((name) => (
+                    <li
+                      {...styled('date-picker__preset-option')}
+                      key={name}
+                      role="button"
+                      onClick={() => {
+                        const date = presetDate[name]();
+                        changeValue(date);
+                        handleEnter(date);
+                      }}
+                    >
+                      {name}
+                    </li>
+                  ))}
                 </ul>
               )}
               <div {...styled('date-picker__panel-wrapper')}>
@@ -561,9 +563,9 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
                     };
                   }}
                   styled={styled}
-                  currentSelected={dataRef.current.latestFocused === 'start' ? valueLeft : valueRight}
-                  anotherSelected={dataRef.current.latestFocused === 'start' ? valueRight : valueLeft}
-                  config={config ? (...args) => config(...args, dataRef.current.latestFocused, [valueLeft, valueRight]) : undefined}
+                  currentSelected={placeholderDates[focused[0] ? 0 : 1]}
+                  anotherSelected={placeholderDates[focused[0] ? 1 : 0]}
+                  config={config ? (...args) => config(...args, focused[0] ? 'start' : 'end', placeholderDates) : undefined}
                   range={range}
                   onDateChange={(date) => {
                     changeValue(date);
@@ -581,13 +583,13 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
                       };
                     }}
                     styled={styled as any}
-                    time={dataRef.current.latestFocused === 'start' ? valueLeft : valueRight}
+                    time={placeholderDates[focused[0] ? 0 : 1]}
                     format={format}
                     config={(() => {
                       if (showTime && !isBoolean(showTime)) {
                         const fn = showTime.config;
                         if (fn) {
-                          return (...args) => fn(...args, dataRef.current.latestFocused, [valueLeft, valueRight]);
+                          return (...args) => fn(...args, focused[0] ? 'start' : 'end', placeholderDates);
                         }
                       }
                     })()}

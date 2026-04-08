@@ -1,9 +1,8 @@
 import type { ImageProps } from './types';
 
-import { useForceUpdate } from '@laser-ui/hooks';
 import { checkNodeExist } from '@laser-ui/utils';
 import { has } from 'lodash';
-import { Fragment, useRef } from 'react';
+import { Fragment, useState } from 'react';
 
 import { ImageAction } from './ImageAction';
 import { ImageLoader } from './ImageLoader';
@@ -31,21 +30,13 @@ export const Image: {
 
   const styled = useStyled(CLASSES, { image: styleProvider?.image }, styleOverrides);
 
-  const forceUpdate = useForceUpdate();
-
-  const dataRef = useRef<{
-    prevSrc?: string;
-    isLoading: boolean;
-    isError: boolean;
-  }>({
-    isLoading: true,
-    isError: false,
-  });
-
-  if (imgProps.src !== dataRef.current.prevSrc) {
-    dataRef.current.prevSrc = imgProps.src;
-    dataRef.current.isLoading = true;
-    dataRef.current.isError = false;
+  const [previousSrc, setPreviousSrc] = useState(imgProps.src);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+  if (imgProps.src !== previousSrc) {
+    setPreviousSrc(imgProps.src);
+    setIsLoading(true);
+    setIsError(false);
   }
 
   return (
@@ -56,8 +47,8 @@ export const Image: {
         style: restProps.style,
       })}
     >
-      {dataRef.current.isLoading && checkNodeExist(loading) && loading}
-      {dataRef.current.isError && checkNodeExist(error) && error}
+      {isLoading && checkNodeExist(loading) && loading}
+      {isError && checkNodeExist(error) && error}
       {actions && (
         <div {...styled('image__actions')}>
           {actions.map((node, index) => {
@@ -75,28 +66,25 @@ export const Image: {
           className: imgProps?.className,
           style: {
             ...imgProps?.style,
-            display: (dataRef.current.isLoading && loading) || (dataRef.current.isError && error) ? 'none' : undefined,
+            display: (isLoading && loading) || (isError && error) ? 'none' : undefined,
           },
         })}
         onLoadStart={(e) => {
           // https://bugs.chromium.org/p/chromium/issues/detail?id=458851
           imgProps?.onLoadStart?.(e);
 
-          dataRef.current.isLoading = true;
-          forceUpdate();
+          setIsLoading(true);
         }}
         onLoad={(e) => {
           imgProps?.onLoad?.(e);
 
-          dataRef.current.isLoading = false;
-          forceUpdate();
+          setIsLoading(false);
         }}
         onError={(e) => {
           imgProps?.onError?.(e);
 
-          dataRef.current.isLoading = false;
-          dataRef.current.isError = true;
-          forceUpdate();
+          setIsLoading(false);
+          setIsError(true);
         }}
       />
     </div>

@@ -1,9 +1,9 @@
 import type { SpinnerProps } from './types';
 
-import { useAsync, useForceUpdate } from '@laser-ui/hooks';
+import { useAsync } from '@laser-ui/hooks';
 import { checkNodeExist } from '@laser-ui/utils';
 import { isNumber, isUndefined } from 'lodash';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { CLASSES } from './vars';
 import { CircularProgress } from '../circular-progress';
@@ -32,29 +32,26 @@ export function Spinner(props: SpinnerProps): React.ReactElement | null {
   const styled = useStyled(CLASSES, { spinner: styleProvider?.spinner }, styleOverrides);
 
   const async = useAsync();
-  const forceUpdate = useForceUpdate();
 
   const spinnerRef = useRef<HTMLDivElement>(null);
 
-  const delayVisible = useRef(false);
-
-  if (visibleProp === false) {
-    delayVisible.current = false;
+  const [delayTimeout, setDelayTimeout] = useState(false);
+  if (!visibleProp && delayTimeout) {
+    setDelayTimeout(false);
   }
-  const visible = isUndefined(delay) ? visibleProp : delayVisible.current;
+  const visible = isUndefined(delay) ? visibleProp : delayTimeout;
 
   useEffect(() => {
     if (isNumber(delay) && visibleProp) {
       const clearTid = async.setTimeout(() => {
-        delayVisible.current = true;
-        forceUpdate();
+        setDelayTimeout(true);
       }, delay);
 
       return () => {
         clearTid();
       };
     }
-  }, [async, delay, forceUpdate, visibleProp]);
+  }, [async, delay, visibleProp]);
 
   return (
     <Transition
