@@ -14,18 +14,6 @@ import { useComponentProps, useControlled, useDesign, useScopedProps, useStyled,
 import { Icon } from '../icon';
 import { mergeCS } from '../utils';
 
-function syncValueToPlaceholder(value: number | null, placeholder: string) {
-  if (isNull(value)) {
-    if (placeholder) {
-      return '';
-    }
-  } else {
-    if (value !== Number(placeholder)) {
-      return value.toString();
-    }
-  }
-}
-
 export function InputNumber(props: InputNumberProps) {
   const {
     styleOverrides,
@@ -64,9 +52,23 @@ export function InputNumber(props: InputNumberProps) {
   const windowRef = useRefExtra(() => window);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const [focused, setFocused] = useState(false);
   const [value, _changeValue] = useControlled<number | null>(defaultModel ?? null, model, onModelChange, undefined, formControl?.control);
   const [placeholderValue, setPlaceholderValue] = useState(() => (isNull(value) ? '' : value.toString()));
-  const newPlaceholderValue = syncValueToPlaceholder(value, placeholderValue);
+  const newPlaceholderValue = (() => {
+    if (focused) {
+      return;
+    }
+    if (isNull(value)) {
+      if (placeholderValue) {
+        return '';
+      }
+    } else {
+      if (value !== Number(placeholderValue)) {
+        return value.toString();
+      }
+    }
+  })();
   if (!isUndefined(newPlaceholderValue)) {
     setPlaceholderValue(newPlaceholderValue);
   }
@@ -184,27 +186,34 @@ export function InputNumber(props: InputNumberProps) {
             }
           }
         }}
+        onFocus={(e) => {
+          inputProps?.onFocus?.(e);
+
+          setFocused(true);
+        }}
         onBlur={(e) => {
           inputProps?.onBlur?.(e);
 
-          let val = value;
+          setFocused(false);
+          let realValue: number | null = null;
           if (placeholderValue.length === 0) {
-            val = null;
+            realValue = null;
           } else {
-            let num = Number(placeholderValue);
-            if (!isUndefined(max) && num > max) {
-              num = max;
+            realValue = Number(placeholderValue);
+            if (!isUndefined(max) && realValue > max) {
+              realValue = max;
             }
-            if (!isUndefined(min) && num < min) {
-              num = min;
+            if (!isUndefined(min) && realValue < min) {
+              realValue = min;
             }
-            if (integer && !Number.isInteger(num)) {
-              num = Math.round(num);
+            if (integer && !Number.isInteger(realValue)) {
+              realValue = Math.round(realValue);
             }
-            val = num;
           }
-          if (val !== value) {
-            changeValue(val);
+          if (realValue !== value) {
+            changeValue(realValue);
+          } else if (realValue !== (placeholderValue.length === 0 ? null : Number(placeholderValue))) {
+            setPlaceholderValue(realValue === null ? '' : realValue.toString());
           }
         }}
       />
