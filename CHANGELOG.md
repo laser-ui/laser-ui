@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.1](https://github.com/laser-ui/laser-ui/compare/v2.6.0...v2.6.1) (2026-04-09)
+
+### Bug Fixes
+
+- **components:** fix number input show ([d29f5eb](https://github.com/laser-ui/laser-ui/commit/d29f5eb7f89c55b0cc7da8a549731f55d05a7948))
+
 # [2.6.0](https://github.com/laser-ui/laser-ui/compare/v2.5.0...v2.6.0) (2026-04-08)
 
 ### Bug Fixes
