@@ -177,14 +177,7 @@ export function InputNumber(props: InputNumberProps) {
         disabled={disabled}
         onValueChange={(val) => {
           setPlaceholderValue(val);
-          if (val.length === 0) {
-            _changeValue(null);
-          } else {
-            const num = Number(val);
-            if ((isUndefined(max) || num <= max) && (isUndefined(min) || num >= min) && (!integer || Number.isInteger(num))) {
-              _changeValue(num);
-            }
-          }
+          _changeValue(val.length === 0 ? null : Number(val));
         }}
         onFocus={(e) => {
           inputProps?.onFocus?.(e);
