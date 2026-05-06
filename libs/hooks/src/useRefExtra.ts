@@ -10,7 +10,7 @@ class Ref {
 
   public refExtra?: RefExtra<any>;
 
-  public get current(): string {
+  public get current(): any {
     if (isNull(this._current)) {
       this.getCurrent();
     }

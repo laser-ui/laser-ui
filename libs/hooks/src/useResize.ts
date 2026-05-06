@@ -23,12 +23,13 @@ export function useResize(
 
   const prevContentRect = useRef<{ width: number; height: number }>(undefined);
 
-  if (disabled) {
-    prevContentRect.current = undefined;
-  }
-
   useEffect(() => {
-    if (target.current && !disabled) {
+    if (disabled) {
+      prevContentRect.current = undefined;
+      return;
+    }
+
+    if (target.current) {
       const observer = new ResizeObserver((entries, observer) => {
         const entry = entries[0];
         checkResize(

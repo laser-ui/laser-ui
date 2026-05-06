@@ -16,6 +16,7 @@ class AsyncInstance {
     const clear = () => {
       clearFn?.();
       clearTimeout(tid);
+      this.clearFns.delete(clear);
     };
     this.clearFns.add(clear);
 
@@ -27,6 +28,7 @@ class AsyncInstance {
     const clear = () => {
       clearFn?.();
       cancelAnimationFrame(tid);
+      this.clearFns.delete(clear);
     };
     this.clearFns.add(clear);
 
@@ -54,6 +56,7 @@ class AsyncInstance {
       clearFn?.();
       cancelAnimationFrame(tid);
       close();
+      this.clearFns.delete(clear);
     };
     this.clearFns.add(clear);
 
