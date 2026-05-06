@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.3](https://github.com/laser-ui/laser-ui/compare/v2.6.2...v2.6.3) (2026-05-06)
+
+### Bug Fixes
+
+- **components:** dialog array mutation, lock scroll ref count, dayjs locale timing, dead code ([c6ba3be](https://github.com/laser-ui/laser-ui/commit/c6ba3be8f4432af644ec19fb20755d5d37bce612))
+
 ## [2.6.2](https://github.com/laser-ui/laser-ui/compare/v2.6.1...v2.6.2) (2026-04-09)
 
 ### Bug Fixes

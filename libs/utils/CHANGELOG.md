@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.3](https://github.com/laser-ui/laser-ui/compare/v2.6.2...v2.6.3) (2026-05-06)
+
+### Bug Fixes
+
+- **utils:** correct scrollTo cancel, toPx SSR safety, and array comparison ([b9a35c4](https://github.com/laser-ui/laser-ui/commit/b9a35c456f8f2f57ea45f54c561d6d65debf928b))
+
 ## [2.6.2](https://github.com/laser-ui/laser-ui/compare/v2.6.1...v2.6.2) (2026-04-09)
 
 **Note:** Version bump only for package @laser-ui/utils
