@@ -2,7 +2,7 @@ import type { RootProps } from './types';
 
 import { useEvent, useRefExtra } from '@laser-ui/hooks';
 import { isString, set } from 'lodash';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 import { Dialogs } from './Dialogs';
 import { useDialogs } from './dialog-service';
@@ -68,23 +68,21 @@ export function Root(props: RootProps): React.ReactElement | null {
     };
   }, [contextProp]);
 
-  switch (context.i18nLang) {
-    case 'en-US':
-      dayjs.locale('en');
-      break;
+  const prevLangRef = useRef(context.i18nLang);
+  if (prevLangRef.current !== context.i18nLang) {
+    prevLangRef.current = context.i18nLang;
+    switch (context.i18nLang) {
+      case 'en-US':
+        dayjs.locale('en');
+        break;
 
-    case 'zh-CN':
-      dayjs.locale('zh-cn');
-      dayjs.updateLocale('zh-cn', {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        meridiem: (hour: number, minute: number, isLowercase: number) => {
-          return hour > 12 ? 'PM' : 'AM';
-        },
-      });
-      break;
+      case 'zh-CN':
+        dayjs.locale('zh-cn');
+        break;
 
-    default:
-      break;
+      default:
+        break;
+    }
   }
 
   return (

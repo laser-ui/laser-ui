@@ -20,7 +20,7 @@ export class DialogInstance<P extends object> {
           if (!visible) {
             const index = this.service.dialogs.findIndex((dialog) => dialog.key === this.key);
             if (index !== -1) {
-              this.service.dialogs.splice(index, 1);
+              this.service.dialogs = this.service.dialogs.filter((dialog) => dialog.key !== this.key);
             }
             this.service.emitChange();
           }

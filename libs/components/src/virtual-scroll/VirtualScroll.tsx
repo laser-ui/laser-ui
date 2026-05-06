@@ -260,7 +260,6 @@ export function VirtualScroll<T>(props: VirtualScrollProps<T>): React.ReactEleme
             />,
           );
         }
-        <div></div>;
         if (fillSize[1] > 0) {
           list.push(
             <Placeholder

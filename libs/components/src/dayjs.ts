@@ -10,4 +10,11 @@ dayjs.extend(isBetween);
 dayjs.extend(localeData);
 dayjs.extend(updateLocale);
 
+dayjs.updateLocale('zh-cn', {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  meridiem: (hour: number, minute: number, isLowercase: number) => {
+    return hour > 12 ? 'PM' : 'AM';
+  },
+});
+
 export default dayjs;
