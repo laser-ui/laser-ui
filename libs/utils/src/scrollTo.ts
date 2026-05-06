@@ -74,6 +74,6 @@ export function scrollTo(
   }
 
   return () => {
-    tid && clearTimeout(tid);
+    tid && cancelAnimationFrame(tid);
   };
 }

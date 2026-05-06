@@ -8,10 +8,11 @@ export function toPx(str: string, toNum?: boolean): number | string {
     num = 0;
   } else if (/^-?[0-9]+px$/.test(str)) {
     num = toNumber(str.slice(0, str.length - 2));
-  } else {
+  } else if (typeof document !== 'undefined' && CSS.supports('width', str)) {
     const el = document.createElement('div');
-    el.style.cssText = `visibility:hidden;position:absolute;top:-999px;left:-999px;width:${str};`;
+    el.style.cssText = 'visibility:hidden;position:absolute;top:-9999px;left:-9999px;';
     document.body.appendChild(el);
+    el.style.width = str;
     num = el.clientWidth;
     document.body.removeChild(el);
   }
