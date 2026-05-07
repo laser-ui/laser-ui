@@ -2,7 +2,7 @@
 title: 单选框
 ---
 
-`Radio` 组件。
+用于在多个互斥选项中选择一项。
 
 ## API
 
@@ -12,6 +12,7 @@ title: 单选框
 interface RadioProps extends BaseProps<'radio', typeof CLASSES>, React.LabelHTMLAttributes<HTMLLabelElement> {
   formControl?: FormControlProvider;
   model?: boolean;
+  defaultModel?: boolean;
   disabled?: boolean;
   inputProps?: React.ComponentPropsWithRef<'input'>;
   onModelChange?: (checked: boolean) => void;
@@ -22,13 +23,10 @@ interface RadioProps extends BaseProps<'radio', typeof CLASSES>, React.LabelHTML
 | 属性 | 说明 | 默认值 |
 | --- | --- | --- |
 | formControl | 表单支持 | - |
-| model | 是否选中 | `false` |
-| defaultModel | 默认选中 | - |
-| size | 大小 | `medium` |
+| model | 指定当前是否选中 | `false` |
+| defaultModel | 默认是否选中 | - |
 | disabled | 为 `true` 时，禁用组件 | `false` |
-| inputRef | 传递 `ref` 给 `input` 元素 | - |
-| inputRender | 自定义 `input` 元素的渲染 | - |
-| onModelChange | 当选中改变时触发回调 | - |
+| onModelChange | 选中状态改变时的回调函数 | - |
 <!-- prettier-ignore-end -->
 
 ### RadioGroupProps
@@ -65,7 +63,7 @@ interface RadioGroupProps<V extends React.Key, T extends RadioGroupItem<V>> {
 | size | 大小 | `medium` |
 | name | `input` 元素的 `name` 属性 | `useId` 生成 |
 | disabled | 为 `true` 时，禁用组件 | `false` |
-| onModelChange | 当选中项改变时触发回调 | - |
+| onModelChange | 当选中项改变时的回调函数 | - |
 <!-- prettier-ignore-end -->
 
 ### CSS
@@ -78,10 +76,9 @@ const CLASSES = {
   'radio--button': '^radio--button',
   'radio--button-outline': '^radio--button-outline',
   'radio--button-fill': '^radio--button-fill',
-  'radio--small': '^radio--small',
-  'radio--medium': '^radio--medium',
-  'radio--large': '^radio--large',
-  radio__indicator: '^radio__indicator',
+  'radio--button-small': '^radio--button-small',
+  'radio--button-medium': '^radio--button-medium',
+  'radio--button-large': '^radio--button-large',
   'radio__input-wrapper': '^radio__input-wrapper',
   radio__input: '^radio__input',
   radio__label: '^radio__label',
