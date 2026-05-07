@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.6.4](https://github.com/laser-ui/laser-ui/compare/v2.6.3...v2.6.4) (2026-05-07)
+
+### Bug Fixes
+
+- **components:** ensure dayjs locale is initialized on first render ([42ae98d](https://github.com/laser-ui/laser-ui/commit/42ae98d3f4a1224a662b8c7967fabc62d540c374))
+
 ## [2.6.3](https://github.com/laser-ui/laser-ui/compare/v2.6.2...v2.6.3) (2026-05-06)
 
 ### Bug Fixes
