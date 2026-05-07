@@ -68,7 +68,7 @@ export function Root(props: RootProps): React.ReactElement | null {
     };
   }, [contextProp]);
 
-  const prevLangRef = useRef(context.i18nLang);
+  const prevLangRef = useRef<string | null>(null);
   if (prevLangRef.current !== context.i18nLang) {
     prevLangRef.current = context.i18nLang;
     switch (context.i18nLang) {
