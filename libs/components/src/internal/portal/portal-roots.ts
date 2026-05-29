@@ -42,3 +42,22 @@ export function destroyPortalRoots(namespace: string): void {
     }
   });
 }
+
+export function ensurePortalSubRoot(rootId: string, subId: string): HTMLElement | null {
+  if (typeof document === 'undefined') {
+    return null;
+  }
+
+  const root = document.getElementById(rootId);
+  if (!root) {
+    return null;
+  }
+
+  let el = document.getElementById(subId);
+  if (!el) {
+    el = document.createElement('div');
+    el.id = subId;
+    root.appendChild(el);
+  }
+  return el;
+}

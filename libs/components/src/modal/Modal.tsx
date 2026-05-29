@@ -1,6 +1,6 @@
 import type { ModalProps } from './types';
 
-import { useResize, useUnmount } from '@laser-ui/hooks';
+import { useResize } from '@laser-ui/hooks';
 import { isNumber, isString, isUndefined } from 'lodash';
 import { useId, useRef } from 'react';
 
@@ -85,10 +85,6 @@ export const Modal: {
   };
 
   useResize(modalContentRef, updateTransformOrigin, undefined, !visible);
-
-  useUnmount(() => {
-    modalRootRef.current = null;
-  });
 
   return (
     <Portal selector={`#${namespace}-modal-root`}>

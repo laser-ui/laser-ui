@@ -15,6 +15,7 @@ import { useComponentProps, useNamespace, useStyled, useTranslation } from '../h
 import { Icon } from '../icon';
 import { LazyLoading } from '../internal/lazy-loading';
 import { Portal } from '../internal/portal';
+import { ensurePortalSubRoot } from '../internal/portal/portal-roots';
 import { CollapseTransition } from '../transition';
 import { mergeCS } from '../utils';
 
@@ -65,18 +66,7 @@ export function Notification(props: NotificationProps): React.ReactElement | nul
             ? `${namespace}-notification-lb-root`
             : `${namespace}-notification-rb-root`;
 
-    const root = document.getElementById(`${namespace}-notification-root`);
-    if (!root) {
-      return null;
-    }
-
-    let el = document.getElementById(id);
-    if (!el) {
-      el = document.createElement('div');
-      el.id = id;
-      root.appendChild(el);
-    }
-    return el;
+    return ensurePortalSubRoot(`${namespace}-notification-root`, id);
   }, [placement, namespace]);
 
   useMount(() => {
