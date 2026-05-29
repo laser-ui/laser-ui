@@ -22,8 +22,13 @@ import { mergeCS } from '../../utils';
 import { TTANSITION_DURING_BASE } from '../../vars';
 import { VirtualScroll, type VirtualScrollRef } from '../../virtual-scroll';
 
+export interface TreePanelRef<V extends React.Key, T extends TreeItem<V>> {
+  handleKeyDown: (code: any) => AbstractTreeNode<V, T> | undefined;
+  scrollToItem: (el: HTMLElement, key: React.Key) => AbstractTreeNode<V, T> | undefined;
+}
+
 interface TreePanelProps<V extends React.Key, T extends TreeItem<V>> extends Omit<React.HTMLAttributes<HTMLUListElement>, 'children'> {
-  ref?: React.Ref<(code: any) => AbstractTreeNode<V, T> | undefined>;
+  ref?: React.Ref<TreePanelRef<V, T>>;
   namespace: string;
   styled: Styled<typeof CLASSES>;
   list: AbstractTreeNode<V, T>[];
@@ -126,7 +131,14 @@ export function TreePanel<V extends React.Key, T extends TreeItem<V>>(props: Tre
     }
   });
 
-  useImperativeHandle(ref, () => handleKeyDown, [handleKeyDown]);
+  useImperativeHandle(
+    ref,
+    () => ({
+      handleKeyDown,
+      scrollToItem: (el: HTMLElement, key: React.Key) => vsRef.current?.scrollToItem(el, key),
+    }),
+    [handleKeyDown],
+  );
 
   const vsProps = useMemo<VirtualScrollOptimization<AbstractTreeNode<V, T>>>(
     () => ({

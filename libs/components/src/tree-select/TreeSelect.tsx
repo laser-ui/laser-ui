@@ -538,17 +538,24 @@ export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: Tr
                   } else {
                     const itemFocused = (code: 'next' | 'prev' | 'first' | 'last' | 'prev-level' | 'next-level') => {
                       if (focusRef.current) {
-                        const item = focusRef.current(code);
+                        const item = focusRef.current.handleKeyDown(code);
 
                         if (item) {
                           hasSearch ? setItemFocusedWithSearch(item) : setItemFocusedWithoutSearch(item);
 
-                          if (virtual === false && !code.includes('level')) {
+                          if (!code.includes('level')) {
                             scrollCallback.current = () => {
                               scrollCallback.current = () => {};
-                              const el = document.getElementById(getItemId(hasSearch ? item.value : item.id));
-                              if (el) {
-                                focusRef.current(el);
+                              if (virtual === false) {
+                                const el = document.getElementById(getItemId(hasSearch ? item.value : item.id));
+                                if (el && focusRef.current) {
+                                  focusRef.current.handleKeyDown(el);
+                                }
+                              } else {
+                                const listEl = document.getElementById(listId);
+                                if (listEl && focusRef.current) {
+                                  focusRef.current.scrollToItem(listEl, hasSearch ? item.value : item.id);
+                                }
                               }
                             };
                             if (visible) {

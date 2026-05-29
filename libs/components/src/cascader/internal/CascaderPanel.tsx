@@ -16,8 +16,13 @@ import { Empty } from '../../empty';
 import { Icon } from '../../icon';
 import { VirtualScroll, type VirtualScrollRef } from '../../virtual-scroll';
 
+export interface CascaderPanelRef<V extends React.Key, T extends CascaderItem<V>> {
+  handleKeyDown: (code: any) => AbstractTreeNode<V, T> | undefined;
+  scrollToItem: (el: HTMLElement, key: React.Key) => AbstractTreeNode<V, T> | undefined;
+}
+
 interface CascaderPanelProps<V extends React.Key, T extends CascaderItem<V>> {
-  ref?: React.Ref<(code: any) => AbstractTreeNode<V, T> | undefined>;
+  ref?: React.Ref<CascaderPanelRef<V, T>>;
   namespace: string;
   styled: Styled<typeof CLASSES>;
   id: string | undefined;
@@ -144,7 +149,14 @@ export function CascaderPanel<V extends React.Key, T extends CascaderItem<V>>(pr
     }
   });
 
-  useImperativeHandle(ref, () => handleKeyDown, [handleKeyDown]);
+  useImperativeHandle(
+    ref,
+    () => ({
+      handleKeyDown,
+      scrollToItem: (el: HTMLElement, key: React.Key) => vsRef.current?.scrollToItem(el, key),
+    }),
+    [handleKeyDown],
+  );
 
   const vsProps = useMemo<VirtualScrollOptimization<AbstractTreeNode<V, T>>>(
     () => ({

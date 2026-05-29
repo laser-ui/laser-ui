@@ -29,3 +29,16 @@ export function ensurePortalRoots(namespace: string): void {
     }
   });
 }
+
+export function destroyPortalRoots(namespace: string): void {
+  if (typeof document === 'undefined') {
+    return;
+  }
+
+  PORTAL_ROOT_IDS.forEach((id) => {
+    const el = document.getElementById(`${namespace}-${id}`);
+    if (el && el.childNodes.length === 0) {
+      document.body.removeChild(el);
+    }
+  });
+}

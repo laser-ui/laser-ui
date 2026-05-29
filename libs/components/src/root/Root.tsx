@@ -9,7 +9,7 @@ import { useDialogs } from './dialog-service';
 import { ROOT_DATA, RootContext } from './vars';
 import dayjs from '../dayjs';
 import { useNamespace } from '../hooks';
-import { ensurePortalRoots } from '../internal/portal/portal-roots';
+import { destroyPortalRoots, ensurePortalRoots } from '../internal/portal/portal-roots';
 import resources from '../resources.json';
 
 export function Root(props: RootProps): React.ReactElement | null {
@@ -22,6 +22,9 @@ export function Root(props: RootProps): React.ReactElement | null {
 
   useEffect(() => {
     ensurePortalRoots(namespace);
+    return () => {
+      destroyPortalRoots(namespace);
+    };
   }, [namespace]);
 
   useEffect(() => {
