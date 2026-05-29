@@ -214,7 +214,8 @@ export function TimePicker(props: TimePickerProps): React.ReactElement | null {
     if (visible && boxRef.current && popupRef.current) {
       const height = popupRef.current.offsetHeight;
       const maxWidth = ROOT_DATA.windowSize.width - WINDOW_SPACE * 2;
-      const width = Math.min(popupRef.current.scrollWidth, maxWidth);
+      popupRef.current.style.maxWidth = maxWidth + 'px';
+      const width = Math.min(popupRef.current.offsetWidth, maxWidth);
       const position = getVerticalSidePosition(
         boxRef.current,
         { width, height },
@@ -227,7 +228,6 @@ export function TimePicker(props: TimePickerProps): React.ReactElement | null {
       popupRef.current.style.setProperty(`--popup-down-transform-origin`, position.transformOrigin);
       popupRef.current.style.top = position.top + 'px';
       popupRef.current.style.left = position.left + 'px';
-      popupRef.current.style.maxWidth = maxWidth + 'px';
 
       popupRef.current.classList.toggle(`${namespace}-time-picker-popup--${placement.current}`, false);
       placement.current = position.placement;

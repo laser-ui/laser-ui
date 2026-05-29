@@ -305,6 +305,8 @@ export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: Tr
       const boxWidth = boxRef.current.offsetWidth;
       const height = popupRef.current.offsetHeight;
       const maxWidth = ROOT_DATA.windowSize.width - WINDOW_SPACE * 2;
+      popupRef.current.style.setProperty('--max-width', `${maxWidth}px`);
+      popupRef.current.style.minWidth = `${Math.min(boxWidth, maxWidth)}px`;
       const width = Math.min(popupRef.current.offsetWidth, maxWidth);
       const position = getVerticalSidePosition(
         boxRef.current,
@@ -316,10 +318,9 @@ export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: Tr
         },
       );
       popupRef.current.style.setProperty(`--popup-down-transform-origin`, position.transformOrigin);
-      popupRef.current.style.setProperty('--max-width', `${maxWidth}px`);
-      popupRef.current.style.minWidth = `${Math.min(boxWidth, maxWidth)}px`;
       popupRef.current.style.top = position.top + 'px';
       popupRef.current.style.left = position.left + 'px';
+
       popupRef.current.classList.toggle(`${namespace}-tree-select-popup--${placement.current}`, false);
       placement.current = position.placement;
       popupRef.current.classList.toggle(`${namespace}-tree-select-popup--${placement.current}`, true);
@@ -541,7 +542,11 @@ export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: Tr
                         const item = focusRef.current.handleKeyDown(code);
 
                         if (item) {
-                          hasSearch ? setItemFocusedWithSearch(item) : setItemFocusedWithoutSearch(item);
+                          if (hasSearch) {
+                            setItemFocusedWithSearch(item);
+                          } else {
+                            setItemFocusedWithoutSearch(item);
+                          }
 
                           if (!code.includes('level')) {
                             scrollCallback.current = () => {

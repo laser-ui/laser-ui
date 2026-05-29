@@ -294,6 +294,8 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
         const boxWidth = boxRef.current.offsetWidth;
         const height = popupRef.current.offsetHeight;
         const maxWidth = ROOT_DATA.windowSize.width - WINDOW_SPACE * 2;
+        popupRef.current.style.setProperty('--min-width', `${Math.min(boxWidth, maxWidth)}px`);
+        popupRef.current.style.setProperty('--max-width', `${maxWidth}px`);
         const width = Math.min(Math.max(popupRef.current.offsetWidth, boxWidth), maxWidth);
         const position = getVerticalSidePosition(
           boxRef.current,
@@ -305,8 +307,6 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
           },
         );
         popupRef.current.style.setProperty(`--popup-down-transform-origin`, position.transformOrigin);
-        popupRef.current.style.setProperty('--min-width', `${Math.min(boxWidth, maxWidth)}px`);
-        popupRef.current.style.setProperty('--max-width', `${maxWidth}px`);
         popupRef.current.style.top = position.top + 'px';
         popupRef.current.style.left = position.left + 'px';
 

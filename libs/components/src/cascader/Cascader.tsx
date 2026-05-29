@@ -287,6 +287,7 @@ export function Cascader<V extends React.Key, T extends CascaderItem<V>>(props: 
     if (visible && boxRef.current && popupRef.current) {
       const height = popupRef.current.offsetHeight;
       const maxWidth = ROOT_DATA.windowSize.width - WINDOW_SPACE * 2;
+      popupRef.current.style.setProperty('--max-width', `${maxWidth}px`);
       const width = Math.min(popupRef.current.offsetWidth, maxWidth);
       const position = getVerticalSidePosition(
         boxRef.current,
@@ -298,7 +299,6 @@ export function Cascader<V extends React.Key, T extends CascaderItem<V>>(props: 
         },
       );
       popupRef.current.style.setProperty(`--popup-down-transform-origin`, position.transformOrigin);
-      popupRef.current.style.setProperty('--max-width', `${maxWidth}px`);
       popupRef.current.style.top = position.top + 'px';
       popupRef.current.style.left = position.left + 'px';
 
