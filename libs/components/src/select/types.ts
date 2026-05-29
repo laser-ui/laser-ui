@@ -1,6 +1,6 @@
 import type { CLASSES } from './vars';
 import type { FormControlProvider } from '../form/types';
-import type { BaseProps, Size } from '../types';
+import type { BaseProps, Size, VerticalSidePlacement } from '../types';
 
 export {};
 
@@ -25,6 +25,8 @@ export interface SelectProps<V extends React.Key, T extends SelectItem<V>>
   defaultModel?: V | null | V[];
   visible?: boolean;
   defaultVisible?: boolean;
+  placement?: VerticalSidePlacement;
+  placementFixed?: boolean;
   placeholder?: string;
   multiple?: boolean;
   searchable?: boolean;

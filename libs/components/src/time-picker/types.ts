@@ -1,6 +1,6 @@
 import type { CLASSES } from './vars';
 import type { FormControlProvider } from '../form/types';
-import type { BaseProps, Size } from '../types';
+import type { BaseProps, Size, VerticalSidePlacement } from '../types';
 
 export {};
 
@@ -17,6 +17,8 @@ export interface TimePickerProps
   defaultModel?: Date | [Date, Date] | null;
   visible?: boolean;
   defaultVisible?: boolean;
+  placement?: VerticalSidePlacement;
+  placementFixed?: boolean;
   placeholder?: string | [string?, string?];
   range?: boolean;
   format?: string;

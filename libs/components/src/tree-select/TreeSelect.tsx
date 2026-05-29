@@ -5,6 +5,7 @@ import type { BaseInputProps } from '../base-input';
 import type { DropdownItem } from '../dropdown/types';
 import type { AbstractTreeNode } from '../tree/node/abstract-node';
 import type { TreeItem } from '../tree/types';
+import type { VerticalSidePlacement } from '../types';
 
 import { useEventCallback, useResize } from '@laser-ui/hooks';
 import { findNested, setRef } from '@laser-ui/utils';
@@ -59,6 +60,8 @@ export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: Tr
     defaultExpands,
     visible: visibleProp,
     defaultVisible,
+    placement: placementProp = 'bottom-left',
+    placementFixed = false,
     placeholder,
     multiple = false,
     searchable = false,
@@ -296,6 +299,7 @@ export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: Tr
   const zIndexValue = useZIndex(visible);
   const zIndex = `calc(var(--${namespace}-zindex-fixed) + ${zIndexValue})`;
 
+  const placement = useRef<VerticalSidePlacement>(placementProp);
   const updatePosition = useEventCallback(() => {
     if (visible && boxRef.current && popupRef.current) {
       const boxWidth = boxRef.current.offsetWidth;
@@ -306,7 +310,8 @@ export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: Tr
         boxRef.current,
         { width, height },
         {
-          placement: 'bottom-left',
+          placement: placementProp,
+          placementFixed,
           inWindow: WINDOW_SPACE,
         },
       );
@@ -315,6 +320,9 @@ export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: Tr
       popupRef.current.style.left = position.left + 'px';
       popupRef.current.style.minWidth = Math.min(boxWidth, maxWidth) + 'px';
       popupRef.current.style.maxWidth = maxWidth + 'px';
+      popupRef.current.classList.toggle(`${namespace}-tree-select-popup--${placement.current}`, false);
+      placement.current = position.placement;
+      popupRef.current.classList.toggle(`${namespace}-tree-select-popup--${placement.current}`, true);
     }
   });
 

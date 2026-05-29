@@ -1,7 +1,7 @@
 import type { CLASSES } from './vars';
 import type { FormControlProvider } from '../form/types';
 import type { TreeItem } from '../tree/types';
-import type { BaseProps, Size } from '../types';
+import type { BaseProps, Size, VerticalSidePlacement } from '../types';
 
 export {};
 
@@ -21,6 +21,8 @@ export interface TreeSelectProps<V extends React.Key, T extends TreeItem<V>>
   defaultExpands?: V[];
   visible?: boolean;
   defaultVisible?: boolean;
+  placement?: VerticalSidePlacement;
+  placementFixed?: boolean;
   placeholder?: string;
   multiple?: boolean;
   searchable?: boolean;

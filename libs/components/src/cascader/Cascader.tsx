@@ -4,6 +4,7 @@ import type { CascaderItem, CascaderProps } from './types';
 import type { BaseInputProps } from '../base-input';
 import type { DropdownItem } from '../dropdown/types';
 import type { AbstractTreeNode } from '../tree/node/abstract-node';
+import type { VerticalSidePlacement } from '../types';
 
 import { useEventCallback, useResize } from '@laser-ui/hooks';
 import { findNested, setRef } from '@laser-ui/utils';
@@ -56,6 +57,8 @@ export function Cascader<V extends React.Key, T extends CascaderItem<V>>(props: 
     defaultModel,
     visible: visibleProp,
     defaultVisible,
+    placement: placementProp = 'bottom-left',
+    placementFixed = false,
     placeholder,
     multiple = false,
     searchable = false,
@@ -279,6 +282,7 @@ export function Cascader<V extends React.Key, T extends CascaderItem<V>>(props: 
   const zIndexValue = useZIndex(visible);
   const zIndex = `calc(var(--${namespace}-zindex-fixed) + ${zIndexValue})`;
 
+  const placement = useRef<VerticalSidePlacement>(placementProp);
   const updatePosition = useEventCallback(() => {
     if (visible && boxRef.current && popupRef.current) {
       const height = popupRef.current.offsetHeight;
@@ -288,7 +292,8 @@ export function Cascader<V extends React.Key, T extends CascaderItem<V>>(props: 
         boxRef.current,
         { width, height },
         {
-          placement: 'bottom-left',
+          placement: placementProp,
+          placementFixed,
           inWindow: WINDOW_SPACE,
         },
       );
@@ -296,6 +301,10 @@ export function Cascader<V extends React.Key, T extends CascaderItem<V>>(props: 
       popupRef.current.style.top = position.top + 'px';
       popupRef.current.style.left = position.left + 'px';
       popupRef.current.style.maxWidth = maxWidth + 'px';
+
+      popupRef.current.classList.toggle(`${namespace}-cascader-popup--${placement.current}`, false);
+      placement.current = position.placement;
+      popupRef.current.classList.toggle(`${namespace}-cascader-popup--${placement.current}`, true);
     }
   });
 

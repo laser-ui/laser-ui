@@ -1,4 +1,5 @@
 import type { TimePickerProps } from './types';
+import type { VerticalSidePlacement } from '../types';
 
 import { useAsync, useEventCallback, useImmer, useIsomorphicLayoutEffect, useResize } from '@laser-ui/hooks';
 import { setRef } from '@laser-ui/utils';
@@ -43,6 +44,8 @@ export function TimePicker(props: TimePickerProps): React.ReactElement | null {
     defaultModel,
     visible: visibleProp,
     defaultVisible,
+    placement: placementProp = 'bottom-left',
+    placementFixed = false,
     placeholder,
     range = false,
     format = 'HH:mm:ss',
@@ -206,6 +209,7 @@ export function TimePicker(props: TimePickerProps): React.ReactElement | null {
   const zIndexValue = useZIndex(visible);
   const zIndex = `calc(var(--${namespace}-zindex-fixed) + ${zIndexValue})`;
 
+  const placement = useRef<VerticalSidePlacement>(placementProp);
   const updatePosition = useEventCallback(() => {
     if (visible && boxRef.current && popupRef.current) {
       const height = popupRef.current.offsetHeight;
@@ -215,7 +219,8 @@ export function TimePicker(props: TimePickerProps): React.ReactElement | null {
         boxRef.current,
         { width, height },
         {
-          placement: 'bottom-left',
+          placement: placementProp,
+          placementFixed,
           inWindow: WINDOW_SPACE,
         },
       );
@@ -223,6 +228,10 @@ export function TimePicker(props: TimePickerProps): React.ReactElement | null {
       popupRef.current.style.top = position.top + 'px';
       popupRef.current.style.left = position.left + 'px';
       popupRef.current.style.maxWidth = maxWidth + 'px';
+
+      popupRef.current.classList.toggle(`${namespace}-time-picker-popup--${placement.current}`, false);
+      placement.current = position.placement;
+      popupRef.current.classList.toggle(`${namespace}-time-picker-popup--${placement.current}`, true);
     }
   });
   const updatePanelWhenEnter = useEventCallback(() => {
