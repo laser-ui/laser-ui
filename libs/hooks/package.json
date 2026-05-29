@@ -1,6 +1,6 @@
 {
   "name": "@laser-ui/hooks",
-  "version": "2.6.4",
+  "version": "2.7.0",
   "description": "Shared hooks used by Laser UI packages.",
   "keywords": [
     "ui",
