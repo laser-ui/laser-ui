@@ -481,17 +481,7 @@ export function TimePicker(props: TimePickerProps): React.ReactElement | null {
           </Icon>
         </div>
       </div>
-      <Portal
-        selector={() => {
-          let el = document.getElementById(`${namespace}-time-picker-root`);
-          if (!el) {
-            el = document.createElement('div');
-            el.id = `${namespace}-time-picker-root`;
-            document.body.appendChild(el);
-          }
-          return el;
-        }}
-      >
+      <Portal selector={`#${namespace}-time-picker-root`}>
         <Transition
           enter={visible}
           name={`${namespace}-popup-down`}

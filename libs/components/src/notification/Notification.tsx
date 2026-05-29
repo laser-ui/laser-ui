@@ -8,7 +8,7 @@ import HighlightOffOutlined from '@material-design-icons/svg/outlined/highlight_
 import InfoOutlined from '@material-design-icons/svg/outlined/info.svg?react';
 import WarningAmberOutlined from '@material-design-icons/svg/outlined/warning_amber.svg?react';
 import { isUndefined } from 'lodash';
-import { useId, useRef } from 'react';
+import { useCallback, useId, useRef } from 'react';
 
 import { CLASSES, TTANSITION_DURING } from './vars';
 import { useComponentProps, useNamespace, useStyled, useTranslation } from '../hooks';
@@ -55,6 +55,30 @@ export function Notification(props: NotificationProps): React.ReactElement | nul
   const titleId = `${namespace}-notification-title-${uniqueId}`;
   const descriptionId = `${namespace}-notification-content-${uniqueId}`;
 
+  const selector = useCallback(() => {
+    const id =
+      placement === 'left-top'
+        ? `${namespace}-notification-lt-root`
+        : placement === 'right-top'
+          ? `${namespace}-notification-rt-root`
+          : placement === 'left-bottom'
+            ? `${namespace}-notification-lb-root`
+            : `${namespace}-notification-rb-root`;
+
+    const root = document.getElementById(`${namespace}-notification-root`);
+    if (!root) {
+      return null;
+    }
+
+    let el = document.getElementById(id);
+    if (!el) {
+      el = document.createElement('div');
+      el.id = id;
+      root.appendChild(el);
+    }
+    return el;
+  }, [placement, namespace]);
+
   useMount(() => {
     if (duration > 0) {
       clearTid.current = async.setTimeout(() => {
@@ -64,33 +88,7 @@ export function Notification(props: NotificationProps): React.ReactElement | nul
   });
 
   return (
-    <Portal
-      selector={() => {
-        const id =
-          placement === 'left-top'
-            ? `${namespace}-notification-lt-root`
-            : placement === 'right-top'
-              ? `${namespace}-notification-rt-root`
-              : placement === 'left-bottom'
-                ? `${namespace}-notification-lb-root`
-                : `${namespace}-notification-rb-root`;
-
-        let root = document.getElementById(`${namespace}-notification-root`);
-        if (!root) {
-          root = document.createElement('div');
-          root.id = `${namespace}-notification-root`;
-          document.body.appendChild(root);
-        }
-
-        let el = document.getElementById(id);
-        if (!el) {
-          el = document.createElement('div');
-          el.id = id;
-          root.appendChild(el);
-        }
-        return el;
-      }}
-    >
+    <Portal selector={selector}>
       <CollapseTransition
         height={0}
         enter={visible}

@@ -101,17 +101,7 @@ export function DropdownSub(props: DropdownSubProps): React.ReactElement | null 
               </Icon>
             </div>
           </li>
-          <Portal
-            selector={() => {
-              let el = document.getElementById(`${namespace}-dropdown-root`);
-              if (!el) {
-                el = document.createElement('div');
-                el.id = `${namespace}-dropdown-root`;
-                document.body.appendChild(el);
-              }
-              return el;
-            }}
-          >
+          <Portal selector={`#${namespace}-dropdown-root`}>
             <Transition
               enter={visible}
               name={`${namespace}-popup`}

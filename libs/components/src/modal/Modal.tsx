@@ -63,17 +63,7 @@ export const Modal: {
   useLockScroll(visible);
 
   return (
-    <Portal
-      selector={() => {
-        let el = document.getElementById(`${namespace}-modal-root`);
-        if (!el) {
-          el = document.createElement('div');
-          el.id = `${namespace}-modal-root`;
-          document.body.appendChild(el);
-        }
-        return el;
-      }}
-    >
+    <Portal selector={`#${namespace}-modal-root`}>
       <Transition
         enter={visible}
         name={`${namespace}-modal`}

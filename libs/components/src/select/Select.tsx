@@ -686,17 +686,7 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
           </Icon>
         </div>
       </div>
-      <Portal
-        selector={() => {
-          let el = document.getElementById(`${namespace}-select-root`);
-          if (!el) {
-            el = document.createElement('div');
-            el.id = `${namespace}-select-root`;
-            document.body.appendChild(el);
-          }
-          return el;
-        }}
-      >
+      <Portal selector={`#${namespace}-select-root`}>
         <Transition
           enter={visible}
           name={`${namespace}-popup-down`}

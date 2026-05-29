@@ -8,19 +8,12 @@ import { createPortal } from 'react-dom';
 export function Portal<T extends Element = HTMLElement>(props: PortalProps<T>): React.ReactElement | null {
   const { ref, children, selector } = props;
 
-  const getContainer = () => (isString(selector) ? (document.querySelector(selector) as T | null) : selector());
+  const [container, setContainer] = useState<T | null>(null);
 
-  const [container, setContainer] = useState<T | null>(() => {
-    if (typeof window !== 'undefined') {
-      return getContainer();
-    }
-    return null;
-  });
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useIsomorphicLayoutEffect(() => {
-    setContainer(getContainer());
-  });
+    const el = isString(selector) ? (document.querySelector(selector) as T | null) : selector();
+    setContainer(el);
+  }, [selector]);
 
   useImperativeHandle<T | null, T | null>(ref, () => container, [container]);
 

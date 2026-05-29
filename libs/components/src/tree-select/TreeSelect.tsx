@@ -723,17 +723,7 @@ export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: Tr
           </Icon>
         </div>
       </div>
-      <Portal
-        selector={() => {
-          let el = document.getElementById(`${namespace}-tree-select-root`);
-          if (!el) {
-            el = document.createElement('div');
-            el.id = `${namespace}-tree-select-root`;
-            document.body.appendChild(el);
-          }
-          return el;
-        }}
-      >
+      <Portal selector={`#${namespace}-tree-select-root`}>
         <Transition
           enter={visible}
           name={`${namespace}-popup-down`}

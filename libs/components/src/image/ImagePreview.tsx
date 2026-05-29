@@ -230,17 +230,7 @@ export function ImagePreview(props: ImagePreviewProps): React.ReactElement | nul
   );
 
   return (
-    <Portal
-      selector={() => {
-        let el = document.getElementById(`${namespace}-image-preview-root`);
-        if (!el) {
-          el = document.createElement('div');
-          el.id = `${namespace}-image-preview-root`;
-          document.body.appendChild(el);
-        }
-        return el;
-      }}
-    >
+    <Portal selector={`#${namespace}-image-preview-root`}>
       <Transition
         enter={visible}
         name={`${namespace}-popup`}

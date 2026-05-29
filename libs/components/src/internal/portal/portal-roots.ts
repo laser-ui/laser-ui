@@ -1,0 +1,31 @@
+const PORTAL_ROOT_IDS = [
+  'dropdown-root',
+  'tooltip-root',
+  'popover-root',
+  'modal-root',
+  'drawer-root',
+  'select-root',
+  'tree-select-root',
+  'cascader-root',
+  'date-picker-root',
+  'time-picker-root',
+  'menu-root',
+  'toast-root',
+  'notification-root',
+  'image-preview-root',
+];
+
+export function ensurePortalRoots(namespace: string): void {
+  if (typeof document === 'undefined') {
+    return;
+  }
+
+  PORTAL_ROOT_IDS.forEach((id) => {
+    const fullId = `${namespace}-${id}`;
+    if (!document.getElementById(fullId)) {
+      const el = document.createElement('div');
+      el.id = fullId;
+      document.body.appendChild(el);
+    }
+  });
+}

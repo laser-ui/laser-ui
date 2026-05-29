@@ -492,17 +492,7 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
           </Icon>
         </div>
       </div>
-      <Portal
-        selector={() => {
-          let el = document.getElementById(`${namespace}-date-picker-root`);
-          if (!el) {
-            el = document.createElement('div');
-            el.id = `${namespace}-date-picker-root`;
-            document.body.appendChild(el);
-          }
-          return el;
-        }}
-      >
+      <Portal selector={`#${namespace}-date-picker-root`}>
         <Transition
           enter={visible}
           name={`${namespace}-popup-down`}

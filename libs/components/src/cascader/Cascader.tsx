@@ -676,17 +676,7 @@ export function Cascader<V extends React.Key, T extends CascaderItem<V>>(props: 
           </Icon>
         </div>
       </div>
-      <Portal
-        selector={() => {
-          let el = document.getElementById(`${namespace}-cascader-root`);
-          if (!el) {
-            el = document.createElement('div');
-            el.id = `${namespace}-cascader-root`;
-            document.body.appendChild(el);
-          }
-          return el;
-        }}
-      >
+      <Portal selector={`#${namespace}-cascader-root`}>
         <Transition
           enter={visible}
           name={`${namespace}-popup-down`}

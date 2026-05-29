@@ -131,17 +131,7 @@ export const Popover: {
               }
             },
           })}
-          <Portal
-            selector={() => {
-              let el = document.getElementById(`${namespace}-popover-root`);
-              if (!el) {
-                el = document.createElement('div');
-                el.id = `${namespace}-popover-root`;
-                document.body.appendChild(el);
-              }
-              return el;
-            }}
-          >
+          <Portal selector={`#${namespace}-popover-root`}>
             <Transition
               enter={visible}
               name={`${namespace}-popup`}

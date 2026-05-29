@@ -188,17 +188,7 @@ export function MenuSub(props: MenuSubProps): React.ReactElement | null {
               )}
             </li>
             {mode !== 'vertical' && (
-              <Portal
-                selector={() => {
-                  let el = document.getElementById(`${namespace}-menu-root`);
-                  if (!el) {
-                    el = document.createElement('div');
-                    el.id = `${namespace}-menu-root`;
-                    document.body.appendChild(el);
-                  }
-                  return el;
-                }}
-              >
+              <Portal selector={`#${namespace}-menu-root`}>
                 <Transition
                   enter={visible}
                   name={`${namespace}-popup-down`}

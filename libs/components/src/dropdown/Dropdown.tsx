@@ -236,17 +236,7 @@ export function Dropdown<ID extends React.Key, T extends DropdownItem<ID>>(props
               }
             },
           })}
-          <Portal
-            selector={() => {
-              let el = document.getElementById(`${namespace}-dropdown-root`);
-              if (!el) {
-                el = document.createElement('div');
-                el.id = `${namespace}-dropdown-root`;
-                document.body.appendChild(el);
-              }
-              return el;
-            }}
-          >
+          <Portal selector={`#${namespace}-dropdown-root`}>
             <Transition
               enter={visible}
               name={`${namespace}-popup-down`}

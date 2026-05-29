@@ -89,21 +89,7 @@ export const Drawer: {
   useLockScroll(isFixed && visible);
 
   return (
-    <Portal
-      selector={
-        isUndefined(container)
-          ? () => {
-              let el = document.getElementById(`${namespace}-drawer-root`);
-              if (!el) {
-                el = document.createElement('div');
-                el.id = `${namespace}-drawer-root`;
-                document.body.appendChild(el);
-              }
-              return el;
-            }
-          : container
-      }
-    >
+    <Portal selector={isUndefined(container) ? `#${namespace}-drawer-root` : container}>
       <Transition
         enter={visible}
         name={`${namespace}-drawer`}

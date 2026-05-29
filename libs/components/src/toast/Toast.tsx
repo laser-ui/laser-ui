@@ -8,7 +8,7 @@ import HighlightOffOutlined from '@material-design-icons/svg/outlined/highlight_
 import InfoOutlined from '@material-design-icons/svg/outlined/info.svg?react';
 import WarningAmberOutlined from '@material-design-icons/svg/outlined/warning_amber.svg?react';
 import { isUndefined } from 'lodash';
-import { useId, useRef } from 'react';
+import { useCallback, useId, useRef } from 'react';
 
 import { CLASSES, TTANSITION_DURING } from './vars';
 import { useComponentProps, useNamespace, useStyled, useTranslation } from '../hooks';
@@ -53,6 +53,23 @@ export function Toast(props: ToastProps): React.ReactElement | null {
   const uniqueId = useId();
   const messageId = `${namespace}-toast-content-${uniqueId}`;
 
+  const selector = useCallback(() => {
+    const id = placement === 'top' ? `${namespace}-toast-t-root` : `${namespace}-toast-b-root`;
+
+    const root = document.getElementById(`${namespace}-toast-root`);
+    if (!root) {
+      return null;
+    }
+
+    let el = document.getElementById(id);
+    if (!el) {
+      el = document.createElement('div');
+      el.id = id;
+      root.appendChild(el);
+    }
+    return el;
+  }, [placement, namespace]);
+
   useMount(() => {
     if (duration > 0) {
       clearTid.current = async.setTimeout(() => {
@@ -62,26 +79,7 @@ export function Toast(props: ToastProps): React.ReactElement | null {
   });
 
   return (
-    <Portal
-      selector={() => {
-        const id = placement === 'top' ? `${namespace}-toast-t-root` : `${namespace}-toast-b-root`;
-
-        let root = document.getElementById(`${namespace}-toast-root`);
-        if (!root) {
-          root = document.createElement('div');
-          root.id = `${namespace}-toast-root`;
-          document.body.appendChild(root);
-        }
-
-        let el = document.getElementById(id);
-        if (!el) {
-          el = document.createElement('div');
-          el.id = id;
-          root.appendChild(el);
-        }
-        return el;
-      }}
-    >
+    <Portal selector={selector}>
       <CollapseTransition
         height={0}
         enter={visible}

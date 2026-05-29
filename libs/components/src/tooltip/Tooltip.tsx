@@ -113,17 +113,7 @@ export function Tooltip(props: TooltipProps): React.ReactElement | null {
               }
             },
           })}
-          <Portal
-            selector={() => {
-              let el = document.getElementById(`${namespace}-tooltip-root`);
-              if (!el) {
-                el = document.createElement('div');
-                el.id = `${namespace}-tooltip-root`;
-                document.body.appendChild(el);
-              }
-              return el;
-            }}
-          >
+          <Portal selector={`#${namespace}-tooltip-root`}>
             <Transition
               enter={visible}
               name={`${namespace}-popup`}
