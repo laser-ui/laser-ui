@@ -284,6 +284,8 @@ $cascader-option-height: 32px;
 
 @include mixins.b(cascader-popup) {
   position: fixed;
+  width: fit-content;
+  max-width: var(--max-width, none);
   overflow: auto hidden;
   white-space: nowrap;
   background-color: var(--#{variables.$prefix}background-color);

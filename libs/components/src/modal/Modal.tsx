@@ -1,5 +1,6 @@
 import type { ModalProps } from './types';
 
+import { useResize } from '@laser-ui/hooks';
 import { isNumber, isString, isUndefined } from 'lodash';
 import { useId, useRef } from 'react';
 
@@ -48,6 +49,7 @@ export const Modal: {
   const namespace = useNamespace();
   const styled = useStyled(CLASSES, { modal: styleProvider?.modal }, styleOverrides);
 
+  const modalRootRef = useRef<HTMLElement | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const modalContentRef = useRef<HTMLDivElement>(null);
 
@@ -62,6 +64,28 @@ export const Modal: {
 
   useLockScroll(visible);
 
+  const updateTransformOrigin = () => {
+    const el = modalRootRef.current;
+    if (!el) {
+      return;
+    }
+    if (isUndefined(ROOT_DATA.clickEvent) || performance.now() - ROOT_DATA.clickEvent.time > 100) {
+      el.style.setProperty(`--modal-transform-origin`, 'unset');
+    } else if (modalContentRef.current) {
+      const left = `${(ROOT_DATA.windowSize.width - modalContentRef.current.offsetWidth) / 2}px`;
+      const top =
+        topProp === 'center'
+          ? `${(ROOT_DATA.windowSize.height - modalContentRef.current.offsetHeight) / 2}px`
+          : `${topProp}${isNumber(topProp) ? 'px' : ''}`;
+      el.style.setProperty(
+        `--modal-transform-origin`,
+        `calc(${ROOT_DATA.clickEvent.x}px - ${left}) calc(${ROOT_DATA.clickEvent.y}px - ${top})`,
+      );
+    }
+  };
+
+  useResize(modalContentRef, updateTransformOrigin, undefined, !visible);
+
   return (
     <Portal selector={`#${namespace}-modal-root`}>
       <Transition
@@ -70,38 +94,12 @@ export const Modal: {
         duration={TTANSITION_DURING_BASE}
         skipFirstTransition={skipFirstTransition}
         onSkipEnter={(el) => {
-          if (el) {
-            if (isUndefined(ROOT_DATA.clickEvent) || performance.now() - ROOT_DATA.clickEvent.time > 100) {
-              el.style.setProperty(`--modal-transform-origin`, 'unset');
-            } else if (modalContentRef.current) {
-              const left = `${(ROOT_DATA.windowSize.width - modalContentRef.current.offsetWidth) / 2}px`;
-              const top =
-                topProp === 'center'
-                  ? `${(ROOT_DATA.windowSize.height - modalContentRef.current.offsetHeight) / 2}px`
-                  : `${topProp}${isNumber(topProp) ? 'px' : ''}`;
-              el.style.setProperty(
-                `--modal-transform-origin`,
-                `calc(${ROOT_DATA.clickEvent.x}px - ${left}) calc(${ROOT_DATA.clickEvent.y}px - ${top})`,
-              );
-            }
-          }
+          modalRootRef.current = el;
+          updateTransformOrigin();
         }}
         onBeforeEnter={(el) => {
-          if (el) {
-            if (isUndefined(ROOT_DATA.clickEvent) || performance.now() - ROOT_DATA.clickEvent.time > 100) {
-              el.style.setProperty(`--modal-transform-origin`, 'unset');
-            } else if (modalContentRef.current) {
-              const left = `${(ROOT_DATA.windowSize.width - modalContentRef.current.offsetWidth) / 2}px`;
-              const top =
-                topProp === 'center'
-                  ? `${(ROOT_DATA.windowSize.height - modalContentRef.current.offsetHeight) / 2}px`
-                  : `${topProp}${isNumber(topProp) ? 'px' : ''}`;
-              el.style.setProperty(
-                `--modal-transform-origin`,
-                `calc(${ROOT_DATA.clickEvent.x}px - ${left}) calc(${ROOT_DATA.clickEvent.y}px - ${top})`,
-              );
-            }
-          }
+          modalRootRef.current = el;
+          updateTransformOrigin();
         }}
         onAfterEnter={() => {
           afterVisibleChange?.(true);

@@ -305,7 +305,7 @@ export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: Tr
       const boxWidth = boxRef.current.offsetWidth;
       const height = popupRef.current.offsetHeight;
       const maxWidth = ROOT_DATA.windowSize.width - WINDOW_SPACE * 2;
-      const width = Math.min(popupRef.current.scrollWidth, maxWidth);
+      const width = Math.min(popupRef.current.offsetWidth, maxWidth);
       const position = getVerticalSidePosition(
         boxRef.current,
         { width, height },
@@ -316,10 +316,10 @@ export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: Tr
         },
       );
       popupRef.current.style.setProperty(`--popup-down-transform-origin`, position.transformOrigin);
+      popupRef.current.style.setProperty('--max-width', `${maxWidth}px`);
+      popupRef.current.style.minWidth = `${Math.min(boxWidth, maxWidth)}px`;
       popupRef.current.style.top = position.top + 'px';
       popupRef.current.style.left = position.left + 'px';
-      popupRef.current.style.minWidth = Math.min(boxWidth, maxWidth) + 'px';
-      popupRef.current.style.maxWidth = maxWidth + 'px';
       popupRef.current.classList.toggle(`${namespace}-tree-select-popup--${placement.current}`, false);
       placement.current = position.placement;
       popupRef.current.classList.toggle(`${namespace}-tree-select-popup--${placement.current}`, true);

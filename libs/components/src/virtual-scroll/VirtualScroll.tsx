@@ -365,7 +365,9 @@ export function VirtualScroll<T>(props: VirtualScrollProps<T>): React.ReactEleme
     const findItem = items.get(key);
 
     if (enable && !isUndefined(findItem)) {
-      scrollTo(el, findItem.accSize - itemSize(findItem.item) + listPadding[0]);
+      const targetScroll = findItem.accSize - itemSize(findItem.item) + listPadding[0];
+      scrollTo(el, targetScroll);
+      setScrollPosition(targetScroll);
     }
 
     return findItem?.item;

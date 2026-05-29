@@ -255,6 +255,9 @@ $select-option-height: 32px;
 
 @include mixins.b(select-popup) {
   position: fixed;
+  width: fit-content;
+  min-width: var(--min-width, auto);
+  max-width: var(--max-width, none);
   background-color: var(--#{variables.$prefix}background-color);
   border-radius: var(--#{variables.$prefix}border-radius);
   box-shadow: var(--#{variables.$prefix}box-shadow-popup);

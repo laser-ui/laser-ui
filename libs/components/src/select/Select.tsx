@@ -294,7 +294,7 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
         const boxWidth = boxRef.current.offsetWidth;
         const height = popupRef.current.offsetHeight;
         const maxWidth = ROOT_DATA.windowSize.width - WINDOW_SPACE * 2;
-        const width = Math.min(Math.max(popupRef.current.scrollWidth, boxWidth), maxWidth);
+        const width = Math.min(Math.max(popupRef.current.offsetWidth, boxWidth), maxWidth);
         const position = getVerticalSidePosition(
           boxRef.current,
           { width, height },
@@ -305,11 +305,10 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
           },
         );
         popupRef.current.style.setProperty(`--popup-down-transform-origin`, position.transformOrigin);
+        popupRef.current.style.setProperty('--min-width', `${Math.min(boxWidth, maxWidth)}px`);
+        popupRef.current.style.setProperty('--max-width', `${maxWidth}px`);
         popupRef.current.style.top = position.top + 'px';
         popupRef.current.style.left = position.left + 'px';
-        popupRef.current.style.width = '';
-        popupRef.current.style.minWidth = Math.min(boxWidth, maxWidth) + 'px';
-        popupRef.current.style.maxWidth = maxWidth + 'px';
 
         popupRef.current.classList.toggle(`${namespace}-select-popup--${placement.current}`, false);
         placement.current = position.placement;
@@ -532,17 +531,19 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
                         }
                         if (item) {
                           changeItemFocused(item);
-                          if (virtual === false) {
-                            scrollCallback.current = () => {
-                              scrollCallback.current = () => {};
+                          scrollCallback.current = () => {
+                            scrollCallback.current = () => {};
+                            if (virtual === false) {
                               const el = document.getElementById(getItemId((item as T).value));
-                              if (el) {
-                                scrollIntoViewIfNeeded(el, listRef.current as HTMLUListElement);
+                              if (el && listRef.current) {
+                                scrollIntoViewIfNeeded(el, listRef.current);
                               }
-                            };
-                            if (visible) {
-                              scrollCallback.current();
+                            } else if (vsRef.current && listRef.current) {
+                              vsRef.current.scrollToItem(listRef.current, (item as T).value);
                             }
+                          };
+                          if (visible) {
+                            scrollCallback.current();
                           }
                         }
                       }
