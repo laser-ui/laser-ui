@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.7.1](https://github.com/laser-ui/laser-ui/compare/v2.7.0...v2.7.1) (2026-05-29)
+
+### Bug Fixes
+
+- **components:** eliminate CSSOM timing issues in portal popups ([02e1849](https://github.com/laser-ui/laser-ui/commit/02e1849e79bfce55034cd1155cb9da30f39fb8e0))
+- **components:** eliminate render-phase DOM side effects ([d76b0b1](https://github.com/laser-ui/laser-ui/commit/d76b0b164833302c129d58872774fc5c20b497b3))
+- **components:** portal cleanup, virtual scroll sync, and ref leaks ([8ca31d6](https://github.com/laser-ui/laser-ui/commit/8ca31d61a31d659f7a6bcb0946117256d7b58a53))
+
 # [2.7.0](https://github.com/laser-ui/laser-ui/compare/v2.6.4...v2.7.0) (2026-05-29)
 
 ### Features
