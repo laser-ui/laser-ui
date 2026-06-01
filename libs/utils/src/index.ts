@@ -3,6 +3,7 @@ export { checkScrollEnd } from './checkScrollEnd';
 export { classNames } from './classNames';
 export { copy } from './copy';
 export { getOffsetToRoot } from './getOffsetToRoot';
+export { isArrayEqual } from './isArrayEqual';
 export { saveFile } from './saveFile';
 export { scrollIntoViewIfNeeded } from './scrollIntoViewIfNeeded';
 export { scrollTo } from './scrollTo';
