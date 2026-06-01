@@ -8,7 +8,7 @@ import type { TreeItem } from '../tree/types';
 import type { VerticalSidePlacement } from '../types';
 
 import { useEventCallback, useResize } from '@laser-ui/hooks';
-import { findNested, setRef } from '@laser-ui/utils';
+import { setRef } from '@laser-ui/utils';
 import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
 import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
 import KeyboardArrowDownOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_down.svg?react';
@@ -35,7 +35,7 @@ import {
   useZIndex,
 } from '../hooks';
 import { Icon } from '../icon';
-import { Portal, ensurePortalRoot } from '../internal/portal';
+import { Portal } from '../internal/portal';
 import { ROOT_DATA } from '../root/vars';
 import { Tag } from '../tag';
 import { Transition } from '../transition';
@@ -44,7 +44,7 @@ import { MultipleTreeNode } from '../tree/node/multiple-node';
 import { SingleTreeNode } from '../tree/node/single-node';
 import { getTreeNodeLabel } from '../tree/utils';
 import { TREE_NODE_KEY } from '../tree/vars';
-import { getVerticalSidePosition, isPrintableCharacter, mergeCS } from '../utils';
+import { ensureElement, findNested, getVerticalSidePosition, isPrintableCharacter, mergeCS } from '../utils';
 import { TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../vars';
 
 export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: TreeSelectProps<V, T>): React.ReactElement | null {
@@ -103,7 +103,7 @@ export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: Tr
     styleOverrides,
   );
 
-  const treeSelectRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-tree-select-root`), [namespace]);
+  const treeSelectRootSelector = useCallback(() => ensureElement(`${namespace}-tree-select-root`), [namespace]);
 
   const expandSaved = useRef(new Set<V>());
 

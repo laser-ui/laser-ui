@@ -10,9 +10,9 @@ import { CLASSES, PopoverContext, TTANSITION_DURING } from './vars';
 import { useComponentProps, useControlled, useLockScroll, useNamespace, useStyled, useZIndex } from '../hooks';
 import { LazyLoading } from '../internal/lazy-loading';
 import { Popup } from '../internal/popup';
-import { Portal, ensurePortalRoot } from '../internal/portal';
+import { Portal } from '../internal/portal';
 import { Transition } from '../transition';
-import { getPopupPosition, handleModalKeyDown, mergeCS } from '../utils';
+import { ensureElement, getPopupPosition, handleModalKeyDown, mergeCS } from '../utils';
 
 export const Popover: {
   (props: PopoverProps): React.ReactElement | null;
@@ -54,7 +54,7 @@ export const Popover: {
   const namespace = useNamespace();
   const styled = useStyled(CLASSES, { popover: styleProvider?.popover }, styleOverrides);
 
-  const popoverRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-popover-root`), [namespace]);
+  const popoverRootSelector = useCallback(() => ensureElement(`${namespace}-popover-root`), [namespace]);
 
   const uniqueId = useId();
   const triggerId = `${namespace}-popover-trigger-${uniqueId}`;

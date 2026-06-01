@@ -15,11 +15,11 @@ import { Button } from '../button';
 import { useComponentProps, useControlled, useLockScroll, useNamespace, useStyled, useZIndex } from '../hooks';
 import { Icon } from '../icon';
 import { Input } from '../input';
-import { Portal, ensurePortalRoot } from '../internal/portal';
+import { Portal } from '../internal/portal';
 import { Mask } from '../mask';
 import { ROOT_DATA } from '../root/vars';
 import { Transition } from '../transition';
-import { mergeCS } from '../utils';
+import { ensureElement, mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
 export function ImagePreview(props: ImagePreviewProps): React.ReactElement | null {
@@ -42,7 +42,7 @@ export function ImagePreview(props: ImagePreviewProps): React.ReactElement | nul
   const namespace = useNamespace();
   const styled = useStyled(PREVIEW_CLASSES, { 'image-preview': styleProvider?.['image-preview'] }, styleOverrides);
 
-  const imagePreviewRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-image-preview-root`), [namespace]);
+  const imagePreviewRootSelector = useCallback(() => ensureElement(`${namespace}-image-preview-root`), [namespace]);
 
   const previewRef = useRef<HTMLDivElement>(null);
   const windowRef = useRefExtra(() => window);

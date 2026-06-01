@@ -1,7 +1,6 @@
 import type { MenuItem, MenuProps } from './types';
 
 import { useEventCallback } from '@laser-ui/hooks';
-import { findNested } from '@laser-ui/utils';
 import { isNull, isUndefined, nth } from 'lodash';
 import { Fragment, useId, useImperativeHandle, useRef, useState } from 'react';
 
@@ -20,7 +19,7 @@ import {
   useStyled,
 } from '../hooks';
 import { CollapseTransition } from '../transition';
-import { mergeCS } from '../utils';
+import { findNested, mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
 export function Menu<ID extends React.Key, T extends MenuItem<ID>>(props: MenuProps<ID, T>): React.ReactElement | null {

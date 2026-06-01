@@ -9,9 +9,9 @@ import { useCallback, useImperativeHandle, useRef } from 'react';
 
 import { useTranslation, useZIndex } from '../../hooks';
 import { Popup } from '../../internal/popup';
-import { Portal, ensurePortalRoot } from '../../internal/portal';
+import { Portal } from '../../internal/portal';
 import { CollapseTransition, Transition } from '../../transition';
-import { getHorizontalSidePosition, getVerticalSidePosition, mergeCS } from '../../utils';
+import { ensureElement, getHorizontalSidePosition, getVerticalSidePosition, mergeCS } from '../../utils';
 import { TTANSITION_DURING_BASE, TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../../vars';
 
 interface MenuSubProps {
@@ -67,7 +67,7 @@ export function MenuSub(props: MenuSubProps): React.ReactElement | null {
     onClick,
   } = props;
 
-  const menuRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-menu-root`), [namespace]);
+  const menuRootSelector = useCallback(() => ensureElement(`${namespace}-menu-root`), [namespace]);
 
   const triggerRef = useRef<HTMLLIElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);

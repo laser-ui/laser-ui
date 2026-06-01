@@ -1,7 +1,6 @@
 import type { AbstractTreeNode } from './node/abstract-node';
 import type { TreeItem, TreeProps } from './types';
 
-import { findNested } from '@laser-ui/utils';
 import { isNull, isUndefined } from 'lodash';
 import { useId, useMemo, useRef, useState } from 'react';
 
@@ -10,6 +9,7 @@ import { MultipleTreeNode } from './node/multiple-node';
 import { SingleTreeNode } from './node/single-node';
 import { CLASSES } from './vars';
 import { useComponentProps, useControlled, useFocusVisible, useNamespace, useScopedProps, useStyled } from '../hooks';
+import { findNested } from '../utils';
 
 export function Tree<V extends React.Key, T extends TreeItem<V>>(props: TreeProps<V, T>): React.ReactElement | null {
   const {

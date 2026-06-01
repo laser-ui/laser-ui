@@ -9,9 +9,9 @@ import { useCallback, useImperativeHandle, useRef } from 'react';
 
 import { Icon } from '../../icon';
 import { Popup } from '../../internal/popup';
-import { Portal, ensurePortalRoot } from '../../internal/portal';
+import { Portal } from '../../internal/portal';
 import { Transition } from '../../transition';
-import { getHorizontalSidePosition, mergeCS } from '../../utils';
+import { ensureElement, getHorizontalSidePosition, mergeCS } from '../../utils';
 import { TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../../vars';
 
 interface DropdownSubProps {
@@ -34,7 +34,7 @@ interface DropdownSubProps {
 export function DropdownSub(props: DropdownSubProps): React.ReactElement | null {
   const { ref, children, namespace, styled, id, icon, theme, list, popupState, trigger, focus, disabled, zIndex, onVisibleChange } = props;
 
-  const dropdownRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-dropdown-root`), [namespace]);
+  const dropdownRootSelector = useCallback(() => ensureElement(`${namespace}-dropdown-root`), [namespace]);
 
   const triggerRef = useRef<HTMLLIElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);

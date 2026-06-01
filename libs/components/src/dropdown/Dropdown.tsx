@@ -18,9 +18,9 @@ import {
   useZIndex,
 } from '../hooks';
 import { Popup } from '../internal/popup';
-import { Portal, ensurePortalRoot } from '../internal/portal';
+import { Portal } from '../internal/portal';
 import { Transition } from '../transition';
-import { getVerticalSidePosition, mergeCS } from '../utils';
+import { ensureElement, getVerticalSidePosition, mergeCS } from '../utils';
 import { TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../vars';
 
 export function Dropdown<ID extends React.Key, T extends DropdownItem<ID>>(props: DropdownProps<ID, T>): React.ReactElement | null {
@@ -54,7 +54,7 @@ export function Dropdown<ID extends React.Key, T extends DropdownItem<ID>>(props
     styleOverrides,
   );
 
-  const dropdownRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-dropdown-root`), [namespace]);
+  const dropdownRootSelector = useCallback(() => ensureElement(`${namespace}-dropdown-root`), [namespace]);
 
   const uniqueId = useId();
   const id = restProps.id ?? `${namespace}-dropdown-${uniqueId}`;

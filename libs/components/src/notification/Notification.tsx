@@ -14,9 +14,9 @@ import { CLASSES, TTANSITION_DURING } from './vars';
 import { useComponentProps, useNamespace, useStyled, useTranslation } from '../hooks';
 import { Icon } from '../icon';
 import { LazyLoading } from '../internal/lazy-loading';
-import { ensurePortalRoot, Portal } from '../internal/portal';
+import { Portal } from '../internal/portal';
 import { CollapseTransition } from '../transition';
-import { mergeCS } from '../utils';
+import { ensureElement, mergeCS } from '../utils';
 
 export function Notification(props: NotificationProps): React.ReactElement | null {
   const {
@@ -65,7 +65,7 @@ export function Notification(props: NotificationProps): React.ReactElement | nul
             ? `${namespace}-notification-lb-root`
             : `${namespace}-notification-rb-root`;
 
-    return ensurePortalRoot(id, ensurePortalRoot(`${namespace}-notification-root`));
+    return ensureElement(id, ensureElement(`${namespace}-notification-root`));
   }, [placement, namespace]);
 
   useMount(() => {

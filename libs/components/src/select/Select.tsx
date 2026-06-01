@@ -6,7 +6,7 @@ import type { VerticalSidePlacement } from '../types';
 import type { VirtualScrollOptimization } from '../virtual-scroll/types';
 
 import { useEventCallback, useResize } from '@laser-ui/hooks';
-import { findNested, scrollIntoViewIfNeeded, setRef } from '@laser-ui/utils';
+import { scrollIntoViewIfNeeded, setRef } from '@laser-ui/utils';
 import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
 import AddOutlined from '@material-design-icons/svg/outlined/add.svg?react';
 import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
@@ -35,11 +35,11 @@ import {
   useZIndex,
 } from '../hooks';
 import { Icon } from '../icon';
-import { Portal, ensurePortalRoot } from '../internal/portal';
+import { Portal } from '../internal/portal';
 import { ROOT_DATA } from '../root/vars';
 import { Tag } from '../tag';
 import { Transition } from '../transition';
-import { getVerticalSidePosition, isPrintableCharacter, mergeCS } from '../utils';
+import { ensureElement, findNested, getVerticalSidePosition, isPrintableCharacter, mergeCS } from '../utils';
 import { TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../vars';
 import { VirtualScroll, type VirtualScrollRef } from '../virtual-scroll';
 
@@ -88,7 +88,7 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
   const namespace = useNamespace();
   const styled = useStyled(CLASSES, { select: styleProvider?.select, 'select-popup': styleProvider?.['select-popup'] }, styleOverrides);
 
-  const selectRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-select-root`), [namespace]);
+  const selectRootSelector = useCallback(() => ensureElement(`${namespace}-select-root`), [namespace]);
 
   const { t } = useTranslation();
 

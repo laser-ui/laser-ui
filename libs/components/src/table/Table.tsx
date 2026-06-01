@@ -1,7 +1,6 @@
 import type { TableContextData, TableProps } from './types';
 
 import { useAsync, useIsomorphicLayoutEffect, useResize } from '@laser-ui/hooks';
-import { isSimpleArrayEqual } from '@laser-ui/utils';
 import { useMemo, useRef, useState } from 'react';
 
 import { TableEmpty } from './TableEmpty';
@@ -13,6 +12,14 @@ import { TableThAction } from './TableThAction';
 import { CLASSES, TableContext } from './vars';
 import { useComponentProps, useStyled } from '../hooks';
 import { mergeCS } from '../utils';
+
+function isArrayEqual(arr1: any[], arr2: any[]) {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+  const set2 = new Set(arr2);
+  return arr1.every((item) => set2.has(item));
+}
 
 export const Table: {
   (props: TableProps): React.ReactElement | null;
@@ -59,7 +66,7 @@ export const Table: {
         newFixed = ['left', 'right'];
       }
 
-      if (!isSimpleArrayEqual(newFixed, fixed)) {
+      if (!isArrayEqual(newFixed, fixed)) {
         setFixed(newFixed);
       }
     }

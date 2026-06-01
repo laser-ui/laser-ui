@@ -28,10 +28,10 @@ import {
   useZIndex,
 } from '../hooks';
 import { Icon } from '../icon';
-import { Portal, ensurePortalRoot } from '../internal/portal';
+import { Portal } from '../internal/portal';
 import { ROOT_DATA } from '../root/vars';
 import { Transition } from '../transition';
-import { getVerticalSidePosition, mergeCS } from '../utils';
+import { ensureElement, getVerticalSidePosition, mergeCS } from '../utils';
 import { TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../vars';
 
 export function TimePicker(props: TimePickerProps): React.ReactElement | null {
@@ -71,7 +71,7 @@ export function TimePicker(props: TimePickerProps): React.ReactElement | null {
     styleOverrides,
   );
 
-  const timePickerRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-time-picker-root`), [namespace]);
+  const timePickerRootSelector = useCallback(() => ensureElement(`${namespace}-time-picker-root`), [namespace]);
 
   const { t } = useTranslation();
   const async = useAsync();

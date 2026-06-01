@@ -8,10 +8,10 @@ import { DrawerHeader } from './DrawerHeader';
 import { CLASSES, DrawerContext } from './vars';
 import { useComponentProps, useLockScroll, useNamespace, useStyled, useZIndex } from '../hooks';
 import { LazyLoading } from '../internal/lazy-loading';
-import { Portal, ensurePortalRoot } from '../internal/portal';
+import { Portal } from '../internal/portal';
 import { Mask } from '../mask';
 import { Transition } from '../transition';
-import { handleModalKeyDown, mergeCS } from '../utils';
+import { ensureElement, handleModalKeyDown, mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
 export const Drawer: {
@@ -48,7 +48,7 @@ export const Drawer: {
   const namespace = useNamespace();
   const styled = useStyled(CLASSES, { drawer: styleProvider?.drawer }, styleOverrides);
 
-  const drawerRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-drawer-root`), [namespace]);
+  const drawerRootSelector = useCallback(() => ensureElement(`${namespace}-drawer-root`), [namespace]);
 
   const drawerRef = useRef<HTMLDivElement>(null);
   const drawerContentRef = useRef<HTMLDivElement>(null);

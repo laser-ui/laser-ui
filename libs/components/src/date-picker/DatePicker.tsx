@@ -27,12 +27,12 @@ import {
   useZIndex,
 } from '../hooks';
 import { Icon } from '../icon';
-import { Portal, ensurePortalRoot } from '../internal/portal';
+import { Portal } from '../internal/portal';
 import { ROOT_DATA } from '../root/vars';
 import { TimePickerPanel } from '../time-picker/internal/TimePickerPanel';
 import { deepCompareDate, orderDate } from '../time-picker/utils';
 import { Transition } from '../transition';
-import { getVerticalSidePosition, mergeCS } from '../utils';
+import { ensureElement, getVerticalSidePosition, mergeCS } from '../utils';
 import { TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../vars';
 
 export function DatePicker(props: DatePickerProps): React.ReactElement | null {
@@ -78,7 +78,7 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
     styleOverrides,
   );
 
-  const datePickerRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-date-picker-root`), [namespace]);
+  const datePickerRootSelector = useCallback(() => ensureElement(`${namespace}-date-picker-root`), [namespace]);
 
   const { t } = useTranslation();
   const async = useAsync();

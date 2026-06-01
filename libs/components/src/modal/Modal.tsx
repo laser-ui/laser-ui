@@ -10,11 +10,11 @@ import { ModalHeader } from './ModalHeader';
 import { CLASSES, ModalContext } from './vars';
 import { useComponentProps, useLockScroll, useNamespace, useStyled, useZIndex } from '../hooks';
 import { LazyLoading } from '../internal/lazy-loading';
-import { Portal, ensurePortalRoot } from '../internal/portal';
+import { Portal } from '../internal/portal';
 import { Mask } from '../mask';
 import { ROOT_DATA } from '../root/vars';
 import { Transition } from '../transition';
-import { handleModalKeyDown, mergeCS } from '../utils';
+import { ensureElement, handleModalKeyDown, mergeCS } from '../utils';
 import { TTANSITION_DURING_BASE } from '../vars';
 
 export const Modal: {
@@ -49,7 +49,7 @@ export const Modal: {
   const namespace = useNamespace();
   const styled = useStyled(CLASSES, { modal: styleProvider?.modal }, styleOverrides);
 
-  const modalRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-modal-root`), [namespace]);
+  const modalRootSelector = useCallback(() => ensureElement(`${namespace}-modal-root`), [namespace]);
 
   const modalRootRef = useRef<HTMLElement | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);

@@ -8,9 +8,9 @@ import { CLASSES, TTANSITION_DURING } from './vars';
 import { useComponentProps, useControlled, useNamespace, useStyled, useZIndex } from '../hooks';
 import { LazyLoading } from '../internal/lazy-loading';
 import { Popup } from '../internal/popup';
-import { Portal, ensurePortalRoot } from '../internal/portal';
+import { Portal } from '../internal/portal';
 import { Transition } from '../transition';
-import { getPopupPosition, mergeCS } from '../utils';
+import { ensureElement, getPopupPosition, mergeCS } from '../utils';
 
 export function Tooltip(props: TooltipProps): React.ReactElement | null {
   const {
@@ -43,7 +43,7 @@ export function Tooltip(props: TooltipProps): React.ReactElement | null {
   const namespace = useNamespace();
   const styled = useStyled(CLASSES, { tooltip: styleProvider?.tooltip }, styleOverrides);
 
-  const tooltipRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-tooltip-root`), [namespace]);
+  const tooltipRootSelector = useCallback(() => ensureElement(`${namespace}-tooltip-root`), [namespace]);
 
   const uniqueId = useId();
   const id = restProps.id ?? `${namespace}-tooltip-${uniqueId}`;

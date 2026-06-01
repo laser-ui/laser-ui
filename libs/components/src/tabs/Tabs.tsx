@@ -2,7 +2,7 @@ import type { TabsItem, TabsProps } from './types';
 import type { DropdownItem } from '../dropdown/types';
 
 import { useEventCallback, useIsomorphicLayoutEffect, useResize } from '@laser-ui/hooks';
-import { checkScrollEnd, findNested } from '@laser-ui/utils';
+import { checkScrollEnd } from '@laser-ui/utils';
 import AddOutlined from '@material-design-icons/svg/outlined/add.svg?react';
 import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
 import MoreHorizOutlined from '@material-design-icons/svg/outlined/more_horiz.svg?react';
@@ -14,7 +14,7 @@ import { Dropdown } from '../dropdown';
 import { useComponentProps, useControlled, useNamespace, useStyled, useTranslation } from '../hooks';
 import { Icon } from '../icon';
 import { LazyLoading } from '../internal/lazy-loading';
-import { mergeCS } from '../utils';
+import { findNested, mergeCS } from '../utils';
 
 export function Tabs<ID extends React.Key, T extends TabsItem<ID>>(props: TabsProps<ID, T>): React.ReactElement | null {
   const {
