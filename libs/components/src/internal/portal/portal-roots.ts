@@ -1,8 +1,4 @@
 export function ensurePortalRoot(id: string): HTMLElement {
-  if (typeof document === 'undefined') {
-    return {} as HTMLElement;
-  }
-
   let el = document.getElementById(id);
   if (!el) {
     el = document.createElement('div');
@@ -13,10 +9,6 @@ export function ensurePortalRoot(id: string): HTMLElement {
 }
 
 export function ensurePortalSubRoot(rootId: string, subId: string): HTMLElement | null {
-  if (typeof document === 'undefined') {
-    return null;
-  }
-
   const root = document.getElementById(rootId);
   if (!root) {
     return null;
