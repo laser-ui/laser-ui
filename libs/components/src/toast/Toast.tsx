@@ -14,8 +14,7 @@ import { CLASSES, TTANSITION_DURING } from './vars';
 import { useComponentProps, useNamespace, useStyled, useTranslation } from '../hooks';
 import { Icon } from '../icon';
 import { LazyLoading } from '../internal/lazy-loading';
-import { Portal } from '../internal/portal';
-import { ensurePortalSubRoot } from '../internal/portal/portal-roots';
+import { ensurePortalRoot, Portal } from '../internal/portal';
 import { CollapseTransition } from '../transition';
 import { mergeCS } from '../utils';
 
@@ -57,7 +56,7 @@ export function Toast(props: ToastProps): React.ReactElement | null {
   const selector = useCallback(() => {
     const id = placement === 'top' ? `${namespace}-toast-t-root` : `${namespace}-toast-b-root`;
 
-    return ensurePortalSubRoot(`${namespace}-toast-root`, id);
+    return ensurePortalRoot(id, ensurePortalRoot(`${namespace}-toast-root`));
   }, [placement, namespace]);
 
   useMount(() => {
