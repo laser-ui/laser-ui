@@ -2,13 +2,13 @@ import type { TooltipProps } from './types';
 
 import { useEventCallback, useRefExtra } from '@laser-ui/hooks';
 import { isUndefined } from 'lodash';
-import { useId, useImperativeHandle, useRef } from 'react';
+import { useCallback, useId, useImperativeHandle, useRef } from 'react';
 
 import { CLASSES, TTANSITION_DURING } from './vars';
 import { useComponentProps, useControlled, useNamespace, useStyled, useZIndex } from '../hooks';
 import { LazyLoading } from '../internal/lazy-loading';
 import { Popup } from '../internal/popup';
-import { Portal } from '../internal/portal';
+import { Portal, ensurePortalRoot } from '../internal/portal';
 import { Transition } from '../transition';
 import { getPopupPosition, mergeCS } from '../utils';
 
@@ -42,6 +42,8 @@ export function Tooltip(props: TooltipProps): React.ReactElement | null {
 
   const namespace = useNamespace();
   const styled = useStyled(CLASSES, { tooltip: styleProvider?.tooltip }, styleOverrides);
+
+  const tooltipRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-tooltip-root`), [namespace]);
 
   const uniqueId = useId();
   const id = restProps.id ?? `${namespace}-tooltip-${uniqueId}`;
@@ -113,7 +115,7 @@ export function Tooltip(props: TooltipProps): React.ReactElement | null {
               }
             },
           })}
-          <Portal selector={`#${namespace}-tooltip-root`}>
+          <Portal selector={tooltipRootSelector}>
             <Transition
               enter={visible}
               name={`${namespace}-popup`}

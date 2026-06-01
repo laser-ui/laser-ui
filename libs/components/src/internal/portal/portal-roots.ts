@@ -1,46 +1,15 @@
-const PORTAL_ROOT_IDS = [
-  'dropdown-root',
-  'tooltip-root',
-  'popover-root',
-  'modal-root',
-  'drawer-root',
-  'select-root',
-  'tree-select-root',
-  'cascader-root',
-  'date-picker-root',
-  'time-picker-root',
-  'menu-root',
-  'toast-root',
-  'notification-root',
-  'image-preview-root',
-];
-
-export function ensurePortalRoots(namespace: string): void {
+export function ensurePortalRoot(id: string): HTMLElement {
   if (typeof document === 'undefined') {
-    return;
+    return {} as HTMLElement;
   }
 
-  PORTAL_ROOT_IDS.forEach((id) => {
-    const fullId = `${namespace}-${id}`;
-    if (!document.getElementById(fullId)) {
-      const el = document.createElement('div');
-      el.id = fullId;
-      document.body.appendChild(el);
-    }
-  });
-}
-
-export function destroyPortalRoots(namespace: string): void {
-  if (typeof document === 'undefined') {
-    return;
+  let el = document.getElementById(id);
+  if (!el) {
+    el = document.createElement('div');
+    el.id = id;
+    document.body.appendChild(el);
   }
-
-  PORTAL_ROOT_IDS.forEach((id) => {
-    const el = document.getElementById(`${namespace}-${id}`);
-    if (el && el.childNodes.length === 0) {
-      document.body.removeChild(el);
-    }
-  });
+  return el;
 }
 
 export function ensurePortalSubRoot(rootId: string, subId: string): HTMLElement | null {

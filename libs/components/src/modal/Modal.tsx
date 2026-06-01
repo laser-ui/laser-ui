@@ -2,7 +2,7 @@ import type { ModalProps } from './types';
 
 import { useResize } from '@laser-ui/hooks';
 import { isNumber, isString, isUndefined } from 'lodash';
-import { useId, useRef } from 'react';
+import { useCallback, useId, useRef } from 'react';
 
 import { ModalAlert } from './ModalAlert';
 import { ModalFooter } from './ModalFooter';
@@ -10,7 +10,7 @@ import { ModalHeader } from './ModalHeader';
 import { CLASSES, ModalContext } from './vars';
 import { useComponentProps, useLockScroll, useNamespace, useStyled, useZIndex } from '../hooks';
 import { LazyLoading } from '../internal/lazy-loading';
-import { Portal } from '../internal/portal';
+import { Portal, ensurePortalRoot } from '../internal/portal';
 import { Mask } from '../mask';
 import { ROOT_DATA } from '../root/vars';
 import { Transition } from '../transition';
@@ -48,6 +48,8 @@ export const Modal: {
 
   const namespace = useNamespace();
   const styled = useStyled(CLASSES, { modal: styleProvider?.modal }, styleOverrides);
+
+  const modalRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-modal-root`), [namespace]);
 
   const modalRootRef = useRef<HTMLElement | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -87,7 +89,7 @@ export const Modal: {
   useResize(modalContentRef, updateTransformOrigin, undefined, !visible);
 
   return (
-    <Portal selector={`#${namespace}-modal-root`}>
+    <Portal selector={modalRootSelector}>
       <Transition
         enter={visible}
         name={`${namespace}-modal`}

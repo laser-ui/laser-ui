@@ -5,11 +5,11 @@ import { useEventCallback } from '@laser-ui/hooks';
 import { checkNodeExist } from '@laser-ui/utils';
 import KeyboardArrowRightOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_right.svg?react';
 import { isUndefined } from 'lodash';
-import { useImperativeHandle, useRef } from 'react';
+import { useCallback, useImperativeHandle, useRef } from 'react';
 
 import { Icon } from '../../icon';
 import { Popup } from '../../internal/popup';
-import { Portal } from '../../internal/portal';
+import { Portal, ensurePortalRoot } from '../../internal/portal';
 import { Transition } from '../../transition';
 import { getHorizontalSidePosition, mergeCS } from '../../utils';
 import { TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../../vars';
@@ -33,6 +33,8 @@ interface DropdownSubProps {
 
 export function DropdownSub(props: DropdownSubProps): React.ReactElement | null {
   const { ref, children, namespace, styled, id, icon, theme, list, popupState, trigger, focus, disabled, zIndex, onVisibleChange } = props;
+
+  const dropdownRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-dropdown-root`), [namespace]);
 
   const triggerRef = useRef<HTMLLIElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -101,7 +103,7 @@ export function DropdownSub(props: DropdownSubProps): React.ReactElement | null 
               </Icon>
             </div>
           </li>
-          <Portal selector={`#${namespace}-dropdown-root`}>
+          <Portal selector={dropdownRootSelector}>
             <Transition
               enter={visible}
               name={`${namespace}-popup`}

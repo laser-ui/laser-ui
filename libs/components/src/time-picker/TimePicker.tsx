@@ -7,7 +7,7 @@ import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
 import AccessTimeOutlined from '@material-design-icons/svg/outlined/access_time.svg?react';
 import SwapHorizOutlined from '@material-design-icons/svg/outlined/swap_horiz.svg?react';
 import { isArray, isNull, isUndefined } from 'lodash';
-import { useImperativeHandle, useRef } from 'react';
+import { useCallback, useImperativeHandle, useRef } from 'react';
 
 import { TimePickerPanel } from './internal/TimePickerPanel';
 import { deepCompareDate, orderTime } from './utils';
@@ -28,7 +28,7 @@ import {
   useZIndex,
 } from '../hooks';
 import { Icon } from '../icon';
-import { Portal } from '../internal/portal';
+import { Portal, ensurePortalRoot } from '../internal/portal';
 import { ROOT_DATA } from '../root/vars';
 import { Transition } from '../transition';
 import { getVerticalSidePosition, mergeCS } from '../utils';
@@ -70,6 +70,8 @@ export function TimePicker(props: TimePickerProps): React.ReactElement | null {
     { 'time-picker': styleProvider?.['time-picker'], 'time-picker-popup': styleProvider?.['time-picker-popup'] },
     styleOverrides,
   );
+
+  const timePickerRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-time-picker-root`), [namespace]);
 
   const { t } = useTranslation();
   const async = useAsync();
@@ -481,7 +483,7 @@ export function TimePicker(props: TimePickerProps): React.ReactElement | null {
           </Icon>
         </div>
       </div>
-      <Portal selector={`#${namespace}-time-picker-root`}>
+      <Portal selector={timePickerRootSelector}>
         <Transition
           enter={visible}
           name={`${namespace}-popup-down`}

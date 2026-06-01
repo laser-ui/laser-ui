@@ -2,7 +2,7 @@ import type { PopoverProps } from './types';
 
 import { useEventCallback, useRefExtra } from '@laser-ui/hooks';
 import { isString, isUndefined } from 'lodash';
-import { useId, useImperativeHandle, useRef } from 'react';
+import { useCallback, useId, useImperativeHandle, useRef } from 'react';
 
 import { PopoverFooter } from './PopoverFooter';
 import { PopoverHeader } from './PopoverHeader';
@@ -10,7 +10,7 @@ import { CLASSES, PopoverContext, TTANSITION_DURING } from './vars';
 import { useComponentProps, useControlled, useLockScroll, useNamespace, useStyled, useZIndex } from '../hooks';
 import { LazyLoading } from '../internal/lazy-loading';
 import { Popup } from '../internal/popup';
-import { Portal } from '../internal/portal';
+import { Portal, ensurePortalRoot } from '../internal/portal';
 import { Transition } from '../transition';
 import { getPopupPosition, handleModalKeyDown, mergeCS } from '../utils';
 
@@ -53,6 +53,8 @@ export const Popover: {
 
   const namespace = useNamespace();
   const styled = useStyled(CLASSES, { popover: styleProvider?.popover }, styleOverrides);
+
+  const popoverRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-popover-root`), [namespace]);
 
   const uniqueId = useId();
   const triggerId = `${namespace}-popover-trigger-${uniqueId}`;
@@ -131,7 +133,7 @@ export const Popover: {
               }
             },
           })}
-          <Portal selector={`#${namespace}-popover-root`}>
+          <Portal selector={popoverRootSelector}>
             <Transition
               enter={visible}
               name={`${namespace}-popup`}

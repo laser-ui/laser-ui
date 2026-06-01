@@ -5,11 +5,11 @@ import type { CLASSES } from '../vars';
 import { useEventCallback } from '@laser-ui/hooks';
 import { checkNodeExist } from '@laser-ui/utils';
 import { isUndefined } from 'lodash';
-import { useImperativeHandle, useRef } from 'react';
+import { useCallback, useImperativeHandle, useRef } from 'react';
 
 import { useTranslation, useZIndex } from '../../hooks';
 import { Popup } from '../../internal/popup';
-import { Portal } from '../../internal/portal';
+import { Portal, ensurePortalRoot } from '../../internal/portal';
 import { CollapseTransition, Transition } from '../../transition';
 import { getHorizontalSidePosition, getVerticalSidePosition, mergeCS } from '../../utils';
 import { TTANSITION_DURING_BASE, TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../../vars';
@@ -66,6 +66,8 @@ export function MenuSub(props: MenuSubProps): React.ReactElement | null {
     onVisibleChange,
     onClick,
   } = props;
+
+  const menuRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-menu-root`), [namespace]);
 
   const triggerRef = useRef<HTMLLIElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -188,7 +190,7 @@ export function MenuSub(props: MenuSubProps): React.ReactElement | null {
               )}
             </li>
             {mode !== 'vertical' && (
-              <Portal selector={`#${namespace}-menu-root`}>
+              <Portal selector={menuRootSelector}>
                 <Transition
                   enter={visible}
                   name={`${namespace}-popup-down`}

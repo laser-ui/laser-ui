@@ -35,7 +35,7 @@ import {
   useZIndex,
 } from '../hooks';
 import { Icon } from '../icon';
-import { Portal } from '../internal/portal';
+import { Portal, ensurePortalRoot } from '../internal/portal';
 import { ROOT_DATA } from '../root/vars';
 import { Tag } from '../tag';
 import { Transition } from '../transition';
@@ -87,6 +87,8 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
 
   const namespace = useNamespace();
   const styled = useStyled(CLASSES, { select: styleProvider?.select, 'select-popup': styleProvider?.['select-popup'] }, styleOverrides);
+
+  const selectRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-select-root`), [namespace]);
 
   const { t } = useTranslation();
 
@@ -687,7 +689,7 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
           </Icon>
         </div>
       </div>
-      <Portal selector={`#${namespace}-select-root`}>
+      <Portal selector={selectRootSelector}>
         <Transition
           enter={visible}
           name={`${namespace}-popup-down`}

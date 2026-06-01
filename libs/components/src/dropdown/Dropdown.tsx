@@ -2,7 +2,7 @@ import type { DropdownItem, DropdownProps } from './types';
 
 import { useEventCallback, useRefExtra } from '@laser-ui/hooks';
 import { isUndefined, nth } from 'lodash';
-import { useId, useImperativeHandle, useRef, useState } from 'react';
+import { useCallback, useId, useImperativeHandle, useRef, useState } from 'react';
 
 import { DropdownList } from './internal/DropdownList';
 import { checkEnableItem } from './utils';
@@ -18,7 +18,7 @@ import {
   useZIndex,
 } from '../hooks';
 import { Popup } from '../internal/popup';
-import { Portal } from '../internal/portal';
+import { Portal, ensurePortalRoot } from '../internal/portal';
 import { Transition } from '../transition';
 import { getVerticalSidePosition, mergeCS } from '../utils';
 import { TTANSITION_DURING_POPUP, WINDOW_SPACE } from '../vars';
@@ -53,6 +53,8 @@ export function Dropdown<ID extends React.Key, T extends DropdownItem<ID>>(props
     { dropdown: styleProvider?.dropdown, 'dropdown-popup': styleProvider?.['dropdown-popup'] },
     styleOverrides,
   );
+
+  const dropdownRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-dropdown-root`), [namespace]);
 
   const uniqueId = useId();
   const id = restProps.id ?? `${namespace}-dropdown-${uniqueId}`;
@@ -236,7 +238,7 @@ export function Dropdown<ID extends React.Key, T extends DropdownItem<ID>>(props
               }
             },
           })}
-          <Portal selector={`#${namespace}-dropdown-root`}>
+          <Portal selector={dropdownRootSelector}>
             <Transition
               enter={visible}
               name={`${namespace}-popup-down`}

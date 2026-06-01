@@ -13,7 +13,7 @@ import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
 import KeyboardArrowDownOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_down.svg?react';
 import SearchOutlined from '@material-design-icons/svg/outlined/search.svg?react';
 import { isNull } from 'lodash';
-import { useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { useCallback, useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
 
 import { CascaderPanel } from './internal/CascaderPanel';
 import { CascaderSearchPanel } from './internal/CascaderSearchPanel';
@@ -35,7 +35,7 @@ import {
   useZIndex,
 } from '../hooks';
 import { Icon } from '../icon';
-import { Portal } from '../internal/portal';
+import { Portal, ensurePortalRoot } from '../internal/portal';
 import { ROOT_DATA } from '../root/vars';
 import { Tag } from '../tag';
 import { Transition } from '../transition';
@@ -93,6 +93,8 @@ export function Cascader<V extends React.Key, T extends CascaderItem<V>>(props: 
     { cascader: styleProvider?.cascader, 'cascader-popup': styleProvider?.['cascader-popup'] },
     styleOverrides,
   );
+
+  const cascaderRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-cascader-root`), [namespace]);
 
   const { t } = useTranslation();
 
@@ -683,7 +685,7 @@ export function Cascader<V extends React.Key, T extends CascaderItem<V>>(props: 
           </Icon>
         </div>
       </div>
-      <Portal selector={`#${namespace}-cascader-root`}>
+      <Portal selector={cascaderRootSelector}>
         <Transition
           enter={visible}
           name={`${namespace}-popup-down`}

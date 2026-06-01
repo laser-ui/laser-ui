@@ -14,7 +14,7 @@ import CloseOutlined from '@material-design-icons/svg/outlined/close.svg?react';
 import KeyboardArrowDownOutlined from '@material-design-icons/svg/outlined/keyboard_arrow_down.svg?react';
 import SearchOutlined from '@material-design-icons/svg/outlined/search.svg?react';
 import { isNull, isNumber, isUndefined } from 'lodash';
-import { useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { useCallback, useId, useImperativeHandle, useMemo, useRef, useState } from 'react';
 
 import { TreeSelectSearchPanel } from './internal/TreeSelectSearchPanel';
 import { CLASSES } from './vars';
@@ -35,7 +35,7 @@ import {
   useZIndex,
 } from '../hooks';
 import { Icon } from '../icon';
-import { Portal } from '../internal/portal';
+import { Portal, ensurePortalRoot } from '../internal/portal';
 import { ROOT_DATA } from '../root/vars';
 import { Tag } from '../tag';
 import { Transition } from '../transition';
@@ -102,6 +102,8 @@ export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: Tr
     },
     styleOverrides,
   );
+
+  const treeSelectRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-tree-select-root`), [namespace]);
 
   const expandSaved = useRef(new Set<V>());
 
@@ -735,7 +737,7 @@ export function TreeSelect<V extends React.Key, T extends TreeItem<V>>(props: Tr
           </Icon>
         </div>
       </div>
-      <Portal selector={`#${namespace}-tree-select-root`}>
+      <Portal selector={treeSelectRootSelector}>
         <Transition
           enter={visible}
           name={`${namespace}-popup-down`}

@@ -7,7 +7,7 @@ import CancelFilled from '@material-design-icons/svg/filled/cancel.svg?react';
 import CalendarTodayOutlined from '@material-design-icons/svg/outlined/calendar_today.svg?react';
 import SwapHorizOutlined from '@material-design-icons/svg/outlined/swap_horiz.svg?react';
 import { isArray, isBoolean, isNull, isUndefined } from 'lodash';
-import { useImperativeHandle, useRef } from 'react';
+import { useCallback, useImperativeHandle, useRef } from 'react';
 
 import { DatePickerPanel } from './internal/DatePickerPanel';
 import { CLASSES } from './vars';
@@ -27,7 +27,7 @@ import {
   useZIndex,
 } from '../hooks';
 import { Icon } from '../icon';
-import { Portal } from '../internal/portal';
+import { Portal, ensurePortalRoot } from '../internal/portal';
 import { ROOT_DATA } from '../root/vars';
 import { TimePickerPanel } from '../time-picker/internal/TimePickerPanel';
 import { deepCompareDate, orderDate } from '../time-picker/utils';
@@ -77,6 +77,8 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
     },
     styleOverrides,
   );
+
+  const datePickerRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-date-picker-root`), [namespace]);
 
   const { t } = useTranslation();
   const async = useAsync();
@@ -492,7 +494,7 @@ export function DatePicker(props: DatePickerProps): React.ReactElement | null {
           </Icon>
         </div>
       </div>
-      <Portal selector={`#${namespace}-date-picker-root`}>
+      <Portal selector={datePickerRootSelector}>
         <Transition
           enter={visible}
           name={`${namespace}-popup-down`}

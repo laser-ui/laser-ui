@@ -8,14 +8,14 @@ import Rotate90DegreesCwOutlined from '@material-design-icons/svg/outlined/rotat
 import ZoomInOutlined from '@material-design-icons/svg/outlined/zoom_in.svg?react';
 import ZoomOutOutlined from '@material-design-icons/svg/outlined/zoom_out.svg?react';
 import { isNull, isUndefined } from 'lodash';
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import { PREVIEW_CLASSES } from './vars';
 import { Button } from '../button';
 import { useComponentProps, useControlled, useLockScroll, useNamespace, useStyled, useZIndex } from '../hooks';
 import { Icon } from '../icon';
 import { Input } from '../input';
-import { Portal } from '../internal/portal';
+import { Portal, ensurePortalRoot } from '../internal/portal';
 import { Mask } from '../mask';
 import { ROOT_DATA } from '../root/vars';
 import { Transition } from '../transition';
@@ -41,6 +41,8 @@ export function ImagePreview(props: ImagePreviewProps): React.ReactElement | nul
 
   const namespace = useNamespace();
   const styled = useStyled(PREVIEW_CLASSES, { 'image-preview': styleProvider?.['image-preview'] }, styleOverrides);
+
+  const imagePreviewRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-image-preview-root`), [namespace]);
 
   const previewRef = useRef<HTMLDivElement>(null);
   const windowRef = useRefExtra(() => window);
@@ -230,7 +232,7 @@ export function ImagePreview(props: ImagePreviewProps): React.ReactElement | nul
   );
 
   return (
-    <Portal selector={`#${namespace}-image-preview-root`}>
+    <Portal selector={imagePreviewRootSelector}>
       <Transition
         enter={visible}
         name={`${namespace}-popup`}

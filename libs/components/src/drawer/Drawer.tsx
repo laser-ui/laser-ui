@@ -1,14 +1,14 @@
 import type { DrawerProps } from './types';
 
 import { isString, isUndefined } from 'lodash';
-import { use, useId, useRef, useState } from 'react';
+import { use, useCallback, useId, useRef, useState } from 'react';
 
 import { DrawerFooter } from './DrawerFooter';
 import { DrawerHeader } from './DrawerHeader';
 import { CLASSES, DrawerContext } from './vars';
 import { useComponentProps, useLockScroll, useNamespace, useStyled, useZIndex } from '../hooks';
 import { LazyLoading } from '../internal/lazy-loading';
-import { Portal } from '../internal/portal';
+import { Portal, ensurePortalRoot } from '../internal/portal';
 import { Mask } from '../mask';
 import { Transition } from '../transition';
 import { handleModalKeyDown, mergeCS } from '../utils';
@@ -47,6 +47,8 @@ export const Drawer: {
 
   const namespace = useNamespace();
   const styled = useStyled(CLASSES, { drawer: styleProvider?.drawer }, styleOverrides);
+
+  const drawerRootSelector = useCallback(() => ensurePortalRoot(`${namespace}-drawer-root`), [namespace]);
 
   const drawerRef = useRef<HTMLDivElement>(null);
   const drawerContentRef = useRef<HTMLDivElement>(null);
@@ -89,7 +91,7 @@ export const Drawer: {
   useLockScroll(isFixed && visible);
 
   return (
-    <Portal selector={isUndefined(container) ? `#${namespace}-drawer-root` : container}>
+    <Portal selector={isUndefined(container) ? drawerRootSelector : container}>
       <Transition
         enter={visible}
         name={`${namespace}-drawer`}
