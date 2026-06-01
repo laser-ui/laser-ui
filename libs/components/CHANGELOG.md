@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.7.3](https://github.com/laser-ui/laser-ui/compare/v2.7.2...v2.7.3) (2026-06-01)
+
+**Note:** Version bump only for package @laser-ui/components
+
 ## [2.7.2](https://github.com/laser-ui/laser-ui/compare/v2.7.1...v2.7.2) (2026-05-29)
 
 ### Bug Fixes
