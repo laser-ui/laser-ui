@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.8.0](https://github.com/laser-ui/laser-ui/compare/v2.7.4...v2.8.0) (2026-06-01)
+
+### Features
+
+- **utils:** add isArrayEqual utility function ([2813f2c](https://github.com/laser-ui/laser-ui/commit/2813f2c0e24c19237c4170c7e1a49ebadb8edba1))
+
 ## [2.7.4](https://github.com/laser-ui/laser-ui/compare/v2.7.3...v2.7.4) (2026-06-01)
 
 **Note:** Version bump only for package @laser-ui/components
