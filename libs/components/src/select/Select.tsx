@@ -179,7 +179,7 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
       };
     }
 
-    let searchList: (T & { [IS_CREATED]?: boolean })[] = [];
+    const searchList: (T & { [IS_CREATED]?: boolean })[] = [];
 
     listProp.forEach((item) => {
       if (!item.children) {
@@ -199,7 +199,7 @@ export function Select<V extends React.Key, T extends SelectItem<V>>(props: Sele
             groupList.push(groupItem);
           }
         });
-        searchList = searchList.concat(groupList);
+        searchList.push(...groupList);
       }
     });
 

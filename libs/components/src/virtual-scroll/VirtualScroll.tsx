@@ -132,6 +132,13 @@ export function VirtualScroll<T>(props: VirtualScrollProps<T>): React.ReactEleme
       let hasStart = false;
       let hasEnd = false;
       const getList = (arr: (T | typeof EMPTY)[], ancestry: T[] = []): React.ReactNode[] => {
+        const getNestedList = (data: (T | typeof EMPTY)[], item: T) => {
+          ancestry.push(item);
+          const result = getList(data, ancestry);
+          ancestry.pop();
+          return result;
+        };
+
         const fillSize = [0, 0];
         const list: React.ReactNode[] = [];
         const ariaSetsize = arr.filter((item) => {
@@ -174,11 +181,11 @@ export function VirtualScroll<T>(props: VirtualScrollProps<T>): React.ReactEleme
               const expand = itemExpand ? itemExpand(item as T) : undefined;
               let childrenList: React.ReactNode[] = [];
               if (isUndefined(expand)) {
-                childrenList = getList(nestedData.length === 0 ? [EMPTY] : nestedData, ancestry.concat([item as T]));
+                childrenList = getNestedList(nestedData.length === 0 ? [EMPTY] : nestedData, item as T);
               } else {
                 childrenList = listSaved.current.get(key) ?? [];
                 if (expand) {
-                  childrenList = getList(nestedData.length === 0 ? [EMPTY] : nestedData, ancestry.concat([item as T]));
+                  childrenList = getNestedList(nestedData.length === 0 ? [EMPTY] : nestedData, item as T);
                   listSaved.current.set(key, childrenList);
                 }
               }
@@ -284,6 +291,13 @@ export function VirtualScroll<T>(props: VirtualScrollProps<T>): React.ReactEleme
       return getList(list);
     } else {
       const getList = (arr: (T | typeof EMPTY)[], ancestry: T[] = []): React.ReactNode[] => {
+        const getNestedList = (data: (T | typeof EMPTY)[], item: T) => {
+          ancestry.push(item);
+          const result = getList(data, ancestry);
+          ancestry.pop();
+          return result;
+        };
+
         const list: React.ReactNode[] = [];
         const ariaSetsize = arr.filter((item) => {
           if (item === EMPTY) {
@@ -310,11 +324,11 @@ export function VirtualScroll<T>(props: VirtualScrollProps<T>): React.ReactEleme
             const expand = itemExpand ? itemExpand(item as T) : undefined;
             let childrenList: React.ReactNode[] = [];
             if (isUndefined(expand)) {
-              childrenList = getList(nestedData.length === 0 ? [EMPTY] : nestedData, ancestry.concat([item as T]));
+              childrenList = getNestedList(nestedData.length === 0 ? [EMPTY] : nestedData, item as T);
             } else {
               childrenList = listSaved.current.get(key) ?? [];
               if (expand) {
-                childrenList = getList(nestedData.length === 0 ? [EMPTY] : nestedData, ancestry.concat([item as T]));
+                childrenList = getNestedList(nestedData.length === 0 ? [EMPTY] : nestedData, item as T);
                 listSaved.current.set(key, childrenList);
               }
             }

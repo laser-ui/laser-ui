@@ -7,7 +7,7 @@ import { DialogService as InternalDialogService } from '../dialog-service';
 let dialogs: DialogInstance<any>[] = [];
 let listeners: (() => void)[] = [];
 function subscribe(onChange: () => void) {
-  listeners = listeners.concat([onChange]);
+  listeners.push(onChange);
   return () => {
     listeners = listeners.filter((f) => f !== onChange);
   };

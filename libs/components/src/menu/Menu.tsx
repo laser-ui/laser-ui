@@ -193,7 +193,9 @@ export function Menu<ID extends React.Key, T extends MenuItem<ID>>(props: MenuPr
 
         const handleItemClick = () => {
           changeActive(itemId);
-          setFocusIds(subParents.map((parentItem) => parentItem.id).concat([itemId]));
+          const ids = subParents.map((parentItem) => parentItem.id);
+          ids.push(itemId);
+          setFocusIds(ids);
         };
 
         const handleSubExpand = (sameLevelItems: T[]) => {
@@ -220,7 +222,9 @@ export function Menu<ID extends React.Key, T extends MenuItem<ID>>(props: MenuPr
             const sameLevelItems = getSameLevelEnableItems((nth(subParents, -1)?.children as T[]) ?? list);
             const focusItem = (val?: T) => {
               if (val) {
-                setFocusIds(subParents.map((parentItem) => parentItem.id).concat([val.id]));
+                const ids = subParents.map((parentItem) => parentItem.id);
+                ids.push(val.id);
+                setFocusIds(ids);
               }
             };
             const handleOpenSub = () => {
@@ -234,7 +238,9 @@ export function Menu<ID extends React.Key, T extends MenuItem<ID>>(props: MenuPr
               if (children) {
                 const newFocusItem = nth(getSameLevelEnableItems(children), 0);
                 if (newFocusItem) {
-                  setFocusIds(nextSubParents.map((parentItem) => parentItem.id).concat([newFocusItem.id]));
+                  const ids = nextSubParents.map((parentItem) => parentItem.id);
+                  ids.push(newFocusItem.id);
+                  setFocusIds(ids);
                 }
               }
             };
@@ -413,7 +419,9 @@ export function Menu<ID extends React.Key, T extends MenuItem<ID>>(props: MenuPr
                 }}
                 onClick={() => {
                   if (!itemDisabled) {
-                    setFocusIds(subParents.map((parentItem) => parentItem.id).concat([itemId]));
+                    const ids = subParents.map((parentItem) => parentItem.id);
+                    ids.push(itemId);
+                    setFocusIds(ids);
 
                     if (mode === 'vertical') {
                       const sameLevelItems = getSameLevelEnableItems((nth(subParents, -1)?.children as T[]) ?? list);

@@ -181,7 +181,9 @@ export const Upload: {
       }
 
       if (filesAdded.length > 0) {
-        const list = changeFiles((draft) => draft.concat(filesAdded));
+        const list = changeFiles((draft) => {
+          draft.push(...filesAdded);
+        });
         onModelChange?.(list, {
           type: 'add',
           files: filesAdded,
