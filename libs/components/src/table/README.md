@@ -86,9 +86,7 @@ interface TableTdProps extends BaseProps<'table', typeof CLASSES>, React.TdHTMLA
 ### Table.FilterProps
 
 ```tsx
-interface TableFilterProps
-  extends BaseProps<'table', typeof CLASSES>,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'content'> {
+interface TableFilterProps extends BaseProps<'table', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'content'> {
   children: (props: {
     id: string;
     onClick: React.MouseEventHandler<HTMLElement>;
@@ -173,9 +171,7 @@ interface TableEmptyProps extends BaseProps<'table', typeof CLASSES>, React.HTML
 ### Table.ExpandProps
 
 ```tsx
-interface TableExpandProps
-  extends BaseProps<'table', typeof CLASSES>,
-    Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
+interface TableExpandProps extends BaseProps<'table', typeof CLASSES>, Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
   expand?: boolean;
   onExpandChange?: (expand: boolean) => void;
 }

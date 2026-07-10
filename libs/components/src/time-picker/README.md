@@ -11,7 +11,10 @@ For selecting a time or time range.
 ### TimePickerProps
 
 ```tsx
-interface TimePickerProps extends BaseProps<'time-picker' | 'time-picker-popup', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'placeholder'> {
+interface TimePickerProps
+  extends
+    BaseProps<'time-picker' | 'time-picker-popup', typeof CLASSES>,
+    Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'placeholder'> {
   ref?: React.Ref<TimePickerRef>;
   formControl?: FormControlProvider;
   model?: Date | [Date, Date] | null;

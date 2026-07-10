@@ -17,7 +17,8 @@ interface TreeSelectRef {
   updatePosition: () => void;
 }
 
-interface TreeSelectProps<V extends React.Key, T extends TreeItem<V>> extends BaseProps<'tree-select' | 'tree' | 'tree-select-popup', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+interface TreeSelectProps<V extends React.Key, T extends TreeItem<V>>
+  extends BaseProps<'tree-select' | 'tree' | 'tree-select-popup', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   ref?: React.Ref<TreeSelectRef>;
   formControl?: FormControlProvider;
   list: T[];

@@ -41,8 +41,7 @@ interface AnchorItem {
 
 ```tsx
 interface AnchorProps<T extends AnchorItem>
-  extends BaseProps<'anchor', typeof CLASSES>,
-    Omit<React.HTMLAttributes<HTMLUListElement>, 'children' | 'onClick'> {
+  extends BaseProps<'anchor', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLUListElement>, 'children' | 'onClick'> {
   ref?: React.Ref<AnchorRef>;
   list: T[];
   page?: RefExtra;

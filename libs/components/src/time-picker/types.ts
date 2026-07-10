@@ -9,7 +9,8 @@ export interface TimePickerRef {
 }
 
 export interface TimePickerProps
-  extends BaseProps<'time-picker' | 'time-picker-popup', typeof CLASSES>,
+  extends
+    BaseProps<'time-picker' | 'time-picker-popup', typeof CLASSES>,
     Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'placeholder'> {
   ref?: React.Ref<TimePickerRef>;
   formControl?: FormControlProvider;

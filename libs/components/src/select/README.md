@@ -33,7 +33,8 @@ interface SelectItem<V extends React.Key> {
 ### SelectProps
 
 ```tsx
-interface SelectProps<V extends React.Key, T extends SelectItem<V>> extends BaseProps<'select' | 'select-popup', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+interface SelectProps<V extends React.Key, T extends SelectItem<V>>
+  extends BaseProps<'select' | 'select-popup', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   ref?: React.Ref<SelectRef>;
   formControl?: FormControlProvider;
   list: T[];

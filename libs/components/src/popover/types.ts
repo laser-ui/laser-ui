@@ -9,8 +9,7 @@ export interface PopoverRef {
 }
 
 export interface PopoverProps
-  extends BaseProps<'popover', typeof CLASSES>,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'content'> {
+  extends BaseProps<'popover', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'content'> {
   ref?: React.Ref<PopoverRef>;
   children: (props: {
     id: string;

@@ -21,7 +21,8 @@ interface UploadFile {
   response?: any;
 }
 
-interface UploadProps extends BaseProps<'upload' | 'upload-list', typeof CLASSES>, Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'list'> {
+interface UploadProps
+  extends BaseProps<'upload' | 'upload-list', typeof CLASSES>, Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'list'> {
   ref?: React.Ref<HTMLInputElement>;
   children: (props: {
     onClick: React.MouseEventHandler<HTMLElement>;
@@ -68,7 +69,8 @@ interface UploadProps extends BaseProps<'upload' | 'upload-list', typeof CLASSES
 ### UploadButtonProps
 
 ```tsx
-interface UploadButtonProps extends BaseProps<'upload-button', typeof BUTTON_CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+interface UploadButtonProps
+  extends BaseProps<'upload-button', typeof BUTTON_CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   ref?: React.Ref<HTMLDivElement>;
   file?: UploadFile;
   actions?: (React.ReactNode | { id: React.Key; action: React.ReactNode })[];
@@ -109,7 +111,8 @@ interface UploadActionProps extends BaseProps<'upload-action', typeof ACTION_CLA
 ### UploadPreviewActionProps
 
 ```tsx
-interface UploadPreviewActionProps extends BaseProps<'upload-action', typeof ACTION_CLASSES>, React.AnchorHTMLAttributes<HTMLAnchorElement> {
+interface UploadPreviewActionProps
+  extends BaseProps<'upload-action', typeof ACTION_CLASSES>, React.AnchorHTMLAttributes<HTMLAnchorElement> {
   ref?: React.Ref<HTMLAnchorElement>;
   disabled?: boolean;
 }
@@ -162,7 +165,8 @@ interface UploadPictureProps extends BaseProps<'upload-picture', typeof PICTURE_
 ### UploadPictureListProps
 
 ```tsx
-interface UploadPictureListProps extends BaseProps<'upload-picture-list', typeof PICTURE_LIST_CLASSES>, Omit<React.HTMLAttributes<HTMLUListElement>, 'children'> {
+interface UploadPictureListProps
+  extends BaseProps<'upload-picture-list', typeof PICTURE_LIST_CLASSES>, Omit<React.HTMLAttributes<HTMLUListElement>, 'children'> {
   actions?: (file: UploadFile, index: number) => (React.ReactNode | { id: React.Key; action: React.ReactNode })[];
   defaultActions?: {
     preview?: (file: UploadFile) => void;

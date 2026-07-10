@@ -52,8 +52,7 @@ export interface FormProps extends BaseProps<'form', typeof CLASSES>, React.Form
 }
 
 export interface FormItemProps<T extends { [index: string]: FormErrors }>
-  extends BaseProps<'form', typeof CLASSES>,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+  extends BaseProps<'form', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   children: React.ReactNode | ((formControls: { [N in keyof T]: FormControlProvider }) => React.ReactNode);
   formControls?: T;
   label?: React.ReactNode;

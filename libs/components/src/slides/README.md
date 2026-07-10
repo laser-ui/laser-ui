@@ -29,8 +29,7 @@ interface SlidesItem<ID extends React.Key> {
 }
 
 interface SlidesProps<ID extends React.Key, T extends SlidesItem<ID>>
-  extends BaseProps<'slides', typeof CLASSES>,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+  extends BaseProps<'slides', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   list: T[];
   active?: ID;
   defaultActive?: ID;

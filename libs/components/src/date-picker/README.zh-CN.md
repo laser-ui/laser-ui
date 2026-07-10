@@ -10,7 +10,8 @@ title: 日期选择框
 
 ```tsx
 interface DatePickerProps
-  extends BaseProps<'date-picker' | 'time-picker' | 'date-picker-popup', typeof CLASSES>,
+  extends
+    BaseProps<'date-picker' | 'time-picker' | 'date-picker-popup', typeof CLASSES>,
     Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'placeholder'> {
   ref?: React.Ref<DatePickerRef>;
   formControl?: FormControlProvider;

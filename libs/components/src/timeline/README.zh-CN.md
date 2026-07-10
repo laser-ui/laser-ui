@@ -16,7 +16,8 @@ interface TimelineItem {
   dot?: React.ReactNode;
 }
 
-interface TimelineProps<T extends TimelineItem> extends BaseProps<'timeline', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+interface TimelineProps<T extends TimelineItem>
+  extends BaseProps<'timeline', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   list: T[];
   vertical?: boolean;
   lineSize?: number;

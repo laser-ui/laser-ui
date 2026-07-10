@@ -18,8 +18,7 @@ export interface UploadFile {
 }
 
 export interface UploadProps
-  extends BaseProps<'upload' | 'upload-list', typeof CLASSES>,
-    Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'list'> {
+  extends BaseProps<'upload' | 'upload-list', typeof CLASSES>, Omit<React.InputHTMLAttributes<HTMLInputElement>, 'children' | 'list'> {
   ref?: React.Ref<HTMLInputElement>;
   children: (props: {
     onClick: React.MouseEventHandler<HTMLElement>;
@@ -53,8 +52,7 @@ export interface UploadProps
 }
 
 export interface UploadButtonProps
-  extends BaseProps<'upload-button', typeof BUTTON_CLASSES>,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+  extends BaseProps<'upload-button', typeof BUTTON_CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   ref?: React.Ref<HTMLDivElement>;
   file?: UploadFile;
   actions?: (React.ReactNode | { id: React.Key; action: React.ReactNode })[];
@@ -72,15 +70,13 @@ export interface UploadActionProps extends BaseProps<'upload-action', typeof ACT
 }
 
 export interface UploadPreviewActionProps
-  extends BaseProps<'upload-action', typeof ACTION_CLASSES>,
-    React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  extends BaseProps<'upload-action', typeof ACTION_CLASSES>, React.AnchorHTMLAttributes<HTMLAnchorElement> {
   ref?: React.Ref<HTMLAnchorElement>;
   disabled?: boolean;
 }
 
 export interface UploadListProps
-  extends BaseProps<'upload-list', typeof LIST_CLASSES>,
-    Omit<React.HTMLAttributes<HTMLUListElement>, 'children'> {
+  extends BaseProps<'upload-list', typeof LIST_CLASSES>, Omit<React.HTMLAttributes<HTMLUListElement>, 'children'> {
   actions?: (file: UploadFile, index: number) => (React.ReactNode | { id: React.Key; action: React.ReactNode })[];
   defaultActions?: {
     preview?: (file: UploadFile) => void;
@@ -97,8 +93,7 @@ export interface UploadPictureProps extends BaseProps<'upload-picture', typeof P
 }
 
 export interface UploadPictureListProps
-  extends BaseProps<'upload-picture-list', typeof PICTURE_LIST_CLASSES>,
-    Omit<React.HTMLAttributes<HTMLUListElement>, 'children'> {
+  extends BaseProps<'upload-picture-list', typeof PICTURE_LIST_CLASSES>, Omit<React.HTMLAttributes<HTMLUListElement>, 'children'> {
   actions?: (file: UploadFile, index: number) => (React.ReactNode | { id: React.Key; action: React.ReactNode })[];
   defaultActions?: {
     preview?: (file: UploadFile) => void;

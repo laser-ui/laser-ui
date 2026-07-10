@@ -78,10 +78,10 @@ interface VirtualScrollRef<T> {
 }
 ```
 
-| Method | Description |
-| --- | --- |
-| scrollToItem | Scroll to a specific item by key |
-| scrollToStep | Scroll by a step of items |
-| scrollToNested | Scroll to the nested items area |
-| scrollToStart | Scroll to the start of the list |
-| scrollToEnd | Scroll to the end of the list |
+| Method         | Description                      |
+| -------------- | -------------------------------- |
+| scrollToItem   | Scroll to a specific item by key |
+| scrollToStep   | Scroll by a step of items        |
+| scrollToNested | Scroll to the nested items area  |
+| scrollToStart  | Scroll to the start of the list  |
+| scrollToEnd    | Scroll to the end of the list    |

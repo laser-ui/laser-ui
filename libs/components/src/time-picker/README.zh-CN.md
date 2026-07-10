@@ -9,7 +9,10 @@ title: 时间选择框
 ### TimePickerProps
 
 ```tsx
-interface TimePickerProps extends BaseProps<'time-picker' | 'time-picker-popup', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'placeholder'> {
+interface TimePickerProps
+  extends
+    BaseProps<'time-picker' | 'time-picker-popup', typeof CLASSES>,
+    Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'placeholder'> {
   ref?: React.Ref<TimePickerRef>;
   formControl?: FormControlProvider;
   model?: Date | [Date, Date] | null;

@@ -21,8 +21,7 @@ export interface ImageActionProps extends BaseProps<'image', typeof CLASSES>, Re
 }
 
 export interface ImagePreviewProps
-  extends BaseProps<'image-preview', typeof PREVIEW_CLASSES>,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+  extends BaseProps<'image-preview', typeof PREVIEW_CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   list: React.ImgHTMLAttributes<HTMLImageElement>[];
   visible: boolean;
   active?: number;

@@ -16,8 +16,7 @@ export interface SelectItem<V extends React.Key> {
 }
 
 export interface SelectProps<V extends React.Key, T extends SelectItem<V>>
-  extends BaseProps<'select' | 'select-popup', typeof CLASSES>,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+  extends BaseProps<'select' | 'select-popup', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   ref?: React.Ref<SelectRef>;
   formControl?: FormControlProvider;
   list: T[];

@@ -44,8 +44,7 @@ interface CascaderItem<V extends React.Key> {
 
 ```tsx
 interface CascaderProps<V extends React.Key, T extends CascaderItem<V>>
-  extends BaseProps<'cascader' | 'cascader-popup', typeof CLASSES>,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+  extends BaseProps<'cascader' | 'cascader-popup', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   ref?: React.Ref<CascaderRef>;
   formControl?: FormControlProvider;
   list: T[];

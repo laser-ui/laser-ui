@@ -24,8 +24,7 @@ export interface InputProps extends BaseProps<'input', typeof CLASSES>, Omit<Rea
 }
 
 export interface InputNumberProps
-  extends BaseProps<'input', typeof CLASSES>,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'prefix'> {
+  extends BaseProps<'input', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'prefix'> {
   formControl?: FormControlProvider;
   model?: number | null;
   defaultModel?: number | null;

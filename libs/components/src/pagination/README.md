@@ -10,7 +10,8 @@ A component for dividing content into multiple pages.
 ### PaginationProps
 
 ```tsx
-interface PaginationProps extends BaseProps<'pagination', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLElement>, 'children' | 'onChange'> {
+interface PaginationProps
+  extends BaseProps<'pagination', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLElement>, 'children' | 'onChange'> {
   total: number;
   active?: number;
   defaultActive?: number;

@@ -32,8 +32,7 @@ interface AccordionItem<ID extends React.Key> {
 
 ```tsx
 interface AccordionProps<ID extends React.Key, T extends AccordionItem<ID>>
-  extends BaseProps<'accordion', typeof CLASSES>,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+  extends BaseProps<'accordion', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   list: T[];
   active?: ID | null | ID[];
   defaultActive?: ID | null | ID[];

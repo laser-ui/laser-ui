@@ -17,7 +17,8 @@ interface TransferItem<V extends React.Key> {
   disabled?: boolean;
 }
 
-interface TransferProps<V extends React.Key, T extends TransferItem<V>> extends BaseProps<'transfer', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'title'> {
+interface TransferProps<V extends React.Key, T extends TransferItem<V>>
+  extends BaseProps<'transfer', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'title'> {
   formControl?: FormControlProvider;
   list: T[];
   model?: V[];

@@ -8,8 +8,7 @@ export interface TooltipRef {
 }
 
 export interface TooltipProps
-  extends BaseProps<'tooltip', typeof CLASSES>,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'title'> {
+  extends BaseProps<'tooltip', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'title'> {
   ref?: React.Ref<TooltipRef>;
   children: (props: {
     'aria-describedby': string;

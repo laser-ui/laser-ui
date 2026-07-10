@@ -20,8 +20,7 @@ interface StepperItem {
 }
 
 interface StepperProps<T extends StepperItem>
-  extends BaseProps<'stepper', typeof CLASSES>,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onClick'> {
+  extends BaseProps<'stepper', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onClick'> {
   list: T[];
   active: number;
   percent?: number;

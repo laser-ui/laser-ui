@@ -4,8 +4,7 @@ import type { BaseProps } from '../types';
 export {};
 
 export interface PaginationProps
-  extends BaseProps<'pagination', typeof CLASSES>,
-    Omit<React.HTMLAttributes<HTMLElement>, 'children' | 'onChange'> {
+  extends BaseProps<'pagination', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLElement>, 'children' | 'onChange'> {
   total: number;
   active?: number;
   defaultActive?: number;

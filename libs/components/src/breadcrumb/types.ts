@@ -11,8 +11,7 @@ export interface BreadcrumbItem<ID extends React.Key> {
 }
 
 export interface BreadcrumbProps<ID extends React.Key, T extends BreadcrumbItem<ID>>
-  extends BaseProps<'breadcrumb', typeof CLASSES>,
-    Omit<React.HTMLAttributes<HTMLElement>, 'children' | 'onClick'> {
+  extends BaseProps<'breadcrumb', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLElement>, 'children' | 'onClick'> {
   list: T[];
   separator?: React.ReactNode;
   onClick?: (id: ID, origin: T) => void;

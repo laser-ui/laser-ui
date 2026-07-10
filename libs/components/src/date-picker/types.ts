@@ -10,7 +10,8 @@ export interface DatePickerRef {
 }
 
 export interface DatePickerProps
-  extends BaseProps<'date-picker' | 'time-picker' | 'date-picker-popup', typeof CLASSES>,
+  extends
+    BaseProps<'date-picker' | 'time-picker' | 'date-picker-popup', typeof CLASSES>,
     Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'placeholder'> {
   ref?: React.Ref<DatePickerRef>;
   formControl?: FormControlProvider;

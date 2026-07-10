@@ -77,10 +77,10 @@ interface VirtualScrollRef<T> {
 }
 ```
 
-| 方法 | 说明 |
-| --- | --- |
-| scrollToItem | 滚动到指定 key 的项 |
-| scrollToStep | 按步长滚动 |
-| scrollToNested | 滚动到嵌套子项区域 |
-| scrollToStart | 滚动到列表开头 |
-| scrollToEnd | 滚动到列表末尾 |
+| 方法           | 说明                |
+| -------------- | ------------------- |
+| scrollToItem   | 滚动到指定 key 的项 |
+| scrollToStep   | 按步长滚动          |
+| scrollToNested | 滚动到嵌套子项区域  |
+| scrollToStart  | 滚动到列表开头      |
+| scrollToEnd    | 滚动到列表末尾      |

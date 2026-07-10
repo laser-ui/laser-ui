@@ -19,8 +19,7 @@ export interface DropdownItem<ID extends React.Key> {
 }
 
 export interface DropdownProps<ID extends React.Key, T extends DropdownItem<ID>>
-  extends BaseProps<'dropdown' | 'dropdown-popup', typeof CLASSES>,
-    Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onClick'> {
+  extends BaseProps<'dropdown' | 'dropdown-popup', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'onClick'> {
   ref?: React.Ref<DropdownRef>;
   children: (props: {
     id: string;

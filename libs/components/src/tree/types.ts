@@ -13,8 +13,7 @@ export interface TreeItem<V extends React.Key> {
 }
 
 export interface TreeProps<V extends React.Key, T extends TreeItem<V>>
-  extends BaseProps<'tree', typeof CLASSES>,
-    Omit<React.HTMLAttributes<HTMLUListElement>, 'children'> {
+  extends BaseProps<'tree', typeof CLASSES>, Omit<React.HTMLAttributes<HTMLUListElement>, 'children'> {
   formControl?: FormControlProvider;
   list: T[];
   model?: V | null | V[];
