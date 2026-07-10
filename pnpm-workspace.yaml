@@ -1,0 +1,10 @@
+allowBuilds:
+  '@parcel/watcher': true
+  '@swc/core': true
+  core-js: true
+  cypress: true
+  esbuild: true
+  nx: true
+
+patchedDependencies:
+  '@nx/js@17.0.2': patches/@nx__js@17.0.2.patch

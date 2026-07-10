@@ -5,6 +5,9 @@ dist
 tmp
 /out-tsc
 
+# generated svg components
+libs/components/src/icons
+
 # dependencies
 node_modules
 

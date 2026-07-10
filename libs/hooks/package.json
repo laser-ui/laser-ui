@@ -26,7 +26,8 @@
   "module": "./index.js",
   "types": "./index.d.ts",
   "dependencies": {
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "tslib": "^2.6.2"
   },
   "peerDependencies": {
     "immer": ">=2.0.0"

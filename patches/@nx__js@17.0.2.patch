@@ -61,3 +61,23 @@ index 06d708619b413540b7c1e24231fc63564339316a..1818a47d1fa68a914e46cedf31c36263
      }
      return packageJson;
  }
+diff --git a/src/utils/typescript/load-ts-transformers.js b/src/utils/typescript/load-ts-transformers.js
+index 8a25ce199536f69294b3cd36bed602283da4b350..ed3ee21ecb806c36492ea99dab2b993407159282 100644
+--- a/src/utils/typescript/load-ts-transformers.js
++++ b/src/utils/typescript/load-ts-transformers.js
+@@ -23,9 +23,12 @@ function loadTsTransformers(plugins, moduleResolver = require.resolve) {
+     ];
+     const pluginRefs = normalizedPlugins.map(({ name }) => {
+         try {
+-            const binaryPath = moduleResolver(name, {
+-                paths: nodeModulePaths,
+-            });
++            const isRelativePath = name.startsWith('.') || path_1.isAbsolute(name);
++            const binaryPath = isRelativePath
++                ? (0, path_1.resolve)(process.cwd(), name)
++                : moduleResolver(name, {
++                    paths: nodeModulePaths,
++                });
+             return require(binaryPath);
+         }
+         catch (e) {

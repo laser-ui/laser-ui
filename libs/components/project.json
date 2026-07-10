@@ -4,14 +4,23 @@
   "sourceRoot": "libs/components/src",
   "projectType": "library",
   "targets": {
+    "prebuild": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/libs/components/src/icons"],
+      "options": {
+        "command": "ts-node -P ./tools/tsconfig.tools.json ./tools/scripts/generate-components-svgr.ts"
+      }
+    },
     "build": {
       "executor": "@nx/js:tsc",
+      "dependsOn": ["prebuild"],
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/components",
         "rootDir": "libs/components/src",
         "main": "libs/components/src/index.ts",
         "tsConfig": "libs/components/tsconfig.lib.json",
+        "transformers": ["./tools/transformers/svgr-transformer.js"],
         "assets": [
           "libs/components/CHANGELOG.md",
           {
