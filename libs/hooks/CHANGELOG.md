@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.4](https://github.com/laser-ui/laser-ui/compare/v2.8.3...v2.8.4) (2026-11-17)
+
+**Note:** Version bump only for package @laser-ui/hooks
+
 ## [2.8.3](https://github.com/laser-ui/laser-ui/compare/v2.8.2...v2.8.3) (2026-11-17)
 
 **Note:** Version bump only for package @laser-ui/hooks
