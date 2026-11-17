@@ -102,6 +102,12 @@ export const Upload: {
             const list = changeFiles((draft) => {
               const index = draft.findIndex((f) => f.uid === uid);
               if (index !== -1) {
+                // A late upload `progress` event can arrive after the terminal `load`/`error` event when the server
+                // responds quickly; a terminal state should never regress to `progress`.
+                if ((draft[index].state === 'load' || draft[index].state === 'error') && obj.state === 'progress') {
+                  hasChange = false;
+                  return;
+                }
                 draft[index] = Object.assign(draft[index], { response: xhr.response, ...obj });
               } else {
                 hasChange = false;
