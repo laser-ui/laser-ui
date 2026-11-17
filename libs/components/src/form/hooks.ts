@@ -3,7 +3,7 @@ import type { AbstractControl } from './model/abstract-control';
 import type { FormGroup } from './model/form-group';
 
 import { useEventCallback } from '@laser-ui/hooks';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useMemo, useState, useSyncExternalStore } from 'react';
 
 function createUltimateProxy<T extends object>(instance: T) {
   return new Proxy(instance, {
@@ -55,31 +55,53 @@ function createUltimateProxy<T extends object>(instance: T) {
 }
 
 export function useForm<T extends { [K in keyof T]: AbstractControl } = any>(initForm: () => FormGroup<T>) {
-  const emitRender = useRef(() => {});
+  // Form controls are external mutable stores: every mutation bumps `version` and notifies React,
+  // and React collapses multiple notifications in the same batch into one render.
+  const [store] = useState(() => {
+    const store = {
+      version: 0,
+      listener: () => {},
+      emitRender: { current: () => {} },
+    };
+    store.emitRender.current = () => {
+      store.version += 1;
+      store.listener();
+    };
+    return store;
+  });
 
   const [origin, setOrigin] = useState(() => {
     const form = initForm();
-    form.setEmitRender(emitRender);
+    form.setEmitRender(store.emitRender);
     return form;
   });
-  const [form, setForm] = useState(origin);
+
+  const version = useSyncExternalStore(
+    useCallback(
+      (listener: () => void) => {
+        store.listener = listener;
+        return () => {
+          store.listener = () => {};
+        };
+      },
+      [store],
+    ),
+    () => store.version,
+    () => store.version,
+  );
+
+  // Derive a new proxy instance on every render that contains form changes, so the identity
+  // of `form` reflects form changes as before. `version` is an intentional dependency.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const form = useMemo(() => createUltimateProxy(origin), [origin, version]);
 
   const updateForm = useEventCallback((newForm?: FormGroup) => {
     if (newForm) {
-      newForm.setEmitRender(emitRender);
+      newForm.setEmitRender(store.emitRender);
       setOrigin(newForm);
-      setForm(createUltimateProxy(newForm));
     } else {
-      setForm(createUltimateProxy(origin));
+      store.emitRender.current();
     }
-  });
-
-  useEffect(() => {
-    emitRender.current = () => {
-      updateForm();
-
-      emitRender.current = () => {};
-    };
   });
 
   return [form, updateForm] as const;
