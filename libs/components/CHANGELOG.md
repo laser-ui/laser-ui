@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.3](https://github.com/laser-ui/laser-ui/compare/v2.8.2...v2.8.3) (2026-11-17)
+
+### Bug Fixes
+
+- **components:** guard terminal upload state against late progress events ([3766362](https://github.com/laser-ui/laser-ui/commit/3766362c45fbb876507deb5a8fc98214dd566402))
+
 ## [2.8.2](https://github.com/laser-ui/laser-ui/compare/v2.8.1...v2.8.2) (2026-07-10)
 
 **Note:** Version bump only for package @laser-ui/components
